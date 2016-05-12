@@ -178,7 +178,7 @@ public class ExcelReaderTest extends TestCase {
         assertEquals("java xml bla bla", props.getKeywords());
         char cr = 13;
         char lf = 10;
-        assertEquals("testing ë é ç ƒ Ñ documentproperties"
+        assertEquals("testing ï¿½ ï¿½ ï¿½ ï¿½ ï¿½ documentproperties"
                 + cr + lf + "more comments"
                 + cr + lf + "and more...", props.getDescription());
         assertEquals("Tom Poes", props.getLastAuthor());
@@ -523,7 +523,7 @@ public class ExcelReaderTest extends TestCase {
         Workbook wb = new XLWorkbook("foo");
         Worksheet sheet = wb.addSheet("bar");
         sheet.setAutoFilter(new Area("C5:F5").getAbsoluteRange());
-        sheet.addCell("transmitted with ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥?ƒá");
+        sheet.addCell("transmitted with ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü¢ï¿½ï¿½?ï¿½ï¿½");
         //
         wb.appendInfoSheet();
         // notice that both this workbook and
@@ -591,7 +591,7 @@ public class ExcelReaderTest extends TestCase {
                 //
                 assertEquals("source", wb.getFileName());
                 assertEquals("source", wb.getName());
-                assertEquals("transmitted with ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥?ƒá",
+                assertEquals("transmitted with ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü¢ï¿½ï¿½?ï¿½ï¿½",
                         wb.getWorksheetAt(0).getCellAt(1, 1).getData());
                 if (toFile) {
                     wb.addElementComment(" this workbook was recieved at "

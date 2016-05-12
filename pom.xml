@@ -285,11 +285,6 @@
    <version>${commons-codec.version}</version>
   </dependency>
   <dependency>
-   <groupId>log4j</groupId>
-   <artifactId>log4j</artifactId>
-   <version>1.2.16</version>
-  </dependency>
-  <dependency>
    <groupId>com.github.jsqlparser</groupId>
    <artifactId>jsqlparser</artifactId>
    <version>0.9.3</version>
@@ -492,7 +487,6 @@
      <artifactId>jmxri</artifactId>
     </exclusion>
    </exclusions>
-   <scope>runtime</scope>
   </dependency>
 
 <dependency>
@@ -568,10 +562,10 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
-                    <compilerArgument>-Xlint:all</compilerArgument>
-                    <showWarnings>true</showWarnings>
-                    <showDeprecation>true</showDeprecation>
-                    <encoding>UTF8</encoding> 
+					<compilerArgument>-Xlint:none</compilerArgument>
+                    <showWarnings>false</showWarnings>
+                    <showDeprecation>false</showDeprecation>
+					<encoding>utf8</encoding>
                 </configuration>
             </plugin>
             <plugin>

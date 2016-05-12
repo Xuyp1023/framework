@@ -362,7 +362,7 @@ public class CreateDocumentTest extends TestCase {
         sheet.addColumnAt(2).setWidth(200);
         
         sheet.addCellAt(9, 1);
-        sheet.addCell("&1<2>3\" ' € @         ");
+        sheet.addCell("&1<2>3\" ' â‚¬ @         ");
         
         sheet.addCellAt(11, 1);
         sheet.addCell("'=1+2");
@@ -725,10 +725,10 @@ public class CreateDocumentTest extends TestCase {
     
     public void testSpecialCharacters() throws Exception {
         Workbook wb = new XLWorkbook("test28");
-        wb.addSheet().addCell("2020 BV Financiën");
+        wb.addSheet().addCell("2020 BV Financié›—");
         
         String xml = xmlToString(wb);
-        assertTrue(xml.indexOf("<Data ss:Type=\"String\">2020 BV Financiën</Data>") > 0);
+        assertTrue(xml.indexOf("<Data ss:Type=\"String\">2020 BV Financié›—</Data>") > 0);
         
         //System.out.println(xml);
         if (toFile) xmlToFile(wb);

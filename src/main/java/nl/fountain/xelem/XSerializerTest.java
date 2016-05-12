@@ -37,14 +37,14 @@ public class XSerializerTest extends TestCase {
     public void testFile() throws XelemException {
         XSerializer xs = new XSerializer();
         wb.setFileName("testoutput/xs.xml");
-        wb.addSheet().addCell("BV Financiën");
+        wb.addSheet().addCell("BV Financié›—");
         xs.serialize(wb);
     }
     
     public void testFile2() throws XelemException {
         XSerializer xs = new XSerializer(XSerializer.US_ASCII);
         wb.setFileName("testoutput/xs_US_ASCII.xml");
-        wb.addSheet().addCell("BV Financiën");
+        wb.addSheet().addCell("BV Financié›—");
         xs.serialize(wb);
     }
 

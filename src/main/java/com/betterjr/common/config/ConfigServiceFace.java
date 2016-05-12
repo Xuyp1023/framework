@@ -1,4 +1,4 @@
-﻿package com.betterjr.common.config;
+package com.betterjr.common.config;
 
 import java.util.*;
 
