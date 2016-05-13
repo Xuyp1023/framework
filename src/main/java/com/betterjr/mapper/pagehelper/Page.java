@@ -26,6 +26,8 @@ package com.betterjr.mapper.pagehelper;
 
 import org.apache.ibatis.session.RowBounds;
 
+import com.betterjr.common.mapper.BeanMapper;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -95,6 +97,19 @@ public class Page<E> extends ArrayList<E> {
         return pp;
     }
 
+    public static Page listToPage(Collection anList, Class anClass) {
+        Page pp = new Page();
+        for (Object obj : anList){
+           pp.add( BeanMapper.map(obj, anClass));
+        }
+        pp.pages = 1;
+        pp.startRow = 0;
+        pp.pageNum = 1;
+        pp.pageSize = anList.size();
+        
+        return pp;
+    }
+    
     public Page(int pageNum, int pageSize) {
         this(pageNum, pageSize, SQL_COUNT, null);
     }

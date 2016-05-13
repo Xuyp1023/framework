@@ -54,28 +54,33 @@ public class ReflectionUtils {
         }
         return object;
     }
-        
+
     public static Multimap listConvertToMuiltMap(List anList, String anProperName) {
 
         return (Multimap) listConvertToMap(anList, anProperName, true);
+    }
+
+    public static Set listToKeySet(List anList, String anProperName) {
+
+        return (Set) listConvertToMap(anList, anProperName, false, true, true);
     }
 
     public static Map listConvertToMap(List anList, String anProperName) {
 
         return (Map) listConvertToMap(anList, anProperName, false);
     }
-    
+
     private static Object listConvertToMap(List anList, String anProperName, boolean anMuitMap) {
-        
-        return listConvertToMap(anList, anProperName, anMuitMap , false);
+
+        return listConvertToMap(anList, anProperName, anMuitMap, false, false);
     }
-    
+
     public static Map listConvertToMapKeyObj(List anList, String anProperName) {
-        
-        return (Map) listConvertToMap(anList, anProperName, false, true);
+
+        return (Map) listConvertToMap(anList, anProperName, false, true, false);
     }
-    
-    private static Object listConvertToMap(List anList, String anProperName, boolean anMuitMap, boolean anUserObj) {
+
+    private static Object listConvertToMap(List anList, String anProperName, boolean anMuitMap, boolean anUserObj, boolean anUseSet) {
         if (Collections3.isEmpty(anList) == false) {
             Object obj = anList.get(0);
             String getterMethodName = GETTER_PREFIX + StringUtils.capitalize(anProperName);
@@ -90,24 +95,40 @@ public class ReflectionUtils {
                 }
                 else {
                     Map map = null;
-                    if (anUserObj){
-                        map = new LinkedHashMap();
+                    Set resultSet = null;
+                    if (anUseSet) {
+                        resultSet = new LinkedHashSet();
                     }
-                    else{
-                        map = new LinkedCaseInsensitiveMap();
+                    else {
+                        if (anUserObj) {
+                            map = new LinkedHashMap();
+                        }
+                        else {
+                            map = new LinkedCaseInsensitiveMap();
+                        }
                     }
                     for (Object subObj : anList) {
                         Object mmX = mm.invoke(subObj, BeanMapperHelper.objs);
-                        if (mmX != null ){
-                            if (anUserObj){
-                                map.put(mmX, subObj);
+                        if (mmX != null) {
+                            if (anUseSet) {
+                                resultSet.add(mmX);
                             }
-                            else{
-                                map.put(mmX.toString(), subObj);
+                            else {
+                                if (anUserObj) {
+                                    map.put(mmX, subObj);
+                                }
+                                else {
+                                    map.put(mmX.toString(), subObj);
+                                }
                             }
                         }
                     }
-                    return map;
+                    if (anUseSet) {
+                        return resultSet;
+                    }
+                    else {
+                        return map;
+                    }
                 }
 
             }
@@ -124,10 +145,10 @@ public class ReflectionUtils {
                 e.printStackTrace();
             }
         }
-        if (anMuitMap){
-            return HashMultimap.create(); 
+        if (anMuitMap) {
+            return HashMultimap.create();
         }
-        else{
+        else {
             return new HashMap();
         }
 
@@ -173,8 +194,8 @@ public class ReflectionUtils {
             if (mm != null) {
                 list.add(mm);
             }
-            else{
-            //  System.out.println(pds);
+            else {
+                // System.out.println(pds);
             }
         }
 
@@ -281,18 +302,21 @@ public class ReflectionUtils {
         Validate.notBlank(fieldName, "fieldName can't be blank");
         return getAccessibleClassField(obj.getClass(), fieldName);
     }
+
     public static Field getClassField(final Class anClass, final String fieldName) {
         return getSubClassField(anClass, fieldName, false);
     }
+
     public static Field getAccessibleClassField(final Class anClass, final String fieldName) {
         return getSubClassField(anClass, fieldName, true);
     }
+
     private static Field getSubClassField(final Class anClass, final String fieldName, boolean anAccess) {
         for (Class<?> superClass = anClass; superClass != Object.class; superClass = superClass.getSuperclass()) {
             try {
                 Field field = superClass.getDeclaredField(fieldName);
                 if (anAccess) {
-                makeAccessible(field);
+                    makeAccessible(field);
                 }
                 return field;
             }
@@ -515,18 +539,20 @@ public class ReflectionUtils {
 
         return (Class) params[index];
     }
-    public static List<Method> findStaticMethodList(Class anClass ){
+
+    public static List<Method> findStaticMethodList(Class anClass) {
         List<Method> mmList = new ArrayList<Method>();
-        for( Method  mm : anClass.getMethods()){
-           if (mm.getDeclaringClass() != Object.class){
-               int kk = mm.getModifiers();
-               if (Modifier.isPublic(kk) && Modifier.isStatic(kk)){
-                  mmList.add(mm); 
-               }
-           } 
+        for (Method mm : anClass.getMethods()) {
+            if (mm.getDeclaringClass() != Object.class) {
+                int kk = mm.getModifiers();
+                if (Modifier.isPublic(kk) && Modifier.isStatic(kk)) {
+                    mmList.add(mm);
+                }
+            }
         }
         return mmList;
     }
+
     public static List<Field> findAllField(Class anClass, boolean anAccess) {
         List<Field> fieldList = new ArrayList();
         anClass.getFields();

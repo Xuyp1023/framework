@@ -405,4 +405,47 @@ public class MathExtend {
         }
         return BigDecimal.ZERO;
     }
+
+    /**
+     * 
+     * @param anValue
+     *            需要处理的值
+     * @param anMinValue
+     *            最小值
+     * @param anMaxValue
+     *            最大值
+     * @param defValue
+     *            超出区间的默认值
+     * @return
+     */
+    public static int defIntBetween(int anValue, int anMinValue, int anMaxValue, int defValue) {
+        if ((anValue > anMaxValue) || (anValue < anMinValue)) {
+            return defValue;
+        }
+        return anValue;
+    }
+
+    /**
+     * 为Long类型数据，如果为空则赋予默认为0
+     * @param anValue
+     * @return
+     */
+    public static Long defaultLongZero(Long anValue) {
+        return defaultLongValue(anValue, new Long(0));
+    }
+
+    /**
+     * 为Long类型数据，如果为空则赋予默认值
+     * @param anValue 
+     * @param anDefValue
+     * @return
+     */
+    public static Long defaultLongValue(Long anValue, Long anDefValue) {
+        if (anValue == null) {
+            return anDefValue;
+        }
+        else {
+            return anValue;
+        }
+    }
 }

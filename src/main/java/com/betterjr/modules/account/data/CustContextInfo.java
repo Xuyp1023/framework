@@ -13,10 +13,13 @@ import org.slf4j.LoggerFactory;
 import com.betterjr.common.security.KeyReader;
 import com.betterjr.common.security.SignHelper;
 import com.betterjr.common.utils.CacheUtils;
-import com.betterjr.common.web.WorkSessionContext; 
+import com.betterjr.common.web.WorkSessionContext;
 import com.betterjr.modules.account.entity.CustCertInfo;
 import com.betterjr.modules.account.entity.CustInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
+import com.betterjr.modules.account.entity.SaleTradeAccountInfo;
+
+
 /**
  * 当前客户的上下文信息,打通前端和后端的信息
  * 
@@ -67,7 +70,8 @@ public class CustContextInfo implements Serializable {
     }
 
     private Map<Long, CustInfo> cutInfoMap = new HashMap();
- 
+    private Map<String, SaleTradeAccountInfo> tradeAccoMap = new HashMap();
+
     public boolean isLogined() {
         return logined;
     }
@@ -91,8 +95,19 @@ public class CustContextInfo implements Serializable {
 
         this.cutInfoMap.put(cInfo.getCustNo(), cInfo);
     }
- 
- 
+
+    public void addNewTradeAccount(SaleTradeAccountInfo anTradeAcco) {
+
+        this.tradeAccoMap.put(anTradeAcco.getTradeAccount(), anTradeAcco);
+    }
+
+    public void addTradeAccount(List<SaleTradeAccountInfo> anTradeAccoList) {
+        for (SaleTradeAccountInfo cInfo : anTradeAccoList) {
+
+            this.tradeAccoMap.put(cInfo.getTradeAccount(), cInfo);
+        }
+    }
+
     // 获得操作员所操作的所有客户信息
     public List<Long> findCustList() {
         List list = new ArrayList();
@@ -113,7 +128,11 @@ public class CustContextInfo implements Serializable {
 
         return this.cutInfoMap.get(anCustNo);
     }
- 
+
+    public SaleTradeAccountInfo findTradeAccount(String anTradeAccount) {
+
+        return this.tradeAccoMap.get(anTradeAccount);
+    }
 
     private long lastLoginTime = 0L;
 

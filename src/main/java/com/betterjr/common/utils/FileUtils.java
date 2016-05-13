@@ -10,7 +10,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
@@ -23,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.betterjr.common.config.ParamNames;
+import com.betterjr.common.data.KeyAndValueObject;
 import com.betterjr.common.exception.BettjerIOException;
 import com.betterjr.common.selectkey.SerialGenerator;
 import com.betterjr.modules.sys.service.SysConfigService;
@@ -787,32 +790,90 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
             return anFile;
         }
     }
-    
-    public static String fileUploadRelativePath(File anFile){
+
+    public static String fileUploadRelativePath(File anFile) {
         String abPath = SysConfigService.getString(ParamNames.OPENACCO_FILE_DOWNLOAD_PATH);
         String tmpPath = anFile.getAbsolutePath();
-        if (tmpPath.length() > abPath.length()){
+        if (tmpPath.length() > abPath.length()) {
             return tmpPath.substring(abPath.length());
         }
-        else{
+        else {
             return tmpPath;
         }
     }
-    
-    public static File findUploadFilePath(){
-        String filenameUuid = SerialGenerator.uuid();
-        String path = SysConfigService.getString(ParamNames.OPENACCO_FILE_DOWNLOAD_PATH);
-        String format = BetterDateUtils.getNumDate();
-        path += "/" + format;
-        File file = new File(path);
+
+    /**
+     * 根据默认信息，获得上传的文件路径
+     * 
+     * @return
+     */
+    public static KeyAndValueObject findUploadFilePath() {
+
+        return findFilePathWithParent(null);
+    }
+
+    /**
+     * 根据指定的父文件路径，创建文件路径
+     * 
+     * @param anParentPath
+     *            指定的父文件路径
+     * @return
+     */
+    public static KeyAndValueObject findFilePathWithParent(String anParentPath) {
+        // 得到上传服务器的路径
+        String basePath = (String) SysConfigService.getObject(ParamNames.OPENACCO_FILE_DOWNLOAD_PATH);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+        String format = formatter.format(new Date());
+        String workPath = null;
+        if (BetterStringUtils.isBlank(anParentPath)) {
+            workPath = basePath + "/" + format;
+        }
+        else {
+            workPath = basePath + "/" + anParentPath + "/" + format;
+        }
+        File file = new File(workPath);
+
         // 如果文件夹不存在则创建
-        if (!file.exists() && !file.isDirectory()) {
-            file.mkdir();
+        if (file.exists() ) {
+            
+            //如果是文件，则将文件做重命名
+            if ( file.isFile()){
+                file.renameTo(new File(workPath+".rename"));
+                file.mkdirs();
+            }
+        }
+        else{
+            //不存在，就创将目录
+            file.mkdirs(); 
         }
         // 得到上传的文件的文件名
-        path += "/" + filenameUuid;
-        String saveUrl = "/" + format + "/" + filenameUuid;
+        String fileName = SerialGenerator.uuid();
+        String fileAbsoPath  = workPath + "/" + fileName;
         
-        return new File(saveUrl);
+        //保存在系统中的相对路径
+        String saveUrl = null;
+        if (BetterStringUtils.isNotBlank(anParentPath)){
+            saveUrl ="/" + anParentPath; 
+        }
+        else{
+            saveUrl ="";
+        }
+        saveUrl = saveUrl + "/" + format + "/" + fileName;
+
+        return new KeyAndValueObject(saveUrl, new File(fileAbsoPath));
+    }
+
+    /**
+     * 获得文件的扩展名
+     * @param anFileName
+     * @return
+     */
+    public static String extractFileExt(String anFileName){
+        if (BetterStringUtils.isNotBlank(anFileName)){
+           if (anFileName.contains(".")){
+               return anFileName.substring(anFileName.lastIndexOf(".") + 1);
+           }
+        }
+        return "bin";
     }
 }

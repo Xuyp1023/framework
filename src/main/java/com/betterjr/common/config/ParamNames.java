@@ -143,5 +143,6 @@ public abstract class ParamNames {
     public static final String PAYSTATUS_00="00";
     
     public static final String DEFAULT_BANK_NET_NO = "0101";
-    
+    public static final String CONTRACT_PATH ="contract";
+    public static final String FACTOR_CORE_CUSTINFO ="FactorCoreCustInfo";
 }

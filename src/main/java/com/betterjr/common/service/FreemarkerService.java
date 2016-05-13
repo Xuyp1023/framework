@@ -38,12 +38,22 @@ public class FreemarkerService extends Configuration {
         this.setTemplateLoader(stringTemplateLoader);
     }
 
-    public String processTemplate(String templateName, long version, String templateContents, Map<String, Object> dataMap) {
+    /**
+     * 处理FreeMarker的模板信息
+     * @param templateName 模板的名字
+     * @param version 版本号
+     * @param templateContents 模板的内容
+     * @param dataMap 模板处理的上下文数据
+     * @return
+     */
+    public StringBuffer processTemplate(String templateName, long version, String templateContents, Map<String, Object> dataMap) {
         Assert.notNull(templateName);
         Assert.notNull(version);
         if (StringUtils.isBlank(templateContents)) {
-            return null;
+            
+            return new StringBuffer();
         }
+        
         Object templateSource = stringTemplateLoader.findTemplateSource(templateName);
         if (templateSource == null) {
             logger.debug("Init freemarker template: {}", templateName);
@@ -59,7 +69,7 @@ public class FreemarkerService extends Configuration {
         return processTemplateByName(templateName, dataMap);
     }
 
-    private String processTemplateByName(String templateName, Map<String, Object> dataMap) {
+    private StringBuffer processTemplateByName(String templateName, Map<String, Object> dataMap) {
         StringWriter strWriter = new StringWriter();
         try {
             this.getTemplate(templateName).process(dataMap, strWriter);
@@ -71,21 +81,29 @@ public class FreemarkerService extends Configuration {
         catch (IOException e) {
             throw new ServiceException("error.freemarker.template.process", e);
         }
-        return strWriter.toString();
+        return strWriter.getBuffer();
     }
 
-    public String processTemplateByContents(String templateContents, Map<String, Object> dataMap) {
+    public StringBuffer processTemplateByContents(String templateContents, Map<String, Object> dataMap) {
         String templateName = "_" + templateContents.hashCode();
+        
         return processTemplate(templateName, 0, templateContents, dataMap);
     }
     
     @Deprecated
-    public String processTemplateByFileName(String templateFileName, Map<String, Object> dataMap) {
+    public StringBuffer processTemplateByFileName(String templateFileName, Map<String, Object> dataMap) {
         String moduleName="sale";
         return this.processTemplateByFileNameUnderModule(templateFileName, dataMap, moduleName);
     }
 
-    public String processTemplateByFileNameUnderModule(String templateFileName, Map<String, Object> dataMap,String moduleName) {
+    /**
+     * 处理前海拜特定义的模板信息
+     * @param templateFileName 模板文件名称
+     * @param dataMap 上下文数据
+     * @param moduleName 模板所在的功能模块
+     * @return
+     */
+    public StringBuffer processTemplateByFileNameUnderModule(String templateFileName, Map<String, Object> dataMap,String moduleName) {
         dataMap.put("numberFormater",  new CustDecimalJsonSerializer());
         dataMap.put("dictUtils",  new DictUtils());
         String subPath=File.separator + "templates" + File.separator + "modules"+File.separator+moduleName+File.separator;
