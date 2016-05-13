@@ -579,4 +579,11 @@
         </plugins>
     </build>
 
+    <distributionManagement>
+        <repository>
+            <id>nexus-team</id>
+            <name>Nexus better</name>
+            <url>http://192.168.2.43:9090/nexus/content/repositories/releases/</url>
+        </repository>
+    </distributionManagement>
 </project>
