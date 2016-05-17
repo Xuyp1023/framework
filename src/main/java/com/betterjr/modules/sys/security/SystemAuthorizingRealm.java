@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -217,6 +218,19 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
     private X509Certificate findCertificate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         X509Certificate[] certs = (X509Certificate[]) request.getAttribute(SecurityConstants.CERT_ATTR_CER);
         X509Certificate tmpCerts = null;
+        Enumeration<String> headers=request.getHeaderNames();
+        Enumeration<String> attrs=request.getAttributeNames();
+        while(headers.hasMoreElements()){
+        	String headKey=headers.nextElement();
+        	log.debug("request heads:"+headKey+"="+request.getHeader(headKey));
+        }
+        while(attrs.hasMoreElements()){
+        	String attrKey=attrs.nextElement();
+        	log.debug("request attrs:"+attrKey+"="+request.getAttribute(attrKey));
+        }
+        
+        
+        
         if (certs == null) {
             String tmpStr = request.getHeader("X-SSL-Client-Cert");
             if (BetterStringUtils.isNotBlank(tmpStr)) {

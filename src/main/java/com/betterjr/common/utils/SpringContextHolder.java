@@ -14,9 +14,14 @@ import org.springframework.stereotype.Service;
  * 
  * @author zhoucy
  * @date 2015-08-09
+ * 
+ * modification: 
+ * @author hewei
+ * 注释掉 "@Service", 将实例化操作强制放到配置文件中去
+ * 解决问题： 本类放在lib/*.jar 中时，spring无法保证在调用者调用getBean方法之前注入ApplicationContext
  */
-@Service
-@Lazy(false)
+//@Service
+//@Lazy(false)
 public class SpringContextHolder implements ApplicationContextAware, DisposableBean {
 
     private static ApplicationContext applicationContext = null;

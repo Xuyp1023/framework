@@ -155,16 +155,16 @@ public class BetterClassUtils {
             int endIndex = clazzName.lastIndexOf(".");
             String prefix = null;
             if (endIndex > 0) {
-                String prefix_name = clazzName.substring(0, endIndex);
-                endIndex = prefix_name.lastIndexOf(".");
+            	clazzName = clazzName.substring(0, endIndex);
+                endIndex = clazzName.lastIndexOf(".");
                 if (endIndex > 0) {
-                    prefix = prefix_name.substring(0, endIndex);
+                    prefix = clazzName.substring(0, endIndex);
                 }
             }
             if (prefix != null && jarEntryName.endsWith(".class")) {
                 // System.out.println("prefix:" + prefix +" pkgName:" + pkgName);
                 if (prefix.equals(pkgName)) {
-                    logger.debug("jar entryName:" + jarEntryName);
+                    logger.debug("jar entryName:" + jarEntryName+" ; className:"+clazzName);
                     addClassName(clazzList, clazzName, annotation);
                 }
                 else if (isRecursive && prefix.startsWith(pkgName)) {
