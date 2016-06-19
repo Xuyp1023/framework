@@ -1,9 +1,9 @@
 package com.betterjr.modules.rule.service;
 
 import com.betterjr.common.service.BaseService;
+import com.betterjr.common.service.SpringContextHolder;
 import com.betterjr.common.utils.BetterClassUtils;
 import com.betterjr.common.utils.BetterStringUtils;
-import com.betterjr.common.utils.SpringContextHolder;
 import com.betterjr.common.utils.XmlUtils;
 import com.betterjr.common.utils.reflection.ReflectionUtils;
 import com.betterjr.modules.rule.RuleCheckResult;

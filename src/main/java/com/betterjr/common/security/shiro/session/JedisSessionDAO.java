@@ -37,7 +37,7 @@ import com.google.common.collect.Sets;
  */
 public class JedisSessionDAO extends AbstractSessionDAO implements SessionDAO {
 
-   private Logger logger = LoggerFactory.getLogger(getClass());
+   private Logger logger = LoggerFactory.getLogger(JedisSessionDAO.class);
 
    private String sessionKeyPrefix = "shiro_session_";
 
@@ -48,23 +48,28 @@ public class JedisSessionDAO extends AbstractSessionDAO implements SessionDAO {
       }
 
       HttpServletRequest request = Servlets.getRequest();
+      logger.debug("session dao update get request:"+request);
       if (request != null) {
          String uri = request.getServletPath();
          // 如果是静态文件，则不更新SESSION
          if (Servlets.isStaticFile(uri)) {
+        	 logger.debug("session dao update is not static file");
             return;
          }
          // 如果是视图文件，则不更新SESSION
          if (BetterStringUtils.startsWith(uri, Global.getConfig("web.view.prefix"))
                && BetterStringUtils.endsWith(uri, Global.getConfig("web.view.suffix"))) {
+        	 logger.debug("session dao update is not view files");
             return;
          }
          // 手动控制不更新SESSION
          if (Global.NO.equals(request.getParameter("updateSession"))) {
+        	 logger.debug("session dao update is manual no update");
             return;
          }
       }
 
+      logger.debug("session dao update:"+session);
       Jedis jedis = null;
       try {
 
@@ -221,6 +226,7 @@ public class JedisSessionDAO extends AbstractSessionDAO implements SessionDAO {
 
    @Override
    protected Serializable doCreate(Session session) {
+	   
       HttpServletRequest request = Servlets.getRequest();
       if (request != null) {
          String uri = request.getServletPath();
@@ -231,7 +237,10 @@ public class JedisSessionDAO extends AbstractSessionDAO implements SessionDAO {
       }
       Serializable sessionId = this.generateSessionId(session);
       this.assignSessionId(session, sessionId);
+      logger.debug("session dao create id="+sessionId);
+      logger.debug("session dao create:"+session);
       this.update(session);
+      
       return sessionId;
    }
 

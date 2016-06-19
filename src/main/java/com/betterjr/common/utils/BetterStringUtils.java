@@ -14,6 +14,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.LocaleResolver;
 
+import com.betterjr.common.service.SpringContextHolder;
 import com.google.common.collect.Lists;
 import java.util.*;
 

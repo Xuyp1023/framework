@@ -1,6 +1,7 @@
 package com.betterjr.common.utils;
 
 import com.betterjr.common.data.SimpleDataEntity;
+import com.betterjr.common.service.SpringContextHolder;
 import com.betterjr.modules.sys.entity.AreaInfo;
 import com.betterjr.modules.sys.service.AreaInfoService;
 import java.util.*;

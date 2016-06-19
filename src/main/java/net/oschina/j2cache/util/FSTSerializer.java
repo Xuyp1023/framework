@@ -7,9 +7,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import de.ruedigermoeller.serialization.FSTObjectInput;
+import de.ruedigermoeller.serialization.FSTObjectOutput;
 import net.sf.ehcache.CacheException;
-import org.nustaq.serialization.FSTObjectInput;
-import org.nustaq.serialization.FSTObjectOutput;
+
 
 /**
  * 使用 FST 实现序列化

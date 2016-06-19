@@ -12,11 +12,13 @@ import java.util.zip.GZIPOutputStream;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.nustaq.serialization.FSTObjectInput;
-import org.nustaq.serialization.FSTObjectOutput;
+
 
 import com.betterjr.common.exception.BettjerIOException;
 import com.betterjr.common.exception.BytterClassNotFoundException;
+
+import de.ruedigermoeller.serialization.FSTObjectInput;
+import de.ruedigermoeller.serialization.FSTObjectOutput;
 
 /**
  * 对象操作工具类, 继承org.apache.commons.lang3.ObjectUtils类

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
 import com.betterjr.common.annotation.AnnotRuleService;
 import com.betterjr.common.exception.BettjerNestedException;
@@ -27,7 +28,7 @@ import com.ql.util.express.parse.ExpressPackage;
  * @author zhoucy
  *
  */
-
+@Component
 public class QlExpressUtil implements ApplicationContextAware, InitializingBean {
 
     private static final ExpressRunner runner = new ExpressRunner(true, false);

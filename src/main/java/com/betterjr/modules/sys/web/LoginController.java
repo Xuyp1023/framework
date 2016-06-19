@@ -56,7 +56,7 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/logout", method = { RequestMethod.GET, RequestMethod.POST })
     public void loginout(HttpServletRequest request, HttpServletResponse response, Model model) {
         System.out.println("logout=====");
-        UserUtils.getSubject().logout();
+        UserUtils.logout();
         Map<String, Object> reslut = new HashMap<>();
         if (!"XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"))) {// 不是ajax请求
             try {
@@ -92,7 +92,7 @@ public class LoginController extends BaseController {
             // SaleWorkAccoRequest workRequest = saleTradeRequesetService.purchaseFund(anMap);
             System.out.println("修改密码成功返回：" + workRequest);
 
-            UserUtils.getSubject().logout();
+            UserUtils.logout();
             return AjaxObject.newOk("修改密码成功", workRequest).toJson();
 
         }
@@ -213,7 +213,7 @@ public class LoginController extends BaseController {
                 CookieUtils.setCookie(response, "LOGINED", "true");
             }
             else if (BetterStringUtils.equals(logined, "true")) {
-                UserUtils.getSubject().logout();
+                UserUtils.logout();
                 return "redirect:" + adminPath + "/login";
             }
         }

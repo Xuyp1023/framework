@@ -97,6 +97,13 @@ public class RuleBusiness implements BetterjrEntity {
     @Column(name = "C_VERSION", columnDefinition = "VARCHAR")
     @MetaData(value = "版本号", comments = "版本号，同一个业务只能有一个版本号激活")
     private String businVersion;
+    
+    /**
+     * 输入参数转换为该实体对象
+     */
+    @Column(name="C_ENTITY", columnDefinition = "VARCHAR")
+    @MetaData(value="实体对象的类名",comments="输入参数转换为该实体对象")
+    private String entity;
 
     private static final long serialVersionUID = 1442218275374L;
 
@@ -233,7 +240,15 @@ public class RuleBusiness implements BetterjrEntity {
         this.businVersion = businVersion == null ? null : businVersion.trim();
     }
 
-    @Override
+    public String getEntity() {
+		return entity;
+	}
+
+	public void setEntity(String entity) {
+		this.entity = entity;
+	}
+
+	@Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());

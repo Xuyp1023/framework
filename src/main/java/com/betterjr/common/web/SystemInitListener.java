@@ -6,10 +6,10 @@ import javax.servlet.ServletContextListener;
 import com.betterjr.common.config.Global;
 import com.betterjr.common.selectkey.SelectKeyGenIDService;
 import com.betterjr.common.selectkey.SerialGenerator;
+import com.betterjr.common.service.SpringContextHolder;
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.DictUtils;
 import com.betterjr.common.utils.PropertiesHolder;
-import com.betterjr.common.utils.SpringContextHolder;
 
 import javax.servlet.ServletContext;
 

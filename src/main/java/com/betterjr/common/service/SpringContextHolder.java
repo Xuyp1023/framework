@@ -1,4 +1,4 @@
-package com.betterjr.common.utils;
+package com.betterjr.common.service;
 
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;

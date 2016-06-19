@@ -198,5 +198,9 @@ public class UserUtils {
         // getCacheMap().remove(key);
         getSession().removeAttribute(key);
     }
+    
+    public static void logout(){
+    	getSubject().logout();
+    }
 
 }

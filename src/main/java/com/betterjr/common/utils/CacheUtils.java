@@ -3,6 +3,8 @@
  */
 package com.betterjr.common.utils;
 
+import com.betterjr.common.service.SpringContextHolder;
+
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
