@@ -136,4 +136,9 @@ public class BaseFormAuthenticationFilter extends FormAuthenticationFilter {
         log.warn("loginSuccess : 登录成功");
         return false;
     }
+    
+    protected boolean isLoginSubmission(ServletRequest request, ServletResponse response) {
+    	//&& WebUtils.toHttp(request).getMethod().equalsIgnoreCase(POST_METHOD);
+        return (request instanceof HttpServletRequest) ;
+    }
 }

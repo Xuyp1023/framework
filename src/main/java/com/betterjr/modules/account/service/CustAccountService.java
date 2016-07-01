@@ -15,6 +15,7 @@ import com.betterjr.common.utils.BetterDateUtils;
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.Collections3;
 import com.betterjr.common.utils.IdcardUtils;
+import com.betterjr.common.utils.StaticThreadLocal;
 import com.betterjr.common.web.Servlets;
 import com.betterjr.modules.account.dao.CustInfoMapper;
 import com.betterjr.modules.account.data.CustContextInfo;
@@ -250,7 +251,8 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
      */
     public CustContextInfo loginOperate(CustContextInfo contextInfo, CustOperatorInfo anOperator) {
         if (contextInfo == null) {
-            String token = Servlets.getSession().getId();
+//            String token = Servlets.getSession().getId();
+        	String token=StaticThreadLocal.getSessionId();
             contextInfo = new CustContextInfo(token, null, null);
             CustContextInfo.putCustContextInfo(contextInfo);
             contextInfo.setOperatorInfo(anOperator);
