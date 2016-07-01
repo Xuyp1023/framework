@@ -183,4 +183,14 @@ public class BTObjectUtils extends org.apache.commons.lang3.ObjectUtils {
             IOUtils.closeQuietly(gzin);
         }
     }
+    
+    /**
+     * 对象强制类型转换时，如果为空，返回为空
+     */
+    public static <T> T castSafety(Object obj,Class<T> cls){
+    	if(obj==null){
+    		return null;
+    	}
+    	return (T)obj;
+    }
 }

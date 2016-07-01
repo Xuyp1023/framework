@@ -37,14 +37,14 @@ import com.betterjr.common.utils.Digests;
 import com.betterjr.common.utils.Encodes;
 import com.betterjr.common.web.Servlets;
 import com.betterjr.modules.account.data.CustContextInfo;
+import com.betterjr.modules.account.dubboclient.CustCertDubboClientService;
+import com.betterjr.modules.account.dubboclient.CustLoginDubboClientService;
+import com.betterjr.modules.account.dubboclient.CustOperatorDubboClientService;
+import com.betterjr.modules.account.dubboclient.CustPassDubboClientService;
 import com.betterjr.modules.account.entity.CustCertInfo;
 import com.betterjr.modules.account.entity.CustInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.account.entity.CustPassInfo;
-import com.betterjr.modules.account.service.CustCertService;
-import com.betterjr.modules.account.service.CustLoginService;
-import com.betterjr.modules.account.service.CustOperatorService;
-import com.betterjr.modules.account.service.CustPassService;
 
 public class SystemAuthorizingRealm extends AuthorizingRealm {
     private static final Logger log = LoggerFactory.getLogger(SystemAuthorizingRealm.class);
@@ -53,17 +53,17 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
     private static final int SALT_SIZE = 20;
     private static final String ALGORITHM = "SHA-256";
     private CustCertInfo certInfo = null;
-    @Autowired
-    private CustCertService certService;
+   
+    private CustCertDubboClientService certService;
 
-    @Autowired
-    private CustLoginService userService;
+    
+    private CustLoginDubboClientService userService;
 
-    @Autowired
-    private CustOperatorService operatorService;
+    
+    private CustOperatorDubboClientService operatorService;
 
-    @Autowired
-    private CustPassService passService;
+    
+    private CustPassDubboClientService passService;
 
     /**
      * 给ShiroDbRealm提供编码信息，用于密码密码比对 描述

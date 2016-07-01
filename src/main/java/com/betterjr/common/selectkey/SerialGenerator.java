@@ -36,12 +36,13 @@ public class SerialGenerator implements SessionIdGenerator {
     public static final String FLOW_TASKECT_ID = "CustFlowTaskExecutor.id";
 
     public static final String FLOW_TASK_ID = "CustFlowTask.id";
+    
     @Autowired
     private SelectKeyGenIDService selectKeyGenIDService = null;
 
     private static SerialGenerator generator = null;
 
-    @PostConstruct
+
     public void init() {
         generator = this;
     }
