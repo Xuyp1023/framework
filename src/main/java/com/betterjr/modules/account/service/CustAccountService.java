@@ -25,7 +25,7 @@ import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.account.entity.CustOperatorRelation;
 import com.betterjr.modules.account.entity.MechCustBaseInfo;
 import com.betterjr.modules.account.entity.SaleAccoRequestInfo;
-import com.betterjr.modules.account.utils.UserUtils;
+import com.betterjr.common.utils.UserUtils;
 import com.betterjr.modules.sys.entity.WorkUserInfo;
 import com.betterjr.modules.sys.service.SysMenuRuleService;
 import com.betterjr.modules.sys.service.SysMenuService;

@@ -17,7 +17,7 @@ import com.betterjr.modules.account.dao.CustOperatorInfoMapper;
 import com.betterjr.modules.account.data.CustOptData;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfoRequest;
-import com.betterjr.modules.account.utils.UserUtils;
+import com.betterjr.common.utils.UserUtils;
  
 
 @Service

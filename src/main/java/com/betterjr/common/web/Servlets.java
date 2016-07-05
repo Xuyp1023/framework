@@ -19,13 +19,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.Validate;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.betterjr.common.config.Global;
 import com.betterjr.common.utils.Encodes;
 import com.betterjr.common.utils.BetterStringUtils;
-import com.betterjr.modules.account.utils.UserUtils;
 import com.betterjr.modules.sys.security.ShiroUser;
 import com.google.common.net.HttpHeaders;
 
@@ -239,7 +240,9 @@ public class Servlets {
 
         String accept = request.getHeader("accept");
         String xRequestedWith = request.getHeader("X-Requested-With");
-        ShiroUser principal = UserUtils.getPrincipal();
+        
+        Subject subject = SecurityUtils.getSubject();
+        ShiroUser principal = (ShiroUser) subject.getPrincipal();
 
         // 如果是异步请求或是手机端，则直接返回信息
         return ((accept != null && accept.indexOf("application/json") != -1
