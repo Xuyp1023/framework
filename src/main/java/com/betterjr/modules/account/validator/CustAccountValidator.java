@@ -3,7 +3,7 @@ package com.betterjr.modules.account.validator;
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.modules.account.data.CustContextInfo;
 import com.betterjr.modules.account.entity.CustInfo;
-import com.betterjr.modules.account.utils.UserUtils;
+import com.betterjr.common.utils.UserUtils;
 import com.betterjr.modules.rule.RuleCheckResult;
 import com.betterjr.modules.rule.entity.RuleBusiness;
 import com.betterjr.modules.rule.entity.WorkRuleValidator;

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.betterjr.common.mapper.BeanMapper;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfoRequest;
-import com.betterjr.modules.account.utils.UserUtils;
+import com.betterjr.common.utils.UserUtils;
 import com.betterjr.modules.rule.entity.RuleBusiness;
 import com.betterjr.modules.rule.entity.WorkRuleValidator;
 import com.betterjr.modules.rule.service.BusinRuleService; 

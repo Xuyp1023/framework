@@ -20,6 +20,7 @@ import com.alibaba.dubbo.rpc.Invocation;
 import com.alibaba.dubbo.rpc.Invoker;
 import com.alibaba.dubbo.rpc.Result;
 import com.alibaba.dubbo.rpc.RpcException;
+import com.betterjr.common.exception.BytterValidException;
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.modules.rule.RuleCheckResult;
 import com.betterjr.modules.rule.RuleContext;
@@ -140,7 +141,7 @@ public class RuleServiceDubboFilterInvoker {
             if (checkResult.isOk()) {
                 result = invoker.invoke(invocation);
             }else{
-            	throw new RpcException("method parameters valid failed!");
+            	throw new BytterValidException("method parameters valid failed!");
             }
 
             this.afterReturn(); // 相当于后置通知

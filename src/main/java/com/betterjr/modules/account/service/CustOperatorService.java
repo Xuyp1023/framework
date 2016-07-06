@@ -15,7 +15,7 @@ import com.betterjr.modules.account.data.CustContextInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfoRequest;
 import com.betterjr.modules.account.entity.CustPassInfo;
-import com.betterjr.modules.account.utils.UserUtils;
+import com.betterjr.common.utils.UserUtils;
 
 @Service
 public class CustOperatorService extends BaseService<CustOperatorInfoMapper, CustOperatorInfo> {
