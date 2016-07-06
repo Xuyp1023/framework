@@ -252,7 +252,7 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
     public CustContextInfo loginOperate(CustContextInfo contextInfo, CustOperatorInfo anOperator) {
         if (contextInfo == null) {
 //            String token = Servlets.getSession().getId();
-        	String token=StaticThreadLocal.getSessionId();
+        	String token=UserUtils.getSessionId();
             contextInfo = new CustContextInfo(token, null, null);
             CustContextInfo.putCustContextInfo(contextInfo);
             contextInfo.setOperatorInfo(anOperator);

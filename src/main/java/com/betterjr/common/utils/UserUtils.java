@@ -6,8 +6,16 @@ package com.betterjr.common.utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.SimplePrincipalCollection;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.subject.support.DefaultSubjectContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.betterjr.modules.account.data.CustContextInfo;
 import com.betterjr.modules.account.entity.CustInfo;
@@ -15,6 +23,8 @@ import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.sys.entity.WorkUserInfo;
 import com.betterjr.modules.sys.security.ShiroUser;
 import com.betterjr.common.entity.*;
+import com.betterjr.common.security.shiro.session.RedisSessionDAO;
+import com.betterjr.common.service.SpringContextHolder;
 
 /**
  * 用户工具类
@@ -22,6 +32,60 @@ import com.betterjr.common.entity.*;
  * @author zhoucy
  */
 public class UserUtils {
+	private static final String SesessionIdKey = StaticThreadLocal.class.getName() + "_sessionId";
+	private static final String SesessionKey = StaticThreadLocal.class.getName() + "_session";
+	private static ThreadLocal<Map<String, Object>> sessionLocal = new ThreadLocal<Map<String, Object>>();
+
+	protected static void storeThreadVar(String key, Object value) {
+		Map<String, Object> map = sessionLocal.get();
+		if (map == null) {
+			map = new ConcurrentHashMap<String, Object>();
+			sessionLocal.set(map);
+		}
+		if (key != null && value != null) {
+			map.put(key, value);
+		}
+	}
+
+	protected static Object getThreadVar(String key) {
+		if (key == null) {
+			return null;
+		}
+		Map<String, Object> map = sessionLocal.get();
+		if (map == null) {
+			return null;
+		}
+		return map.get(key);
+	}
+
+	public static void storeSessionId(String anId) {
+		storeThreadVar(SesessionIdKey, anId);
+	}
+
+	public static String getSessionId() {
+
+		//
+		String id = (String) getThreadVar(SesessionIdKey);
+		if (id != null) {
+			return id;
+		}
+
+		// web access
+		try {
+			Subject subject = SecurityUtils.getSubject();
+			if (subject != null) {
+				Session se = subject.getSession();
+				if (se != null) {
+					return se.getId().toString();
+				}
+			}
+		} catch (Exception ex) {
+		}
+
+		return null;
+	}
+
+	private static RedisSessionDAO redisSessionDAO = SpringContextHolder.getBean(RedisSessionDAO.class);
 
 	/**
 	 * 获取当前用户
@@ -131,9 +195,15 @@ public class UserUtils {
 	 * 获取当前登录者对象
 	 */
 	public static ShiroUser getPrincipal() {
-
-		ShiroUser principal = (ShiroUser) StaticThreadLocal.getPrincipal();
-		return principal;
+		Session session = UserUtils.getSession();
+		if (session != null) {
+			SimplePrincipalCollection col = (SimplePrincipalCollection) session
+					.getAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY);
+			if (col != null) {
+				return (ShiroUser) col.getPrimaryPrincipal();
+			}
+		}
+		return null;
 	}
 
 	public static Long getContactor() {
@@ -149,7 +219,29 @@ public class UserUtils {
 	}
 
 	public static Session getSession() {
-		return StaticThreadLocal.getSession();
+
+		//
+		Object obj = getThreadVar(SesessionKey);
+		Session session = (Session) obj;
+		if (session != null) {
+			return session;
+		}
+		String sessionId = (String) getThreadVar(SesessionIdKey);
+		session = redisSessionDAO.doReadSession(sessionId);
+		if (session != null) {
+			storeThreadVar(SesessionKey, session);
+			return session;
+		}
+
+		// web access
+		Subject subject = SecurityUtils.getSubject();
+		if (subject != null) {
+			Session se = subject.getSession();
+			if (se != null) {
+				return se;
+			}
+		}
+		return null;
 	}
 
 	// ============== User Cache ==============
