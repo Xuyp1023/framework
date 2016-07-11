@@ -24,6 +24,8 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.beans.*;
 
 /**
@@ -34,6 +36,49 @@ import java.beans.*;
  */
 @SuppressWarnings("rawtypes")
 public class ReflectionUtils {
+    public static final char JVM_VOID = 'V';
+
+    /**
+     * boolean(Z).
+     */
+    public static final char JVM_BOOLEAN = 'Z';
+
+    /**
+     * byte(B).
+     */
+    public static final char JVM_BYTE = 'B';
+
+    /**
+     * char(C).
+     */
+    public static final char JVM_CHAR = 'C';
+
+    /**
+     * double(D).
+     */
+    public static final char JVM_DOUBLE = 'D';
+
+    /**
+     * float(F).
+     */
+    public static final char JVM_FLOAT = 'F';
+
+    /**
+     * int(I).
+     */
+    public static final char JVM_INT = 'I';
+
+    /**
+     * long(J).
+     */
+    public static final char JVM_LONG = 'J';
+
+    /**
+     * short(S).
+     */
+    public static final char JVM_SHORT = 'S';
+
+    private static final ConcurrentMap<String, Class<?>> DESC_CLASS_CACHE = new ConcurrentHashMap<String, Class<?>>();
 
     public static final String SETTER_PREFIX = "set";
 
@@ -278,6 +323,11 @@ public class ReflectionUtils {
     /**
      * 直接调用对象方法, 无视private/protected修饰符， 用于一次性调用的情况，否则应使用getAccessibleMethodByName()函数获得Method后反复调用. 只匹配函数名，如果有多个同名函数调用第一个。
      */
+    public static Object invokeMethodByName(final Object obj, final String methodName) {
+        
+        return invokeMethodByName(obj, methodName, BeanMapperHelper.objs);
+    }
+    
     public static Object invokeMethodByName(final Object obj, final String methodName, final Object[] args) {
         Method method = getAccessibleMethodByName(obj, methodName);
         if (method == null) {
@@ -565,5 +615,105 @@ public class ReflectionUtils {
             }
         }
         return fieldList;
+    }
+
+    public static Class<?> desc2class(String desc) throws ClassNotFoundException {
+        switch (desc.charAt(0)) {
+        case JVM_VOID:
+            return void.class;
+        case JVM_BOOLEAN:
+            return boolean.class;
+        case JVM_BYTE:
+            return byte.class;
+        case JVM_CHAR:
+            return char.class;
+        case JVM_DOUBLE:
+            return double.class;
+        case JVM_FLOAT:
+            return float.class;
+        case JVM_INT:
+            return int.class;
+        case JVM_LONG:
+            return long.class;
+        case JVM_SHORT:
+            return short.class;
+        case 'L':
+            desc = desc.substring(1, desc.length() - 1).replace('/', '.'); // "Ljava/lang/Object;" ==> "java.lang.Object"
+            break;
+        case '[':
+            desc = desc.replace('/', '.'); // "[[Ljava/lang/Object;" ==> "[[Ljava.lang.Object;"
+            break;
+        default:
+            throw new ClassNotFoundException("Class not found: " + desc);
+        }
+
+        ClassLoader cl = getClassLoader();
+        Class<?> clazz = DESC_CLASS_CACHE.get(desc);
+        if (clazz == null) {
+            clazz = Class.forName(desc, true, cl);
+            DESC_CLASS_CACHE.put(desc, clazz);
+        }
+
+        return clazz;
+    }
+
+    public static ClassLoader getClassLoader() {
+        Class cls = ReflectionUtils.class;
+        ClassLoader cl = null;
+        try {
+            cl = Thread.currentThread().getContextClassLoader();
+        }
+        catch (Throwable ex) {
+        }
+        if (cl == null) {
+            cl = cls.getClassLoader();
+        }
+        return cl;
+    }
+
+    public static String getDesc(Class<?> c) {
+        StringBuilder ret = new StringBuilder();
+
+        while (c.isArray()) {
+            ret.append('[');
+            c = c.getComponentType();
+        }
+
+        if (c.isPrimitive()) {
+            String t = c.getName();
+            if ("void".equals(t)) ret.append(JVM_VOID);
+            else if ("boolean".equals(t)) ret.append(JVM_BOOLEAN);
+            else if ("byte".equals(t)) ret.append(JVM_BYTE);
+            else if ("char".equals(t)) ret.append(JVM_CHAR);
+            else if ("double".equals(t)) ret.append(JVM_DOUBLE);
+            else if ("float".equals(t)) ret.append(JVM_FLOAT);
+            else if ("int".equals(t)) ret.append(JVM_INT);
+            else if ("long".equals(t)) ret.append(JVM_LONG);
+            else if ("short".equals(t)) ret.append(JVM_SHORT);
+        }
+        else {
+            ret.append('L');
+            ret.append(c.getName().replace('.', '/'));
+            ret.append(';');
+        }
+        return ret.toString();
+    }
+
+    public static String getDesc(final Class<?>[] cs) {
+        if (cs.length == 0) return "";
+
+        StringBuilder sb = new StringBuilder(64);
+        for (Class<?> c : cs)
+            sb.append(getDesc(c));
+        return sb.toString();
+    }
+
+    public static boolean checkZeroArgConstructor(Class clazz) {
+        try {
+            clazz.getDeclaredConstructor();
+            return true;
+        } catch (NoSuchMethodException e) {
+            return false;
+        }
     }
 }
