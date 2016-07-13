@@ -86,14 +86,14 @@ public class CustLoginRecord implements BetterjrEntity {
     /**
      * 操作员编号
      */
-    @Column(name = "L_OPER_ID",  columnDefinition="INTEGER" )
+    @Column(name = "L_OPERID",  columnDefinition="INTEGER" )
     @MetaData( value="操作员编号", comments = "操作员编号")
     private Long operId;
 
     /**
      * 操作员名称
      */
-    @Column(name = "C_OPER_NAME",  columnDefinition="VARCHAR" )
+    @Column(name = "C_OPERNAME",  columnDefinition="VARCHAR" )
     @MetaData( value="操作员名称", comments = "操作员名称")
     private String operName;
 
