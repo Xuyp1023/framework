@@ -5,10 +5,12 @@ import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
- 
+
+import com.betterjr.common.security.shiro.cache.RedisManager;
 import com.betterjr.mapper.entity.Example;
 import com.betterjr.modules.sys.dao.SnoGeneralInfoMapper;
 import com.betterjr.modules.sys.entity.SnoGeneralInfo;
@@ -26,6 +28,11 @@ import com.betterjr.modules.sys.entity.SnoGeneralInfo;
 	private static Object obj = new Object();
 	private static ArrayBlockingQueue abq = new ArrayBlockingQueue(10000);
 
+	private static final String DefaultIdRedisKeyPrefix="betterjr.id.";
+	
+	@Autowired
+	private RedisManager redis;
+	
 	@Autowired
 	private SqlSessionFactoryBean sqlSessionFactory;
 	private int checkTimeOut = 10;
@@ -64,6 +71,8 @@ import com.betterjr.modules.sys.entity.SnoGeneralInfo;
 
 		synchronized (dataMap) {
 			dataMap = tmpMap;
+			//init redis
+			this.initRedis(tmpMap);
 		}
 		// 初始化完毕后，启动服务
 		this.start();
@@ -175,11 +184,45 @@ import com.betterjr.modules.sys.entity.SnoGeneralInfo;
 						e.printStackTrace();
 					}
 				}
-				return snoInfo.addValue();
+				return this.incrby(snoInfo);
 			}
 		}
 
 		return 0;
+	}
+	
+	private String buildKey(String key){
+	    if(StringUtils.isBlank(key)){
+	        return key;
+	    }
+	    return DefaultIdRedisKeyPrefix+key;
+	}
+	
+	private void initRedis(Map<String, SnoGeneralInfo> tmpMap){
+	    if(tmpMap==null){
+	        return ;
+	    }
+	    for(SnoGeneralInfo info:tmpMap.values()){
+	        String type=info.getOperType();
+	        long no=info.getLastNo();
+	        
+	        String key=this.buildKey(type);
+	        boolean exists=this.redis.exists(key);
+	        if(!exists){
+	            this.redis.set(key, String.valueOf(no));
+	        }
+	    }
+	    
+	}
+	
+	private long incrby(SnoGeneralInfo anInfo){
+	    String type=anInfo.getOperType();
+	    long no=anInfo.getLastNo();
+	    
+	    String key=this.buildKey(type);
+	    long re=this.redis.incrby(key, no);
+	    anInfo.addValue();
+	    return re;
 	}
 
 	public static void main(String[] args) {
