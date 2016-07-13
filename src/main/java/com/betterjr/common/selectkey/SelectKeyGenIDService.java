@@ -29,6 +29,7 @@ import com.betterjr.modules.sys.entity.SnoGeneralInfo;
 	private static ArrayBlockingQueue abq = new ArrayBlockingQueue(10000);
 
 	private static final String DefaultIdRedisKeyPrefix="betterjr.id.";
+	
 	@Autowired
 	private RedisManager redis;
 	
@@ -191,7 +192,7 @@ import com.betterjr.modules.sys.entity.SnoGeneralInfo;
 	}
 	
 	private String buildKey(String key){
-	    if(!StringUtils.isBlank(key)){
+	    if(StringUtils.isBlank(key)){
 	        return key;
 	    }
 	    return DefaultIdRedisKeyPrefix+key;
