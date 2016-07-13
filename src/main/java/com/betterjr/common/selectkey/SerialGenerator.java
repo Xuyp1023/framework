@@ -35,6 +35,8 @@ public class SerialGenerator implements SessionIdGenerator {
 
     public static final String FLOW_TASKECT_ID = "CustFlowTaskExecutor.id";
 
+    public static final String SCF_ENQUIRY_ID = "ScfEnquiry.id";
+    
     public static final String FLOW_TASK_ID = "CustFlowTask.id";
     
     @Autowired
