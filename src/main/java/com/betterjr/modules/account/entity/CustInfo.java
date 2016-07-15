@@ -12,6 +12,7 @@ import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.common.mapper.BeanMapper;
 import com.betterjr.common.selectkey.SerialGenerator;
 import com.betterjr.common.utils.BetterDateUtils;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -154,6 +155,7 @@ public class CustInfo implements BetterjrEntity {
     /**
      * 修改人(操作员)ID号
      */
+    @JsonIgnore
     @Column(name = "L_MODI_OPERID",  columnDefinition="INTEGER" )
     @MetaData( value="修改人(操作员)ID号", comments = "修改人(操作员)ID号")
     private Long modiOperId;
@@ -161,6 +163,7 @@ public class CustInfo implements BetterjrEntity {
     /**
      * 修改人(操作员)姓名
      */
+    @JsonIgnore
     @Column(name = "C_MODI_OPERNAME",  columnDefinition="VARCHAR" )
     @MetaData( value="修改人(操作员)姓名", comments = "修改人(操作员)姓名")
     private String modiOperName;
@@ -168,6 +171,7 @@ public class CustInfo implements BetterjrEntity {
     /**
      * 修改日期
      */
+    @JsonIgnore
     @Column(name = "D_MODI_DATE",  columnDefinition="VARCHAR" )
     @MetaData( value="修改日期", comments = "修改日期")
     private String modiDate;
@@ -175,6 +179,7 @@ public class CustInfo implements BetterjrEntity {
     /**
      * 修改时间
      */
+    @JsonIgnore
     @Column(name = "T_MODI_TIME",  columnDefinition="VARCHAR" )
     @MetaData( value="修改时间", comments = "修改时间")
     private String modiTime;
@@ -182,6 +187,7 @@ public class CustInfo implements BetterjrEntity {
     /**
      * 操作机构
      */
+    @JsonIgnore
     @Column(name = "C_OPERORG",  columnDefinition="VARCHAR" )
     @MetaData( value="操作机构", comments = "操作机构")
     private String operOrg;
