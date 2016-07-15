@@ -15,8 +15,8 @@ import com.alibaba.rocketmq.client.producer.SendResult;
 import com.alibaba.rocketmq.common.message.Message;
 import com.alibaba.rocketmq.remoting.exception.RemotingException;
 import com.betterjr.common.exception.BytterException;
-import com.betterjr.common.mq.codec.BtCodecUtils;
-import com.betterjr.common.mq.message.BtMessage;
+import com.betterjr.common.mq.codec.MQCodecUtils;
+import com.betterjr.common.mq.message.MQMessage;
 
 public class RocketMQProducer implements ApplicationListener<ContextRefreshedEvent> {
     private static final Log logger = LogFactory.getLog(RocketMQProducer.class);
@@ -46,9 +46,9 @@ public class RocketMQProducer implements ApplicationListener<ContextRefreshedEve
         start();
     }
 
-    public SendResult sendMessage(final BtMessage anMessage)
+    public SendResult sendMessage(final MQMessage anMessage)
             throws Exception {
-        final Message message = BtCodecUtils.wrap(anMessage);
+        final Message message = MQCodecUtils.wrap(anMessage);
         if (message == null) {
             throw new BytterException("包装消息出错！");
         }

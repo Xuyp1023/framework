@@ -13,8 +13,8 @@ import com.alibaba.rocketmq.client.consumer.listener.MessageListenerConcurrently
 import com.alibaba.rocketmq.common.message.MessageExt;
 import com.betterjr.common.codec.BtCodec;
 import com.betterjr.common.codec.BtObjectInput;
-import com.betterjr.common.mq.codec.BtCodecUtils;
-import com.betterjr.common.mq.codec.BtCodecFactory;
+import com.betterjr.common.mq.codec.MQCodecUtils;
+import com.betterjr.common.mq.codec.MQCodecFactory;
 import com.betterjr.common.mq.config.MethodRocketMQListenerEndpoint;
 
 /**
@@ -47,7 +47,7 @@ public class RocketMQMessageListener implements MessageListenerConcurrently {
     public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> anMsgs, ConsumeConcurrentlyContext anContext) {
         MessageExt messageExt = anMsgs.get(0);
         try {
-            final Object object = BtCodecUtils.unwrap(messageExt);
+            final Object object = MQCodecUtils.unwrap(messageExt);
             method.invoke(bean, object);
             return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
         }
