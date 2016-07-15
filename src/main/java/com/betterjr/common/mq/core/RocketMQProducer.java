@@ -14,6 +14,7 @@ import com.alibaba.rocketmq.client.producer.DefaultMQProducer;
 import com.alibaba.rocketmq.client.producer.SendResult;
 import com.alibaba.rocketmq.common.message.Message;
 import com.alibaba.rocketmq.remoting.exception.RemotingException;
+import com.betterjr.common.exception.BytterException;
 import com.betterjr.common.mq.codec.BtCodecUtils;
 import com.betterjr.common.mq.message.BtMessage;
 
@@ -46,8 +47,11 @@ public class RocketMQProducer implements ApplicationListener<ContextRefreshedEve
     }
 
     public SendResult sendMessage(final BtMessage anMessage)
-            throws IOException, MQClientException, RemotingException, MQBrokerException, InterruptedException {
+            throws Exception {
         final Message message = BtCodecUtils.wrap(anMessage);
+        if (message == null) {
+            throw new BytterException("包装消息出错！");
+        }
         SendResult sendResult = producer.send(message);
         return sendResult;
     }
@@ -87,7 +91,8 @@ public class RocketMQProducer implements ApplicationListener<ContextRefreshedEve
 
         try {
             initialize();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             logger.error("初始化rocketMq生产者失败！", e);
         }
     }

@@ -73,10 +73,6 @@ public class RocketMQConsumer implements ApplicationListener<ContextRefreshedEve
         consumer.setConsumeThreadMax(DEFAULT_CONSUME_THREAD_MAX);
         consumer.setPullBatchSize(DEFAULT_PULL_BATCH_SIZE);
 
-        /**
-         * 订阅指定topic下所有消息<br>
-         * 注意：一个consumer对象可以订阅多个topic
-         */
         for (Map.Entry<String, RocketMQMessageListener> consumerEntry : messageListeners.entrySet()) {
             RocketMQMessageListener messageListener = consumerEntry.getValue();
             consumer.subscribe(messageListener.getTopic(), messageListener.getTags());
@@ -84,8 +80,7 @@ public class RocketMQConsumer implements ApplicationListener<ContextRefreshedEve
         }
         consumer.registerMessageListener(new MessageListenerConcurrently() {
             @Override
-            public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> anMsgs,
-                    ConsumeConcurrentlyContext anContext) {
+            public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> anMsgs, ConsumeConcurrentlyContext anContext) {
                 MessageExt msgExt = anMsgs.get(0);
                 return messageListeners.get(msgExt.getTopic()).consumeMessage(anMsgs, anContext);
             }
@@ -140,7 +135,8 @@ public class RocketMQConsumer implements ApplicationListener<ContextRefreshedEve
 
         try {
             initialize();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             logger.error("初始化rocketMq消费者失败！", e);
         }
     }

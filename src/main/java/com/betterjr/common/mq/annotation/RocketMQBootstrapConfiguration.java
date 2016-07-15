@@ -13,10 +13,10 @@ import com.betterjr.common.mq.config.RocketMQListenerConfigUtils;
 @Configuration
 public class RocketMQBootstrapConfiguration {
 
-	@Bean(name = RocketMQListenerConfigUtils.ROCKETMQ_ANNOTATION_PROCESSOR_BEAN_NAME)
-	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-	public RocketMQAnnotationBeanPostProcessor rocketMQListenerAnnotationProcessor() {
-		return new RocketMQAnnotationBeanPostProcessor();
-	}
+    @Bean(name = RocketMQListenerConfigUtils.ROCKETMQ_ANNOTATION_PROCESSOR_BEAN_NAME)
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public RocketMQAnnotationBeanPostProcessor rocketMQListenerAnnotationProcessor() {
+        return new RocketMQAnnotationBeanPostProcessor();
+    }
 
 }

@@ -36,11 +36,9 @@ import com.betterjr.common.mq.core.RocketMQMessageListener;
 /**
  * @author liuwl
  */
-public class RocketMQAnnotationBeanPostProcessor
-        implements BeanPostProcessor, Ordered, BeanFactoryAware, SmartInitializingSingleton {
+public class RocketMQAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered, BeanFactoryAware, SmartInitializingSingleton {
 
-    private final Set<Class<?>> nonAnnotatedClasses = Collections
-            .newSetFromMap(new ConcurrentHashMap<Class<?>, Boolean>(64));
+    private final Set<Class<?>> nonAnnotatedClasses = Collections.newSetFromMap(new ConcurrentHashMap<Class<?>, Boolean>(64));
 
     private final Log logger = LogFactory.getLog(getClass());
 
@@ -101,21 +99,23 @@ public class RocketMQAnnotationBeanPostProcessor
                 if (this.logger.isTraceEnabled()) {
                     this.logger.trace("No @RocketMQListener annotations found on anBean type: " + anBean.getClass());
                 }
-            } else {
+            }
+            else {
                 // Non-empty set of methods
                 for (Map.Entry<Method, Set<RocketMQListener>> entry : annotatedMethods.entrySet()) {
                     Method method = entry.getKey();
                     for (RocketMQListener listener : entry.getValue()) {
                         try {
                             processRocketMQListener(listener, method, anBean, anBeanName);
-                        } catch (Exception e) {
+                        }
+                        catch (Exception e) {
                             throw new BootstrapException("Process RocketMQListener error.", e);
                         }
                     }
                 }
                 if (this.logger.isDebugEnabled()) {
-                    this.logger.debug(annotatedMethods.size() + " @RocketMQListener methods processed on anBean '"
-                            + anBeanName + "': " + annotatedMethods);
+                    this.logger.debug(
+                            annotatedMethods.size() + " @RocketMQListener methods processed on anBean '" + anBeanName + "': " + annotatedMethods);
                 }
             }
         }
@@ -134,8 +134,7 @@ public class RocketMQAnnotationBeanPostProcessor
         return listeners;
     }
 
-    protected void processRocketMQListener(RocketMQListener anRocketMQListener, Method anMethod, Object anBean,
-            String anBeanName) throws Exception {
+    protected void processRocketMQListener(RocketMQListener anRocketMQListener, Method anMethod, Object anBean, String anBeanName) throws Exception {
         Method methodToUse = checkProxy(anMethod, anBean);
         MethodRocketMQListenerEndpoint endpoint = new MethodRocketMQListenerEndpoint();
         endpoint.setMethod(methodToUse);
@@ -156,12 +155,15 @@ public class RocketMQAnnotationBeanPostProcessor
                     try {
                         method = iface.getMethod(method.getName(), method.getParameterTypes());
                         break;
-                    } catch (NoSuchMethodException noMethod) {
+                    }
+                    catch (NoSuchMethodException noMethod) {
                     }
                 }
-            } catch (SecurityException ex) {
+            }
+            catch (SecurityException ex) {
                 ReflectionUtils.handleReflectionException(ex);
-            } catch (NoSuchMethodException ex) {
+            }
+            catch (NoSuchMethodException ex) {
                 throw new IllegalStateException(String.format(
                         "@RocketMQListener method '%s' found on anBean target class '%s', "
                                 + "but not found in any interface(s) for anBean JDK proxy. Either "
@@ -173,8 +175,7 @@ public class RocketMQAnnotationBeanPostProcessor
         return method;
     }
 
-    protected void processListener(MethodRocketMQListenerEndpoint anEndpoint, RocketMQListener anRocketMQListener,
-            Object anBean) throws Exception {
+    protected void processListener(MethodRocketMQListenerEndpoint anEndpoint, RocketMQListener anRocketMQListener, Object anBean) throws Exception {
         anEndpoint.setBean(anBean);
         RocketMQConsumer consumer = resolveConsumer(anRocketMQListener);
         anEndpoint.setConsumer(consumer);
@@ -206,13 +207,14 @@ public class RocketMQAnnotationBeanPostProcessor
         }
         if (anResolvedValue instanceof String) {
             anResult.add((String) anResolvedValue);
-        } else if (anResolvedValue instanceof Iterable) {
+        }
+        else if (anResolvedValue instanceof Iterable) {
             for (Object object : (Iterable<Object>) anResolvedValue) {
                 resolveAsString(object, anResult);
             }
-        } else {
-            throw new IllegalArgumentException(
-                    String.format("@RocketMQListener can't resolve '%s' as a String", anResolvedValue));
+        }
+        else {
+            throw new IllegalArgumentException(String.format("@RocketMQListener can't resolve '%s' as a String", anResolvedValue));
         }
     }
 
