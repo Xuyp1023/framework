@@ -8,8 +8,8 @@ import com.alibaba.rocketmq.common.message.Message;
 import com.betterjr.common.codec.BtCodec;
 import com.betterjr.common.codec.BtObjectInput;
 import com.betterjr.common.codec.BtObjectOutput;
+import com.betterjr.common.exception.BytterException;
 import com.betterjr.common.mq.message.MQMessage;
-import com.betterjr.common.utils.Collections3;
 
 /**
  * 
@@ -26,7 +26,9 @@ public final class MQCodecUtils {
     public final static Message wrap(final MQMessage anMQMessage) throws IOException {
         final MQCodecType codecType = anMQMessage.getCodecType();
         final BtCodec codec = MQCodecFactory.getCodec(codecType);
-        assert codec != null;
+        if (codec == null) {
+            throw new BytterException("序列化方式指定错误！");
+        }
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             final BtObjectOutput objectOutput = codec.serialize(outputStream);
             objectOutput.writeObject(anMQMessage);
