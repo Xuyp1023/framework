@@ -12,7 +12,7 @@ import com.betterjr.common.codec.support.nativejava.NativeJavaSerialization;
  * @author liuwl
  *
  */
-public final class BtCodecFactory {
+public final class MQCodecFactory {
 
     private final static BtCodec FST_CODEC = new FstSerialization();
     private final static BtCodec HESSIAN_CODEC = new Hessian2Serialization();
@@ -20,7 +20,7 @@ public final class BtCodecFactory {
     private final static BtCodec KRYO_CODEC = new KryoSerialization();
     private final static BtCodec NATIVEJAVA_CODEC = new NativeJavaSerialization();
 
-    public final static BtCodec getCodec(BtCodecType anCodecType) {
+    public final static BtCodec getCodec(MQCodecType anCodecType) {
         return getCodec(anCodecType.getCodecType());
     }
 
