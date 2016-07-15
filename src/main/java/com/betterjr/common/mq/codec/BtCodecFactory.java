@@ -23,21 +23,21 @@ public final class BtCodecFactory {
     public final static BtCodec getCodec(BtCodecType anCodecType) {
         return getCodec(anCodecType.getCodecType());
     }
-    
+
     public final static BtCodec getCodec(final byte anCodecFlag) {
         switch (anCodecFlag) {
-        case (byte)0x01:
+        case (byte) 0x01:
             return FST_CODEC;
-        case (byte)0x02:
+        case (byte) 0x02:
             return HESSIAN_CODEC;
-        case (byte)0x03:
+        case (byte) 0x03:
             return JSON_CODEC;
-        case (byte)0x04:
+        case (byte) 0x04:
             return KRYO_CODEC;
-        case (byte)0x05:
+        case (byte) 0x05:
             return NATIVEJAVA_CODEC;
         default:
-            return KRYO_CODEC;
+            return null;
         }
     }
 }

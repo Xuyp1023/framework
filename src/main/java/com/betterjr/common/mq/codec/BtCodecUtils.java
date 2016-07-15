@@ -26,12 +26,13 @@ public final class BtCodecUtils {
     public final static Message wrap(final BtMessage anBtMessage) throws IOException {
         final BtCodecType codecType = anBtMessage.getCodecType();
         final BtCodec codec = BtCodecFactory.getCodec(codecType);
-        try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-            final BtObjectOutput objectOutput = codec.serialize(output);
+        assert codec != null;
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            final BtObjectOutput objectOutput = codec.serialize(outputStream);
             objectOutput.writeObject(anBtMessage);
             objectOutput.flushBuffer();
-            
-            final byte[] body = output.toByteArray();
+
+            final byte[] body = outputStream.toByteArray();
             final byte[] buf = new byte[body.length + 1];
             buf[0] = codecType.getCodecType();
             System.arraycopy(body, 0, buf, 1, body.length);
@@ -48,13 +49,20 @@ public final class BtCodecUtils {
      * @throws ClassNotFoundException
      */
     public final static Object unwrap(final Message anMessage) throws ClassNotFoundException, IOException {
-        assert anMessage != null;
+        if (anMessage == null) {
+            return null;
+        }
         final byte[] body = anMessage.getBody();
-        assert body != null;
         final byte[] buf = new byte[body.length - 1];
         System.arraycopy(body, 1, buf, 0, body.length - 1);
         BtCodec codec = BtCodecFactory.getCodec(body[0]);
-        BtObjectInput objectInput = codec.deserialize(new ByteArrayInputStream(buf));
-        return objectInput.readObject();
+        if (codec == null) {
+            return null;
+        }
+        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(buf)) {
+            BtObjectInput objectInput = codec.deserialize(inputStream);
+            return objectInput.readObject();
+        }
+
     }
 }

@@ -50,7 +50,8 @@ public class RocketMQMessageListener implements MessageListenerConcurrently {
             final Object object = BtCodecUtils.unwrap(messageExt);
             method.invoke(bean, object);
             return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
-        } catch (final Exception e) {
+        }
+        catch (final Exception e) {
             logger.error("消息消费失败 Topic:" + messageExt.getTopic() + " Keys:" + messageExt.getKeys(), e);
             return ConsumeConcurrentlyStatus.RECONSUME_LATER;
         }

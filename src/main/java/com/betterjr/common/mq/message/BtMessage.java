@@ -16,8 +16,6 @@ public class BtMessage implements Serializable {
     
     private Serializable object;
     
-    private Map<String, Serializable> param = new HashMap<>();
-    
     public BtMessage(final String anTopic) {
         this(anTopic, BtCodecType.FST);
     }
