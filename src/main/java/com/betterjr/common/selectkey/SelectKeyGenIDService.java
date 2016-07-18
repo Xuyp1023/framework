@@ -221,10 +221,12 @@ import com.betterjr.modules.sys.entity.SnoGeneralInfo;
 	    
 	    String key=this.buildKey(type);
 	    long re=this.redis.incrby(key, 1);
-	    anInfo.addValue();
-	    if(anInfo.getLastNo()!=re){
+	   
+	    if(anInfo.getLastNo()>re){
 	        throw new BytterException("for key="+key+",memory's id!= redis's id;mem="+anInfo.getLastNo()+",redis="+re);
 	    }
+	    
+	    anInfo.updateLastNo(re);
 	    return re;
 	}
 
