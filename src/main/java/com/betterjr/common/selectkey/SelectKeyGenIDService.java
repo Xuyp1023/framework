@@ -208,10 +208,10 @@ import com.betterjr.modules.sys.entity.SnoGeneralInfo;
 	        long no=info.getLastNo();
 	        
 	        String key=this.buildKey(type);
-	        boolean exists=this.redis.exists(key);
-	        if(!exists){
-	            this.redis.set(key, String.valueOf(no));
-	        }
+//	        boolean exists=this.redis.exists(key);
+//	        if(!exists){
+	        this.redis.set(key, String.valueOf(no));
+//	        }
 	    }
 	    
 	}
