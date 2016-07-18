@@ -28,7 +28,7 @@ import com.betterjr.modules.rule.annotation.ParamName;
 import com.betterjr.modules.rule.entity.RuleBusiness;
 
 /**
- * ±í´ïÊ½ÒıÇæ·şÎñÀà¡£
+ * è¡¨è¾¾å¼å¼•æ“æœåŠ¡ç±»ã€‚
  * 
  * @author zhoucy
  */
@@ -43,7 +43,7 @@ public class RuleServiceDubboFilterInvoker {
     private QlExpressUtil qlExpress;
     
     /**
-     * ±í´ïÊ½ÒıÇæµÄ³õÊ¼»¯Èë¿Ú
+     * è¡¨è¾¾å¼å¼•æ“çš„åˆå§‹åŒ–å…¥å£
      */
     @PostConstruct
     public void init() {
@@ -76,7 +76,7 @@ public class RuleServiceDubboFilterInvoker {
    
 
     /**
-     * ½«µ÷ÓÃ½Ó¿ÚµÄ²ÎÊıĞ´Èëcontext,ÒÔ ²ÎÊıÃû-²ÎÊıÖµ µÄĞÎÊ½£¬ Èç¹ûÊÇMapÀàĞÍµÄ²ÎÊı£¬ÔòÖ±½Ó½«mapÀïÃæµÄkey-value¸´ÖÆµ½context
+     * å°†è°ƒç”¨æ¥å£çš„å‚æ•°å†™å…¥context,ä»¥ å‚æ•°å-å‚æ•°å€¼ çš„å½¢å¼ï¼Œ å¦‚æœæ˜¯Mapç±»å‹çš„å‚æ•°ï¼Œåˆ™ç›´æ¥å°†mapé‡Œé¢çš„key-valueå¤åˆ¶åˆ°context
      * @param anInterface
      * @param anMethodName
      * @param anParaTypes
@@ -107,7 +107,7 @@ public class RuleServiceDubboFilterInvoker {
     }
 
     /*
-     * ¸ù¾İÀàÃû+·½·¨Ãû ²éÕÒÏà¹ØÅäÖÃ
+     * æ ¹æ®ç±»å+æ–¹æ³•å æŸ¥æ‰¾ç›¸å…³é…ç½®
      */
     public RuleBusiness checkProcess(String anClass, String anMethod) {
         String name = BusinRuleService.getProcessName(anClass, anMethod);
@@ -120,7 +120,7 @@ public class RuleServiceDubboFilterInvoker {
     }
 
     /*
-     * ½Ó¿Ú²ÎÊıÑéÖ¤
+     * æ¥å£å‚æ•°éªŒè¯
      */
     public Result doAround(Invoker<?> invoker, Invocation invocation) throws Throwable {
 
@@ -144,15 +144,15 @@ public class RuleServiceDubboFilterInvoker {
             	throw new BytterValidException("method parameters valid failed!");
             }
 
-            this.afterReturn(); // Ïàµ±ÓÚºóÖÃÍ¨Öª
+            this.afterReturn(); // ç›¸å½“äºåç½®é€šçŸ¥
         }
         catch (Throwable e) {
             System.out.print(e);
-            this.afterThrowing(); // Ïàµ±ÓÚÒì³£Å×³öºóÍ¨Öª
+            this.afterThrowing(); // ç›¸å½“äºå¼‚å¸¸æŠ›å‡ºåé€šçŸ¥
             throw e;
         }
         finally {
-            this.after(); // Ïàµ±ÓÚ×îÖÕÍ¨Öª
+            this.after(); // ç›¸å½“äºæœ€ç»ˆé€šçŸ¥
             // market.set(null);
         }
 
@@ -160,7 +160,7 @@ public class RuleServiceDubboFilterInvoker {
     }
     
     /*
-     * ½«½Ó¿Ú²ÎÊı×ª»»ÎªÒ»¸ö¶ÔÏó£¬·½±ãserviceÊµÏÖ·½Ê¹ÓÃ
+     * å°†æ¥å£å‚æ•°è½¬æ¢ä¸ºä¸€ä¸ªå¯¹è±¡ï¼Œæ–¹ä¾¿serviceå®ç°æ–¹ä½¿ç”¨
      */
     public void tranParaToObj(Invoker<?> invoker, Invocation invocation,RuleContext context ) throws InstantiationException, IllegalAccessException, ClassNotFoundException{
     	//tran paras to map

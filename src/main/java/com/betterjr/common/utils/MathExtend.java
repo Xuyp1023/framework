@@ -448,4 +448,23 @@ public class MathExtend {
             return anValue;
         }
     }
+    
+    public static boolean smallValue(Number anValue) {
+
+        return smallValue(anValue, 10);
+    }
+
+    public static boolean smallValue(Number anValue, int anCompValue) {
+        if (anValue == null) {
+            
+            return true;
+        }
+        
+        if (anValue.longValue() < anCompValue){
+            
+            return true;
+        }
+        
+        return false;
+    }
 }

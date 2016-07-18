@@ -569,6 +569,70 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
         return paramsMap;
     }
     
+    /**
+     * 判断一个对象是否是字符串
+     * 
+     * @param anObj
+     *            ，如果是空字符串，也不认为是一个有效的字符串
+     * @return true 是字符串，false不是字符串或者是一个空字符串
+     */
+    public static boolean isString(Object anObj) {
+        if (anObj instanceof String) {
+
+            return isNotBlank((String) anObj);
+        }
+
+        return false;
+    }
+
+
+    public static String createRandomCharAndNum(int length) {
+        String val = "";
+        Random random = new Random();
+        String chars = "abcdefhjkmnprstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ";
+        for (int i = 0; i < length; i++) {
+            // 输出字母还是数字
+            String charOrNum = random.nextInt(2) % 2 == 0 ? "char" : "num";
+            // 字符串
+            if ("char".equalsIgnoreCase(charOrNum)) {
+                // 取得字母
+                val += chars.charAt((int) (random.nextInt(chars.length())));
+            }
+            else if ("num".equalsIgnoreCase(charOrNum)) { // 数字
+                val += String.valueOf(random.nextInt(10));
+            }
+        }
+        return val;
+    }
+
+    /**
+     * 系统默认的短字符是3个，即小于或等于三个字符串，则认为是短字符串。
+     * @param anStr
+     * @return
+     */
+    public static boolean defShortString(String anStr){
+        
+        return shortString(anStr, 3);
+    }
+    
+    /**
+     * 判断字符串的长度是否小于或等于指定长度，如果是，则为真
+     * @param anStr
+     * @param anLength
+     * @return
+     */    
+    public static boolean shortString(String anStr, int anLength){
+       if (isBlank(anStr)){
+           return true;
+       }
+       if (anStr.trim().length() <= anLength){
+           return true;
+       }
+       
+       return false;        
+    }
+
+    
     public static void main(String[] args){
      String tmpStr ="data=sdke9SqdtKzfcUiYpwJ/Re9do9ylwBDCFya+=smLJeck0QGDlWy4ywXAK9N3U1VJe8yEdweAii7SdCX+GEi9JD60PCSosggcVU/j1vFqMa1UKmf0TiSJD2lxg5sK2Kze0T1cxZl2FINrzaz6qmtAL1i+P706OLOGQ4/3oywNUZDyE5JIzaYLwROelLC1cUmBAbt/Qw0hdLuQwRVTuPtsEXOSy7t97ZhWo9u/MQze/meyNHREHXCI8EkVjw8v2n5pPz+z4ZxrF85j3CXaRNDnsORUE7kAwKIV98yBI/KyO95Ub7PiqaE4PwNpvphojwNVw+G8YHlMdMHPIHAO2abh+Aw==&sign=dkSLs22CVmfR/tWbiM+JV/BgUMzdsiV2jjeWhYbwswxyUpDf+HenUMBeEQjGvxHDmYaavSEJTXqpUyZDMIv8RVkKX4Ss0nY2hO0Czkp8m/ZKJVOMdwNcWjNYIC7Va/7kg1PN7ERMHadfkfdD+cxszCDKp4dClAa1UaDJs/ZDAvCBM1NKstJEjF9cFdktROgJmqrz8EFM6LloG+uo9FsHfwtY8mtHMtIE+TKANVyL3q6MUtXFNUhSWBZNo18BQLqtSBTOETKnBMEZbRCQauhbALw5h8Dvo7TG8IRXUmeMr8lU8NCrSEkRuY6quPN4yxxr9+d+EoHhEpvMfZNCRGkb5w==";
      Map<String, String> tmpMap = parseParamsMap(tmpStr);
