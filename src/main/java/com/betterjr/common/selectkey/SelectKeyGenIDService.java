@@ -10,6 +10,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.betterjr.common.exception.BytterException;
 import com.betterjr.common.security.shiro.cache.RedisManager;
 import com.betterjr.mapper.entity.Example;
 import com.betterjr.modules.sys.dao.SnoGeneralInfoMapper;
@@ -217,11 +218,13 @@ import com.betterjr.modules.sys.entity.SnoGeneralInfo;
 	
 	private long incrby(SnoGeneralInfo anInfo){
 	    String type=anInfo.getOperType();
-	    long no=anInfo.getLastNo();
 	    
 	    String key=this.buildKey(type);
-	    long re=this.redis.incrby(key, no);
+	    long re=this.redis.incrby(key, 1);
 	    anInfo.addValue();
+	    if(anInfo.getLastNo()!=re){
+	        throw new BytterException("for key="+key+",memory's id!= redis's id;mem="+anInfo.getLastNo()+",redis="+re);
+	    }
 	    return re;
 	}
 
