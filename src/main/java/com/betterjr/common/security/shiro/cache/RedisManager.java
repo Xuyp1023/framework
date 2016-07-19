@@ -1,10 +1,12 @@
 package com.betterjr.common.security.shiro.cache;
 
+import java.util.List;
 import java.util.Set;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.Transaction;
 
 public class RedisManager {
 
@@ -84,6 +86,47 @@ public class RedisManager {
             jedisPool.returnResource(jedis);
         }
         return value;
+    }
+
+    /**
+     * checkAndSet
+     * 确保写入redis的值是升序的，重试10次，如果写入不成功，则返回value+idGap
+     * @param key
+     * @param value
+     * @return
+     */
+    public long checkBigThanAndSet(String key, long value,long idGap) {
+        
+        Jedis jedis = jedisPool.getResource();
+        try {
+            for (int index = 0; index < 10; index++) {
+                jedis.watch(key);
+                String valueStr = jedis.get(key);
+                if(valueStr==null){
+                    valueStr=String.valueOf(value);
+                }
+                Long valueLong = Long.valueOf(valueStr);
+                if (value < valueLong) {
+                    value = value + (valueLong - value) + idGap;
+                }
+
+                Transaction tran = jedis.multi();
+                tran.set(key, String.valueOf(value));
+                List<Object> result = tran.exec();
+                if (result != null && result.size() > 0 && "OK".equals(result.get(0))) {
+                    if (this.expire != 0) {
+                        jedis.expire(key, this.expire);
+                    }
+                    return value;
+                }
+                jedis.unwatch();
+            }
+        }
+        finally {
+            jedis.unwatch();
+            jedisPool.returnResource(jedis);
+        }
+        return value+idGap;
     }
 
     /**

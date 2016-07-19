@@ -30,6 +30,7 @@ import com.betterjr.modules.sys.entity.SnoGeneralInfo;
 	private static ArrayBlockingQueue abq = new ArrayBlockingQueue(10000);
 
 	private static final String DefaultIdRedisKeyPrefix="betterjr.id.";
+	private static final long IdGap = 10;
 	
 	@Autowired
 	private RedisManager redis;
@@ -210,24 +211,34 @@ import com.betterjr.modules.sys.entity.SnoGeneralInfo;
 	        String key=this.buildKey(type);
 //	        boolean exists=this.redis.exists(key);
 //	        if(!exists){
-	        this.redis.set(key, String.valueOf(no));
+	        //
+	        long newid=this.redis.checkBigThanAndSet(key, no,IdGap);
+	        info.updateLastNo(newid);
 //	        }
 	    }
 	    
 	}
 	
+	/**
+	 * 1.利用redis 自增1
+	 * 2.如果内部buffer的id> redis的返回值，为保证id的升序，设置内部id自增到redis
+	 * 3.回写最终写入redis的值到内部buffer
+	 * @param anInfo
+	 * @return
+	 */
 	private long incrby(SnoGeneralInfo anInfo){
 	    String type=anInfo.getOperType();
 	    
 	    String key=this.buildKey(type);
-	    long re=this.redis.incrby(key, 1);
+	    long newid=this.redis.incrby(key, 1);
 	   
-	    if(anInfo.getLastNo()>re){
-	        throw new BytterException("for key="+key+",memory's id!= redis's id;mem="+anInfo.getLastNo()+",redis="+re);
+	    if(anInfo.getLastNo()>=newid){
+	        anInfo.addValue();
+	        newid=this.redis.checkBigThanAndSet(key, anInfo.getLastNo(),IdGap);
 	    }
 	    
-	    anInfo.updateLastNo(re);
-	    return re;
+	    anInfo.updateLastNo(newid);
+	    return newid;
 	}
 
 	public static void main(String[] args) {
