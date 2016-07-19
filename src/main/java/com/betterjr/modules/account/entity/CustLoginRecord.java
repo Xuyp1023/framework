@@ -12,7 +12,6 @@ import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.common.selectkey.SerialGenerator;
 import com.betterjr.common.utils.BetterDateUtils;
 import com.betterjr.common.web.Servlets;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -36,18 +35,25 @@ public class CustLoginRecord implements BetterjrEntity {
     /**
      * 用户类型
      */
-    @Column(name = "C_TYPE",  columnDefinition="CHAR" )
+    @Column(name = "C_USER_TYPE",  columnDefinition="CHAR" )
     @MetaData( value="用户类型", comments = "用户类型")
-    private String type;
+    private String userType;
+
+    /**
+     * 登录日期
+     */
+    @Column(name = "D_LOGIN_DATE",  columnDefinition="VARCHAR" )
+    @MetaData( value="登录日期", comments = "登录日期")
+    private String loginDate;
 
     /**
      * 登录时间
      */
-    @Column(name = "T_TIME",  columnDefinition="VARCHAR" )
+    @Column(name = "T_LOGIN_TIME",  columnDefinition="VARCHAR" )
     @MetaData( value="登录时间", comments = "登录时间")
     private String loginTime;
 
-    @Column(name = "C_CLASS",  columnDefinition="VARCHAR" )
+    @Column(name = "C_LOGIN_CLASS",  columnDefinition="VARCHAR" )
     @MetaData( value="", comments = "")
     private String loginClass;
 
@@ -66,16 +72,12 @@ public class CustLoginRecord implements BetterjrEntity {
     @MetaData( value="", comments = "")
     private String accessType;
 
-    @Column(name = "C_MARK",  columnDefinition="VARCHAR" )
-    @MetaData( value="", comments = "")
-    private String mark;
-
     /**
-     * 登录日期
+     * 描述
      */
-    @Column(name = "D_DATE",  columnDefinition="VARCHAR" )
-    @MetaData( value="登录日期", comments = "登录日期")
-    private String loginDate;
+    @Column(name = "C_DESCRIPTION",  columnDefinition="VARCHAR" )
+    @MetaData( value="描述", comments = "描述")
+    private String description;
 
     /**
      * 登陆结果
@@ -101,7 +103,6 @@ public class CustLoginRecord implements BetterjrEntity {
     /**
      * 创建人(操作员)ID号
      */
-    @JsonIgnore
     @Column(name = "L_REG_OPERID",  columnDefinition="INTEGER" )
     @MetaData( value="创建人(操作员)ID号", comments = "创建人(操作员)ID号")
     private Long regOperId;
@@ -109,7 +110,6 @@ public class CustLoginRecord implements BetterjrEntity {
     /**
      * 创建人(操作员)姓名
      */
-    @JsonIgnore
     @Column(name = "C_REG_OPERNAME",  columnDefinition="VARCHAR" )
     @MetaData( value="创建人(操作员)姓名", comments = "创建人(操作员)姓名")
     private String regOperName;
@@ -131,7 +131,6 @@ public class CustLoginRecord implements BetterjrEntity {
     /**
      * 修改人(操作员)ID号
      */
-    @JsonIgnore
     @Column(name = "L_MODI_OPERID",  columnDefinition="INTEGER" )
     @MetaData( value="修改人(操作员)ID号", comments = "修改人(操作员)ID号")
     private Long modiOperId;
@@ -146,7 +145,6 @@ public class CustLoginRecord implements BetterjrEntity {
     /**
      * 修改日期
      */
-    @JsonIgnore
     @Column(name = "D_MODI_DATE",  columnDefinition="VARCHAR" )
     @MetaData( value="修改日期", comments = "修改日期")
     private String modiDate;
@@ -154,7 +152,6 @@ public class CustLoginRecord implements BetterjrEntity {
     /**
      * 修改时间
      */
-    @JsonIgnore
     @Column(name = "T_MODI_TIME",  columnDefinition="VARCHAR" )
     @MetaData( value="修改时间", comments = "修改时间")
     private String modiTime;
@@ -162,7 +159,6 @@ public class CustLoginRecord implements BetterjrEntity {
     /**
      * 登陆机构
      */
-    @JsonIgnore
     @Column(name = "C_OPERORG",  columnDefinition="VARCHAR" )
     @MetaData( value="登陆机构", comments = "登陆机构")
     private String operOrg;
@@ -182,7 +178,7 @@ public class CustLoginRecord implements BetterjrEntity {
     @MetaData( value="客户号", comments = "客户号")
     private Long custNo;
 
-    private static final long serialVersionUID = 1468216953774L;
+    private static final long serialVersionUID = 1468812783848L;
 
     public Long getId() {
         return id;
@@ -200,12 +196,20 @@ public class CustLoginRecord implements BetterjrEntity {
         this.version = version;
     }
 
-    public String getType() {
-        return type;
+    public String getUserType() {
+        return userType;
     }
 
-    public void setType(String type) {
-        this.type = type == null ? null : type.trim();
+    public void setUserType(String userType) {
+        this.userType = userType == null ? null : userType.trim();
+    }
+
+    public String getLoginDate() {
+        return loginDate;
+    }
+
+    public void setLoginDate(String loginDate) {
+        this.loginDate = loginDate == null ? null : loginDate.trim();
     }
 
     public String getLoginTime() {
@@ -248,20 +252,12 @@ public class CustLoginRecord implements BetterjrEntity {
         this.accessType = accessType == null ? null : accessType.trim();
     }
 
-    public String getMark() {
-        return mark;
+    public String getDescription() {
+        return description;
     }
 
-    public void setMark(String mark) {
-        this.mark = mark == null ? null : mark.trim();
-    }
-
-    public String getLoginDate() {
-        return loginDate;
-    }
-
-    public void setLoginDate(String loginDate) {
-        this.loginDate = loginDate == null ? null : loginDate.trim();
+    public void setDescription(String description) {
+        this.description = description == null ? null : description.trim();
     }
 
     public String getResult() {
@@ -392,14 +388,14 @@ public class CustLoginRecord implements BetterjrEntity {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", version=").append(version);
-        sb.append(", type=").append(type);
+        sb.append(", userType=").append(userType);
+        sb.append(", loginDate=").append(loginDate);
         sb.append(", loginTime=").append(loginTime);
         sb.append(", loginClass=").append(loginClass);
         sb.append(", ipaddr=").append(ipaddr);
         sb.append(", sysName=").append(sysName);
         sb.append(", accessType=").append(accessType);
-        sb.append(", mark=").append(mark);
-        sb.append(", loginDate=").append(loginDate);
+        sb.append(", description=").append(description);
         sb.append(", result=").append(result);
         sb.append(", operId=").append(operId);
         sb.append(", operName=").append(operName);
@@ -434,14 +430,14 @@ public class CustLoginRecord implements BetterjrEntity {
         CustLoginRecord other = (CustLoginRecord) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getVersion() == null ? other.getVersion() == null : this.getVersion().equals(other.getVersion()))
-            && (this.getType() == null ? other.getType() == null : this.getType().equals(other.getType()))
+            && (this.getUserType() == null ? other.getUserType() == null : this.getUserType().equals(other.getUserType()))
+            && (this.getLoginDate() == null ? other.getLoginDate() == null : this.getLoginDate().equals(other.getLoginDate()))
             && (this.getLoginTime() == null ? other.getLoginTime() == null : this.getLoginTime().equals(other.getLoginTime()))
             && (this.getLoginClass() == null ? other.getLoginClass() == null : this.getLoginClass().equals(other.getLoginClass()))
             && (this.getIpaddr() == null ? other.getIpaddr() == null : this.getIpaddr().equals(other.getIpaddr()))
             && (this.getSysName() == null ? other.getSysName() == null : this.getSysName().equals(other.getSysName()))
             && (this.getAccessType() == null ? other.getAccessType() == null : this.getAccessType().equals(other.getAccessType()))
-            && (this.getMark() == null ? other.getMark() == null : this.getMark().equals(other.getMark()))
-            && (this.getLoginDate() == null ? other.getLoginDate() == null : this.getLoginDate().equals(other.getLoginDate()))
+            && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
             && (this.getResult() == null ? other.getResult() == null : this.getResult().equals(other.getResult()))
             && (this.getOperId() == null ? other.getOperId() == null : this.getOperId().equals(other.getOperId()))
             && (this.getOperName() == null ? other.getOperName() == null : this.getOperName().equals(other.getOperName()))
@@ -465,14 +461,14 @@ public class CustLoginRecord implements BetterjrEntity {
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getVersion() == null) ? 0 : getVersion().hashCode());
-        result = prime * result + ((getType() == null) ? 0 : getType().hashCode());
+        result = prime * result + ((getUserType() == null) ? 0 : getUserType().hashCode());
+        result = prime * result + ((getLoginDate() == null) ? 0 : getLoginDate().hashCode());
         result = prime * result + ((getLoginTime() == null) ? 0 : getLoginTime().hashCode());
         result = prime * result + ((getLoginClass() == null) ? 0 : getLoginClass().hashCode());
         result = prime * result + ((getIpaddr() == null) ? 0 : getIpaddr().hashCode());
         result = prime * result + ((getSysName() == null) ? 0 : getSysName().hashCode());
         result = prime * result + ((getAccessType() == null) ? 0 : getAccessType().hashCode());
-        result = prime * result + ((getMark() == null) ? 0 : getMark().hashCode());
-        result = prime * result + ((getLoginDate() == null) ? 0 : getLoginDate().hashCode());
+        result = prime * result + ((getDescription() == null) ? 0 : getDescription().hashCode());
         result = prime * result + ((getResult() == null) ? 0 : getResult().hashCode());
         result = prime * result + ((getOperId() == null) ? 0 : getOperId().hashCode());
         result = prime * result + ((getOperName() == null) ? 0 : getOperName().hashCode());
@@ -512,5 +508,4 @@ public class CustLoginRecord implements BetterjrEntity {
         this.modiTime = BetterDateUtils.getNumTime();
         this.ipaddr = Servlets.getRemoteAddr();
     }
-    
 }
