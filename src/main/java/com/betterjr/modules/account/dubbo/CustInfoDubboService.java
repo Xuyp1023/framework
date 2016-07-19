@@ -1,9 +1,6 @@
 package com.betterjr.modules.account.dubbo;
 
 import java.util.Collection;
-import java.util.List;
-
-import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +10,6 @@ import com.betterjr.common.utils.UserUtils;
 import com.betterjr.common.web.AjaxObject;
 import com.betterjr.modules.account.dubbo.interfaces.ICustInfoService;
 import com.betterjr.modules.account.entity.CustInfo;
-import com.betterjr.modules.account.service.CustInfoService;
 
 /**
  * 机构基本信息
@@ -24,9 +20,6 @@ import com.betterjr.modules.account.service.CustInfoService;
 @Service(interfaceClass = ICustInfoService.class)
 public class CustInfoDubboService implements ICustInfoService {
     private static Logger logger = LoggerFactory.getLogger(CustInfoDubboService.class);
-    
-    @Resource
-    private CustInfoService custInfoService;
 
     @Override
     public String webQueryCustInfo() {
