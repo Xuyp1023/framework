@@ -29,6 +29,7 @@ public class CustInfo implements BetterjrEntity {
     /**
      * 数据版本号
      */
+    @JsonIgnore
     @Column(name = "N_VERSION",  columnDefinition="INTEGER" )
     @MetaData( value="数据版本号", comments = "数据版本号")
     private Long version;
@@ -106,6 +107,7 @@ public class CustInfo implements BetterjrEntity {
     /**
      * 实名验证，0匿名客户，1实名客户
      */
+    @JsonIgnore
     @Column(name = "C_IDENTVALID",  columnDefinition="CHAR" )
     @MetaData( value="实名验证", comments = "实名验证，0匿名客户，1实名客户")
     private Boolean identValid;
@@ -113,6 +115,7 @@ public class CustInfo implements BetterjrEntity {
     /**
      * 审批级别，0不审批，1复核，2 复核+审批
      */
+    @JsonIgnore
     @Column(name = "C_ADUIT_LEVELS",  columnDefinition="CHAR" )
     @MetaData( value="审批级别", comments = "审批级别，0不审批，1复核，2 复核+审批")
     private String aduitLevels;
@@ -120,6 +123,7 @@ public class CustInfo implements BetterjrEntity {
     /**
      * 附件信息
      */
+    @JsonIgnore
     @Column(name = "N_BATCHNO",  columnDefinition="INTEGER" )
     @MetaData( value="附件信息", comments = "附件信息")
     private Long batchNo;
@@ -127,6 +131,7 @@ public class CustInfo implements BetterjrEntity {
     /**
      * 创建人(操作员)ID号
      */
+    @JsonIgnore
     @Column(name = "L_REG_OPERID",  columnDefinition="INTEGER" )
     @MetaData( value="创建人(操作员)ID号", comments = "创建人(操作员)ID号")
     private Long regOperId;
@@ -134,6 +139,7 @@ public class CustInfo implements BetterjrEntity {
     /**
      * 创建人(操作员)姓名
      */
+    @JsonIgnore
     @Column(name = "C_REG_OPERNAME",  columnDefinition="VARCHAR" )
     @MetaData( value="创建人(操作员)姓名", comments = "创建人(操作员)姓名")
     private String regOperName;
@@ -141,6 +147,7 @@ public class CustInfo implements BetterjrEntity {
     /**
      * 创建日期
      */
+    @JsonIgnore
     @Column(name = "D_REG_DATE",  columnDefinition="VARCHAR" )
     @MetaData( value="创建日期", comments = "创建日期")
     private String regDate;
@@ -148,6 +155,7 @@ public class CustInfo implements BetterjrEntity {
     /**
      * 创建时间
      */
+    @JsonIgnore
     @Column(name = "T_REG_TIME",  columnDefinition="VARCHAR" )
     @MetaData( value="创建时间", comments = "创建时间")
     private String regTime;
@@ -195,6 +203,7 @@ public class CustInfo implements BetterjrEntity {
     /**
      * 客户状态；0正常，1冻结，9销户
      */
+    @JsonIgnore
     @Column(name = "C_BUSIN_STATUS",  columnDefinition="CHAR" )
     @MetaData( value="客户状态", comments = "客户状态；0正常，1冻结，9销户")
     private String businStatus;
@@ -202,6 +211,7 @@ public class CustInfo implements BetterjrEntity {
     /**
      * 最后更新状态
      */
+    @JsonIgnore
     @Column(name = "C_LAST_STATUS",  columnDefinition="CHAR" )
     @MetaData( value="最后更新状态", comments = "最后更新状态")
     private String lastStatus;
