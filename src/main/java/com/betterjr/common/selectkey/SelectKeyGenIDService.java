@@ -193,18 +193,18 @@ import com.betterjr.modules.sys.entity.SnoGeneralInfo;
 		return 0;
 	}
 	
-	private String buildKey(String key){
-	    if(StringUtils.isBlank(key)){
-	        return key;
+	private String buildKey(String anKey){
+	    if(StringUtils.isBlank(anKey)){
+	        return anKey;
 	    }
-	    return DefaultIdRedisKeyPrefix+key;
+	    return DefaultIdRedisKeyPrefix+anKey;
 	}
 	
-	private void initRedis(Map<String, SnoGeneralInfo> tmpMap){
-	    if(tmpMap==null){
+	private void initRedis(Map<String, SnoGeneralInfo> anMap){
+	    if(anMap==null){
 	        return ;
 	    }
-	    for(SnoGeneralInfo info:tmpMap.values()){
+	    for(SnoGeneralInfo info:anMap.values()){
 	        String type=info.getOperType();
 	        long no=info.getLastNo();
 	        

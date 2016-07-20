@@ -1,6 +1,7 @@
 package com.betterjr.common.security.shiro.cache;
 
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import redis.clients.jedis.Jedis;
@@ -89,44 +90,50 @@ public class RedisManager {
     }
 
     /**
-     * checkAndSet
-     * 确保写入redis的值是升序的，重试10次，如果写入不成功，则返回value+idGap
-     * @param key
-     * @param value
+     * checkBigThanAndSet
+     * 确保写入redis的值是升序的，重试10次，如果写入不成功，则返回anValue+anIdGap
+     * @param anKey
+     * @param anValue
      * @return
      */
-    public long checkBigThanAndSet(String key, long value,long idGap) {
+    public long checkBigThanAndSet(String anKey, long anValue,long anIdGap) {
         
         Jedis jedis = jedisPool.getResource();
         try {
             for (int index = 0; index < 10; index++) {
-                jedis.watch(key);
-                String valueStr = jedis.get(key);
+                jedis.watch(anKey);
+                String valueStr = jedis.get(anKey);
                 if(valueStr==null){
-                    valueStr=String.valueOf(value);
+                    valueStr=String.valueOf(anValue);
                 }
-                Long valueLong = Long.valueOf(valueStr);
-                if (value < valueLong) {
-                    value = value + (valueLong - value) + idGap;
+                Long redisOriValue = Long.valueOf(valueStr);
+                if (anValue < redisOriValue) {
+                    anValue = anValue + (redisOriValue - anValue) + anIdGap;
                 }
 
                 Transaction tran = jedis.multi();
-                tran.set(key, String.valueOf(value));
+                tran.set(anKey, String.valueOf(anValue));
                 List<Object> result = tran.exec();
                 if (result != null && result.size() > 0 && "OK".equals(result.get(0))) {
                     if (this.expire != 0) {
-                        jedis.expire(key, this.expire);
+                        jedis.expire(anKey, this.expire);
                     }
-                    return value;
+                    return anValue;
                 }
+                
                 jedis.unwatch();
+                
+                try{
+                    int rad=new Random().nextInt(10);
+                    Thread.sleep(100*rad);
+                }catch(Exception ex){}
             }
         }
         finally {
             jedis.unwatch();
             jedisPool.returnResource(jedis);
         }
-        return value+idGap;
+        return anValue+anIdGap;
     }
 
     /**
