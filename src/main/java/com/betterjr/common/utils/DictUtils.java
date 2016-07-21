@@ -162,7 +162,7 @@ public class DictUtils {
         return null;
     }
 
-    public synchronized static void createOutScript(String anFilePath) {
+    public synchronized static String createOutScript() {
         StringBuilder sb = new StringBuilder(4096);
         sb.append("var BTDict = new BetterDictionary(); \r\n");
         sb.append("function BetterDictionary() { \r\n");
@@ -181,23 +181,7 @@ public class DictUtils {
         createAreaOutScript(sb);
 
         sb.append("}\r\n");
-        BufferedWriter outer = null;
-        try {
-            File ff = new File(anFilePath);
-            if (ff.getParentFile().exists() == false) {
-                ff.getParentFile().mkdirs();
-            }
-            outer = new BufferedWriter(new FileWriter(anFilePath));
-            outer.write(sb.toString());
-            outer.flush();
-            outer.close();
-        }
-        catch (IOException ex) {
-
-        }
-        finally {
-            IOUtils.closeQuietly(outer);
-        }
+        return sb.toString();
         // System.out.println(sb.toString());
     }
 
