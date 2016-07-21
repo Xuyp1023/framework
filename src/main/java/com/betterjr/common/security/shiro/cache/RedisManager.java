@@ -36,18 +36,18 @@ public class RedisManager {
      */
 
     public void init() {
-        if (jedisPool == null) {
-            if (password != null && !"".equals(password)) {
-                jedisPool = new JedisPool(jedisPoolConfig, host, port, timeout, password);
-            }
-            else if (timeout != 0) {
-                jedisPool = new JedisPool(jedisPoolConfig, host, port, timeout);
-            }
-            else {
-                jedisPool = new JedisPool(jedisPoolConfig, host, port);
-            }
-
-        }
+//        if (jedisPool == null) {
+//            if (password != null && !"".equals(password)) {
+//                jedisPool = new JedisPool(jedisPoolConfig, host, port, timeout, password);
+//            }
+//            else if (timeout != 0) {
+//                jedisPool = new JedisPool(jedisPoolConfig, host, port, timeout);
+//            }
+//            else {
+//                jedisPool = new JedisPool(jedisPoolConfig, host, port);
+//            }
+//
+//        }
     }
 
     /**
@@ -316,6 +316,14 @@ public class RedisManager {
 
     public void setJedisPoolConfig(JedisPoolConfig jedisPoolConfig) {
         this.jedisPoolConfig = jedisPoolConfig;
+    }
+
+    public JedisPool getJedisPool() {
+        return jedisPool;
+    }
+
+    public void setJedisPool(JedisPool jedisPool) {
+        RedisManager.jedisPool = jedisPool;
     }
 
 }
