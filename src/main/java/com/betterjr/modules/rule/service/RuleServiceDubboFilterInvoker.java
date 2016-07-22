@@ -5,6 +5,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -141,7 +142,13 @@ public class RuleServiceDubboFilterInvoker {
             if (checkResult.isOk()) {
                 result = invoker.invoke(invocation);
             }else{
-            	throw new BytterValidException("method parameters valid failed!");
+                String errormsg="method:("+invoker.getInterface()+"."+invocation.getMethodName()+") parameters valid failed!" ;
+                List<String> errorList=checkResult.getErrorList();
+                if(errorList!=null){
+                    errormsg=errormsg+" ;"+errorList.toString();
+                }
+                logger.error(errormsg);
+            	throw new BytterValidException(errormsg);
             }
 
             this.afterReturn(); // 相当于后置通知
