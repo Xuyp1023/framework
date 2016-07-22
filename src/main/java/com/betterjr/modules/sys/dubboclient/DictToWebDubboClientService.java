@@ -3,7 +3,6 @@ package com.betterjr.modules.sys.dubboclient;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.betterjr.common.data.DubboGroup;
 import com.betterjr.modules.sys.dubbo.interfaces.IDictToWebService;
 
 @Service
