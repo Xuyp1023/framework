@@ -229,7 +229,7 @@ public class DictUtils {
      * @param 字典条目的值
      * @return
      */
-    public static synchronized DictItemInfo getDictItem(String anType, String anValue) {
+    public static DictItemInfo getDictItem(String anType, String anValue) {
         if (StringUtils.isNotBlank(anType) && StringUtils.isNotBlank(anValue)) {
             for (DictItemInfo dictItem : getDictList(anType)) {
                 if (dictItem.getItemValue().equalsIgnoreCase(anValue)) {
@@ -242,7 +242,7 @@ public class DictUtils {
         return null;
     }
 
-    public synchronized static String createOutScript() {
+    public static String createOutScript() {
         StringBuilder sb = new StringBuilder(4096);
         sb.append("var BTDict = new BetterDictionary(); \r\n");
         sb.append("function BetterDictionary() { \r\n");
@@ -265,7 +265,7 @@ public class DictUtils {
         // System.out.println(sb.toString());
     }
 
-    public synchronized static void createAreaOutScript(StringBuilder anSB) {
+    public static void createAreaOutScript(StringBuilder anSB) {
         anSB.append("\t this.Provinces = new ListMap('id', 'name', {id: '', name: '', citys: null});\r\n");
         // anSB.append("\t (function initProvinceCitys(){ \r\n");
         anSB.append("\t   var citys;\r\n");
@@ -293,26 +293,21 @@ public class DictUtils {
      * @throws 异常情况
      *             <br>
      */
-    public static synchronized List<DictItemInfo> getDictList(String anType) {
+    public static List<DictItemInfo> getDictList(String anType) {
         @SuppressWarnings("unchecked")
-        Map<String, List<DictItemInfo>> dictMap = (Map<String, List<DictItemInfo>>) CacheUtils.get(CACHE_DICT_MAP);
-        if (dictMap == null) {
-            dictMap = Maps.newHashMap();
-            for (DictInfo dict : dictService.selectAll()) {
-                List<DictItemInfo> dictList = dictMap.get(dict.getDictCode());
-                if (dictList == null) {
-                    List<DictItemInfo> dictListDb=dictService.findByGroup(dict.getId());
-                    dictMap.put(dict.getDictCode(), dictListDb);
-                    CacheUtils.put(CACHE_DICT_MAP, dict.getDictCode(), dictListDb);
-                }
-            }
+        List<DictItemInfo> dictList = (List<DictItemInfo>) CacheUtils.get(CACHE_DICT_MAP,anType);
+        if (dictList == null) {
+           DictInfo dict = dictService.findByCode(anType);
+
+           dictList=dictService.findByGroup(dict.getId());
+           CacheUtils.put(CACHE_DICT_MAP, dict.getDictCode(), dictList);
         }
-        List<DictItemInfo> dictList = dictMap.get(anType);
         if (dictList == null) {
             dictList = Lists.newArrayList();
         }
         return dictList;
     }
+
 
     public static Map<String, String> getDictMap(String anType) {
         Map<String, String> map = new HashMap();
