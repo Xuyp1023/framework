@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,14 +12,15 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.betterjr.common.data.SimpleDataEntity;
+import com.betterjr.common.mapper.JsonMapper;
 import com.betterjr.common.service.SpringContextHolder;
 import com.betterjr.common.utils.CacheUtils;
 import com.betterjr.modules.sys.entity.DictInfo;
 import com.betterjr.modules.sys.entity.DictItemInfo;
-import com.betterjr.modules.sys.service.DictItemService;
 import com.betterjr.modules.sys.service.DictService;
 
 /**
@@ -30,7 +32,6 @@ import com.betterjr.modules.sys.service.DictService;
 public class DictUtils {
 
     private static DictService dictService = SpringContextHolder.getBean(DictService.class);
-    private static DictItemService dictItemService = SpringContextHolder.getBean(DictItemService.class);
     public static final String CACHE_DICT_MAP = "dictMap";
 
     /**
@@ -43,7 +44,7 @@ public class DictUtils {
      * @param1 如果没有找到使用的默认值<br>
      * @return 查找到的标签<br>
      * @throws 异常情况
-     * <br>
+     *             <br>
      */
     public static String getDictLabel(String anType, String anValue) {
 
@@ -60,12 +61,91 @@ public class DictUtils {
         }
         return anDefaultLabel;
     }
-    
+
+    public static String getDictLabelByCode(String anType, String anValue) {
+        String itemCode;
+        if (StringUtils.isNotBlank(anType) && StringUtils.isNotBlank(anValue)) {
+            for (DictItemInfo dictItem : getDictList(anType)) {
+                itemCode = dictItem.getItemCode();
+                if (BetterStringUtils.isNotBlank(itemCode) && itemCode.equalsIgnoreCase(anValue)) {
+
+                    return dictItem.getItemName();
+                }
+            }
+        }
+        return anValue;
+    }
+
     public static String getDictCode(String anType, String anValue) {
 
         return getDictCode(anType, anValue, null);
     }
-    
+
+    /**
+     * 将对象以json格式保存在数据字典中
+     * 
+     * @param anType
+     *            数据类型，之前需要再t_cfg_dict中定义
+     * @param anKey
+     *            数据的key值
+     * @param anDesc
+     *            数据描述
+     * @param anObj
+     *            保存的对象
+     */
+    public static void saveObject(String anType, String anKey, String anDesc, Object anObj) {
+        if (anObj == null) {
+            return;
+        }
+        String tmpValue;
+        DictItemInfo dictItem=null;
+        try {
+            tmpValue = JsonMapper.getInstance().writeValueAsString(anObj);
+            dictItem = getDictItem(anType, anKey);
+            if (dictItem == null) {
+                dictItem = dictService.saveDictItem(anType, anKey, tmpValue);
+            }
+            else {
+                dictItem.setItemCode(tmpValue);
+                dictService.saveDictItem(dictItem);
+            }
+
+        }
+        catch (JsonProcessingException e) {
+        }
+        finally{
+            //清除缓存
+            CacheUtils.remove(CACHE_DICT_MAP,anType);
+        }
+
+    }
+
+
+    public static void saveObject(String anType, String anKey, Object anObj) {
+
+        saveObject(anType, anKey, null, anObj);
+    }
+
+    /**
+     * 
+     * @param anType
+     *            数据类型，之前需要再t_cfg_dict中定义
+     * @param anKey
+     *            数据的key值
+     * @param anClass
+     *            需要转换的对象
+     * @return
+     */
+    public static <T> T loadObject(String anType, String anKey, Class<T> anClass) {
+        String tmpCode = getDictCode(anType, anKey);
+        if (BetterStringUtils.isBlank(tmpCode)) {
+
+            return null;
+        }
+
+        return JsonMapper.getInstance().fromJson(tmpCode, anClass);
+    }
+
     public static String getDictCode(String anType, String anValue, String anDefaultLabel) {
         if (StringUtils.isNotBlank(anType) && StringUtils.isNotBlank(anValue)) {
             for (DictItemInfo dictItem : getDictList(anType)) {
@@ -96,12 +176,12 @@ public class DictUtils {
      * 查找多个标签<br>
      * 
      * @param 字典名称
-     * <br>
+     *            <br>
      * @param1 多个标签的值，使用逗号分隔<br>
      * @param2 默认值<br>
      * @return 使用逗号分隔的标签值<br>
      * @throws 异常情况
-     * <br>
+     *             <br>
      */
     public static String getDictLabels(String anType, String anValues) {
         return StringUtils.join(getDictListLabels(anType, anValues), ",");
@@ -124,12 +204,12 @@ public class DictUtils {
      * 根据标签获取字典值<br>
      * 
      * @param 字典名称
-     * <br>
+     *            <br>
      * @param1 标签<br>
      * @param1 默认值<br>
      * @return 字典值<br>
      * @throws 异常情况
-     * <br>
+     *             <br>
      */
     public static String getDictValue(String anType, String anLabel, String defaultValue) {
         if (StringUtils.isNotBlank(anType) && StringUtils.isNotBlank(anLabel)) {
@@ -171,7 +251,7 @@ public class DictUtils {
             paramName = dict.getDictCode();
             sb.append("\t  //").append(dict.getDictName()).append(";\r\n");
             sb.append("\t  this.").append(paramName).append(" = new ListMap();\r\n");
-            for (DictItemInfo itemInfo : dictItemService.findOutScriptByGroup(dict.getId())) {
+            for (DictItemInfo itemInfo : dictService.findOutScriptByGroup(dict.getId())) {
                 sb.append("\t  this.").append(paramName).append(".set('");
                 sb.append(itemInfo.getItemValue()).append("','").append(itemInfo.getItemName()).append("');\r\n");
             }
@@ -187,7 +267,7 @@ public class DictUtils {
 
     public synchronized static void createAreaOutScript(StringBuilder anSB) {
         anSB.append("\t this.Provinces = new ListMap('id', 'name', {id: '', name: '', citys: null});\r\n");
-        // anSB.append("\t (function initProvinceCitys(){  \r\n");
+        // anSB.append("\t (function initProvinceCitys(){ \r\n");
         anSB.append("\t   var citys;\r\n");
 
         for (SimpleDataEntity sde : AreaUtils.findProvList()) {
@@ -208,12 +288,12 @@ public class DictUtils {
      * 获取字典信息<br>
      * 
      * @param 字典名称
-     * <br>
+     *            <br>
      * @return 字典内容列表<br>
      * @throws 异常情况
-     * <br>
+     *             <br>
      */
-    public static synchronized List<DictItemInfo> getDictList(String anType){
+    public static synchronized List<DictItemInfo> getDictList(String anType) {
         @SuppressWarnings("unchecked")
         Map<String, List<DictItemInfo>> dictMap = (Map<String, List<DictItemInfo>>) CacheUtils.get(CACHE_DICT_MAP);
         if (dictMap == null) {
@@ -221,10 +301,11 @@ public class DictUtils {
             for (DictInfo dict : dictService.selectAll()) {
                 List<DictItemInfo> dictList = dictMap.get(dict.getDictCode());
                 if (dictList == null) {
-                    dictMap.put(dict.getDictCode(), dictItemService.findByGroup(dict.getId()));
+                    List<DictItemInfo> dictListDb=dictService.findByGroup(dict.getId());
+                    dictMap.put(dict.getDictCode(), dictListDb);
+                    CacheUtils.put(CACHE_DICT_MAP, dict.getDictCode(), dictListDb);
                 }
             }
-            CacheUtils.put(CACHE_DICT_MAP, dictMap);
         }
         List<DictItemInfo> dictList = dictMap.get(anType);
         if (dictList == null) {
@@ -232,13 +313,13 @@ public class DictUtils {
         }
         return dictList;
     }
-    
-    public static Map<String, String> getDictMap(String anType){
+
+    public static Map<String, String> getDictMap(String anType) {
         Map<String, String> map = new HashMap();
-        for(DictItemInfo tmpD : getDictList(anType)){
+        for (DictItemInfo tmpD : getDictList(anType)) {
             map.put(tmpD.getItemValue(), tmpD.getItemName());
         }
         return map;
-        
+
     }
 }
