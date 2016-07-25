@@ -2,6 +2,8 @@ package com.betterjr.modules.sys.entity;
 
 import com.betterjr.common.annotation.*;
 import com.betterjr.common.entity.BetterjrEntity;
+import com.betterjr.common.selectkey.SerialGenerator;
+
 import javax.persistence.*;
 
 @Access(AccessType.FIELD)
@@ -12,79 +14,79 @@ public class DictItemInfo implements BetterjrEntity {
      * 编号
      */
     @Id
-    @Column(name = "ID",  columnDefinition="INTEGER" )
-    @MetaData( value="编号", comments = "编号")
+    @Column(name = "ID", columnDefinition = "INTEGER")
+    @MetaData(value = "编号", comments = "编号")
     private Integer id;
 
     /**
      * 数据字典
      */
-    @Column(name = "L_ITEMNO",  columnDefinition="INTEGER" )
-    @MetaData( value="数据字典", comments = "数据字典")
+    @Column(name = "L_ITEMNO", columnDefinition = "INTEGER")
+    @MetaData(value = "数据字典", comments = "数据字典")
     private Integer itemNo;
 
     /**
      * 字典值
      */
-    @Column(name = "C_VALUE",  columnDefinition="VARCHAR" )
-    @MetaData( value="字典值", comments = "字典值")
+    @Column(name = "C_VALUE", columnDefinition = "VARCHAR")
+    @MetaData(value = "字典值", comments = "字典值")
     private String itemValue;
 
     /**
      * 字典编码
      */
-    @Column(name = "C_CODE",  columnDefinition="VARCHAR" )
-    @MetaData( value="字典编码", comments = "字典编码")
+    @Column(name = "C_CODE", columnDefinition = "VARCHAR")
+    @MetaData(value = "字典编码", comments = "字典编码")
     private String itemCode;
 
     /**
      * 字典内容
      */
-    @Column(name = "C_NAME",  columnDefinition="VARCHAR" )
-    @MetaData( value="字典内容", comments = "字典内容")
+    @Column(name = "C_NAME", columnDefinition = "VARCHAR")
+    @MetaData(value = "字典内容", comments = "字典内容")
     private String itemName;
 
     /**
      * 主题
      */
-    @Column(name = "C_SUBJECT",  columnDefinition="VARCHAR" )
-    @MetaData( value="主题", comments = "主题")
+    @Column(name = "C_SUBJECT", columnDefinition = "VARCHAR")
+    @MetaData(value = "主题", comments = "主题")
     private String subject;
 
     /**
      * 排序序号
      */
-    @Column(name = "L_SORT",  columnDefinition="INTEGER" )
-    @MetaData( value="排序序号", comments = "排序序号")
+    @Column(name = "L_SORT", columnDefinition = "INTEGER")
+    @MetaData(value = "排序序号", comments = "排序序号")
     @OrderBy
     private Integer itemOrder;
 
     /**
      * 状态，0 停用 1启用，停用只能显示，即增加、修改字段不显示该条目
      */
-    @Column(name = "C_STATUS",  columnDefinition="VARCHAR" )
-    @MetaData( value="状态", comments = "状态，0 停用 1启用，停用只能显示，即增加、修改字段不显示该条目")
+    @Column(name = "C_STATUS", columnDefinition = "VARCHAR")
+    @MetaData(value = "状态", comments = "状态，0 停用 1启用，停用只能显示，即增加、修改字段不显示该条目")
     private Boolean status;
 
     /**
      * 默认值
      */
-    @Column(name = "C_DEFAULT",  columnDefinition="VARCHAR" )
-    @MetaData( value="默认值", comments = "默认值")
+    @Column(name = "C_DEFAULT", columnDefinition = "VARCHAR")
+    @MetaData(value = "默认值", comments = "默认值")
     private Boolean defItem;
 
     /**
      * 描述
      */
-    @Column(name = "C_DESCRIPTION",  columnDefinition="VARCHAR" )
-    @MetaData( value="描述", comments = "描述")
+    @Column(name = "C_DESCRIPTION", columnDefinition = "VARCHAR")
+    @MetaData(value = "描述", comments = "描述")
     private String description;
 
     /**
      * 是否输出到前端
      */
-    @Column(name = "C_OUT",  columnDefinition="VARCHAR" )
-    @MetaData( value="是否输出到前端", comments = "是否输出到前端")
+    @Column(name = "C_OUT", columnDefinition = "VARCHAR")
+    @MetaData(value = "是否输出到前端", comments = "是否输出到前端")
     private Boolean exportOut;
 
     private static final long serialVersionUID = 1439623644389L;
@@ -211,16 +213,16 @@ public class DictItemInfo implements BetterjrEntity {
         }
         DictItemInfo other = (DictItemInfo) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getItemNo() == null ? other.getItemNo() == null : this.getItemNo().equals(other.getItemNo()))
-            && (this.getItemValue() == null ? other.getItemValue() == null : this.getItemValue().equals(other.getItemValue()))
-            && (this.getItemCode() == null ? other.getItemCode() == null : this.getItemCode().equals(other.getItemCode()))
-            && (this.getItemName() == null ? other.getItemName() == null : this.getItemName().equals(other.getItemName()))
-            && (this.getSubject() == null ? other.getSubject() == null : this.getSubject().equals(other.getSubject()))
-            && (this.getItemOrder() == null ? other.getItemOrder() == null : this.getItemOrder().equals(other.getItemOrder()))
-            && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
-            && (this.getDefItem() == null ? other.getDefItem() == null : this.getDefItem().equals(other.getDefItem()))
-            && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
-            && (this.getExportOut() == null ? other.getExportOut() == null : this.getExportOut().equals(other.getExportOut()));
+                && (this.getItemNo() == null ? other.getItemNo() == null : this.getItemNo().equals(other.getItemNo()))
+                && (this.getItemValue() == null ? other.getItemValue() == null : this.getItemValue().equals(other.getItemValue()))
+                && (this.getItemCode() == null ? other.getItemCode() == null : this.getItemCode().equals(other.getItemCode()))
+                && (this.getItemName() == null ? other.getItemName() == null : this.getItemName().equals(other.getItemName()))
+                && (this.getSubject() == null ? other.getSubject() == null : this.getSubject().equals(other.getSubject()))
+                && (this.getItemOrder() == null ? other.getItemOrder() == null : this.getItemOrder().equals(other.getItemOrder()))
+                && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
+                && (this.getDefItem() == null ? other.getDefItem() == null : this.getDefItem().equals(other.getDefItem()))
+                && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
+                && (this.getExportOut() == null ? other.getExportOut() == null : this.getExportOut().equals(other.getExportOut()));
     }
 
     @Override
@@ -239,5 +241,25 @@ public class DictItemInfo implements BetterjrEntity {
         result = prime * result + ((getDescription() == null) ? 0 : getDescription().hashCode());
         result = prime * result + ((getExportOut() == null) ? 0 : getExportOut().hashCode());
         return result;
+    }
+
+    public DictItemInfo(String anKey, String anCode, Integer anItemNo) {
+        this(anKey, anCode, anItemNo, null);
+    }
+
+    public DictItemInfo(String anKey, String anCode, Integer anItemNo, String anName) {
+        this.itemName = anName;
+        this.itemCode = anCode;
+        this.itemValue = anKey;
+        this.id = SerialGenerator.getIntValue("DictItemInfo.id");
+        this.defItem = Boolean.FALSE;
+        this.exportOut = Boolean.FALSE;
+        this.itemOrder = 0;
+        this.status = Boolean.TRUE;
+        this.itemNo = anItemNo;
+    }
+
+    public DictItemInfo() {
+
     }
 }

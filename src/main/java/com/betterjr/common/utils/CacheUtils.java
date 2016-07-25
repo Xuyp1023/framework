@@ -67,6 +67,21 @@ public class CacheUtils {
        }
        return map.get(key);
    }
+   
+   /**
+    * 获取缓存
+    * 
+    * @param cacheName
+    * @param key
+    * @return
+    */
+   public static Object getString(String cacheName, String key) {
+       Map<String, String> map= JedisUtils.getMap(cacheName);
+       if(map==null){
+           return null;
+       }
+       return map.get(key);
+   }
 
    /**
     * 写入缓存
@@ -79,6 +94,19 @@ public class CacheUtils {
        Map<String,Object> map=Maps.newHashMap();
        map.put(key, value);
        JedisUtils.mapObjectPut(cacheName, map);
+   }
+   
+   /**
+    * 写入缓存
+    * 
+    * @param cacheName
+    * @param key
+    * @param value
+    */
+   public static void putString(String cacheName, String key, String value) {
+       Map<String,String> map=Maps.newHashMap();
+       map.put(key, value);
+       JedisUtils.mapPut(cacheName, map);
    }
 
    /**
