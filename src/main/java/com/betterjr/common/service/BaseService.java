@@ -188,15 +188,19 @@ public abstract class BaseService<D extends Mapper<T>, T> {
     }
 
     public List selectByClassProperty(Class anClass, String anProperty, Object anKey, String anOrderBy) {
-        Example ex = findExample(anClass, anProperty, anKey);
-        if (ex == null) {
-            return Page.listToPage(new ArrayList());
+        try{
+            Example ex = findExample(anClass, anProperty, anKey);
+            if (ex == null) {
+                return Page.listToPage(new ArrayList());
+            }
+    
+            if (BetterStringUtils.isNotBlank(anOrderBy)) {
+                ex.setOrderByClause(anOrderBy);
+            }
+            return mapper.selectByExample(ex);
+        }finally{
+            Example.clearRefferClass();
         }
-
-        if (BetterStringUtils.isNotBlank(anOrderBy)) {
-            ex.setOrderByClause(anOrderBy);
-        }
-        return mapper.selectByExample(ex);
     }
 
     private Criteria findCriteria(Criteria criteria, String propName, Object workValue) {
@@ -289,14 +293,15 @@ public abstract class BaseService<D extends Mapper<T>, T> {
     }
 
     public List selectByClassProperty(Class anClass, Map<String, Object> anPropValue, String anOrderBy) {
-        Example ex = findExample(anClass, anPropValue);
-        if (ex == null) {
-            return Page.listToPage(new ArrayList());
-        }
-        if (BetterStringUtils.isNotBlank(anOrderBy)) {
-            ex.setOrderByClause(anOrderBy);
-        }
         try {
+            Example ex = findExample(anClass, anPropValue);
+            if (ex == null) {
+                return Page.listToPage(new ArrayList());
+            }
+            if (BetterStringUtils.isNotBlank(anOrderBy)) {
+                ex.setOrderByClause(anOrderBy);
+            }
+    
             return mapper.selectByExample(ex);
         }
         finally {
@@ -345,12 +350,16 @@ public abstract class BaseService<D extends Mapper<T>, T> {
     }
 
     public int selectCountByProperty(String anProperty, Object anKey) {
-        Example ex = findExample(anProperty, anKey);
-        if (ex == null) {
-            return 0;
+        try{
+            Example ex = findExample(anProperty, anKey);
+            if (ex == null) {
+                return 0;
+            }
+    
+            return this.selectCountByExample(ex);
+        }finally{
+            Example.clearRefferClass();
         }
-
-        return this.selectCountByExample(ex);
     }
 
     /**
@@ -367,12 +376,16 @@ public abstract class BaseService<D extends Mapper<T>, T> {
     }
 
     public int selectCountByClassProperty(Class anClass, Map<String, Object> anPropValue) {
-        Example ex = findExample(anClass, anPropValue);
-        if (ex == null) {
-            return 0;
+        try{
+            Example ex = findExample(anClass, anPropValue);
+            if (ex == null) {
+                return 0;
+            }
+    
+            return mapper.selectCountByExample(ex);
+        }finally{
+            Example.clearRefferClass();
         }
-
-        return mapper.selectCountByExample(ex);
     }
 
     public BigDecimal selectSumByClassProperty(Class anClass, String anField, Object anValue, String anSumField) {
@@ -395,12 +408,16 @@ public abstract class BaseService<D extends Mapper<T>, T> {
     }
 
     public BigDecimal selectSumByClassProperty(Class anClass, Map<String, Object> anPropValue, String anSumField) {
-        Example ex = findExample(anClass, anPropValue);
-        if (ex == null) {
-            return BigDecimal.ZERO;
+        try{
+            Example ex = findExample(anClass, anPropValue);
+            if (ex == null) {
+                return BigDecimal.ZERO;
+            }
+            ex.addSumField(anSumField);
+            return mapper.selectSumByExample(ex);
+        }finally{
+            Example.clearRefferClass();
         }
-        ex.addSumField(anSumField);
-        return mapper.selectSumByExample(ex);
     }
 
     /**
@@ -506,8 +523,11 @@ public abstract class BaseService<D extends Mapper<T>, T> {
      * 
      */
     public List<T> selectByExample(Object anExample) {
-
-        return mapper.selectByExample(anExample);
+        try{
+            return mapper.selectByExample(anExample);
+        }finally{
+            Example.clearRefferClass();
+        }
     }
 
     /**
@@ -518,8 +538,11 @@ public abstract class BaseService<D extends Mapper<T>, T> {
      * 
      */
     public int selectCountByExample(Object anExample) {
-
-        return mapper.selectCountByExample(anExample);
+        try{
+            return mapper.selectCountByExample(anExample);
+        }finally{
+            Example.clearRefferClass();
+        }
     }
 
     /**
@@ -530,8 +553,11 @@ public abstract class BaseService<D extends Mapper<T>, T> {
      * 
      */
     public int deleteByExample(Example anExample) {
-
-        return mapper.deleteByExample(anExample);
+        try{
+            return mapper.deleteByExample(anExample);
+        }finally{
+            Example.clearRefferClass();
+        }
     }
 
     public int deleteByProperty(String anProper, Object anObj) {
@@ -542,9 +568,13 @@ public abstract class BaseService<D extends Mapper<T>, T> {
     }
 
     public int deleteByExample(Map anProperties) {
-        Example ex = findExample(anProperties);
-
-        return mapper.deleteByExample(ex);
+        try{
+            Example ex = findExample(anProperties);
+    
+            return mapper.deleteByExample(ex);
+        }finally{
+            Example.clearRefferClass();
+        }
     }
 
     /**
@@ -555,17 +585,24 @@ public abstract class BaseService<D extends Mapper<T>, T> {
      * 
      */
     public int updateByExample(T anRecord, Map anProperties) {
-        Example ex = findExample(anProperties);
-        if (ex == null) {
-            return 0;
+        try{
+            Example ex = findExample(anProperties);
+            if (ex == null) {
+                return 0;
+            }
+    
+            return mapper.updateByExample(anRecord, ex);
+        }finally{
+            Example.clearRefferClass();
         }
-
-        return mapper.updateByExample(anRecord, ex);
     }
 
     public int updateByExample(T anRecord, Example anExample) {
-
-        return mapper.updateByExample(anRecord, anExample);
+        try{
+            return mapper.updateByExample(anRecord, anExample);
+        }finally{
+            Example.clearRefferClass();
+        }
     }
 
     /**
@@ -576,26 +613,37 @@ public abstract class BaseService<D extends Mapper<T>, T> {
      * 
      */
     public int updateByExampleSelective(T anRecord, Example anExample) {
-
-        return mapper.updateByExampleSelective(anRecord, anExample);
+        try{
+            return mapper.updateByExampleSelective(anRecord, anExample);
+        }finally{
+            Example.clearRefferClass();
+        }
     }
 
     public int updateByExampleSelective(T anRecord, String anKey, Object anValues) {
-        Example ex = findExample(anKey, anValues);
-        if (ex == null) {
-            return 0;
+        try{
+            Example ex = findExample(anKey, anValues);
+            if (ex == null) {
+                return 0;
+            }
+    
+            return mapper.updateByExampleSelective(anRecord, ex);
+        }finally{
+            Example.clearRefferClass();
         }
-
-        return mapper.updateByExampleSelective(anRecord, ex);
     }
 
     public int updateByExampleSelective(T anRecord, Map anProperties) {
-        Example ex = findExample(anProperties);
-        if (ex == null) {
-            return 0;
+        try{
+            Example ex = findExample(anProperties);
+            if (ex == null) {
+                return 0;
+            }
+    
+            return mapper.updateByExampleSelective(anRecord, ex);
+        }finally{
+            Example.clearRefferClass();
         }
-
-        return mapper.updateByExampleSelective(anRecord, ex);
     }
 
     /**
@@ -609,8 +657,11 @@ public abstract class BaseService<D extends Mapper<T>, T> {
      * 
      */
     public List<T> selectByExampleAndRowBounds(Object anExample, RowBounds anRowBounds) {
-
-        return mapper.selectByExampleAndRowBounds(anExample, anRowBounds);
+        try{
+            return mapper.selectByExampleAndRowBounds(anExample, anRowBounds);
+        }finally{
+            Example.clearRefferClass();
+        }
     }
 
     /**
@@ -639,9 +690,13 @@ public abstract class BaseService<D extends Mapper<T>, T> {
      * 
      */
     public Page<T> selectByExampleAndPage(Example anExample, int anPageNum, int anPageSize, boolean anFirst) {
-        PageHelper.startPage(anPageNum, anPageSize, anFirst);
-
-        return (Page) mapper.selectByExample(anExample);
+        try{
+            PageHelper.startPage(anPageNum, anPageSize, anFirst);
+    
+            return (Page) mapper.selectByExample(anExample);
+        }finally{
+            Example.clearRefferClass();
+        }
     }
 
     /**
