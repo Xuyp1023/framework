@@ -37,7 +37,7 @@ public enum PlatformBaseRuleType {
         List<PlatformBaseRuleType> result = new ArrayList();
         if (BetterStringUtils.isNotBlank(anRules)){
             PlatformBaseRuleType tmpRule; 
-            for(String tmpStr : anRules.split(anRules)){
+            for(String tmpStr : BetterStringUtils.split(anRules, ",|;")){
                 tmpRule = checking(tmpStr);
                 if (tmpRule != NONE_USER){
                    result.add(tmpRule); 
