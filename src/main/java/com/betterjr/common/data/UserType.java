@@ -1,4 +1,4 @@
-package com.betterjr.common.entity;
+package com.betterjr.common.data;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -28,7 +28,7 @@ public enum UserType {
             return new String[] { ORG_USER.name(), OPERATOR_USER.name() };
         }
         else if (anType == OPERATOR_ADMIN) {
-            return new String[] { ORG_USER.name(), OPERATOR_USER.name(), OPERATOR_ADMIN.name() };
+            return new String[] { ORG_USER.name(), OPERATOR_ADMIN.name() };
         }
         return null;
     }

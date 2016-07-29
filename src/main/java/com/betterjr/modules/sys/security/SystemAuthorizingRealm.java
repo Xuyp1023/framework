@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.betterjr.common.entity.UserType;
+import com.betterjr.common.data.UserType;
 import com.betterjr.common.security.KeyReader;
 import com.betterjr.common.security.SecurityConstants;
 import com.betterjr.common.utils.BetterStringUtils;
@@ -164,7 +164,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
                     ut = UserType.OPERATOR_ADMIN;
                 }
 
-                ShiroUser shiroUser = new ShiroUser(ut, user.getId(), user.getName(), user, mobileLogin, workData);
+                ShiroUser shiroUser = new ShiroUser(ut, user.getId(), user.getName(), user,user.getRuleList(), mobileLogin, workData);
                 byte[] salt = Encodes.decodeHex(saltStr);
 
                 // 这里可以缓存认证

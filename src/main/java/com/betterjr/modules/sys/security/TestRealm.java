@@ -11,7 +11,7 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 
-import com.betterjr.common.entity.UserType;
+import com.betterjr.common.data.UserType;
 import com.betterjr.common.utils.StaticThreadLocal;
 
 public class TestRealm extends AuthorizingRealm{
@@ -32,7 +32,7 @@ public class TestRealm extends AuthorizingRealm{
 		  char[] passwd=upToken.getPassword();
 		  
 		  UserType ut = UserType.OPERATOR_USER;
-		  ShiroUser user=new ShiroUser(ut,0l,username,null,false,token);
+		  ShiroUser user=new ShiroUser(ut,0l,username,null,null,false,token);
 		  
 		  SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user, passwd,"TestRealm");
 		  System.out.println("testrealm="+info.toString());
