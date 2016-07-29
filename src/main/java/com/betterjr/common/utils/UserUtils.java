@@ -22,6 +22,8 @@ import com.betterjr.modules.account.entity.CustInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.sys.entity.WorkUserInfo;
 import com.betterjr.modules.sys.security.ShiroUser;
+import com.betterjr.common.data.PlatformBaseRuleType;
+import com.betterjr.common.data.UserType;
 import com.betterjr.common.entity.*;
 import com.betterjr.common.security.shiro.session.RedisSessionDAO;
 import com.betterjr.common.service.SpringContextHolder;
@@ -115,13 +117,6 @@ public class UserUtils {
 			return principal.getName();
 		}
 		return null;
-	}
-
-	public static boolean isCoreUser(String label) {
-
-		String tmpStr = DictUtils.getDictLabel(label, findOperOrg(), null);
-
-		return BetterStringUtils.isNotBlank(tmpStr);
 	}
 
 	public static boolean isBytterUser() {
@@ -244,6 +239,62 @@ public class UserUtils {
 		return null;
 	}
 
+    /**
+     * 是否是核心企业客户
+     * @return
+     */
+    public static boolean coreUser() {
+
+        return ShiroUser.coreUser(getPrincipal());
+    }
+
+    /**
+     * 是否是经销商客户
+     * @return
+     */
+    public static boolean sellerUser() {
+
+        return ShiroUser.sellerUser(getPrincipal());
+    }
+
+    /**
+     * 是否是供应商客户
+     * @return
+     */
+    public static boolean supplierUser() {
+
+        return ShiroUser.supplierUser(getPrincipal());
+    }
+
+    /**
+     * 操作员内部角色，列表，定义基础的角色！参见枚举类PlatformBaseRuleType，定义在表T_CUST_CERTINFO.C_RULE_LIST中
+     * @return
+     */
+    public static List<PlatformBaseRuleType> findInnerRules(){
+        ShiroUser user = getPrincipal();
+        if (user != null){
+            return user.getInnerRules();
+        }
+        return new ArrayList(0);
+    }
+    
+    /**
+     * 是否是资金提供方
+     * @return
+     */
+    public static boolean factorUser() {
+
+        return ShiroUser.factorUser(getPrincipal());
+    }
+
+    /**
+     * 是否是平台自己的操作员
+     * @return
+     */
+    public static boolean platformUser() {
+
+        return ShiroUser.platformUser(getPrincipal());
+    }
 	// ============== User Cache ==============
 
 	public static Object getCache(String key) {

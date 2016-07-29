@@ -1,8 +1,10 @@
 package com.betterjr.modules.sys.security;
 
 import java.io.Serializable;
+import java.util.List;
 
-import com.betterjr.common.entity.UserType;
+import com.betterjr.common.data.PlatformBaseRuleType;
+import com.betterjr.common.data.UserType;
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.Collections3;
 import com.betterjr.modules.sys.entity.WorkUserInfo;
@@ -22,7 +24,49 @@ public class ShiroUser implements Serializable {
     private final long loginTime;
     private Object data;
     private boolean mobileLogin;
+    private List<PlatformBaseRuleType> innerRules = null;
 
+    public void setInnerRules(List<PlatformBaseRuleType> anInnerRuleList) {
+        
+        this.innerRules = anInnerRuleList;
+    }
+
+    public List<PlatformBaseRuleType> getInnerRules() {
+        
+        return this.innerRules;
+    }
+
+    private static boolean userRuleCheck(ShiroUser anUser, PlatformBaseRuleType anBaseRule){
+        if (anUser != null){
+            return anUser.innerRules.contains( anBaseRule );
+         }
+         return false;
+    }
+    
+    public static boolean coreUser(ShiroUser anUser){
+        
+        return userRuleCheck(anUser, PlatformBaseRuleType.CORE_USER);
+    }
+    
+    public static boolean sellerUser(ShiroUser anUser){
+        
+        return userRuleCheck(anUser, PlatformBaseRuleType.SELLER_USER);
+    }
+    
+    public static boolean supplierUser(ShiroUser anUser){
+        
+        return userRuleCheck(anUser, PlatformBaseRuleType.SUPPLIER_USER);
+    }
+    
+    public static boolean platformUser(ShiroUser anUser){
+        
+        return userRuleCheck(anUser, PlatformBaseRuleType.PLATFORM_USER);
+    }
+    
+    public static boolean factorUser(ShiroUser anUser){
+         
+        return userRuleCheck(anUser, PlatformBaseRuleType.FACTOR_USER);
+    }
     public Object getData() {
         return data;
     }
@@ -54,7 +98,7 @@ public class ShiroUser implements Serializable {
      * @param createTime
      * @param status
      */
-    public ShiroUser(UserType anUserType, Long id, String loginName, WorkUserInfo anUser, boolean anMobileLogin, Object anData) {
+    public ShiroUser(UserType anUserType, Long id, String loginName, WorkUserInfo anUser, String anInnerRuleList, boolean anMobileLogin, Object anData) {
         this.mobileLogin = anMobileLogin;
         this.userType = anUserType;
         this.id = id;
@@ -62,6 +106,7 @@ public class ShiroUser implements Serializable {
         this.user = anUser;
         this.loginTime = System.currentTimeMillis();
         this.data = anData;
+        this.innerRules = PlatformBaseRuleType.checkList(anInnerRuleList);
     }
 
     public boolean isMobileLogin() {
@@ -108,6 +153,19 @@ public class ShiroUser implements Serializable {
      */
     @Override
     public String toString() {
-        return loginName;
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append(" [");
+        sb.append("innerRuleList = ").append(innerRules);
+        sb.append(", id=").append(id);
+        sb.append(", loginName=").append(loginName);
+        sb.append(", ipAddress=").append(ipAddress);
+        sb.append(", user=").append(user);
+        sb.append(", userType=").append(userType);
+        sb.append(", loginTime=").append(loginTime);
+        sb.append(", data=").append(data);
+        sb.append(", mobileLogin=").append(mobileLogin); 
+        sb.append("]");
+        return sb.toString();
     }
 }
