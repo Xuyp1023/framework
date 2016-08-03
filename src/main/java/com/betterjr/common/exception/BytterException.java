@@ -1,5 +1,6 @@
 package com.betterjr.common.exception;
 
+import com.alibaba.dubbo.rpc.RpcException;
 
 /**
  * 
@@ -50,5 +51,12 @@ public class BytterException extends BaseException {
     public BytterException(int anCode, String message, Throwable cause) {
         super(message, cause);
         this.code = anCode;
+    }
+    
+    public static boolean isCauseBytterException(RpcException btEx){
+        if(btEx.getCause()!=null && btEx.getCause() instanceof BytterException){
+            return true;
+        }
+        return false;
     }
 }
