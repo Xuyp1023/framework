@@ -128,6 +128,13 @@ public class CustCertInfo implements BetterjrEntity {
     @Column(name = "C_OPERORG", columnDefinition = "VARCHAR")
     @MetaData(value = "操作员所在机构", comments = "操作员所在机构，如果证书登录，则")
     private String operOrg;
+    
+    /**
+     * 操作员证书角色
+     */
+    @Column(name = "C_RULE_LIST", columnDefinition = "VARCHAR")
+    @MetaData(value = "操作员证书角色", comments = "操作员证书角色")
+    private String innerRules;
 
     private static final long serialVersionUID = 1439797394180L;
 
@@ -278,6 +285,14 @@ public class CustCertInfo implements BetterjrEntity {
 
     public void setOperOrg(String anOperOrg) {
         this.operOrg = anOperOrg;
+    }
+
+    public String getInnerRules() {
+        return innerRules;
+    }
+
+    public void setInnerRules(String innerRules) {
+        this.innerRules = innerRules;
     }
 
     public boolean validCertInfo(CustCertInfo other) {
