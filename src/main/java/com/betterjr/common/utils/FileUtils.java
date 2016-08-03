@@ -24,11 +24,11 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.betterjr.common.config.ParamNames;
+//import com.betterjr.common.config.ParamNames;
 import com.betterjr.common.data.KeyAndValueObject;
 import com.betterjr.common.exception.BettjerIOException;
-import com.betterjr.common.selectkey.SerialGenerator;
-import com.betterjr.modules.sys.service.SysConfigService;
+//import com.betterjr.common.selectkey.SerialGenerator;
+//import com.betterjr.modules.sys.service.SysConfigService;
 
 /**
  * 文件操作工具类 实现文件的创建、删除、复制、压缩、解压以及目录的创建、删除、复制、压缩解压等功能
@@ -791,8 +791,8 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         }
     }
 
-    public static String fileUploadRelativePath(File anFile) {
-        String abPath = SysConfigService.getString(ParamNames.OPENACCO_FILE_DOWNLOAD_PATH);
+    public static String fileUploadRelativePath(File anFile,String abPath) {
+//        String abPath = SysConfigService.getString(ParamNames.OPENACCO_FILE_DOWNLOAD_PATH);
         String tmpPath = anFile.getAbsolutePath();
         if (tmpPath.length() > abPath.length()) {
             return tmpPath.substring(abPath.length());
@@ -807,9 +807,9 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
      * 
      * @return
      */
-    public static KeyAndValueObject findUploadFilePath() {
+    public static KeyAndValueObject findUploadFilePath(String basePath) {
 
-        return findFilePathWithParent(null);
+        return findFilePathWithParent(null, basePath);
     }
 
     /**
@@ -819,9 +819,9 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
      *            指定的父文件路径
      * @return
      */
-    public static KeyAndValueObject findFilePathWithParent(String anParentPath) {
+    public static KeyAndValueObject findFilePathWithParent(String anParentPath,String basePath) {
         // 得到上传服务器的路径
-        String basePath = (String) SysConfigService.getObject(ParamNames.OPENACCO_FILE_DOWNLOAD_PATH);
+//        String basePath = (String) SysConfigService.getObject(ParamNames.OPENACCO_FILE_DOWNLOAD_PATH);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         String format = formatter.format(new Date());
         String workPath = null;
@@ -847,7 +847,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
             file.mkdirs(); 
         }
         // 得到上传的文件的文件名
-        String fileName = SerialGenerator.uuid();
+        String fileName = UUIDUtils.uuid();
         String fileAbsoPath  = workPath + "/" + fileName;
         
         //保存在系统中的相对路径

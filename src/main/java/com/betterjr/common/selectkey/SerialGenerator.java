@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.betterjr.common.utils.BetterDateUtils;
 import com.betterjr.common.utils.Encodes;
+import com.betterjr.common.utils.UUIDUtils;
 
 public class SerialGenerator implements SessionIdGenerator {
 
@@ -50,13 +51,6 @@ public class SerialGenerator implements SessionIdGenerator {
     }
 
     private static SecureRandom random = new SecureRandom();
-
-    /**
-     * 封装JDK自带的UUID, 通过Random数字生成, 中间无-分割.
-     */
-    public static String uuid() {
-        return UUID.randomUUID().toString().replaceAll("-", "");
-    }
 
     /**
      * 使用SecureRandom随机生成Long.
@@ -105,7 +99,7 @@ public class SerialGenerator implements SessionIdGenerator {
 
     public Serializable generateId(Session session) {
 
-        return uuid();
+        return UUIDUtils.uuid();
     }
 
     public static String getRequestNo(String anClass, String anNetNo) {
