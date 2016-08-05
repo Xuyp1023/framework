@@ -716,4 +716,18 @@ public class ReflectionUtils {
             return false;
         }
     }
+    
+    public static StringBuilder fieldToString( StringBuilder sb,Object obj) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException{
+        Field [] fields = obj.getClass().getDeclaredFields();
+        sb.append(obj.getClass().getName())
+        .append(";");
+         
+        for(Field f:fields){
+            f.setAccessible(true);
+            sb.append(f.getName())
+            .append("=")
+            .append(f.get(obj)).append(";");
+        }
+        return sb;
+    }
 }

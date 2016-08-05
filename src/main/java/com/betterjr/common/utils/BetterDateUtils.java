@@ -441,6 +441,31 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
             return anDate;
         }
     }
+    
+    public static String addStrMonths(String anDate, final int amount) {
+
+        return addStrMonths(anDate, amount, null);
+    }
+    
+    public static String addStrMonths(String anDate, final int amount, String anPatten) {
+        Date dd = null;
+        try {
+            if (BetterStringUtils.isNotBlank(anPatten)) {
+                dd = parseDate(anDate, anPatten);
+                dd = addMonths(dd, amount);
+                return formatDate(dd, anPatten);
+            }
+            else {
+                dd = parseDate(anDate, parsePatterns);
+                dd = addMonths(dd, amount);
+                return formatNumberDate(dd);
+            }
+
+        }
+        catch (ParseException e) {
+            return anDate;
+        }
+    }
 
     public static String formatRemotePath(String anWorkPath, String anWorkDate) {
         if (BetterStringUtils.isNotBlank(anWorkDate)) {
