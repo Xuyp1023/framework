@@ -117,6 +117,20 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
         }
         return anDate;
     }
+    
+    // 格式化输出日期格式  202013 HH:mm:ss
+    public static String formatDispTime(String anTime) {
+        if (BetterStringUtils.isNotBlank(anTime)) {
+            StringBuilder sb = new StringBuilder();
+            int[] arrInt = new int[] { 0, 2, 4, 6};
+            for (int i = 0; i < 3; i++) {
+                sb.append(anTime.substring(arrInt[i], arrInt[i + 1])).append(":");
+            }
+            sb.setLength(sb.length() - 1);
+            return sb.toString();
+        }
+        return anTime;
+    }
 
     public static String formatNumberDate(Date anDate) {
         return formatDate(anDate, "yyyyMMdd");
@@ -484,7 +498,8 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
      * @throws ParseException
      */
     public static void main(String[] args) throws ParseException {
-        System.out.println(pastDateStr(-60));
+//        System.out.println(pastDateStr(-60));
+        System.out.println(formatDispTime("102123"));
         // System.out.println(formatDate(parseDate("2010/3/6")));
         // System.out.println(getDate("yyyy年MM月dd日 E"));
         // long time = new Date().getTime()-parseDate("2012-11-19").getTime();

@@ -14,7 +14,7 @@ public class MQMessage implements Serializable {
 
     private final MQCodecType codecType;
 
-    private Serializable object;
+    private Object object;
 
     private Map<String, Serializable> headers;
 
@@ -56,7 +56,7 @@ public class MQMessage implements Serializable {
         return topic;
     }
 
-    public Serializable getObject() {
+    public Object getObject() {
         return object;
     }
 
