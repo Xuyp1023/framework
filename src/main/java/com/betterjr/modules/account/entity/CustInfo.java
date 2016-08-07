@@ -107,7 +107,6 @@ public class CustInfo implements BetterjrEntity {
     /**
      * 实名验证，0匿名客户，1实名客户
      */
-    @JsonIgnore
     @Column(name = "C_IDENTVALID",  columnDefinition="CHAR" )
     @MetaData( value="实名验证", comments = "实名验证，0匿名客户，1实名客户")
     private Boolean identValid;
