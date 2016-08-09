@@ -178,7 +178,7 @@ public class Servlets {
                     params.put(unprefixed, values);
                 }
                 else {
-                    if (paramName.contains("Date")) {
+                    if (paramName.toUpperCase().contains("DATE")) {
                         String tmpStr = values[0];
                         if (BetterStringUtils.isNotBlank(tmpStr)) {
                             values[0] = tmpStr.replace("-", "");
