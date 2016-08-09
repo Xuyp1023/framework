@@ -36,13 +36,22 @@ public class CustAndOperatorRelaService extends BaseService<CustOperatorRelation
         return false; 
     }
     
-    public List<Long> findCustNoList(Long anOperNo, String anOperOrg){
+    public List<Long> findCustNoList(String anOperOrg){
         Map<String, Object> map = new HashMap();
-        //map.put("operNo", anOperNo);
         map.put("operOrg", anOperOrg);
         List<Long> custNoList =  new ArrayList<Long>();
         for(CustOperatorRelation custOR : this.selectByProperty(map)){
            custNoList.add(custOR.getCustNo()); 
+        }
+        return custNoList;
+    }
+    
+    public List<Long> findOperNoList(Long anCustNo){
+        Map<String, Object> map = new HashMap();
+        map.put("custNo", anCustNo);
+        List<Long> custNoList =  new ArrayList<Long>();
+        for(CustOperatorRelation custOR : this.selectByProperty(map)){
+           custNoList.add(custOR.getOperNo()); 
         }
         return custNoList;
     }
