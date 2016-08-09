@@ -37,6 +37,10 @@ public class CustAndOperatorRelaService extends BaseService<CustOperatorRelation
     }
     
     public List<Long> findCustNoList(String anOperOrg){
+        return this.findCustNoList(null,anOperOrg);
+    }
+    
+    public List<Long> findCustNoList(Long anCustNo,String anOperOrg){
         Map<String, Object> map = new HashMap();
         map.put("operOrg", anOperOrg);
         List<Long> custNoList =  new ArrayList<Long>();
