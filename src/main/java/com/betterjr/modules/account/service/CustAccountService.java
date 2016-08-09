@@ -267,7 +267,7 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
         return contextInfo;
     }
 
-    private List<CustInfo> findCustInfoByOperator(Long anOperNo, String anOperOrg) {
+    public List<CustInfo> findCustInfoByOperator(Long anOperNo, String anOperOrg) {
         List<Long> custList = custAndOpService.findCustNoList(anOperOrg);
         return this.selectByProperty("custNo", custList);
     }
