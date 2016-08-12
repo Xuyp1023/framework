@@ -1,6 +1,8 @@
 package com.betterjr.common.mq.core;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -16,6 +18,8 @@ import com.betterjr.common.codec.BtObjectInput;
 import com.betterjr.common.mq.codec.MQCodecUtils;
 import com.betterjr.common.mq.codec.MQCodecFactory;
 import com.betterjr.common.mq.config.MethodRocketMQListenerEndpoint;
+import com.betterjr.common.mq.exception.BetterMqException;
+import com.betterjr.common.mq.message.MQMessage;
 
 /**
  * @author liuwl
@@ -48,13 +52,24 @@ public class RocketMQMessageListener implements MessageListenerConcurrently {
         MessageExt messageExt = anMsgs.get(0);
         try {
             final Object object = MQCodecUtils.unwrap(messageExt);
-            method.invoke(bean, object);
-            return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+            if (checkMQMessage(object)) {
+                method.invoke(bean, object);
+                return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+            }
+            else {// TODO 在本系统中此类消息直接丢掉
+                logger.error("消息格式不正确 Topic:" + messageExt.getTopic() + " Object:" + object.toString());
+                return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+            }
         }
-        catch (final Exception e) {
-            logger.error("消息消费失败 Topic:" + messageExt.getTopic() + " Keys:" + messageExt.getKeys(), e);
+        catch (BetterMqException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ClassNotFoundException
+                | IOException e) {
+            logger.error("消息消费失败 Topic:" + messageExt.getTopic(), e);
             return ConsumeConcurrentlyStatus.RECONSUME_LATER;
         }
+    }
+
+    public boolean checkMQMessage(Object anMessage) {
+        return (anMessage instanceof MQMessage);
     }
 
     public String getTopic() {

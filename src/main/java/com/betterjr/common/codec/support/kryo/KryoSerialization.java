@@ -9,9 +9,10 @@ import com.betterjr.common.codec.BtObjectOutput;
 import com.betterjr.common.codec.BtOptimizedCodec;
  
 public class KryoSerialization implements BtOptimizedCodec {
+    public static final byte TYPEID = 8;
 
     public byte getContentTypeId() {
-        return 8;
+        return TYPEID;
     }
 
     public String getContentType() {
