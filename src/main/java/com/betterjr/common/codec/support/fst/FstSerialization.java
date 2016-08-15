@@ -10,9 +10,10 @@ import com.betterjr.common.codec.BtObjectOutput;
 import com.betterjr.common.codec.BtOptimizedCodec;
  
 public class FstSerialization implements BtOptimizedCodec {
+    public static final byte TYPEID = 9;
 
     public byte getContentTypeId() {
-        return 9;
+        return TYPEID;
     }
 
     public String getContentType() {

@@ -10,10 +10,10 @@ import com.betterjr.common.codec.BtObjectOutput;
  
 public class Hessian2Serialization implements BtCodec {
 
-    public static final byte ID = 2;
+    public static final byte TYPEID = 2;
 
     public byte getContentTypeId() {
-        return ID;
+        return TYPEID;
     }
 
     public String getContentType() {

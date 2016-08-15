@@ -11,6 +11,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
+import org.apache.shiro.session.mgt.SimpleSession;
+import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.subject.support.DefaultSubjectContext;
@@ -34,213 +36,219 @@ import com.betterjr.common.service.SpringContextHolder;
  * @author zhoucy
  */
 public class UserUtils {
-	private static final String SesessionIdKey = StaticThreadLocal.class.getName() + "_sessionId";
-	private static final String SesessionKey = StaticThreadLocal.class.getName() + "_session";
-	private static ThreadLocal<Map<String, Object>> sessionLocal = new ThreadLocal<Map<String, Object>>();
+    private static final String SesessionIdKey = StaticThreadLocal.class.getName() + "_sessionId";
+    private static final String SesessionKey = StaticThreadLocal.class.getName() + "_session";
+    private static ThreadLocal<Map<String, Object>> sessionLocal = new ThreadLocal<Map<String, Object>>();
 
-	protected static void storeThreadVar(String key, Object value) {
-		Map<String, Object> map = sessionLocal.get();
-		if (map == null) {
-			map = new ConcurrentHashMap<String, Object>();
-			sessionLocal.set(map);
-		}
-		if (key != null && value != null) {
-			map.put(key, value);
-		}
-	}
+    protected static void storeThreadVar(String key, Object value) {
+        Map<String, Object> map = sessionLocal.get();
+        if (map == null) {
+            map = new ConcurrentHashMap<String, Object>();
+            sessionLocal.set(map);
+        }
+        if (key != null && value != null) {
+            map.put(key, value);
+        }
+    }
 
-	protected static Object getThreadVar(String key) {
-		if (key == null) {
-			return null;
-		}
-		Map<String, Object> map = sessionLocal.get();
-		if (map == null) {
-			return null;
-		}
-		return map.get(key);
-	}
+    protected static Object getThreadVar(String key) {
+        if (key == null) {
+            return null;
+        }
+        Map<String, Object> map = sessionLocal.get();
+        if (map == null) {
+            return null;
+        }
+        return map.get(key);
+    }
 
-	public static void storeSessionId(String anId) {
-		storeThreadVar(SesessionIdKey, anId);
-	}
+    public static void storeSessionId(String anId) {
+        storeThreadVar(SesessionIdKey, anId);
+    }
 
-	public static String getSessionId() {
+    public static String getSessionId() {
 
-		//
-		String id = (String) getThreadVar(SesessionIdKey);
-		if (id != null) {
-			return id;
-		}
+        //
+        String id = (String) getThreadVar(SesessionIdKey);
+        if (id != null) {
+            return id;
+        }
 
-		// web access
-		try {
-			Subject subject = SecurityUtils.getSubject();
-			if (subject != null) {
-				Session se = subject.getSession();
-				if (se != null) {
-					return se.getId().toString();
-				}
-			}
-		} catch (Exception ex) {
-		}
+        // web access
+        try {
+            Subject subject = SecurityUtils.getSubject();
+            if (subject != null) {
+                Session se = subject.getSession();
+                if (se != null) {
+                    return se.getId().toString();
+                }
+            }
+        }
+        catch (Exception ex) {
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	private static RedisSessionDAO redisSessionDAO = SpringContextHolder.getBean(RedisSessionDAO.class);
+    private static RedisSessionDAO redisSessionDAO = SpringContextHolder.getBean(RedisSessionDAO.class);
+    
+    /**
+     * 获取当前用户
+     * 
+     * @return 取不到返回 new User()
+     */
+    public static WorkUserInfo getUser() {
+        ShiroUser principal = getPrincipal();
+        if (principal != null) {
+            return principal.getUser();
+        }
+        return null;
+    }
 
-	/**
-	 * 获取当前用户
-	 * 
-	 * @return 取不到返回 new User()
-	 */
-	public static WorkUserInfo getUser() {
-		ShiroUser principal = getPrincipal();
-		if (principal != null) {
-			return principal.getUser();
-		}
-		return null;
-	}
+    public static List<String> findRuleList() {
+        ShiroUser principal = getPrincipal();
+        List<String> tmpList = new ArrayList();
+        if (principal != null) {
+            tmpList.addAll(Arrays.asList(principal.fingUserRule()));
+        }
+        return tmpList;
+    }
 
-	public static List<String> findRuleList() {
-		ShiroUser principal = getPrincipal();
-		List<String> tmpList = new ArrayList();
-		if (principal != null) {
-			tmpList.addAll(Arrays.asList(principal.fingUserRule()));
-		}
-		return tmpList;
-	}
+    public static String getUserName() {
+        WorkUserInfo principal = getUser();
+        if (principal != null) {
+            return principal.getName();
+        }
+        return null;
+    }
 
-	public static String getUserName() {
-		WorkUserInfo principal = getUser();
-		if (principal != null) {
-			return principal.getName();
-		}
-		return null;
-	}
+    public static boolean isBytterUser() {
+        CustContextInfo contextInfo = getOperatorContextInfo();
+        if (contextInfo != null) {
+            return contextInfo.isBytterUser();
+        }
+        else {
+            return false;
+        }
+    }
 
-	public static boolean isBytterUser() {
-		CustContextInfo contextInfo = getOperatorContextInfo();
-		if (contextInfo != null) {
-			return contextInfo.isBytterUser();
-		} else {
-			return false;
-		}
-	}
+    public static CustContextInfo getOperatorContextInfo() {
+        ShiroUser principal = getPrincipal();
+        if (principal == null) {
+            return null;
+        }
+        Object obj = principal.getData();
+        if (obj instanceof CustContextInfo) {
+            return (CustContextInfo) obj;
+        }
+        else {
+            return null;
+        }
+    }
 
-	public static CustContextInfo getOperatorContextInfo() {
-		ShiroUser principal = getPrincipal();
-		if (principal == null) {
-			return null;
-		}
-		Object obj = principal.getData();
-		if (obj instanceof CustContextInfo) {
-			return (CustContextInfo) obj;
-		} else {
-			return null;
-		}
-	}
+    public static List<Long> findCustNoList() {
+        CustContextInfo custContext = getOperatorContextInfo();
+        if (custContext != null) {
+            return custContext.findCustList();
+        }
+        else {
+            return null;
+        }
+    }
 
-	public static List<Long> findCustNoList() {
-		CustContextInfo custContext = getOperatorContextInfo();
-		if (custContext != null) {
-			return custContext.findCustList();
-		} else {
-			return null;
-		}
-	}
+    public static String findOperOrg() {
+        CustOperatorInfo cop = getOperatorInfo();
+        if (cop != null) {
+            return cop.getOperOrg();
+        }
+        else {
+            return "";
+        }
+    }
 
-	public static String findOperOrg() {
-		CustOperatorInfo cop = getOperatorInfo();
-		if (cop != null) {
-			return cop.getOperOrg();
-		} else {
-			return "";
-		}
-	}
+    public static CustInfo findCustInfo(Long anCustNo) {
+        CustContextInfo custContext = getOperatorContextInfo();
+        if (custContext != null) {
+            return custContext.findCust(anCustNo);
+        }
+        else {
+            return null;
+        }
+    }
 
-	public static CustInfo findCustInfo(Long anCustNo) {
-		CustContextInfo custContext = getOperatorContextInfo();
-		if (custContext != null) {
-			return custContext.findCust(anCustNo);
-		} else {
-			return null;
-		}
-	}
+    public static List<CustInfo> findCustInfoList() {
+        CustContextInfo custContext = getOperatorContextInfo();
+        if (custContext != null) {
+            return custContext.findCustInfoList();
+        }
+        else {
+            return null;
+        }
+    }
 
-	public static List<CustInfo> findCustInfoList() {
-		CustContextInfo custContext = getOperatorContextInfo();
-		if (custContext != null) {
-			return custContext.findCustInfoList();
-		} else {
-			return null;
-		}
-	}
+    public static CustOperatorInfo getOperatorInfo() {
+        CustContextInfo custContext = getOperatorContextInfo();
+        if (custContext != null) {
+            return custContext.getOperatorInfo();
+        }
+        else {
+            return null;
+        }
+    }
 
-	public static CustOperatorInfo getOperatorInfo() {
-		CustContextInfo custContext = getOperatorContextInfo();
-		if (custContext != null) {
-			return custContext.getOperatorInfo();
-		} else {
-			return null;
-		}
-	}
+    /**
+     * 获取当前登录者对象
+     */
+    public static ShiroUser getPrincipal() {
+        Session session = UserUtils.getSession();
+        if (session != null) {
+            SimplePrincipalCollection col = (SimplePrincipalCollection) session.getAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY);
+            if (col != null) {
+                return (ShiroUser) col.getPrimaryPrincipal();
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * 获取当前登录者对象
-	 */
-	public static ShiroUser getPrincipal() {
-		Session session = UserUtils.getSession();
-		if (session != null) {
-			SimplePrincipalCollection col = (SimplePrincipalCollection) session
-					.getAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY);
-			if (col != null) {
-				return (ShiroUser) col.getPrimaryPrincipal();
-			}
-		}
-		return null;
-	}
+    public static Long getContactor() {
+        ShiroUser principal = getPrincipal();
+        if (principal != null) {
+            if (UserType.PERSON_USER.equals(principal.getUserType()) == false) {
 
-	public static Long getContactor() {
-		ShiroUser principal = getPrincipal();
-		if (principal != null) {
-			if (UserType.PERSON_USER.equals(principal.getUserType()) == false) {
+                return principal.getId();
+            }
+        }
 
-				return principal.getId();
-			}
-		}
+        return null;
+    }
 
-		return null;
-	}
+    public static Session getSession() {
+        Object obj = getThreadVar(SesessionKey);
+        Session session = (Session) obj;
+        if (session != null) {
+            return session;
+        }
+        String sessionId = (String) getThreadVar(SesessionIdKey);
+        session = redisSessionDAO.doReadSession(sessionId);
+        if (session != null) {
+            storeThreadVar(SesessionKey, session);
+            return session;
+        }
 
-	public static Session getSession() {
-
-		//
-		Object obj = getThreadVar(SesessionKey);
-		Session session = (Session) obj;
-		if (session != null) {
-			return session;
-		}
-		String sessionId = (String) getThreadVar(SesessionIdKey);
-		session = redisSessionDAO.doReadSession(sessionId);
-		if (session != null) {
-			storeThreadVar(SesessionKey, session);
-			return session;
-		}
-
-		// web access
-		Subject subject = SecurityUtils.getSubject();
-		if (subject != null) {
-			Session se = subject.getSession();
-			if (se != null) {
-				return se;
-			}
-		}
-		return null;
-	}
+        // web access
+        Subject subject = SecurityUtils.getSubject();
+        if (subject != null) {
+            Session se = subject.getSession();
+            if (se != null) {
+                return se;
+            }
+        }
+        return null;
+    }
 
     /**
      * 是否是核心企业客户
+     * 
      * @return
      */
     public static boolean coreUser() {
@@ -250,6 +258,7 @@ public class UserUtils {
 
     /**
      * 是否是经销商客户
+     * 
      * @return
      */
     public static boolean sellerUser() {
@@ -259,6 +268,7 @@ public class UserUtils {
 
     /**
      * 是否是供应商客户
+     * 
      * @return
      */
     public static boolean supplierUser() {
@@ -268,18 +278,20 @@ public class UserUtils {
 
     /**
      * 操作员内部角色，列表，定义基础的角色！参见枚举类PlatformBaseRuleType，定义在表T_CUST_CERTINFO.C_RULE_LIST中
+     * 
      * @return
      */
-    public static List<PlatformBaseRuleType> findInnerRules(){
+    public static List<PlatformBaseRuleType> findInnerRules() {
         ShiroUser user = getPrincipal();
-        if (user != null){
+        if (user != null) {
             return user.getInnerRules();
         }
         return new ArrayList(0);
     }
-    
+
     /**
      * 是否是资金提供方
+     * 
      * @return
      */
     public static boolean factorUser() {
@@ -289,32 +301,33 @@ public class UserUtils {
 
     /**
      * 是否是平台自己的操作员
+     * 
      * @return
      */
     public static boolean platformUser() {
 
         return ShiroUser.platformUser(getPrincipal());
     }
-	// ============== User Cache ==============
+    // ============== User Cache ==============
 
-	public static Object getCache(String key) {
-		return getCache(key, null);
-	}
+    public static Object getCache(String key) {
+        return getCache(key, null);
+    }
 
-	public static Object getCache(String key, Object defaultValue) {
-		// Object obj = getCacheMap().get(key);
-		Object obj = getSession().getAttribute(key);
-		return obj == null ? defaultValue : obj;
-	}
+    public static Object getCache(String key, Object defaultValue) {
+        // Object obj = getCacheMap().get(key);
+        Object obj = getSession().getAttribute(key);
+        return obj == null ? defaultValue : obj;
+    }
 
-	public static void putCache(String key, Object value) {
-		// getCacheMap().put(key, value);
-		getSession().setAttribute(key, value);
-	}
+    public static void putCache(String key, Object value) {
+        // getCacheMap().put(key, value);
+        getSession().setAttribute(key, value);
+    }
 
-	public static void removeCache(String key) {
-		// getCacheMap().remove(key);
-		getSession().removeAttribute(key);
-	}
+    public static void removeCache(String key) {
+        // getCacheMap().remove(key);
+        getSession().removeAttribute(key);
+    }
 
 }

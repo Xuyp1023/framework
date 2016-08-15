@@ -13,7 +13,6 @@ import com.betterjr.common.codec.support.nativejava.NativeJavaSerialization;
  *
  */
 public final class MQCodecFactory {
-
     private final static BtCodec FST_CODEC = new FstSerialization();
     private final static BtCodec HESSIAN_CODEC = new Hessian2Serialization();
     private final static BtCodec JSON_CODEC = new JacksonSerialization();
@@ -26,15 +25,15 @@ public final class MQCodecFactory {
 
     public final static BtCodec getCodec(final byte anCodecFlag) {
         switch (anCodecFlag) {
-        case (byte) 0x01:
+        case FstSerialization.TYPEID:
             return FST_CODEC;
-        case (byte) 0x02:
+        case Hessian2Serialization.TYPEID:
             return HESSIAN_CODEC;
-        case (byte) 0x03:
+        case JacksonSerialization.TYPEID:
             return JSON_CODEC;
-        case (byte) 0x04:
+        case KryoSerialization.TYPEID:
             return KRYO_CODEC;
-        case (byte) 0x05:
+        case NativeJavaSerialization.TYPEID:
             return NATIVEJAVA_CODEC;
         default:
             return null;

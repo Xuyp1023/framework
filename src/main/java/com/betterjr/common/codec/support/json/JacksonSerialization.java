@@ -7,9 +7,10 @@ import java.io.OutputStream;
 import com.betterjr.common.codec.*;
 
 public class JacksonSerialization implements BtCodec {
-
+    public static final byte TYPEID = 20;
+    
     public byte getContentTypeId() {
-        return 20;
+        return TYPEID;
     }
 
     public String getContentType() {
