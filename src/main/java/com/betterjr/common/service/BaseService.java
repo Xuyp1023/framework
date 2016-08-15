@@ -18,8 +18,10 @@ import org.springframework.stereotype.Service;
 import com.betterjr.common.dao.SqlMapper;
 import com.betterjr.common.exception.BytterClassNotFoundException;
 import com.betterjr.common.exception.BytterValidException;
+import com.betterjr.common.selectkey.SerialGenerator;
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.Collections3;
+import com.betterjr.common.utils.reflection.ReflectionUtils;
 import com.betterjr.mapper.common.Mapper;
 import com.betterjr.mapper.entity.Example;
 import com.betterjr.mapper.entity.Example.Criteria;
@@ -773,6 +775,19 @@ public abstract class BaseService<D extends Mapper<T>, T> {
         PageHelper.startPage(anPageNum, anPageSize, anFirst);
 
         return (Page) this.selectByProperty(anMap, anOrderBy);
+    }
+    
+    /**
+     * 对于pk为id的实体对象，如果id为空，则insert，否则update
+     * @param base
+     */
+    public void insertOrUpdateWithPkId(T base,Object id) {
+        if(ReflectionUtils.getFieldValue(base, "id")==null){
+            ReflectionUtils.setFieldValue(base, "id", id);
+            this.insert(base);
+        }else{
+            this.updateByPrimaryKey(base);
+        }
     }
 
 }

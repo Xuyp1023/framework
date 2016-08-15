@@ -4,6 +4,7 @@ package com.betterjr.modules.rule.service;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -145,10 +146,13 @@ public class RuleServiceDubboFilterInvoker {
                 String errormsg="method:("+invoker.getInterface()+"."+invocation.getMethodName()+") parameters valid failed!" ;
                 List<String> errorList=checkResult.getErrorList();
                 if(errorList!=null){
-                    errormsg=errormsg+" ;"+errorList.toString();
+                    errorList.add(errormsg);
+                }else{
+                    errorList=new ArrayList<String>();
+                    errorList.add(errormsg);
                 }
-                logger.error(errormsg);
-            	throw new BytterValidException(errormsg);
+                logger.error(errorList.toString());
+            	throw new BytterValidException(90002,errorList);
             }
 
             this.afterReturn(); // 相当于后置通知
