@@ -2,6 +2,8 @@ package com.betterjr.modules.sys.entity;
 
 import com.betterjr.common.annotation.*;
 import com.betterjr.common.entity.BetterjrEntity;
+import com.betterjr.common.selectkey.SerialGenerator;
+
 import javax.persistence.*;
 
 @Access(AccessType.FIELD)
@@ -148,5 +150,14 @@ public class SysMenuRuleInfo implements BetterjrEntity {
         result = prime * result + ((getMenuName() == null) ? 0 : getMenuName().hashCode());
         result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
         return result;
+    }
+    
+    public void initMenuRole(String roleId,String roleName,String menuId,String menuName){
+        this.id=SerialGenerator.getIntValue("SysMenuRole.id");
+        this.ruleId=Integer.parseInt(roleId);
+        this.ruleName=roleName;
+        this.menuId=Integer.parseInt(menuId);
+        this.menuName=menuName;
+        this.status="1";
     }
 }
