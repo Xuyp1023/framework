@@ -1,5 +1,7 @@
 package com.betterjr.common.web;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 
 import com.alibaba.dubbo.rpc.RpcException;
@@ -13,7 +15,10 @@ public class ControllerExceptionHandler {
         catch (RpcException btEx) {
             if (BytterException.isCauseBytterException(btEx)) {
                 logger.error(btEx.getMessage(), btEx);
-                logger.error(((BytterException)btEx.getCause()).getErrorList().toString());
+                List<String> errorList=((BytterException)btEx.getCause()).getErrorList();
+                if(errorList!=null){
+                    logger.error(errorList.toString());
+                }
                 return AjaxObject.newError(btEx.getCause().getMessage()).toJson();
             }
             logger.error(btEx.getMessage(), btEx);
