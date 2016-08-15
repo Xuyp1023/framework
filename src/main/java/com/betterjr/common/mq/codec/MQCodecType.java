@@ -1,12 +1,20 @@
 package com.betterjr.common.mq.codec;
 
+import com.betterjr.common.codec.support.fst.FstSerialization;
+import com.betterjr.common.codec.support.hessian.Hessian2Serialization;
+import com.betterjr.common.codec.support.json.JacksonSerialization;
+import com.betterjr.common.codec.support.kryo.KryoSerialization;
+import com.betterjr.common.codec.support.nativejava.NativeJavaSerialization;
+
 /**
  * 
  * @author liuwl
  *
  */
 public enum MQCodecType {
-    FST((byte) 0x01), HESSIAN((byte) 0x02), JSON((byte) 0x03), KRYO((byte) 0x04), NATIVEJAVA((byte) 0x05);
+    FST(FstSerialization.TYPEID), HESSIAN(Hessian2Serialization.TYPEID), JSON(JacksonSerialization.TYPEID), KRYO(
+            KryoSerialization.TYPEID), NATIVEJAVA(NativeJavaSerialization.TYPEID);
+
     private byte codecType;
 
     MQCodecType(final byte anCodecType) {

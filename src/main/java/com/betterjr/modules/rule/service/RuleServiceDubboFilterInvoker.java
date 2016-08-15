@@ -186,7 +186,7 @@ public class RuleServiceDubboFilterInvoker {
     }
   
     
-    public static Object getInputObj(){
-    	return inputLocal.get();
+    public static <T> T getInputObj(){
+    	return (T)inputLocal.get();
     }
 }
