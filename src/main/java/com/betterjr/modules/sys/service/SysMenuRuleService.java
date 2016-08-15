@@ -5,17 +5,22 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.betterjr.common.service.BaseService;
-import com.betterjr.modules.sys.dao.SysMenuInfoMapper;
+import com.betterjr.common.utils.Collections3;
 import com.betterjr.modules.sys.dao.SysMenuRuleInfoMapper;
-import com.betterjr.modules.sys.entity.SysMenuInfo;
 import com.betterjr.modules.sys.entity.SysMenuRuleInfo;
 
 @Service
 public class SysMenuRuleService extends BaseService<SysMenuRuleInfoMapper, SysMenuRuleInfo> {
+    
+    @Autowired
+    private SysMenuService menuService;
+    
     Map<Integer,SysMenuRuleInfo> menuMap = new HashMap<Integer,SysMenuRuleInfo>();
     
     public List<SysMenuRuleInfo> findAll(){
@@ -47,6 +52,52 @@ public class SysMenuRuleService extends BaseService<SysMenuRuleInfoMapper, SysMe
             }
         }
         return menuList;
+    }
+    
+    /**
+     * 获取角色对应菜单
+     * @param ruleNames
+     * @return
+     */
+    public List<String> findAllByRuleAndMenu(List<String> anRuleNameList, Integer anMenuId){
+        List<String> menuList = new ArrayList<String>();
+        Map anMap = new HashMap<String, Object>();
+        anMap.put("ruleName", anRuleNameList);
+        List<Integer> menus=  this.menuService.findSubMenu(anMenuId);
+        if (Collections3.isEmpty(menus)){
+            
+            return menuList;
+        }
+        anMap.put("menuId", menus);
+        logger.info("findAllByRuleAndMenu ruleNames "+ anRuleNameList +", anMenuId = " + anMenuId +", " + anMap);
+        List<SysMenuRuleInfo> ruleList = this.selectByProperty(anMap);
+        Map<Integer,SysMenuRuleInfo> ruleMap = new HashMap<Integer,SysMenuRuleInfo>();
+        for (SysMenuRuleInfo ruleInfo : ruleList) {
+            //去除重复
+            if(ruleMap.get(ruleInfo.getMenuId())!=null){
+                continue;
+            }
+            if (ruleInfo.getStatus().equals("1")) {
+                menuList.add(ruleInfo.getMenuId() + "");
+                ruleMap.put(ruleInfo.getMenuId(), ruleInfo);
+            }
+        }
+        
+        return menuList;
+    }
+    
+    /****
+     * 添加菜单角色
+     * @param roleId
+     * @param roleName
+     * @param menuId
+     * @param menuName
+     * @return
+     */
+    public boolean addMenuRole(String roleId,String roleName,String menuId,String menuName){
+        SysMenuRuleInfo menuRole=new SysMenuRuleInfo();
+        menuRole.initMenuRole(roleId, roleName, menuId, menuName);
+        return this.insert(menuRole)>0;
     }
     
 }
