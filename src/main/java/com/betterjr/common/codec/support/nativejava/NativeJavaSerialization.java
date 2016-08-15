@@ -11,7 +11,8 @@ import com.betterjr.common.codec.BtObjectInput;
 import com.betterjr.common.codec.BtObjectOutput;
  
 public class NativeJavaSerialization implements BtCodec  {
-
+    public static final byte TYPEID = 7;
+    
     public static final String NAME = "nativejava";
 
     public byte getContentTypeId() {

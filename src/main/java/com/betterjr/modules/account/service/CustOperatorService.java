@@ -26,6 +26,8 @@ public class CustOperatorService extends BaseService<CustOperatorInfoMapper, Cus
     private CustOperatorHelper requestHelper;
     @Autowired
     private CustPassService custPassService;
+    @Autowired
+    private CustAndOperatorRelaService operatorRelaService;
 
     public boolean isFirstOperator(String anOperOrg) {
 
@@ -133,7 +135,13 @@ public class CustOperatorService extends BaseService<CustOperatorInfoMapper, Cus
         return false;
     }
     
-    public CustOperatorInfo queryCustOperatorInfo(Long operId){
-        return this.selectByPrimaryKey(operId);
+    public CustOperatorInfo findCustOperatorInfo(Long anOperId){
+        return this.selectByPrimaryKey(anOperId);
+    }
+    
+    public List<CustOperatorInfo> queryOperatorInfoByCustNo(Long anCustNo) {
+        List<Long> operators = operatorRelaService.findOperNoList(anCustNo);
+        
+        return this.selectByProperty("id", operators);
     }
 }

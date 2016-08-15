@@ -303,5 +303,15 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
        }
        return custInfo.getCustName();
     }
+
+    /**
+     * 根据客户编号,查询客户
+     * @param anCustNo
+     * @return
+     */
+    public CustInfo findCustInfo(Long anCustNo) {
+        CustInfo custInfo = this.selectByPrimaryKey(anCustNo);
+        return custInfo;
+    }
      
 }
