@@ -36,10 +36,10 @@ import org.apache.xml.security.*;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.ElementProxy;
 
-import com.betterjr.common.data.DataEncoding;
 import com.betterjr.common.exception.BytterException;
 import com.betterjr.common.exception.BytterSecurityException;
 import com.betterjr.common.utils.Encodes;
+import com.betterjr.modules.remote.data.DataEncoding;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
