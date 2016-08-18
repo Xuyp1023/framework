@@ -83,8 +83,12 @@ public class RuleValidatorService extends BaseService<RuleValidatorMapper, RuleV
             RuleValidator rv;
             for (RuleBusinValidator rbv : businValidator.values()) {
                 rv = map.get(rbv.getValidName());
-                wv = new WorkRuleValidator(rv, rbv);
-                mapValidator.add(wv);
+                if(rv==null){
+                    logger.error("Not found validator:"+rbv.getValidName()+";business name:"+rbv.getBusinName());
+                }else{
+                    wv = new WorkRuleValidator(rv, rbv);
+                    mapValidator.add(wv);
+                }
             }
         }
         return mapValidator;
