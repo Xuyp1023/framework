@@ -40,18 +40,17 @@ public class SysMenuService extends BaseService<SysMenuInfoMapper, SysMenuInfo> 
     }
 
     
+    /****
+     * 查询先定的菜单
+     * @param menuIds
+     * @return
+     */
     public List findMenuList(List menuIds){
         List menuList = new ArrayList<SysMenuInfo>();
         Map anMap = new HashMap<String, Object>();
         List<SysMenuInfo> allList=new ArrayList<SysMenuInfo>();
-        if(menuIds!=null){
-            anMap.put("id", menuIds);
-            allList = this.selectByProperty(anMap, "menuOrder");
-        }else{
-            anMap.put("status", "1");
-            allList = this.selectByProperty(anMap, "menuOrder");
-        }
-        
+        anMap.put("id", menuIds);
+        allList = this.selectByProperty(anMap, "menuOrder");
         Map<Integer,SysMenuInfo> parentNoteMap = new HashMap<Integer,SysMenuInfo>();
         //父节点
         for(SysMenuInfo menuInfo : allList){
@@ -83,6 +82,49 @@ public class SysMenuService extends BaseService<SysMenuInfoMapper, SysMenuInfo> 
         return menuList;
     }
     
+
+    /****
+     * 查询所有菜单，增加选中标识
+     * @param menuIds
+     * @return
+     */
+    public List findAllMenuList(List menuIds){
+        List menuList = new ArrayList<SysMenuInfo>();
+        Map anMap = new HashMap<String, Object>();
+        anMap.put("status", "1");
+        List<SysMenuInfo> allList = this.selectByProperty(anMap, "menuOrder");
+        Map<Integer,SysMenuInfo> parentNoteMap = new HashMap<Integer,SysMenuInfo>();
+        //父节点
+        for(SysMenuInfo menuInfo : allList){
+          if(0==menuInfo.getParentId()&&"1".equals(menuInfo.getStatus())){
+              parentNoteMap.put(menuInfo.getId(), menuInfo);
+          }
+        }
+        //子节点
+        for(Integer parentId : parentNoteMap.keySet()){
+            Map<String, Object> sysMenuMap = new LinkedHashMap<String,Object>();
+            SysMenuInfo parentMenuInfo = parentNoteMap.get(parentId);
+            List<SysMenuInfo> noteList = this.selectByProperty("parentId", parentId);
+            List<Map<String, String>> noteMenuList = new ArrayList<Map<String,String>>();
+            for(SysMenuInfo noteMenuInfo : noteList){
+                if("1".equals(noteMenuInfo.getStatus())){
+                    Map noteMenuMap = new HashMap<String, String>();
+                    noteMenuMap.put("id", noteMenuInfo.getId());
+                    noteMenuMap.put("text", noteMenuInfo.getMenuTitle());
+                    noteMenuMap.put("checked", contains(noteMenuInfo.getId(),menuIds));
+                    noteMenuList.add(noteMenuMap);
+                }
+            }
+            sysMenuMap.put("id", parentMenuInfo.getId());
+            sysMenuMap.put("text", parentMenuInfo.getMenuTitle());
+            sysMenuMap.put("checked", contains(parentMenuInfo.getId(),menuIds));
+            sysMenuMap.put("children", noteMenuList);
+            menuList.add(sysMenuMap);
+            
+        }
+        return menuList;
+    }
+    
     /***
      * 根据菜单id获取菜单信息
      * @param menuId
@@ -91,5 +133,19 @@ public class SysMenuService extends BaseService<SysMenuInfoMapper, SysMenuInfo> 
     public SysMenuInfo findMenuById(Integer menuId){
         return this.selectByPrimaryKey(menuId);
     }
+    
+    /****
+     * 判断是否存在
+     * @param menuId
+     * @param menuIds
+     * @return
+     */
+    public boolean contains(Integer menuId,List menuIds) {
+        if(menuIds.contains(menuId.toString())){
+            return true;
+        }else{
+            return false;
+        }
+   }
     
 }
