@@ -2,8 +2,10 @@ package com.betterjr.modules.account.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
@@ -43,7 +45,8 @@ public class CustAndOperatorRelaService extends BaseService<CustOperatorRelation
     public List<Long> findCustNoList(Long anCustNo,String anOperOrg){
         Map<String, Object> map = new HashMap();
         map.put("operOrg", anOperOrg);
-        List<Long> custNoList =  new ArrayList<Long>();
+        map.put("status", "1");
+        List<Long> custNoList =  new ArrayList<>();
         for(CustOperatorRelation custOR : this.selectByProperty(map)){
            custNoList.add(custOR.getCustNo()); 
         }
