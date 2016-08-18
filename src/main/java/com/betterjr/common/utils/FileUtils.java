@@ -876,4 +876,25 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         }
         return "bin";
     }
+    
+    public static File getRealFile(String anBasePath) {
+        String tmpStr = fileRealPath(anBasePath);
+        if (tmpStr != null) {
+            File ff = new File(tmpStr);
+            if (ff.exists() && ff.isFile()) {
+                System.out.println(tmpStr);
+                return ff;
+            }
+        }
+        return null;
+    }
+
+    public static String fileRealPath(String anBasePath) {
+        if (BetterStringUtils.isNotBlank(anBasePath)) {
+            return anBasePath.replaceAll("\\.\\.", "");
+        }
+        else {
+            return null;
+        }
+    }
 }
