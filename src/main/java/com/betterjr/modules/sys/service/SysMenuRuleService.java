@@ -100,4 +100,12 @@ public class SysMenuRuleService extends BaseService<SysMenuRuleInfoMapper, SysMe
         return this.insert(menuRole)>0;
     }
     
+    /***
+     * 根据角色删除关系表
+     * @param anRoleId
+     * @return
+     */
+    public boolean delMenuRole(Long anRoleId){
+        return this.deleteByProperty("ruleId", anRoleId)>0;
+    }
 }
