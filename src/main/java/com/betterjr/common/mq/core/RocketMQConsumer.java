@@ -1,6 +1,7 @@
 package com.betterjr.common.mq.core;
 
 import com.alibaba.rocketmq.common.message.MessageExt;
+import com.alibaba.rocketmq.common.protocol.heartbeat.MessageModel;
 import com.alibaba.rocketmq.common.consumer.ConsumeFromWhere;
 import com.alibaba.rocketmq.client.consumer.DefaultMQPushConsumer;
 import com.alibaba.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
@@ -68,6 +69,7 @@ public class RocketMQConsumer implements ApplicationListener<ContextRefreshedEve
 
         consumer = new DefaultMQPushConsumer(consumerGroupName);
         consumer.setNamesrvAddr(namesrvAddr);
+//        consumer.setMessageModel(MessageModel.CLUSTERING);
         consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_LAST_OFFSET);
         consumer.setConsumeThreadMin(DEFAULT_CONSUME_THREAD_MIN);
         consumer.setConsumeThreadMax(DEFAULT_CONSUME_THREAD_MAX);
