@@ -32,4 +32,11 @@ public interface NotificationConstants {
     String CUST_NO = "custNo";
     String OPER_ID = "operId";
     String PROFILE_NAME = "profileName";
+    
+    // 模板类型  0:平台,1:保理公司,2:核心企业,3:供应商,4:经销商
+    String PROFILE_TYPE_PLATFORM = "0";
+    String PROFILE_TYPE_FACTOR = "1";
+    String PROFILE_TYPE_CORE = "2";
+    String PROFILE_TYPE_SUPPLIER = "3";
+    String PROFILE_TYPE_SELLER = "4";
 }

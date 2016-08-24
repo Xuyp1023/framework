@@ -29,7 +29,13 @@ public class NotificationModel implements Serializable {
 
     private List<Long> receiveCustomers = new ArrayList<>();
     
+    private List<String> receiveEmails = new ArrayList<>();
+    
+    private List<String> receiveMobiles = new ArrayList<>();
+    
     private Map<String, Object> param = new HashMap<>();
+    
+    private List<Long> attachments = new ArrayList<>();
 
     private BetterjrEntity entity;
 
@@ -38,39 +44,61 @@ public class NotificationModel implements Serializable {
         this.sendCustomer = anSendCustomer;
         this.sendOperator = anSendOperator;
     }
+    
+    public static Builder newBuilder(String anProfileName, Long anSendCustomer, Long anSendOperator) {
+        return new Builder(anProfileName, anSendCustomer, anSendOperator);
+    }
 
     /**
      * 消息模型建造器 
      */
-    public static class NotificationBuilder {
+    public static class Builder {
         private final NotificationModel model;
 
-        public NotificationBuilder(String anProfileName, Long anSendCustomer, Long anSendOperator) {
+        private Builder(String anProfileName, Long anSendCustomer, Long anSendOperator) {
             model = new NotificationModel(anProfileName, anSendCustomer, anSendOperator);
         }
 
-        public NotificationBuilder addParam(String anKey, Object anValue) {
+        public Builder addParam(String anKey, Object anValue) {
             model.param.put(anKey, anValue);
             return this;
         }
 
-        public NotificationBuilder addReceiveOperator(Long anReceiveOperator) {
+        public Builder addReceiveOperator(Long anReceiveOperator) {
             model.receiveOperators.add(anReceiveOperator);
             return this;
         }
 
-        public NotificationBuilder addRecevieCustomer(Long anRecevieCustomer) {
+        public Builder addRecevieCustomer(Long anRecevieCustomer) {
             model.receiveCustomers.add(anRecevieCustomer);
             return this;
         }
+        
+        public Builder addReceiveEmail(String anReceiveEmail) {
+            model.receiveEmails.add(anReceiveEmail);
+            return this;
+        }
+        
+        public Builder addReceiveMobile(String anReceiveMobile) {
+            model.receiveMobiles.add(anReceiveMobile);
+            return this;
+        }
+        
+        public Builder addAttachment(Long anBatchNo) {
+            model.attachments.add(anBatchNo);
+            return this;
+        }
 
-        public NotificationBuilder setEntity(BetterjrEntity anEntity) {
+        public Builder setEntity(BetterjrEntity anEntity) {
             model.entity = anEntity;
             return this;
         }
 
         public NotificationModel build() {
-            if (Collections3.isEmpty(model.receiveOperators) && Collections3.isEmpty(model.receiveCustomers)) {
+            if (Collections3.isEmpty(model.receiveOperators) 
+                    && Collections3.isEmpty(model.receiveCustomers)
+                    && Collections3.isEmpty(model.receiveEmails)
+                    && Collections3.isEmpty(model.receiveMobiles)) {
                 throw new BetterMqException("请指定接收人!");
             }
 
@@ -97,6 +125,14 @@ public class NotificationModel implements Serializable {
     public List<Long> getReceiveCustomers() {
         return receiveCustomers;
     }
+    
+    public List<String> getReceiveEmails() {
+        return receiveEmails;
+    }
+    
+    public List<String> getReceiveMobiles() {
+        return receiveMobiles;
+    }
 
     public BetterjrEntity getEntity() {
         return entity;
@@ -105,5 +141,4 @@ public class NotificationModel implements Serializable {
     public Map<String, Object> getParam() {
         return param;
     }
-
 }

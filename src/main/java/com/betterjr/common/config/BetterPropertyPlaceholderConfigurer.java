@@ -29,7 +29,7 @@ public class BetterPropertyPlaceholderConfigurer extends PropertyPlaceholderConf
                     }
                 }
                 catch (Exception e) {
-                    logger.fatal("加载配置文件错误!");
+                    logger.fatal("配置文件加载错误!");
                 }
             }
         }
@@ -47,7 +47,7 @@ public class BetterPropertyPlaceholderConfigurer extends PropertyPlaceholderConf
                     }
                 }
                 catch (Exception e) {
-                    logger.fatal("加载配置文件错误!");
+                    logger.fatal("配置文件加载错误!");
                 }
             }
         }
