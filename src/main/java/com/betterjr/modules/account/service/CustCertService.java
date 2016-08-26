@@ -24,7 +24,9 @@ import org.springframework.stereotype.Service;
 import com.betterjr.common.exception.BytterSecurityException;
 import com.betterjr.common.exception.ServiceException;
 import com.betterjr.common.service.BaseService;
+import com.betterjr.common.utils.BTAssert;
 import com.betterjr.common.utils.BetterDateUtils;
+import com.betterjr.common.utils.Collections3;
 import com.betterjr.common.utils.reflection.ReflectionUtils;
 import com.betterjr.modules.account.dao.CustCertInfoMapper;
 import com.betterjr.modules.account.entity.CustCertInfo;
@@ -182,5 +184,15 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
          * return this.sqlMapper.update(
          * "update T_CUST_CERTINFO a set a.c_status ='0', a.c_token = #{token} where a.c_subject = #{subject} and a.c_status='9'", anCertInfo);
          */
+    }
+
+    /**
+     * 根据operOrg 取到CertInfo
+     * @param anOperOrg
+     * @return
+     */
+    public CustCertInfo findCertByOperOrg(String anOperOrg) {
+        BTAssert.notNull(anOperOrg);
+        return Collections3.getFirst(this.selectByProperty("operOrg", anOperOrg));
     }
 }

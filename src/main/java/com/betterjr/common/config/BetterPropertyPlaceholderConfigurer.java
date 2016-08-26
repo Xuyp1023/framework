@@ -4,12 +4,12 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.Set;
 
-import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
-public class BetterPropertyPlaceholderConfigurer extends PropertyPlaceholderConfigurer {
+public class BetterPropertyPlaceholderConfigurer extends PropertySourcesPlaceholderConfigurer {
     private static final String BETTER_CONFIG = "better.config";
 
     public void setBetterLocations(Set<String> betterLocations) {
@@ -29,7 +29,7 @@ public class BetterPropertyPlaceholderConfigurer extends PropertyPlaceholderConf
                     }
                 }
                 catch (Exception e) {
-                    logger.fatal("加载配置文件错误!");
+                    logger.fatal("配置文件加载错误!");
                 }
             }
         }
@@ -47,7 +47,7 @@ public class BetterPropertyPlaceholderConfigurer extends PropertyPlaceholderConf
                     }
                 }
                 catch (Exception e) {
-                    logger.fatal("加载配置文件错误!");
+                    logger.fatal("配置文件加载错误!");
                 }
             }
         }
