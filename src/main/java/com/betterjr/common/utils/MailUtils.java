@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Properties;
 
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.Multipart;
@@ -15,6 +17,8 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * 
@@ -82,7 +86,9 @@ public class MailUtils {
     public MailUtils() {
     }
 
-    public static MimeMessage createMessage(Session anSession, String anSubject, String anContent, Collection<String> anAttachments) {
+    public static MimeMessage createMessage(Session anSession, 
+            String anSubject, 
+            String anContent, Collection<Pair<String, String>> anAttachments) {
         try {
             MimeMessage mimeMessage = new MimeMessage(anSession);
             mimeMessage.setFrom(new InternetAddress(from));
@@ -96,14 +102,28 @@ public class MailUtils {
 
             multipart.addBodyPart(mimeBodyPart);
 
+            for (Pair<String, String> attachment: anAttachments) {
+                FileDataSource fileDataSource = new FileDataSource(attachment.getRight());
+                MimeBodyPart attachmentBodyPart = new MimeBodyPart(); 
+                attachmentBodyPart.setDataHandler(new DataHandler(fileDataSource));
+                attachmentBodyPart.setFileName(attachment.getLeft());
+                multipart.addBodyPart(attachmentBodyPart);
+            }
             // 向Multipart添加附件
             /*
-             * Enumeration efile = file.elements(); while (efile.hasMoreElements()) { MimeBodyPart mbpFile = new MimeBodyPart(); filename =
-             * efile.nextElement().toString(); FileDataSource fds = new FileDataSource(filename); mbpFile.setDataHandler(new DataHandler(fds)); //
-             * 这个方法可以解决附件乱码问题。 // String filename = new String(fds.getName().getBytes(), "ISO-8859-1"); mbpFile.setFileName(filename); //
-             * 向MimeMessage添加（Multipart代表附件） mp.addBodyPart(mbpFile);
-             * 
-             * } file.removeAllElements();
+              Enumeration efile = file.elements(); 
+             while (efile.hasMoreElements()) { 
+             
+             filename =efile.nextElement().toString(); 
+             FileDataSource fds = new FileDataSource(filename); 
+             mbpFile.setDataHandler(new DataHandler(fds)); // 这个方法可以解决附件乱码问题。 
+             // String filename = new String(fds.getName().getBytes(), "ISO-8859-1");
+               mbpFile.setFileName(filename); 
+               // 向MimeMessage添加（Multipart代表附件） 
+              mp.addBodyPart(mbpFile);
+             
+              } 
+              file.removeAllElements();
              */
 
             mimeMessage.setContent(multipart);
@@ -152,7 +172,7 @@ public class MailUtils {
     /**
      * 发送邮件
      */
-    public static boolean sendMail(String anTo, String anSubject, String anContent, Collection<String> anAttachments) {
+    public static boolean sendMail(String anTo, String anSubject, String anContent, Collection<Pair<String, String>> anAttachments) {
         Session session = createSession();
 
         try {

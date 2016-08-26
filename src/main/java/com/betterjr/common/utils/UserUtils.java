@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.betterjr.modules.account.data.CustContextInfo;
+import com.betterjr.modules.account.entity.CustCertInfo;
 import com.betterjr.modules.account.entity.CustInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.sys.entity.WorkUserInfo;
@@ -274,6 +275,41 @@ public class UserUtils {
     public static boolean supplierUser() {
 
         return ShiroUser.supplierUser(getPrincipal());
+    }
+    
+    private static boolean custRuleCheck(CustCertInfo anCertInfo, PlatformBaseRuleType anBaseRule) {
+        if (anCertInfo == null) {
+            return false;
+        }
+        String tempInnerRules = anCertInfo.getInnerRules();
+        if (BetterStringUtils.isBlank(tempInnerRules)) {
+            return false;
+        }
+        List<PlatformBaseRuleType> innerRules = PlatformBaseRuleType.checkList(tempInnerRules);
+        if (innerRules == null) {
+            return false;
+        }
+        return innerRules.contains(anBaseRule);
+    }
+
+    public static boolean coreCustomer(CustCertInfo anCertInfo) {
+        return custRuleCheck(anCertInfo, PlatformBaseRuleType.CORE_USER);
+    }
+
+    public static boolean sellerCustomer(CustCertInfo anCertInfo) {
+        return custRuleCheck(anCertInfo, PlatformBaseRuleType.SELLER_USER);
+    }
+
+    public static boolean supplierCustomer(CustCertInfo anCertInfo) {
+        return custRuleCheck(anCertInfo, PlatformBaseRuleType.SUPPLIER_USER);
+    }
+
+    public static boolean platformCustomer(CustCertInfo anCertInfo) {
+        return custRuleCheck(anCertInfo, PlatformBaseRuleType.PLATFORM_USER);
+    }
+
+    public static boolean factorCustomer(CustCertInfo anCertInfo) {
+        return custRuleCheck(anCertInfo, PlatformBaseRuleType.FACTOR_USER);
     }
 
     /**
