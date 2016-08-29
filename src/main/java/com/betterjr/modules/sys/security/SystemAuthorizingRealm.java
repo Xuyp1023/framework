@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.betterjr.common.data.UserType;
 import com.betterjr.common.security.KeyReader;
 import com.betterjr.common.security.SecurityConstants;
+import com.betterjr.common.utils.BTAssert;
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.Collections3;
 import com.betterjr.common.utils.Digests;
@@ -127,7 +128,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
                 if (user != null) {
                     log.warn(user.toString());
                     CustPassInfo passInfo = passService.getOperaterPassByCustNo(user.getId());
-
+                    BTAssert.notNull(passInfo, "找不到操作员密码");
                     // 临时锁定
                     if (passInfo.validLockType()) {
 

@@ -365,5 +365,14 @@ public class UserUtils {
         // getCacheMap().remove(key);
         getSession().removeAttribute(key);
     }
+    
+    
+    public static void StoreTempDataForTest(ShiroUser user){
+        Session session = new SimpleSession();
+        SimplePrincipalCollection col = new SimplePrincipalCollection();
+        session.setAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY,col);
+        col.add(user, "test");
+        storeThreadVar(SesessionKey,session);
+    }
 
 }
