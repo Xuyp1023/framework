@@ -128,7 +128,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
                 if (user != null) {
                     log.warn(user.toString());
                     CustPassInfo passInfo = passService.getOperaterPassByCustNo(user.getId());
-                    BTAssert.notNull(passInfo, "找不到操作员密码");
+                    BTAssert.notNull(passInfo.getCustNo(), "找不到操作员密码");
                     // 临时锁定
                     if (passInfo.validLockType()) {
 
