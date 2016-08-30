@@ -22,8 +22,8 @@ import java.util.*;
 /**
  * Collections工具集. 在JDK的Collections和Guava的Collections2后, 命名为Collections3.
  * 
- * @author calvin
- * @version 2013-01-15
+ * @author henryzhou
+ * @version 2015-01-15
  */
 @SuppressWarnings("rawtypes")
 public class Collections3 {
@@ -195,9 +195,18 @@ public class Collections3 {
     /**
      * 判断是否为空.
      */
-    public static boolean isEmpty(String[] collection) {
+    public static boolean isEmpty(String[] anArrStr) {
 
-        return (collection == null || collection.length == 0);
+        if (anArrStr == null || anArrStr.length == 0) {
+            return true;
+        }
+        for(String tmpStr : anArrStr){
+           if (BetterStringUtils.isNotBlank(tmpStr)){
+               return false;
+           }
+        }
+        
+        return true;
     }
 
     /**
@@ -301,12 +310,132 @@ public class Collections3 {
         }
         return list;
     }
+
+    /**
+     * 过滤查询条件入参信息
+     * 
+     * @param anMap
+     *            前端提供的查询条件
+     * @param anTerms
+     *            系统可以处理的查询条件入参
+     * @return
+     */
+    public static Map filterMap(Map<String, Object> anMap, String[] anTerms) {
+        Map<String, Object> termMap = new HashMap();
+        if (isEmpty(anTerms) == false) {
+            for (String tmpKey : anTerms) {
+                Object obj = anMap.get(tmpKey);
+                if (obj != null) {
+                    if (obj instanceof String) {
+                        if (BetterStringUtils.isBlank((String) obj)) {
+                            continue;
+                        }
+                    }
+                    termMap.put(tmpKey, obj);
+                }
+            }
+        }
+
+        return termMap;
+    }
+
+    /**
+     * 增加模糊参数的处理
+     * 
+     * @param anMap
+     *            已经过滤过的参数信息
+     * @param anArrFuzzy
+     *            需要模糊处理的参数
+     * @return
+     */
+    public static Map fuzzyMap(Map<String, Object> anMap, String[] anArrFuzzy) {
+        if (isEmpty(anArrFuzzy)) {
+            return anMap;
+        }
+        for (String tmpKey : anArrFuzzy) {
+            if (anMap.containsKey(tmpKey)) {
+                Object obj = anMap.remove(tmpKey);
+                anMap.put("LIKE".concat(tmpKey), "%" + (String) obj + "%");
+            }
+        }
+
+        return anMap;
+    }
+
     public static List arrayToList(Object anObj) {
         List list = new ArrayList();
-        int k = Array.getLength(anObj);
-        for (int i = 0; i < k; i++) {
-            list.add(Array.get(anObj, i));
+        if (anObj != null) {
+            if (anObj.getClass().isArray()) {
+                int k = Array.getLength(anObj);
+                for (int i = 0; i < k; i++) {
+                    list.add(Array.get(anObj, i));
+                }
+            }
+            else {
+                list.add(anObj);
+            }
         }
         return list;
+    }
+
+    /**
+     * 判断一个对象是否是一个有效的集合，指集合中至少有一个对象
+     * 
+     * @param anObj
+     * @return true有效的集合，false无效的集合
+     */
+    public static boolean isList(Object anObj) {
+        if (anObj instanceof Collection) {
+            return isEmpty((Collection) anObj) == false;
+        }
+
+        return false;
+    }
+
+    public static Collection removeNullValue(Collection anList) {
+        if (isEmpty(anList)) {
+
+            return anList;
+        }
+        anList.removeAll(Collections.singleton(null));
+        return anList;
+
+    }
+
+    /**
+     * 判断对象是否为空，如果为空直接返回真值，如果是Map，则使用Map的判断条件，<BR>
+     * 如果是集合则使用集合的判断条件，如果是字符则使用字符的判断条件；<BR>
+     * 如果是数组，则取出数组中的值来判断；如果数组中存在一个非空值，则该对象非空<BR>
+     * 否则返回该对象非空
+     * 
+     * @param anObj
+     * @return
+     */
+    public static boolean isEmptyObject(Object anObj) {
+        if (anObj == null) {
+            return true;
+        }
+        if (anObj instanceof Map) {
+            return isEmpty((Map) anObj);
+        }
+        else if (anObj instanceof Collection) {
+            return isEmpty((Collection) anObj);
+        }
+        else if (anObj instanceof String) {
+
+            return BetterStringUtils.isBlank((String) anObj);
+        }
+        else {
+            if (anObj.getClass().isArray()) {
+                int k = Array.getLength(anObj);
+                for (int i = 0; i < k; i++) {
+                    if (isEmptyObject(Array.get(anObj, i)) == false) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
     }
 }

@@ -193,6 +193,9 @@ public class ReflectionUtils {
         if (anMuitMap) {
             return HashMultimap.create();
         }
+        if (anUseSet) {
+            return new LinkedHashSet();
+        }
         else {
             return new HashMap();
         }

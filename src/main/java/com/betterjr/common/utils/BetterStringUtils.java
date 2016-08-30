@@ -1,6 +1,7 @@
 package com.betterjr.common.utils;
 
 import java.io.UnsupportedEncodingException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -335,6 +336,41 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
 
         return buf.toString();
     }
+    /**
+     * 使用给定的分隔符, 将一个数组拼接成字符串
+     * 
+     * @param sp
+     *            分隔符
+     * @param array
+     *            要拼接的数组
+     * @return 拼接好的字符串
+     */
+    public static <T> String join(String sp, T... array) {
+        return join(sp, array).toString();
+    }
+    
+    /**
+     * 将一个数组转换成字符串
+     * <p>
+     * 每个元素之间，都会用一个给定的字符分隔
+     * 
+     * @param c
+     *            分隔符
+     * @param objs
+     *            数组
+     * @return 拼合后的字符串
+     */
+    public static <T> StringBuilder join(Object c, T[] objs) {
+        StringBuilder sb = new StringBuilder();
+        if (null == objs || 0 == objs.length)
+            return sb;
+
+        sb.append(objs[0]);
+        for (int i = 1; i < objs.length; i++)
+            sb.append(c).append(objs[i]);
+
+        return sb;
+    }
 
     /**
      * 获得i18n字符串
@@ -588,7 +624,7 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
 
     public static String createRandomCharAndNum(int length) {
         String val = "";
-        Random random = new Random();
+        SecureRandom random = new SecureRandom();
         String chars = "abcdefhjkmnprstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ";
         for (int i = 0; i < length; i++) {
             // 输出字母还是数字
@@ -632,13 +668,32 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
        return false;        
     }
 
-    
-    public static void main(String[] args){
-     String tmpStr ="data=sdke9SqdtKzfcUiYpwJ/Re9do9ylwBDCFya+=smLJeck0QGDlWy4ywXAK9N3U1VJe8yEdweAii7SdCX+GEi9JD60PCSosggcVU/j1vFqMa1UKmf0TiSJD2lxg5sK2Kze0T1cxZl2FINrzaz6qmtAL1i+P706OLOGQ4/3oywNUZDyE5JIzaYLwROelLC1cUmBAbt/Qw0hdLuQwRVTuPtsEXOSy7t97ZhWo9u/MQze/meyNHREHXCI8EkVjw8v2n5pPz+z4ZxrF85j3CXaRNDnsORUE7kAwKIV98yBI/KyO95Ub7PiqaE4PwNpvphojwNVw+G8YHlMdMHPIHAO2abh+Aw==&sign=dkSLs22CVmfR/tWbiM+JV/BgUMzdsiV2jjeWhYbwswxyUpDf+HenUMBeEQjGvxHDmYaavSEJTXqpUyZDMIv8RVkKX4Ss0nY2hO0Czkp8m/ZKJVOMdwNcWjNYIC7Va/7kg1PN7ERMHadfkfdD+cxszCDKp4dClAa1UaDJs/ZDAvCBM1NKstJEjF9cFdktROgJmqrz8EFM6LloG+uo9FsHfwtY8mtHMtIE+TKANVyL3q6MUtXFNUhSWBZNo18BQLqtSBTOETKnBMEZbRCQauhbALw5h8Dvo7TG8IRXUmeMr8lU8NCrSEkRuY6quPN4yxxr9+d+EoHhEpvMfZNCRGkb5w==";
-     Map<String, String> tmpMap = parseParamsMap(tmpStr);
-     for(Map.Entry<String, String> ent : tmpMap.entrySet()){
-         
-        System.out.println(ent.getKey() +" = " + ent.getValue());        
-     }
+    /**
+     * 全角字符转半角的函数
+     * 
+     * @param src
+     * @return
+     */
+    public static String toSemiangle(String anStr){
+        char[] c = anStr.toCharArray();
+        for (int index = 0; index < c.length; index++) {
+            if (c[index] == 12288) {// 全角空格
+                c[index] = (char) 32;
+            }
+            else if (c[index] > 65280 && c[index] < 65375) {// 其他全角字符
+                c[index] = (char) (c[index] - 65248);
+            }
+        }
+
+        return String.valueOf(c);
+    }
+
+    public static void main(String[] args) {
+        String tmpStr = "data=sdke9SqdtKzfcUiYpwJ/Re9do9ylwBDCFya+=smLJeck0QGDlWy4ywXAK9N3U1VJe8yEdweAii7SdCX+GEi9JD60PCSosggcVU/j1vFqMa1UKmf0TiSJD2lxg5sK2Kze0T1cxZl2FINrzaz6qmtAL1i+P706OLOGQ4/3oywNUZDyE5JIzaYLwROelLC1cUmBAbt/Qw0hdLuQwRVTuPtsEXOSy7t97ZhWo9u/MQze/meyNHREHXCI8EkVjw8v2n5pPz+z4ZxrF85j3CXaRNDnsORUE7kAwKIV98yBI/KyO95Ub7PiqaE4PwNpvphojwNVw+G8YHlMdMHPIHAO2abh+Aw==&sign=dkSLs22CVmfR/tWbiM+JV/BgUMzdsiV2jjeWhYbwswxyUpDf+HenUMBeEQjGvxHDmYaavSEJTXqpUyZDMIv8RVkKX4Ss0nY2hO0Czkp8m/ZKJVOMdwNcWjNYIC7Va/7kg1PN7ERMHadfkfdD+cxszCDKp4dClAa1UaDJs/ZDAvCBM1NKstJEjF9cFdktROgJmqrz8EFM6LloG+uo9FsHfwtY8mtHMtIE+TKANVyL3q6MUtXFNUhSWBZNo18BQLqtSBTOETKnBMEZbRCQauhbALw5h8Dvo7TG8IRXUmeMr8lU8NCrSEkRuY6quPN4yxxr9+d+EoHhEpvMfZNCRGkb5w==";
+        Map<String, String> tmpMap = parseParamsMap(tmpStr);
+        for (Map.Entry<String, String> ent : tmpMap.entrySet()) {
+
+            System.out.println(ent.getKey() + " = " + ent.getValue());
+        }
     }
 }

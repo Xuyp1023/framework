@@ -93,6 +93,9 @@ public class Cryptos {
      * @param input 原始输入字符数组
      */
     public static String aesEncrypt(String input) {
+        if (BetterStringUtils.isBlank(input)) {
+            return "";
+        }
         try {
             return Encodes.encodeHex(aesEncrypt(input.getBytes(DEFAULT_URL_ENCODING), DEFAULT_KEY));
         }
@@ -109,6 +112,9 @@ public class Cryptos {
      */
     public static String aesEncrypt(String input, String key) {
         try {
+            if (BetterStringUtils.isBlank(input) || BetterStringUtils.isBlank(key)) {
+                return "";
+            }
             return Encodes.encodeHex(aesEncrypt(input.getBytes(DEFAULT_URL_ENCODING), Encodes.decodeHex(key)));
         }
         catch (UnsupportedEncodingException e) {
@@ -124,6 +130,10 @@ public class Cryptos {
      */
     public static byte[] aesEncrypt(byte[] input, byte[] key) {
         return aes(input, key, Cipher.ENCRYPT_MODE);
+    }
+
+    public static byte[] aesEncrypt(byte[] input) {
+        return aes(input, DEFAULT_KEY, Cipher.ENCRYPT_MODE);
     }
 
     /**
@@ -143,6 +153,10 @@ public class Cryptos {
      * @param input Hex编码的加密字符串
      */
     public static String aesDecrypt(String input) {
+        if (BetterStringUtils.isBlank(input)) {
+
+            return "";
+        }
         try {
             return new String(aesDecrypt(Encodes.decodeHex(input), DEFAULT_KEY), DEFAULT_URL_ENCODING);
         }
@@ -159,6 +173,11 @@ public class Cryptos {
      */
     public static String aesDecrypt(String input, String key) {
         try {
+            if (BetterStringUtils.isBlank(input) || BetterStringUtils.isBlank(key)) {
+                
+                return "";
+            }
+            
             return new String(aesDecrypt(Encodes.decodeHex(input), Encodes.decodeHex(key)), DEFAULT_URL_ENCODING);
         }
         catch (UnsupportedEncodingException e) {
@@ -174,6 +193,10 @@ public class Cryptos {
      */
     public static byte[] aesDecrypt(byte[] input, byte[] key) {
         return aes(input, key, Cipher.DECRYPT_MODE);
+    }
+
+    public static byte[] aesDecrypt(byte[] input) {
+        return aes(input, DEFAULT_KEY, Cipher.DECRYPT_MODE);
     }
 
     /**
@@ -196,6 +219,10 @@ public class Cryptos {
      */
     public static byte[] aes(byte[] input, byte[] key, int mode) {
         try {
+            if (input == null || input.length == 0) {
+                return input;
+            }
+
             SecretKey secretKey = new SecretKeySpec(key, AES);
             Cipher cipher = Cipher.getInstance(AES);
             cipher.init(mode, secretKey);
@@ -216,6 +243,9 @@ public class Cryptos {
      */
     private static byte[] aes(byte[] input, byte[] key, byte[] iv, int mode) {
         try {
+            if (input == null || input.length == 0) {
+                return input;
+            }
             SecretKey secretKey = new SecretKeySpec(key, AES);
             IvParameterSpec ivSpec = new IvParameterSpec(iv);
             Cipher cipher = Cipher.getInstance(AES_CBC);
