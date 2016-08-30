@@ -6,10 +6,18 @@ import com.betterjr.modules.sys.entity.AreaInfo;
 import com.betterjr.modules.sys.service.AreaInfoService;
 import java.util.*;
 
+/**
+ * 行政区划工具类， 省/市-市/区-县/区 /市 三级行政区划  
+ *
+ */
 public class AreaUtils {
     public static final String CACHE_AREA_MAP = "areaMap";
     private static AreaInfoService infoService = SpringContextHolder.getBean(AreaInfoService.class);
 
+    /**
+     * 返回系统中所有省级行政区域的名称以及代码
+     * @return
+     */
     public static List<SimpleDataEntity> findProvList() {
         Map<String, AreaInfo> map = findMap();
         List<SimpleDataEntity> list = new ArrayList();
@@ -22,6 +30,11 @@ public class AreaUtils {
         return list;
     }
 
+    /**
+     * 返回省所属下一级行政区域名称&代码
+     * @param anProv，省级行政区域名称
+     * @return 省所属下一级行政区域名称&代码
+     */
     public static List<SimpleDataEntity> findAreaList(String anProv) {
         List<SimpleDataEntity> list = new ArrayList();
         if (BetterStringUtils.isBlank(anProv) || anProv.trim().length() != 6) {
@@ -41,12 +54,22 @@ public class AreaUtils {
         return list;
     }
 
+    /**
+     * 是否存在区域代码
+     * @param anAreaCode
+     * @return
+     */
     public static boolean checkExists(String anAreaCode){
         String tmpStr = findAreaName(anAreaCode);
         
         return tmpStr.equals(anAreaCode) == false;
     }
     
+    /**
+     * 查找区域代码对应的名称
+     * @param anAreaCode
+     * @return
+     */
     public static String findAreaName(String anAreaCode) {
         if (BetterStringUtils.isBlank(anAreaCode)) {
             

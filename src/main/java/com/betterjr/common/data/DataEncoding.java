@@ -9,7 +9,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.betterjr.common.utils.Base62;
 import com.betterjr.common.utils.Encodes;
-
+/**
+ * base系列编码工具类
+ *
+ */
 public enum DataEncoding {
 
     BASE32, BASE62, BASE64, BASE64_SAFE, BASE16, NORMALl;
@@ -26,6 +29,11 @@ public enum DataEncoding {
         return null;
     }
 
+    /**
+     * 生成base编码字符串
+     * @param anBytes
+     * @return
+     */
     public String encodeData(byte[] anBytes) {
         switch (this) {
         case BASE32:
@@ -77,6 +85,11 @@ public enum DataEncoding {
         return Encodes.decodeBase64(sb.toString());
     }
 
+    /**
+     * 解码base字符串
+     * @param anData
+     * @return
+     */
     public byte[] decodeData(String anData) {
         switch (this) {
         case BASE32:

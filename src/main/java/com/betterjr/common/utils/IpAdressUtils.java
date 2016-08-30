@@ -91,5 +91,28 @@ public class IpAdressUtils {
 		return tmpStr;
 	}
 
- 
+
+    public static boolean isIpAddress(String address) {
+        if (BetterStringUtils.isEmpty(address)) {
+            return false;
+        }
+        String [] fields = address.split("\\.");
+        if (fields.length == 4) {
+            // IPV4
+            for (String field : fields) {
+                try {
+                    int value = Integer.parseInt(field);
+                    if (value < 0 || value > 255) {
+                        return false;
+                    }
+                } catch (Exception e) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        // TODO IPV6?
+        return false;
+    }
+
 }

@@ -3,6 +3,10 @@ package com.betterjr.common.utils;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * 
+ * Base62工具类用到的针对bit操作的OutputStream
+ */
 public class BitOutputStream {
     /**
      * The Java OutputStream that is used to write completed bytes.

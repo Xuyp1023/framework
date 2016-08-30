@@ -13,10 +13,8 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
 /**
- * Cache工具类
+ * Cache工具类,封装redis做为存储工具
  * 
- * @author ThinkGem
- * @version 2013-5-29
  */
 public class CacheUtils {
 

@@ -8,7 +8,11 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-
+/**
+ * 
+ * spring配置文件自定义加载器
+ *
+ */
 public class BetterPropertyPlaceholderConfigurer extends PropertySourcesPlaceholderConfigurer {
     private static final String BETTER_CONFIG = "better.config";
 

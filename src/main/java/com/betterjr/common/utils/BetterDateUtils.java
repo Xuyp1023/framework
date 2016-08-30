@@ -81,6 +81,16 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
         return DateFormatUtils.format(new Date(), pattern);
     }
 
+    public static String getCHDate(){
+        
+        return DateFormatUtils.format(new Date(), "yyyy年MM月dd日");
+    }
+
+    public static String getCHDateTime(){
+        
+        return DateFormatUtils.format(new Date(), "yyyy年MM月dd日  HH时mm分");
+    }
+    
     public static java.util.Date getNow() {
         return new Date(System.currentTimeMillis());
     }
@@ -121,7 +131,11 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
         return anDate;
     }
     
-    // 格式化输出日期格式  202013 HH:mm:ss
+    /**
+     * 格式化输出日期格式  202013 HH:mm:ss
+     * 
+     * 
+     */
     public static String formatDispTime(String anTime) {
         if (BetterStringUtils.isNotBlank(anTime)) {
             StringBuilder sb = new StringBuilder();
@@ -310,6 +324,26 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
         return (afterTime - beforeTime) / (1000 * 60 * 60 * 24);
     }
 
+
+    /**
+     * 计算日期之间的天数，如果起始日期或终止日期为空或0；则返回0
+     * 
+     * @param anBefore 起始日期
+     * @param anAfter  终止日期
+     * @return
+     */
+    public static int getDistanceOfTwoDay(String anBefore, String anAfter) {
+        
+        Date actualDate = parseDate(anBefore);
+        Date endDate = parseDate(anAfter);
+        if(null == actualDate || null == endDate) {
+            
+            return 0;
+        }
+        
+        return (int)Math.round(BetterDateUtils.getDistanceOfTwoDate(actualDate, endDate));
+    }
+    
     /**
      * 获得当前的小时
      * @return

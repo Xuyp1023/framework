@@ -3,6 +3,10 @@ package com.betterjr.common.utils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+/**
+ * Base62 编码&解码工具类 
+ *
+ */
 public class Base62 {
 
     private static String Base62CodingSpace = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -13,7 +17,7 @@ public class Base62 {
     }
 
     /**
-     * 
+     * 生成base62编码字符串
      * @param original
      * @return
      * @throws IOException
@@ -44,7 +48,7 @@ public class Base62 {
     }
 
     /**
-     * 
+     * 从base62字符串中解码
      * @param base62
      * @return
      * @throws IOException
