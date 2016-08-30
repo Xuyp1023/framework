@@ -1,5 +1,9 @@
 package com.betterjr.common.utils;
 
+/**
+ * Base62工具类用到的针对bit操作的InputStream
+ *
+ */
 public class BitInputStream {
 
     private byte[] buffer;

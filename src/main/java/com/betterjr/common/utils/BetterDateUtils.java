@@ -131,7 +131,11 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
         return anDate;
     }
     
-    // 格式化输出日期格式  202013 HH:mm:ss
+    /**
+     * 格式化输出日期格式  202013 HH:mm:ss
+     * 
+     * 
+     */
     public static String formatDispTime(String anTime) {
         if (BetterStringUtils.isNotBlank(anTime)) {
             StringBuilder sb = new StringBuilder();
