@@ -14,7 +14,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -45,7 +47,29 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
     public static long ONE_GB = ONE_MB * 1024;
     public static long ONE_TB = ONE_GB * (long) 1024;
     public static long ONE_PB = ONE_TB * (long) 1024;
-
+    
+    public static Set<String> SupportedUploadFileType=new HashSet<String>();
+    static{
+        SupportedUploadFileType.add("jpg");
+        SupportedUploadFileType.add("jpeg");
+        SupportedUploadFileType.add("png");
+        SupportedUploadFileType.add("gif");
+        SupportedUploadFileType.add("doc");
+        SupportedUploadFileType.add("docx");
+        SupportedUploadFileType.add("pdf");
+        SupportedUploadFileType.add("xls");
+        SupportedUploadFileType.add("xlsx");
+        SupportedUploadFileType.add("zip");
+        SupportedUploadFileType.add("rar");
+    }
+    
+    public static boolean isSupportedUploadFileType(String type){
+        if(BetterStringUtils.isBlank(type)){
+            return false;
+        }
+        return SupportedUploadFileType.contains(type.trim().toLowerCase());
+    }
+    
     public static String getHumanReadableFileSize(Long fileSize) {
         if (fileSize == null) return null;
         return getHumanReadableFileSize(fileSize.longValue());
