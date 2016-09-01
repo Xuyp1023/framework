@@ -9,6 +9,8 @@ import java.util.Map;
 import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.common.mq.exception.BetterMqException;
 import com.betterjr.common.utils.Collections3;
+import com.betterjr.modules.account.entity.CustInfo;
+import com.betterjr.modules.account.entity.CustOperatorInfo;
 
 /**
  * 消息通知模型
@@ -21,9 +23,9 @@ public class NotificationModel implements Serializable {
 
     private String profileName;
 
-    private Long sendCustomer;
+    private CustOperatorInfo sendOperator;
 
-    private Long sendOperator;
+    private CustInfo sendCustomer;
 
     private List<Long> receiveOperators = new ArrayList<>();
 
@@ -35,17 +37,17 @@ public class NotificationModel implements Serializable {
     
     private Map<String, Object> param = new HashMap<>();
     
-    private List<Long> attachments = new ArrayList<>();
+    private List<Long> fileItems = new ArrayList<>();
 
     private BetterjrEntity entity;
 
-    private NotificationModel(String anProfileName, Long anSendCustomer, Long anSendOperator) {
+    private NotificationModel(String anProfileName, CustInfo anSendCustomer, CustOperatorInfo anSendOperator) {
         this.profileName = anProfileName;
         this.sendCustomer = anSendCustomer;
         this.sendOperator = anSendOperator;
     }
     
-    public static Builder newBuilder(String anProfileName, Long anSendCustomer, Long anSendOperator) {
+    public static Builder newBuilder(String anProfileName, CustInfo anSendCustomer, CustOperatorInfo anSendOperator) {
         return new Builder(anProfileName, anSendCustomer, anSendOperator);
     }
 
@@ -55,10 +57,10 @@ public class NotificationModel implements Serializable {
     public static class Builder {
         private final NotificationModel model;
 
-        private Builder(String anProfileName, Long anSendCustomer, Long anSendOperator) {
+        private Builder(String anProfileName, CustInfo anSendCustomer, CustOperatorInfo anSendOperator) {
             model = new NotificationModel(anProfileName, anSendCustomer, anSendOperator);
         }
-
+        
         public Builder addParam(String anKey, Object anValue) {
             model.param.put(anKey, anValue);
             return this;
@@ -84,8 +86,8 @@ public class NotificationModel implements Serializable {
             return this;
         }
         
-        public Builder addAttachment(Long anBatchNo) {
-            model.attachments.add(anBatchNo);
+        public Builder addFileItem(Long anFileItemId) {
+            model.fileItems.add(anFileItemId);
             return this;
         }
 
@@ -110,11 +112,11 @@ public class NotificationModel implements Serializable {
         return profileName;
     }
 
-    public Long getSendOperator() {
+    public CustOperatorInfo getSendOperator() {
         return sendOperator;
     }
 
-    public Long getSendCustomer() {
+    public CustInfo getSendCustomer() {
         return sendCustomer;
     }
     
@@ -140,5 +142,9 @@ public class NotificationModel implements Serializable {
 
     public Map<String, Object> getParam() {
         return param;
+    }
+
+    public List<Long> getFileItems() {
+        return fileItems;
     }
 }

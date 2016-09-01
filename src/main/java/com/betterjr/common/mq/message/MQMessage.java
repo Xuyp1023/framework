@@ -10,13 +10,18 @@ import com.betterjr.common.mq.codec.MQCodecType;
  * @author liuwl
  */
 public class MQMessage implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -3469846508880014382L;
+
     private final String topic;
 
     private final MQCodecType codecType;
 
     private Object object;
 
-    private Map<String, Serializable> headers;
+    private Map<String, Object> headers;
 
     public void addHead(String anName, Serializable anValue) {
         if (headers == null) {

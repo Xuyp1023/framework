@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.betterjr.common.utils.BetterDateUtils;
 import com.betterjr.common.utils.Encodes;
-import com.betterjr.common.utils.UUIDUtils;
 
 public class SerialGenerator implements SessionIdGenerator {
 
@@ -36,21 +35,25 @@ public class SerialGenerator implements SessionIdGenerator {
 
     public static final String FLOW_TASKECT_ID = "CustFlowTaskExecutor.id";
 
-    public static final String SCF_ENQUIRY_ID = "ScfEnquiry.id";
-    
     public static final String FLOW_TASK_ID = "CustFlowTask.id";
-    
     @Autowired
     private SelectKeyGenIDService selectKeyGenIDService = null;
 
     private static SerialGenerator generator = null;
 
-
+    @PostConstruct
     public void init() {
         generator = this;
     }
 
     private static SecureRandom random = new SecureRandom();
+
+    /**
+     * 封装JDK自带的UUID, 通过Random数字生成, 中间无-分割.
+     */
+    public static String uuid() {
+        return UUID.randomUUID().toString().replaceAll("-", "");
+    }
 
     /**
      * 使用SecureRandom随机生成Long.
@@ -99,7 +102,7 @@ public class SerialGenerator implements SessionIdGenerator {
 
     public Serializable generateId(Session session) {
 
-        return UUIDUtils.uuid();
+        return uuid();
     }
 
     public static String getRequestNo(String anClass, String anNetNo) {

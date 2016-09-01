@@ -20,6 +20,8 @@ import javax.mail.internet.MimeUtility;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.betterjr.common.data.NotificationAttachment;
+
 /**
  * 
  * @author liuwl
@@ -35,60 +37,17 @@ public class MailUtils {
     private static String username = "admin@qiejf.com";
     private static String password = "admin@qiejf";
 
-    public static String getProtocol() {
-        return protocol;
+    public MailUtils(String form, String host, String port, String username, String password) {
+        MailUtils.from = form;
+        MailUtils.host = host;
+        MailUtils.port = port;
+        MailUtils.username = username;
+        MailUtils.password = password;
     }
-
-    public void setProtocol(String anProtocol) {
-        protocol = anProtocol;
-    }
-
-    public static String getFrom() {
-        return from;
-    }
-
-    public void setFrom(String anFrom) {
-        from = anFrom;
-    }
-
-    public static String getHost() {
-        return host;
-    }
-
-    public void setHost(String anHost) {
-        host = anHost;
-    }
-
-    public static String getPort() {
-        return port;
-    }
-
-    public void setPort(String anPort) {
-        port = anPort;
-    }
-
-    public static String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String anUsername) {
-        username = anUsername;
-    }
-
-    public static String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String anPassword) {
-        password = anPassword;
-    }
-
-    public MailUtils() {
-    }
-
+    
     public static MimeMessage createMessage(Session anSession, 
             String anSubject, 
-            String anContent, Collection<Pair<String, String>> anAttachments) {
+            String anContent, Collection<NotificationAttachment> anAttachments) {
         try {
             MimeMessage mimeMessage = new MimeMessage(anSession);
             mimeMessage.setFrom(new InternetAddress(from));
@@ -102,29 +61,15 @@ public class MailUtils {
 
             multipart.addBodyPart(mimeBodyPart);
 
-            for (Pair<String, String> attachment: anAttachments) {
-                FileDataSource fileDataSource = new FileDataSource(attachment.getRight());
-                MimeBodyPart attachmentBodyPart = new MimeBodyPart(); 
-                attachmentBodyPart.setDataHandler(new DataHandler(fileDataSource));
-                attachmentBodyPart.setFileName(attachment.getLeft());
-                multipart.addBodyPart(attachmentBodyPart);
+            if (Collections3.isEmpty(anAttachments) == false) {
+                for (NotificationAttachment attachment: anAttachments) {
+                    FileDataSource fileDataSource = new FileDataSource(attachment.getFilePath());
+                    MimeBodyPart attachmentBodyPart = new MimeBodyPart(); 
+                    attachmentBodyPart.setDataHandler(new DataHandler(fileDataSource));
+                    attachmentBodyPart.setFileName(attachment.getFileName());
+                    multipart.addBodyPart(attachmentBodyPart);
+                }
             }
-            // 向Multipart添加附件
-            /*
-              Enumeration efile = file.elements(); 
-             while (efile.hasMoreElements()) { 
-             
-             filename =efile.nextElement().toString(); 
-             FileDataSource fds = new FileDataSource(filename); 
-             mbpFile.setDataHandler(new DataHandler(fds)); // 这个方法可以解决附件乱码问题。 
-             // String filename = new String(fds.getName().getBytes(), "ISO-8859-1");
-               mbpFile.setFileName(filename); 
-               // 向MimeMessage添加（Multipart代表附件） 
-              mp.addBodyPart(mbpFile);
-             
-              } 
-              file.removeAllElements();
-             */
 
             mimeMessage.setContent(multipart);
             mimeMessage.setSentDate(new Date());
@@ -172,7 +117,7 @@ public class MailUtils {
     /**
      * 发送邮件
      */
-    public static boolean sendMail(String anTo, String anSubject, String anContent, Collection<Pair<String, String>> anAttachments) {
+    public static boolean sendMail(String anTo, String anSubject, String anContent, Collection<NotificationAttachment> anAttachments) {
         Session session = createSession();
 
         try {
