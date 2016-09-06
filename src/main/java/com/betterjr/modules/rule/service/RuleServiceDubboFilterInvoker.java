@@ -189,4 +189,8 @@ public class RuleServiceDubboFilterInvoker {
     public static <T> T getInputObj(){
     	return (T)inputLocal.get();
     }
+    
+    public static void clearThreadLocal(){
+        inputLocal.remove();
+    }
 }
