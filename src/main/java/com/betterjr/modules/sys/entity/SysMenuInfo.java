@@ -1,7 +1,12 @@
 package com.betterjr.modules.sys.entity;
 
+import java.util.List;
+
 import com.betterjr.common.annotation.*;
+import com.betterjr.common.data.PlatformBaseRuleType;
 import com.betterjr.common.entity.BetterjrEntity;
+import com.betterjr.common.utils.BetterStringUtils;
+
 import javax.persistence.*;
 
 @Access(AccessType.FIELD)
@@ -106,6 +111,13 @@ public class SysMenuInfo implements BetterjrEntity {
     @Column(name = "C_ENDNODE",  columnDefinition="VARCHAR" )
     @MetaData( value="是否是末端节点", comments = "是否是末端节点，0有字节点，1无子节点")
     private Boolean endNode;
+
+    /**
+     * 功能特殊角色
+     */
+    @Column(name = "C_RULE_LIST",  columnDefinition="VARCHAR" )
+    @MetaData( value="功能特殊角色", comments = "功能特殊角色")
+    private String ruleList;
 
     private static final long serialVersionUID = -2555616939997634419L;
 
@@ -221,6 +233,14 @@ public class SysMenuInfo implements BetterjrEntity {
         this.endNode = endNode;
     }
 
+    public String getRuleList() {
+        return this.ruleList;
+    }
+
+    public void setRuleList(String anRuleList) {
+        this.ruleList = anRuleList;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -293,5 +313,22 @@ public class SysMenuInfo implements BetterjrEntity {
         result = prime * result + ((getWorkOpenMode() == null) ? 0 : getWorkOpenMode().hashCode());
         result = prime * result + ((getEndNode() == null) ? 0 : getEndNode().hashCode());
         return result;
+    }
+
+    public boolean hasValidMenu(List<PlatformBaseRuleType> anRules){
+        if (BetterStringUtils.isBlank(this.ruleList)){
+            return true;
+        }
+        PlatformBaseRuleType tmpInnerRule;
+//        System.out.println("this SystemMenu use ruleList is " + this.ruleList);
+        for(String tmpStr : BetterStringUtils.split(ruleList, ",|;")){
+            tmpInnerRule = PlatformBaseRuleType.checking(tmpStr);
+            if (anRules.contains(tmpInnerRule)){
+                
+                return true;
+            }
+        }
+        
+        return false;
     }
 }

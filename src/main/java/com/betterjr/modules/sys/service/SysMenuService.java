@@ -8,7 +8,9 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.betterjr.common.data.PlatformBaseRuleType;
 import com.betterjr.common.service.BaseService;
+import com.betterjr.common.utils.UserUtils;
 import com.betterjr.modules.sys.dao.SysMenuInfoMapper;
 import com.betterjr.modules.sys.entity.SysMenuInfo;
 
@@ -52,9 +54,10 @@ public class SysMenuService extends BaseService<SysMenuInfoMapper, SysMenuInfo> 
         anMap.put("id", menuIds);
         allList = this.selectByProperty(anMap, "menuOrder");
         Map<Integer,SysMenuInfo> parentNoteMap = new HashMap<Integer,SysMenuInfo>();
-        //父节点
+        // 父节点
+        List<PlatformBaseRuleType> userInnerRules = UserUtils.findInnerRules();
         for(SysMenuInfo menuInfo : allList){
-          if(0==menuInfo.getParentId()&&"1".equals(menuInfo.getStatus())){
+          if(0==menuInfo.getParentId()&&"1".equals(menuInfo.getStatus())  && menuInfo.hasValidMenu(userInnerRules)){
               parentNoteMap.put(menuInfo.getId(), menuInfo);
           }
         }
@@ -65,7 +68,7 @@ public class SysMenuService extends BaseService<SysMenuInfoMapper, SysMenuInfo> 
             List<SysMenuInfo> noteList = this.selectByProperty("parentId", parentId);
             List<Map<String, String>> noteMenuList = new ArrayList<Map<String,String>>();
             for(SysMenuInfo noteMenuInfo : noteList){
-                if("1".equals(noteMenuInfo.getStatus())){
+                if("1".equals(noteMenuInfo.getStatus()) && noteMenuInfo.hasValidMenu(userInnerRules)){
                     Map noteMenuMap = new HashMap<String, String>();
                     noteMenuMap.put("menuId", noteMenuInfo.getId());
                     noteMenuMap.put("title", noteMenuInfo.getMenuTitle());
@@ -81,7 +84,6 @@ public class SysMenuService extends BaseService<SysMenuInfoMapper, SysMenuInfo> 
         }
         return menuList;
     }
-    
 
     /****
      * 查询所有菜单，增加选中标识
@@ -94,9 +96,10 @@ public class SysMenuService extends BaseService<SysMenuInfoMapper, SysMenuInfo> 
         anMap.put("status", "1");
         List<SysMenuInfo> allList = this.selectByProperty(anMap, "menuOrder");
         Map<Integer,SysMenuInfo> parentNoteMap = new HashMap<Integer,SysMenuInfo>();
-        //父节点
+        // 父节点
+        List<PlatformBaseRuleType> userInnerRules = UserUtils.findInnerRules();
         for(SysMenuInfo menuInfo : allList){
-          if(0==menuInfo.getParentId()&&"1".equals(menuInfo.getStatus())){
+          if(0==menuInfo.getParentId()&&"1".equals(menuInfo.getStatus())   && menuInfo.hasValidMenu(userInnerRules)){
               parentNoteMap.put(menuInfo.getId(), menuInfo);
           }
         }
@@ -107,7 +110,7 @@ public class SysMenuService extends BaseService<SysMenuInfoMapper, SysMenuInfo> 
             List<SysMenuInfo> noteList = this.selectByProperty("parentId", parentId);
             List<Map<String, String>> noteMenuList = new ArrayList<Map<String,String>>();
             for(SysMenuInfo noteMenuInfo : noteList){
-                if("1".equals(noteMenuInfo.getStatus())){
+                if("1".equals(noteMenuInfo.getStatus()) && noteMenuInfo.hasValidMenu(userInnerRules)){
                     Map noteMenuMap = new HashMap<String, String>();
                     noteMenuMap.put("id", noteMenuInfo.getId());
                     noteMenuMap.put("text", noteMenuInfo.getMenuTitle());

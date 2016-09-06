@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -59,17 +58,17 @@ public class SysMenuRuleService extends BaseService<SysMenuRuleInfoMapper, SysMe
      * @param ruleNames
      * @return
      */
-    public List<String> findAllByRuleAndMenu(List<String> anRuleNameList, Integer anMenuId){
+    public List<String> findAllByRuleAndMenu(List<String> anRuleIdList, Integer anMenuId){
         List<String> menuList = new ArrayList<String>();
         Map anMap = new HashMap<String, Object>();
-        anMap.put("ruleName", anRuleNameList);
+        anMap.put("ruleId", anRuleIdList);
         List<Integer> menus=  this.menuService.findSubMenu(anMenuId);
         if (Collections3.isEmpty(menus)){
             
             return menuList;
         }
         anMap.put("menuId", menus);
-        logger.info("findAllByRuleAndMenu ruleNames "+ anRuleNameList +", anMenuId = " + anMenuId +", " + anMap);
+        logger.info("findAllByRuleAndMenu ruleNames "+ anRuleIdList +", anMenuId = " + anMenuId +", " + anMap);
         List<SysMenuRuleInfo> ruleList = this.selectByProperty(anMap);
         Map<Integer,SysMenuRuleInfo> ruleMap = new HashMap<Integer,SysMenuRuleInfo>();
         for (SysMenuRuleInfo ruleInfo : ruleList) {
