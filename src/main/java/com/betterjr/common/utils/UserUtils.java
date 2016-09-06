@@ -37,8 +37,8 @@ import com.betterjr.common.service.SpringContextHolder;
  * @author zhoucy
  */
 public class UserUtils {
-    private static final String SesessionIdKey = StaticThreadLocal.class.getName() + "_sessionId";
-    private static final String SesessionKey = StaticThreadLocal.class.getName() + "_session";
+    private static final String SesessionIdKey = UserUtils.class.getName() + "_sessionId";
+    private static final String SesessionKey = UserUtils.class.getName() + "_session";
     private static ThreadLocal<Map<String, Object>> sessionLocal = new ThreadLocal<Map<String, Object>>();
 
     protected static void storeThreadVar(String key, Object value) {
@@ -64,7 +64,12 @@ public class UserUtils {
     }
 
     public static void storeSessionId(String anId) {
+        clearThreadLocal();
         storeThreadVar(SesessionIdKey, anId);
+    }
+    
+    public static void clearThreadLocal(){
+        sessionLocal.remove();
     }
 
     public static String getSessionId() {
