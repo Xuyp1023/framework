@@ -184,11 +184,11 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
     }
 
     private void checkValid(HttpServletRequest request, X509Certificate anCert) {
-        CustCertInfo certInfo = (CustCertInfo) request.getSession().getAttribute(SecurityConstants.CUST_CERT_INFO);
-        if (certInfo == null) {
+//        CustCertInfo certInfo = (CustCertInfo) request.getSession().getAttribute(SecurityConstants.CUST_CERT_INFO);
+//        if (certInfo == null) {
             certInfo = certService.checkValidity(anCert);
             request.getSession().setAttribute(SecurityConstants.CUST_CERT_INFO, certInfo);
-        }
+//        }
 ///        AccessClientImpl.set(certInfo);
         this.certInfo = certInfo;
     }
