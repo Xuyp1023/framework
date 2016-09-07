@@ -16,7 +16,7 @@ public class QueryTermBuilder {
         return this;
     }
 
-    public Map build() {
+    public Map<String, Object> build() {
 
         return map;
     }

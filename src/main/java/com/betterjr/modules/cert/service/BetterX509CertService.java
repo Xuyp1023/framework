@@ -401,8 +401,8 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
     }
 
     private List<SimpleDataEntity> findX509CertByType(String anCertType, String anStatus) {
-        List<SimpleDataEntity> result = new ArrayList();
-        Map termMap = QueryTermBuilder.newInstance().put("certType", anCertType).put("certStatus", anStatus).build();
+        List<SimpleDataEntity> result = new ArrayList<>();
+        Map<String, Object> termMap = QueryTermBuilder.newInstance().put("certType", anCertType).put("certStatus", anStatus).build();
         
         for (BetterX509CertInfo certInfo : this.selectByProperty(termMap)){
             if (anCertType.equals("3")) {
