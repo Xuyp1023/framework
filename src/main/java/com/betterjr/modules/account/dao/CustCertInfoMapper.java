@@ -6,4 +6,5 @@ import com.betterjr.modules.account.entity.CustCertInfo;
 
 @BetterjrMapper
 public interface CustCertInfoMapper extends Mapper<CustCertInfo> {
+
 }

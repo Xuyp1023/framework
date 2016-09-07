@@ -11,8 +11,12 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
@@ -23,19 +27,27 @@ import org.springframework.stereotype.Service;
 
 import com.betterjr.common.exception.BytterSecurityException;
 import com.betterjr.common.exception.ServiceException;
+import com.betterjr.common.mapper.BeanMapper;
+import com.betterjr.common.selectkey.SerialGenerator;
 import com.betterjr.common.service.BaseService;
 import com.betterjr.common.utils.BTAssert;
 import com.betterjr.common.utils.BetterDateUtils;
+import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.Collections3;
+import com.betterjr.common.utils.UserUtils;
 import com.betterjr.common.utils.reflection.ReflectionUtils;
 import com.betterjr.modules.account.dao.CustCertInfoMapper;
 import com.betterjr.modules.account.entity.CustCertInfo;
+import com.betterjr.modules.cert.entity.BetterX509CertInfo;
+import com.betterjr.modules.cert.service.BetterX509CertService;
+import com.betterjr.modules.cert.utils.BetterX509CertStore;
 
 @Service
 public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInfo> {
+    private String[] QUERY_TERM = new String[] { "status", "GTEregDate", "LTEregDate", "GTEcreateDate", "LTEvalidDate", "contName", "custName" };
 
     @Autowired
-    private CustCertInfoMapper certInfoMapper;
+    private BetterX509CertService betterCertService;
 
     private CustCertInfo createCertInfo(X509Certificate anX509) {
         CustCertInfo certInfo = new CustCertInfo();
@@ -53,7 +65,228 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         certInfo.setOperNo("admin");
         certInfo.setStatus("9");
         certInfo.setOperOrg(findOperOrgData(anX509));
-        
+
+        return certInfo;
+    }
+
+    /**
+     * 发布数字证书
+     * 
+     * @param anSerialNo
+     *            证书序列号
+     * @param anPublishMode
+     *            发布模式
+     * @return
+     */
+    public Map<String, Object> savePublishCert(String anSerialNo, String anPublishMode) {
+        Map result = new HashMap();
+        CustCertInfo certInfo = findBySerialNo(anSerialNo);
+        BTAssert.notNull(certInfo, "数字证书信息不能为空！");
+
+        String password = createPassword(certInfo.getEmail());
+        BetterX509CertStore certStore = betterCertService.savePublishX509Cert(certInfo.getCertId(), password);
+        BTAssert.notNull(certStore, String.format("发布数字证书时，不能获取有效的数字证书信息；可能数字证书【%s】已经投入使用", certInfo.getSubject()));
+        X509Certificate x509Certinfo = certStore.findCertificate();
+        certInfo.setVersionUid(x509Certinfo.getSigAlgOID());
+        certInfo.setValidDate(BetterDateUtils.formatNumberDate(x509Certinfo.getNotAfter()));
+        certInfo.setCreateDate(BetterDateUtils.formatNumberDate(x509Certinfo.getNotBefore()));
+        certInfo.setSubject(x509Certinfo.getSubjectDN().getName());
+        try {
+            certInfo.setCertInfo(Base64.getEncoder().encodeToString(x509Certinfo.getEncoded()));
+        }
+        catch (CertificateEncodingException e) {
+
+        }
+        certInfo.publishModifyValue(createToken(80), anPublishMode);
+        certInfo.modifyValue(UserUtils.getOperatorInfo());
+        certInfo.setStatus("3");
+        this.updateByPrimaryKey(certInfo);
+        return result;
+    }
+
+    /**
+     * 下载颁发的数字证书
+     * 
+     * @param anToken
+     *            数字证书关联的token
+     * @return
+     */
+    public byte[] saveDownloadCert(String anToken) {
+        if (BetterStringUtils.isBlank(anToken) || BetterStringUtils.trim(anToken).length() < 80) {
+            return new byte[0];
+        }
+        List<CustCertInfo> tmpList = selectByProperty("token", anToken);
+        CustCertInfo certInfo = Collections3.getFirst(tmpList);
+        if (certInfo == null || tmpList.size() > 1 || certInfo.invalidDownload()) {
+
+            return new byte[0];
+        }
+        byte[] bbs = this.betterCertService.downloadPublishCert(certInfo.getCertId(), certInfo.getSerialNo());
+        if (Collections3.isEmptyObject(bbs) == false) {
+            certInfo.setStatus("0");
+            this.updateByPrimaryKey(certInfo);
+        }
+        return bbs;
+    }
+
+    public static String createToken(int anLength) {
+        if (anLength <= 32) {
+            return SerialGenerator.uuid();
+        }
+        else {
+            return SerialGenerator.uuid() + SerialGenerator.randomBase62(anLength - 32);
+        }
+    }
+
+    protected static String createPassword(String anComplexValue) {
+        String tmpStr = BetterStringUtils.createRandomCharAndNum(8);
+        if (BetterStringUtils.isNotBlank(anComplexValue) && (anComplexValue.length() > 6)) {
+
+            return tmpStr.concat(anComplexValue.substring(0, 6));
+        }
+        else {
+            return BetterStringUtils.createRandomCharAndNum(12);
+        }
+    }
+
+    /**
+     * 数字证书未发布前，客户证书作废处理
+     * 
+     * @param anSerialNo
+     *            数字证书序列号
+     * @param anReason
+     *            作废原因
+     */
+    public void saveCancelCustCert(String anSerialNo, String anReason) {
+        CustCertInfo certInfo = this.findBySerialNo(anSerialNo);
+        if (certInfo != null) {
+            certInfo.setStatus("8");
+            certInfo.setSerialNo("#" + certInfo.getSerialNo() + ";" + Integer.toString(SerialGenerator.randomInt(10000)));
+            certInfo.setCertId(-certInfo.getCertId());
+            certInfo.setDescription(anReason);
+            certInfo.modifyValue(UserUtils.getOperatorInfo());
+            this.updateByPrimaryKey(certInfo);
+        }
+    }
+
+    /**
+     * 保存客户数字证书信息
+     * 
+     * @param anMap
+     *            数字证书入参信息
+     * @return
+     */
+    public CustCertInfo saveCustCertInfo(CustCertInfo anCertInfo) {
+
+        return saveCustCertInfo(anCertInfo, false);
+    }
+
+    private CustCertInfo saveCustCertInfo(CustCertInfo anCertInfo, boolean anCreate) {
+        CustCertInfo tmpCertInfo = this.selectByPrimaryKey(anCertInfo.getSerialNo());
+        if (tmpCertInfo == null) {
+            anCertInfo.initValue(UserUtils.getOperatorInfo());
+            anCertInfo.setStatus("0");
+            this.insert(anCertInfo);
+        }
+        else {
+            BTAssert.isTrue(anCreate == false, "创建客户数字证书时，选择的数字证书已经存在！");
+            anCertInfo.modifyValue(UserUtils.getOperatorInfo(), tmpCertInfo);
+            this.updateByPrimaryKey(anCertInfo);
+        }
+
+        return anCertInfo;
+    }
+
+    /**
+     * 增加客户数字证书信息
+     * 
+     * @param anMap
+     * @return
+     */
+    public CustCertInfo addCustCertInfo(Map anMap) {
+        CustCertInfo certInfo = BeanMapper.map(anMap, CustCertInfo.class);
+        return saveCustCertInfo(certInfo, true);
+    }
+
+    /**
+     * 分页查询客户数字证书信息
+     * 
+     * @param anParam
+     *            查询条件
+     * @param anPageNum
+     *            页码
+     * @param anPageSize
+     *            分页大小
+     * @param anFlag
+     *            是否需要计算
+     * @return
+     */
+    public List<CustCertInfo> queryCustCertInfo(Map<String, Object> anParam, int anPageNum, int anPageSize, String anFlag) {
+        Map termMap = Collections3.fuzzyMap(Collections3.filterMap(anParam, QUERY_TERM), new String[] { "contName", "custName" });
+
+        return this.selectPropertyByPage(termMap, anPageNum, anPageSize, "1".equals(anFlag));
+    }
+
+    /**
+     * 根据数字证书序列号，查找客户数字证书信息
+     * 
+     * @param anSerialNo
+     *            序列号
+     * @return
+     */
+    public CustCertInfo findBySerialNo(String anSerialNo) {
+
+        return this.selectByPrimaryKey(anSerialNo);
+    }
+
+    /**
+     * 根据Role 列表查询对应的 OperOrg 集合
+     * 
+     * @param anRules
+     * @return
+     */
+    public Set<String> queryOperOrgByRoles(String... anRoles) {
+        final Set<String> operOrgSet = new HashSet<>();
+
+        for (String role: anRoles) {
+            operOrgSet.addAll(this.selectByProperty("LIKEruleList", "%" + role + "%").stream().map(certInfo -> certInfo.getOperOrg())
+                    .collect(Collectors.toSet()));
+        }
+
+        return operOrgSet;
+    }
+
+    /**
+     * 从数字证书中查找客户数字证书相关的信息
+     * 
+     * @param anSerialNo
+     *            序列号
+     * @return
+     */
+    public CustCertInfo findCustCertFromX509Cert(String anParam) {
+        try {
+            String[] arrParam = anParam.split(";|,");
+            Long certId = Long.parseLong(arrParam[0]);
+            String serialNo = arrParam[1];
+            return findCustCertFromX509Cert(certId, serialNo);
+        }
+        catch (Exception ex) {
+            return null;
+        }
+    }
+
+    public CustCertInfo findCustCertFromX509Cert(Long anCerId, String anSerialNo) {
+        BetterX509CertInfo x509CertInfo = betterCertService.findX509CertInfo(anCerId, anSerialNo);
+        CustCertInfo certInfo = new CustCertInfo();
+        BTAssert.notNull(x509CertInfo, "数字证书信息不能为空！");
+        if (x509CertInfo != null) {
+            BeanMapper.copy(x509CertInfo, certInfo);
+            certInfo.setCertId(x509CertInfo.getId());
+            certInfo.setCustName(x509CertInfo.getOrgName());
+            certInfo.setOperOrg(x509CertInfo.findOperOrg());
+            certInfo.setSubject(BetterX509CertService.buildSubjectDN(x509CertInfo));
+        }
+
         return certInfo;
     }
 
@@ -82,7 +315,6 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         catch (InvalidNameException e) {
             return anX509.getSubjectDN().getName();
         }
-
     }
 
     /**
@@ -187,7 +419,22 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
     }
 
     /**
+     * 根据机构信息获得这个几个的第一个数字证书
+     * 
+     * @param anOperOrg
+     * @return
+     */
+    public CustCertInfo findFirstCertInfoByOperOrg(String anOperOrg) {
+        if (BetterStringUtils.isBlank(anOperOrg)) {
+
+            return null;
+        }
+        return Collections3.getFirst(selectByProperty("operOrg", anOperOrg, "serialNo"));
+    }
+
+    /**
      * 根据operOrg 取到CertInfo
+     * 
      * @param anOperOrg
      * @return
      */

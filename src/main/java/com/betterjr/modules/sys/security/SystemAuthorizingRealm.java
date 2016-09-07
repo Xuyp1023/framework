@@ -165,7 +165,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
                     ut = UserType.OPERATOR_ADMIN;
                 }
 
-                ShiroUser shiroUser = new ShiroUser(ut, user.getId(), user.getName(), user,this.certInfo.getInnerRules(), mobileLogin, workData);
+                ShiroUser shiroUser = new ShiroUser(ut, user.getId(), user.getName(), user,this.certInfo.getRuleList(), mobileLogin, workData);
                 byte[] salt = Encodes.decodeHex(saltStr);
 
                 // 这里可以缓存认证

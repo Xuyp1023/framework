@@ -286,7 +286,7 @@ public class UserUtils {
         if (anCertInfo == null) {
             return false;
         }
-        String tempInnerRules = anCertInfo.getInnerRules();
+        String tempInnerRules = anCertInfo.getRuleList();
         if (BetterStringUtils.isBlank(tempInnerRules)) {
             return false;
         }

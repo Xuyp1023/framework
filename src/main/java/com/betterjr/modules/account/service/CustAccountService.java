@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -117,6 +118,29 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
         }
 
         return dataList;
+    }
+    
+    /**
+     * 查询所有可用客户
+     * @return
+     */
+    public List<CustInfo> queryAllCustInfo() {
+        Map<String, Object> conditionMap = new HashMap<>();
+        conditionMap.put("identValid", "1");
+        conditionMap.put("businStatus", "0");
+        return this.selectByProperty(conditionMap);
+    }
+    
+    /**
+     * 查询所有可用客户
+     * @return
+     */
+    public List<CustInfo> queryCustInfoByOperOrgSet(Set<String> operOrgSet) {
+        Map<String, Object> conditionMap = new HashMap<>();
+        conditionMap.put("identValid", "1");
+        conditionMap.put("businStatus", "0");
+        conditionMap.put("operOrg", operOrgSet.toArray(new String[operOrgSet.size()]));
+        return this.selectByProperty(conditionMap);
     }
     
     /**
