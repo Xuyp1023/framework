@@ -56,6 +56,7 @@ public class SysMenuService extends BaseService<SysMenuInfoMapper, SysMenuInfo> 
         Map<Integer,SysMenuInfo> parentNoteMap = new HashMap<Integer,SysMenuInfo>();
         // 父节点
         List<PlatformBaseRuleType> userInnerRules = UserUtils.findInnerRules();
+        logger.info("userInnerRules:"+userInnerRules);
         for(SysMenuInfo menuInfo : allList){
           if(0==menuInfo.getParentId()&&"1".equals(menuInfo.getStatus())  && menuInfo.hasValidMenu(userInnerRules)){
               parentNoteMap.put(menuInfo.getId(), menuInfo);
