@@ -62,9 +62,9 @@ public class RocketMQMessageListener implements MessageListenerConcurrently {
             }
         }
         catch (BetterMqException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ClassNotFoundException
-                | IOException e) {
+                | IOException e) {// TODO 在本系统中此类消息直接丢掉
             logger.error("消息消费失败 Topic:" + messageExt.getTopic(), e);
-            return ConsumeConcurrentlyStatus.RECONSUME_LATER;
+            return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
         }
     }
 
