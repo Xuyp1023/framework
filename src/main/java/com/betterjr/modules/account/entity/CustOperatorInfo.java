@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.data.BaseRemoteEntity;
@@ -202,6 +203,9 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
      * 证件有效期
      */
     private String contCertValidDate;
+
+    @Transient
+    private String accessType;
 
     public String getContIdentType() {
         return contIdentType;
@@ -428,6 +432,14 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
 
     public void setRuleList(String anRuleList) {
         this.ruleList = anRuleList;
+    }
+
+    public String getAccessType() {
+        return this.accessType;
+    }
+
+    public void setAccessType(String anAccessType) {
+        this.accessType = anAccessType;
     }
 
     @Override
