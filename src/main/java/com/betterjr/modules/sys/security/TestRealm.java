@@ -32,7 +32,7 @@ public class TestRealm extends AuthorizingRealm{
 		  char[] passwd=upToken.getPassword();
 		  
 		  UserType ut = UserType.OPERATOR_USER;
-		  ShiroUser user=new ShiroUser(ut,0l,username,null,null,false,token);
+		  ShiroUser user=new ShiroUser(ut,Long.valueOf(0l),username,null,null,false,token,null);
 		  
 		  SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user, passwd,"TestRealm");
 		  System.out.println("testrealm="+info.toString());

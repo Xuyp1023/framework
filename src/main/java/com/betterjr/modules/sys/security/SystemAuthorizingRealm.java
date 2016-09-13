@@ -1,15 +1,11 @@
 package com.betterjr.modules.sys.security;
 
-import java.io.IOException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -26,13 +22,12 @@ import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import com.betterjr.common.data.CustPasswordType;
+import com.betterjr.common.data.SimpleDataEntity;
 import com.betterjr.common.data.UserType;
-import com.betterjr.common.security.KeyReader;
+import com.betterjr.common.exception.BytterSecurityException;
 import com.betterjr.common.security.SecurityConstants;
-import com.betterjr.common.utils.BTAssert;
-import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.Collections3;
 import com.betterjr.common.utils.Digests;
 import com.betterjr.common.utils.Encodes;
@@ -46,6 +41,10 @@ import com.betterjr.modules.account.entity.CustCertInfo;
 import com.betterjr.modules.account.entity.CustInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.account.entity.CustPassInfo;
+import com.betterjr.modules.wechat.data.api.AccessToken;
+import com.betterjr.modules.wechat.dubboclient.CustWeChatDubboClientService;
+import com.betterjr.modules.wechat.util.WechatDefHandler;
+import com.betterjr.modules.wechat.util.WechatKernel;
 
 public class SystemAuthorizingRealm extends AuthorizingRealm {
     private static final Logger log = LoggerFactory.getLogger(SystemAuthorizingRealm.class);
@@ -53,7 +52,6 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
     private static final int INTERATIONS = 1024;
     private static final int SALT_SIZE = 20;
     private static final String ALGORITHM = "SHA-256";
-    private CustCertInfo certInfo = null;
    
     private CustCertDubboClientService certService;
 
@@ -65,6 +63,9 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 
     
     private CustPassDubboClientService passService;
+    
+    
+    private CustWeChatDubboClientService weChatService;
 
     /**
      * 给ShiroDbRealm提供编码信息，用于密码密码比对 描述
@@ -95,77 +96,100 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
         CustContextInfo contextInfo = null;
         boolean mobileLogin = false;
         log.warn("this work for doGetAuthenticationInfo");
+        List<SimpleDataEntity> userPassData = null;
         try {
-            if (authcToken instanceof CaptchaUsernamePasswordToken) {
-                CaptchaUsernamePasswordToken token = (CaptchaUsernamePasswordToken) authcToken;
-                // 数字证书认证
+            CustCertInfo certInfo = null;
+            if ((authcToken instanceof BetterjrWechatToken) == false) {
                 try {
-                    System.out.println("this is request :" + token.getRequest());
-                    X509Certificate cert = findCertificate(token.getRequest(), token.getResponse());
+                    X509Certificate cert = Servlets.findCertificate();
                     if (cert != null) {
-                        checkValid((HttpServletRequest) token.getRequest(), cert);
+                        certInfo = checkValid(cert);
                     }
                     else {
+
                         throw new AuthenticationException("the request has X509Certificate");
-                        // throw new AuthenticationException("数字证书验证失败");
                     }
                 }
                 catch (AuthenticationException e) {
+
                     throw e;
-                    // throw new AuthenticationException("数字证书验证失败");
                 }
                 catch (Exception e) {
+                    e.printStackTrace();
                     throw new AuthenticationException("数字证书验证失败");
                 }
-
-                // 如果未登录，处理验证码
-                /*
-                 * if (useCaptcha) { String parm = token.getCaptcha(); }
-                 */
-                // user = operatorService.findCustOperatorByIndentInfo(token.getIdentType(), token.getUsername());
-                // user = operatorService.findCustOperatorByIndentInfo("0", "522228199110010632");
+            }
+            if (authcToken instanceof CaptchaUsernamePasswordToken) {
+                CaptchaUsernamePasswordToken token = (CaptchaUsernamePasswordToken) authcToken;
                 user = operatorService.findCustOperatorByOperCode(certInfo.getOperOrg(), token.getUsername());
                 if (user != null) {
                     log.warn(user.toString());
-                    CustPassInfo passInfo = passService.getOperaterPassByCustNo(user.getId());
-                    BTAssert.notNull(passInfo.getCustNo(), "找不到操作员密码");
+                    CustPassInfo passInfo = passService.getOperaterPassByCustNo(user.getId(), CustPasswordType.ORG);
+
                     // 临时锁定
-                    if (passInfo.validLockType()) {
+                    if (passInfo == null || passInfo.validLockType()) {
 
                         throw new DisabledAccountException("操作员密码被锁定，请稍后再试");
                     }
                     mobileLogin = token.isMobileLogin();
                     passWD = passInfo.getPasswd();
                     saltStr = passInfo.getPassSalt();
+                    user.setAccessType("1");
                     contextInfo = userService.saveFormLogin(user);
                 }
             }
-            else if (authcToken instanceof BetterjrSsoToken) {
-                BetterjrSsoToken ssoToken = (BetterjrSsoToken) authcToken;
-                String ticket = (String) ssoToken.getTicket();
-                contextInfo = userService.saveTokenLogin(ticket);
-                user = contextInfo.getOperatorInfo();
+            else if (authcToken instanceof BetterjrSsoToken || authcToken instanceof BetterjrWechatToken) {
+                if (authcToken instanceof BetterjrSsoToken) {
+                    BetterjrSsoToken ssoToken = (BetterjrSsoToken) authcToken;
+                    String ticket = (String) ssoToken.getTicket();
+                    contextInfo = userService.saveTokenLogin(ticket);
+                    user = contextInfo.getOperatorInfo();
+                    ssoToken.setUsername(user.getName());
+                }
+                else {
+                    BetterjrWechatToken wechatToken = (BetterjrWechatToken) authcToken;
+                    WechatKernel wk = new WechatKernel(weChatService.getMpAccount(), new WechatDefHandler(weChatService), new HashMap());
+                    AccessToken at = wk.findUserAuth2(wechatToken.getTicket());
+                    
+                    Map<String, Object> mapResult = weChatService.saveLogin(at);
+                    Object operator=mapResult.get("operator");
+                    Object message=mapResult.get("message");
+                    if(operator instanceof CustOperatorInfo){
+                        user= (CustOperatorInfo)operator;
+                    }
+                    if (user == null) {
+                        Servlets.getSession().invalidate();
+                        throw new AuthenticationException(new BytterSecurityException(20401, message.toString()));
+                    }
+                    else {
+                        contextInfo = userService.saveFormLogin(user);
+                        certInfo = certService.findFirstCertInfoByOperOrg(user.getOperOrg());
+                    }
+                    wechatToken.setUsername(user.getName());
+                    mobileLogin = true;
+                }
                 // 用证书登录方式，控制在拜特资金管理系统，原则上不存在过期或无效的问题
                 // 统一使用Form形式的验证！
                 saltStr = "985a44369b063938a6a7";
-                ssoToken.setUsername(user.getName());
                 passWD = "8438d772e1eac7d8e57aecaae5fb0b8c2e369283cbe31857d89dc87430160a2b";
             }
             workData = contextInfo;
 
             if (user != null) {
+                userPassData = passService.findPassAndSalt(user.getId(), new String[]{CustPasswordType.PERSON_TRADE.getPassType(), CustPasswordType.ORG_TRADE.getPassType()});
                 log.warn(user.toString());
                 if (user.getStatus().equals("1") == false) {
                     throw new DisabledAccountException("操作员被要求暂停业务或者已经被注销");
                 }
 
-                UserType ut = UserType.OPERATOR_USER;
+                UserType ut = UserType.ORG_USER;
                 // 如果是默认操作员，则是管理员
                 if (user.getDefOper()) {
                     ut = UserType.OPERATOR_ADMIN;
                 }
 
-                ShiroUser shiroUser = new ShiroUser(ut, user.getId(), user.getName(), user,this.certInfo.getRuleList(), mobileLogin, workData);
+                ShiroUser shiroUser = new ShiroUser(ut, user.getId(), user.getName(), user, certInfo.getRuleList(), mobileLogin, workData, userPassData);
+                log.info("this login user Info is :" + shiroUser);
                 byte[] salt = Encodes.decodeHex(saltStr);
 
                 // 这里可以缓存认证
@@ -183,14 +207,12 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 
     }
 
-    private void checkValid(HttpServletRequest request, X509Certificate anCert) {
-//        CustCertInfo certInfo = (CustCertInfo) request.getSession().getAttribute(SecurityConstants.CUST_CERT_INFO);
-//        if (certInfo == null) {
-            certInfo = certService.checkValidity(anCert);
-            request.getSession().setAttribute(SecurityConstants.CUST_CERT_INFO, certInfo);
-//        }
-///        AccessClientImpl.set(certInfo);
-        this.certInfo = certInfo;
+
+    private CustCertInfo checkValid(X509Certificate anCert) {
+        CustCertInfo certInfo = certService.checkValidity(anCert);
+        Servlets.getSession().setAttribute(SecurityConstants.CUST_CERT_INFO, certInfo);
+//        AccessClientImpl.set(certInfo);
+        return certInfo;
     }
 
     protected CustContextInfo formLogin(CustOperatorInfo custOperatorInfo) {
@@ -207,44 +229,10 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
         contextInfo.login(custList);
 
         // 增加交易账户信息
-        //contextInfo.addTradeAccount(new ArrayList());
+        contextInfo.addTradeAccount(new ArrayList());
 
         // todo;登录信息和状态暂时不处理
         return contextInfo;
-    }
-
-    /**
-     * 获取数字证书
-     */
-    private X509Certificate findCertificate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        X509Certificate[] certs = (X509Certificate[]) request.getAttribute(SecurityConstants.CERT_ATTR_CER);
-        X509Certificate tmpCerts = null;
-        Enumeration<String> headers=request.getHeaderNames();
-        Enumeration<String> attrs=request.getAttributeNames();
-        while(headers.hasMoreElements()){
-        	String headKey=headers.nextElement();
-        	log.debug("request heads:"+headKey+"="+request.getHeader(headKey));
-        }
-        while(attrs.hasMoreElements()){
-        	String attrKey=attrs.nextElement();
-        	log.debug("request attrs:"+attrKey+"="+request.getAttribute(attrKey));
-        }
-        
-        
-        
-        if (certs == null) {
-            String tmpStr = request.getHeader("X-SSL-Client-Cert");
-            if (BetterStringUtils.isNotBlank(tmpStr)) {
-                //log.info("the request Cert is :" + tmpStr);
-                tmpCerts = (X509Certificate) KeyReader.fromCerBase64String(
-                        tmpStr.replaceFirst("-----BEGIN CERTIFICATE-----", "").replaceFirst("-----END CERTIFICATE-----", "").replaceAll("\t", ""));
-            }
-        }
-        else {
-            tmpCerts = certs[0];
-        }
-
-        return tmpCerts;
     }
 
     /**

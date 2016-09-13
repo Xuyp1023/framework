@@ -20,5 +20,14 @@ public interface ICustCertService {
 	 * @throws 异常情况
 	 */
 	CustCertInfo checkValidity(X509Certificate anX509);
+	
+	
+    /**
+     * 根据机构信息获得这个几个的第一个数字证书
+     * 
+     * @param anOperOrg
+     * @return
+     */
+    public CustCertInfo findFirstCertInfoByOperOrg(String anOperOrg);
 
 }

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.betterjr.common.exception.BytterException;
 import com.betterjr.common.security.shiro.cache.RedisManager;
+import com.betterjr.common.utils.JedisUtils;
 import com.betterjr.mapper.entity.Example;
 import com.betterjr.modules.sys.dao.SnoGeneralInfoMapper;
 import com.betterjr.modules.sys.entity.SnoGeneralInfo;
@@ -32,8 +33,6 @@ import com.betterjr.modules.sys.entity.SnoGeneralInfo;
 	private static final String DefaultIdRedisKeyPrefix="betterjr.id.";
 	private static final long IdGap = 10;
 	
-	@Autowired
-	private RedisManager redis;
 	
 	@Autowired
 	private SqlSessionFactoryBean sqlSessionFactory;
@@ -209,12 +208,8 @@ import com.betterjr.modules.sys.entity.SnoGeneralInfo;
 	        long no=info.getLastNo();
 	        
 	        String key=this.buildKey(type);
-//	        boolean exists=this.redis.exists(key);
-//	        if(!exists){
-	        //
-	        long newid=this.redis.checkBigThanAndSet(key, no,IdGap);
+	        long newid=JedisUtils.checkBigThanAndSet(key, no,IdGap,0);
 	        info.updateLastNo(newid);
-//	        }
 	    }
 	    
 	}
@@ -230,11 +225,11 @@ import com.betterjr.modules.sys.entity.SnoGeneralInfo;
 	    String type=anInfo.getOperType();
 	    
 	    String key=this.buildKey(type);
-	    long newid=this.redis.incrby(key, 1);
+	    long newid=JedisUtils.incrby(key, 1);
 	   
 	    if(anInfo.getLastNo()>=newid){
 	        anInfo.addValue();
-	        newid=this.redis.checkBigThanAndSet(key, anInfo.getLastNo(),IdGap);
+	        newid=JedisUtils.checkBigThanAndSet(key, anInfo.getLastNo(),IdGap,0);
 	    }
 	    
 	    anInfo.updateLastNo(newid);

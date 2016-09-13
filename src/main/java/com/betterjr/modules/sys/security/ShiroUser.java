@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.betterjr.common.data.PlatformBaseRuleType;
+import com.betterjr.common.data.SimpleDataEntity;
 import com.betterjr.common.data.UserType;
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.Collections3;
@@ -25,6 +26,7 @@ public class ShiroUser implements Serializable {
     private Object data;
     private boolean mobileLogin;
     private List<PlatformBaseRuleType> innerRules = null;
+    private List<SimpleDataEntity> userPassData = null;
 
     public void setInnerRules(List<PlatformBaseRuleType> anInnerRuleList) {
         
@@ -79,6 +81,23 @@ public class ShiroUser implements Serializable {
         return userType;
     }
 
+    public boolean checkPass(String anType, String anPass) {
+        if (Collections3.isEmpty(userPassData) || BetterStringUtils.isBlank(anType) || BetterStringUtils.isBlank(anPass)) {
+            
+            return false;
+        }
+        
+        for (SimpleDataEntity sde : userPassData) {
+            if (anType.equals(sde.getThree())) {
+                String passwd = SystemAuthorizingRealm.findEncrypt(anPass, sde.getValue());
+                
+                return passwd.equals(sde.getName());
+            }
+        }
+        
+        return false;
+    }
+
     public String[] fingUserRule() {
         String[] arrUser = UserType.findUserRule(userType);
         if (BetterStringUtils.isNotBlank(this.user.getRuleList())) {
@@ -98,7 +117,8 @@ public class ShiroUser implements Serializable {
      * @param createTime
      * @param status
      */
-    public ShiroUser(UserType anUserType, Long id, String loginName, WorkUserInfo anUser, String anInnerRuleList, boolean anMobileLogin, Object anData) {
+    public ShiroUser(UserType anUserType, Long id, String loginName, WorkUserInfo anUser, String anInnerRuleList, boolean anMobileLogin,
+            Object anData, List<SimpleDataEntity> anUserPassData) {
         this.mobileLogin = anMobileLogin;
         this.userType = anUserType;
         this.id = id;
@@ -107,6 +127,7 @@ public class ShiroUser implements Serializable {
         this.loginTime = System.currentTimeMillis();
         this.data = anData;
         this.innerRules = PlatformBaseRuleType.checkList(anInnerRuleList);
+        this.userPassData = anUserPassData;
     }
 
     public boolean isMobileLogin() {

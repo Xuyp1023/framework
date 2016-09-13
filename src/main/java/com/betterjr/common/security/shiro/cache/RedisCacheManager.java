@@ -49,10 +49,6 @@ public class RedisCacheManager implements CacheManager {
 		Cache c = caches.get(name);
 		
 		if (c == null) {
-
-			// initialize the Redis manager instance
-			redisManager.init();
-			
 			// create a new cache instance
 			c = new RedisCache<K, V>(redisManager, keyPrefix);
 			

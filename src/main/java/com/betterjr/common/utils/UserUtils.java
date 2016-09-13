@@ -25,8 +25,10 @@ import com.betterjr.modules.account.entity.CustInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.sys.entity.WorkUserInfo;
 import com.betterjr.modules.sys.security.ShiroUser;
+import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.data.PlatformBaseRuleType;
 import com.betterjr.common.data.UserType;
+import com.betterjr.common.data.WebAccessType;
 import com.betterjr.common.entity.*;
 import com.betterjr.common.security.shiro.session.RedisSessionDAO;
 import com.betterjr.common.service.SpringContextHolder;
@@ -349,6 +351,7 @@ public class UserUtils {
 
         return ShiroUser.platformUser(getPrincipal());
     }
+
     // ============== User Cache ==============
 
     public static Object getCache(String key) {
@@ -369,6 +372,72 @@ public class UserUtils {
     public static void removeCache(String key) {
         // getCacheMap().remove(key);
         getSession().removeAttribute(key);
+    }
+
+    private static boolean checkWebAccessList(WebAccessType[] anArray , String[] anReturn , WebAccessType... anWatArr) {
+        for (WebAccessType outWt : anWatArr) {
+            for (WebAccessType tmpWt : anArray) {
+                if (tmpWt == outWt) {
+                    anReturn[0] = tmpWt.getPassType();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean isMobileLogin(){
+        ShiroUser su = getPrincipal();
+        if (su == null) {
+            
+            return false;
+        }
+        else{
+            return su.isMobileLogin();
+        }
+    }
+    /**
+     * 检查是否有访问权限；如果没有定义表示全部可以访问，如果定义了手机访问，只能是手机访问；如果定义了PC访问，只能是PC访问
+     * 
+     * @param anMetaData
+     * @return
+     */
+    public static boolean checkAccess(MetaData anMetaData, String anPass, String[] anResultMsg) {
+        if (anMetaData == null) {
+            
+            return true;
+        }
+        WebAccessType[] watArray = anMetaData.acccessType();
+        String[] valueReturn = new String[1];
+
+        if (checkWebAccessList(watArray, valueReturn, WebAccessType.ALL)) {
+            
+            return true;
+        }
+        else {
+            ShiroUser su = getPrincipal();
+            if (su == null) {
+                
+                return true;
+            }
+            if (su.isMobileLogin()) {
+                if (checkWebAccessList(watArray, valueReturn, WebAccessType.ORG_MOBILE_PASS, WebAccessType.PERSON_MOBILE_PASS)) {
+                    anResultMsg[0] = "交易密码错误！";
+                    return su.checkPass(valueReturn[0], anPass);
+                }
+                
+                return checkWebAccessList(watArray, valueReturn, WebAccessType.ORG_MOBILE, WebAccessType.PERSON_MOBILE);
+            }
+            else {
+                if (checkWebAccessList(watArray, valueReturn, WebAccessType.ORG_PC_PASS, WebAccessType.PERSON_PC_PASS)){
+                    
+                    anResultMsg[0] = "交易密码错误！";
+                    return su.checkPass(valueReturn[0], anPass);
+                }
+                
+                return checkWebAccessList(watArray, valueReturn, WebAccessType.ORG_PC, WebAccessType.PERSON_PC);
+            }
+        }
     }
     
     

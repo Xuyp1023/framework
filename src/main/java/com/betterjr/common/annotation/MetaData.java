@@ -6,6 +6,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.betterjr.common.data.WebAccessType;
+
 /**
  * 用于注解类或属性的元数据，这些元数据可用于代码生成或运行时动态内容生成
  */
@@ -45,4 +47,6 @@ public @interface MetaData {
      * 一般用于业务对象如订单直接用ID作为订单号，希望编号能对齐，则直接把自增初始化值为较长位数数字，如1000000000
      */
     long autoIncrementInitValue() default 0;
+    
+    WebAccessType[] acccessType() default { WebAccessType.ALL };
 }
