@@ -22,7 +22,7 @@ public class RedisManager {
 
     private JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
 
-    private static JedisPool jedisPool = null;
+    private JedisPool jedisPool = null;
 
     public RedisManager() {
 
@@ -255,7 +255,7 @@ public class RedisManager {
     }
 
     public void setJedisPool(JedisPool jedisPool) {
-        RedisManager.jedisPool = jedisPool;
+        this.jedisPool = jedisPool;
     }
 
 }

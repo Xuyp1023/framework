@@ -88,8 +88,8 @@ public class RedisSessionDAO extends AbstractSessionDAO {
 			logger.error("session id is null");
 			return null;
 		}
-		
-		Session s = (Session)SerializeUtils.deserialize(redisManager.get(this.getByteKey(sessionId)));
+		byte[] sessionByte=redisManager.get(this.getByteKey(sessionId));
+		Session s = (Session)SerializeUtils.deserialize(sessionByte);
 		return s;
 	}
 	

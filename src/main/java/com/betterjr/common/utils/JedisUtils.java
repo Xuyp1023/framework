@@ -34,7 +34,7 @@ public class JedisUtils {
 
     private static Logger logger = LoggerFactory.getLogger(JedisUtils.class);
 
-    private static JedisPool jedisPool = SpringContextHolder.getBean(JedisPool.class);
+    private static JedisPool jedisPool = SpringContextHolder.getBean("defaultJedisPool");
 
     public static final String KEY_PREFIX = Global.getConfig("redis.keyPrefix");
 
