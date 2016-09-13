@@ -110,6 +110,12 @@ public class CustPassInfo implements BetterjrEntity {
 
     public CustPassInfo() {
     }
+    
+    public void modifyPassword(String anSalt, String anPassword){
+        this.passwd = anPassword;
+        this.passSalt = anSalt;
+        this.setModiDate(BetterDateUtils.getNumDateTime()); 
+    }
 
     public CustPassInfo(CustOperatorInfo operator, String password) {
         this.setPassType("6");

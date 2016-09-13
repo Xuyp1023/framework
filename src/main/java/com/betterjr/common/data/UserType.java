@@ -3,7 +3,7 @@ package com.betterjr.common.data;
 import org.apache.commons.lang3.StringUtils;
 
 public enum UserType {
-    NONE_USER, ORG_USER, OPERATOR_USER, OPERATOR_CHECKER, OPERATOR_ADUIT, OPERATOR_ADMIN, SYS_ADMIN, PERSON_USER;
+    NONE_USER, ORG_USER, OPERATOR_USER, OPERATOR_QUERY, OPERATOR_CHECKER, OPERATOR_ADUIT, OPERATOR_ADMIN, SYS_ADMIN, PERSON_USER;
     public static UserType checking(String anWorkType) {
         try {
             if (StringUtils.isNotBlank(anWorkType)) {

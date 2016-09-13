@@ -1,15 +1,11 @@
 package com.betterjr.modules.sys.security;
 
-import java.io.IOException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -26,15 +22,12 @@ import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.betterjr.common.data.CustPasswordType;
 import com.betterjr.common.data.SimpleDataEntity;
 import com.betterjr.common.data.UserType;
-import com.betterjr.common.security.KeyReader;
+import com.betterjr.common.exception.BytterSecurityException;
 import com.betterjr.common.security.SecurityConstants;
-import com.betterjr.common.utils.BTAssert;
-import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.Collections3;
 import com.betterjr.common.utils.Digests;
 import com.betterjr.common.utils.Encodes;
@@ -48,6 +41,10 @@ import com.betterjr.modules.account.entity.CustCertInfo;
 import com.betterjr.modules.account.entity.CustInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.account.entity.CustPassInfo;
+import com.betterjr.modules.wechat.data.api.AccessToken;
+import com.betterjr.modules.wechat.dubboclient.CustWeChatDubboClientService;
+import com.betterjr.modules.wechat.util.WechatDefHandler;
+import com.betterjr.modules.wechat.util.WechatKernel;
 
 public class SystemAuthorizingRealm extends AuthorizingRealm {
     private static final Logger log = LoggerFactory.getLogger(SystemAuthorizingRealm.class);
@@ -66,6 +63,9 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 
     
     private CustPassDubboClientService passService;
+    
+    
+    private CustWeChatDubboClientService weChatService;
 
     /**
      * 给ShiroDbRealm提供编码信息，用于密码密码比对 描述
@@ -150,11 +150,16 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
                     BetterjrWechatToken wechatToken = (BetterjrWechatToken) authcToken;
                     WechatKernel wk = new WechatKernel(weChatService.getMpAccount(), new WechatDefHandler(weChatService), new HashMap());
                     AccessToken at = wk.findUserAuth2(wechatToken.getTicket());
-                    String[] resultStr = new String[1];
-                    user = weChatService.saveLogin(at, resultStr);
+                    
+                    Map<String, Object> mapResult = weChatService.saveLogin(at);
+                    Object operator=mapResult.get("operator");
+                    Object message=mapResult.get("message");
+                    if(operator instanceof CustOperatorInfo){
+                        user= (CustOperatorInfo)operator;
+                    }
                     if (user == null) {
                         Servlets.getSession().invalidate();
-                        throw new AuthenticationException(new BytterSecurityException(20401, resultStr[0]));
+                        throw new AuthenticationException(new BytterSecurityException(20401, message.toString()));
                     }
                     else {
                         contextInfo = userService.saveFormLogin(user);

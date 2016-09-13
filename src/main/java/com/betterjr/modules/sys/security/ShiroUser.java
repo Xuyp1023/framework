@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.betterjr.common.data.PlatformBaseRuleType;
 import com.betterjr.common.data.SimpleDataEntity;
-import com.betterjr.common.entity.UserType;
+import com.betterjr.common.data.UserType;
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.Collections3;
 import com.betterjr.modules.sys.entity.WorkUserInfo;

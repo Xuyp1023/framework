@@ -18,5 +18,10 @@ public class CustCertDubboClientService implements ICustCertService {
 		// TODO Auto-generated method stub
 		return custCertService.checkValidity(anX509);
 	}
+    @Override
+    public CustCertInfo findFirstCertInfoByOperOrg(String anOperOrg) {
+        // TODO Auto-generated method stub
+        return custCertService.findFirstCertInfoByOperOrg(anOperOrg);
+    }
 
 }

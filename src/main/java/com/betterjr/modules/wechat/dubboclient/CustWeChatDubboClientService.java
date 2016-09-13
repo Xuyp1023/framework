@@ -9,6 +9,7 @@ package com.betterjr.modules.wechat.dubboclient;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -24,6 +25,7 @@ import com.betterjr.common.utils.UserUtils;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.wechat.data.EventType;
 import com.betterjr.modules.wechat.data.MPAccount;
+import com.betterjr.modules.wechat.data.api.AccessToken;
 import com.betterjr.modules.wechat.data.api.QRTicket;
 import com.betterjr.modules.wechat.data.event.BasicEvent;
 import com.betterjr.modules.wechat.data.event.ScanEvent;
@@ -51,6 +53,15 @@ public class CustWeChatDubboClientService {
     ICustWeChatService wechatService;
 
     private MPAccount mpAccount = null;
+    
+    /**
+    *
+    * @param anToken
+    * @return
+    */
+   public Map<String, Object> saveLogin(final AccessToken anToken){
+       return this.wechatService.saveLogin(anToken);
+   }
 
     public String saveMobileTradePass(final String anNewPasswd, final String anOkPasswd, final String anLoginPasswd){
         return wechatService.webSaveMobileTradePass(anNewPasswd, anOkPasswd, anLoginPasswd);
