@@ -13,8 +13,10 @@ import com.betterjr.common.mapper.BeanMapper;
 import com.betterjr.common.service.BaseService;
 import com.betterjr.modules.account.dao.CustPassInfoMapper;
 import com.betterjr.modules.account.data.CustPassRequest;
+import com.betterjr.modules.account.data.CustPasswordType;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.account.entity.CustPassInfo;
+import com.betterjr.common.utils.Collections3;
 import com.betterjr.common.utils.UserUtils;
 import com.betterjr.modules.sys.security.SystemAuthorizingRealm;
 
@@ -33,9 +35,15 @@ public class CustPassService extends BaseService<CustPassInfoMapper, CustPassInf
         List<CustPassInfo> passList = selectByProperty(map);
         return passList;
     }
+    
 
+    public CustPassInfo getOperaterPassByCustNo(Long anPassID, CustPasswordType anPassType) {
+
+        return Collections3.getFirst(getCustPassByCustNo(anPassID, anPassType.getPassType()));
+    }
+    
     public CustPassInfo getOperaterPassByCustNo(Long anPassID) {
-        List<CustPassInfo> passList = getCustPassByCustNo(anPassID, "6");
+        List<CustPassInfo> passList = getCustPassByCustNo(anPassID,CustPasswordType.ORG.getPassType());
         if (passList != null && passList.size() == 1) {
             return passList.get(0);
         }
