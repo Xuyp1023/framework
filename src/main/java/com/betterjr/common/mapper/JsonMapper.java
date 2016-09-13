@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.betterjr.common.exception.BettjerNestedException;
+import com.betterjr.common.exception.BytterValidException;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -440,7 +441,33 @@ public class JsonMapper extends ObjectMapper {
             throw BettjerNestedException.wrap(e);
         }
     }
+    
+    /**
+     * 将对象转换为集合，按照给定的对象
+     * 
+     * @param src
+     * @param collectionClass
+     * @param valueType
+     * @return
+     * @throws Exception
+     */
+    public static List jacksonToCollection(String anSrc, Class<?> anValueType) {
 
+        return jacksonToCollection(anSrc, LinkedList.class, new Class[] { anValueType });
+    }
+
+    public static <T> T jacksonToCollection(String src, Class<?> collectionClass, Class<?>... valueType) {
+        ObjectMapper jacksonMapper = getInstance();
+        JavaType javaType = jacksonMapper.getTypeFactory().constructParametrizedType(collectionClass, collectionClass, valueType);
+
+        try {
+            return (T) jacksonMapper.readValue(src, javaType);
+        }
+        catch (IOException e) {
+            throw new BytterValidException(71234, "解析Json出现异常", e);
+        }
+
+    }
     /**
      * 测试
      */

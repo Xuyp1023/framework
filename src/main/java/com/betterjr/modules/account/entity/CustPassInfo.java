@@ -1,5 +1,7 @@
 package com.betterjr.modules.account.entity;
 
+import java.util.Date;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -9,6 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.betterjr.common.annotation.MetaData;
+import com.betterjr.common.data.CustPasswordType;
 import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.common.utils.BetterDateUtils;
 import com.betterjr.common.utils.PropertiesHolder;
@@ -119,6 +122,18 @@ public class CustPassInfo implements BetterjrEntity {
         this.setOperWay("0");
         this.setModiDate(BetterDateUtils.getNumDateTime());
         this.setEndDate("20501231");
+    }
+
+    public CustPassInfo(CustPasswordType anPassType, int anYear, Long anUserNo, String anSalt, String anPassword) {
+        this.setPassType(anPassType.getPassType());
+        this.setCustNo(anUserNo);
+        this.setPasswd(anPassword);
+        this.setPassSalt(anSalt);
+        this.setErrCount(0);
+        this.setLockStatus("0");
+        this.setOperWay("0");
+        this.setModiDate(BetterDateUtils.getNumDateTime());
+        this.setEndDate(BetterDateUtils.formatNumberDate(BetterDateUtils.addYears(new Date() , anYear)) );
     }
 
     public String getConfirmation() {

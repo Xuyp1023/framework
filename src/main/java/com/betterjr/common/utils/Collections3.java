@@ -438,4 +438,20 @@ public class Collections3 {
             return false;
         }
     }
+
+    /**
+     * 判读集合中是否存在空对象
+     * @param anObj
+     * @return
+     */
+    public static boolean hasEmptyObject(Object ... anObjs){
+       for(Object obj : anObjs){
+          if (isEmptyObject(obj)){
+              
+              return true;
+          }
+       }
+       
+       return false;
+    }
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.betterjr.common.data.CustPasswordType;
 import com.betterjr.common.service.BaseService;
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.modules.account.dao.CustOperatorInfoMapper;
@@ -144,4 +145,9 @@ public class CustOperatorService extends BaseService<CustOperatorInfoMapper, Cus
         
         return this.selectByProperty("id", operators);
     }
+
+    public boolean saveBindingTradePassword(CustPasswordType anLoginPassType, String anNewPasswd, String anOkPasswd, String anLoginPasswd){
+        
+        return custPassService.saveBindingTradePassword(anLoginPassType, anNewPasswd, anOkPasswd, anLoginPasswd); 
+     }
 }

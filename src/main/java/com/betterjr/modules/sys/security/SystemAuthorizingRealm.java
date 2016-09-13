@@ -275,7 +275,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
         public String password;
     }
 
-    public HashPassword encrypt(String plainText) {
+    public static HashPassword encrypt(String plainText) {
         HashPassword result = new HashPassword();
         byte[] salt = Digests.generateSalt(SALT_SIZE);
         result.salt = Encodes.encodeHex(salt);
