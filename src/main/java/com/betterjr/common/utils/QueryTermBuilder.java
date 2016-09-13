@@ -12,11 +12,19 @@ public class QueryTermBuilder {
     private final Map<String, Object> map;
 
     public QueryTermBuilder put(String anKey, Object anValue) {
-        map.put(anKey, anValue);
+        if (anValue != null){
+            if (anValue instanceof String){
+                if (BetterStringUtils.isBlank( (String) anValue )){
+                    return this;
+                }
+            }
+            map.put(anKey, anValue);
+        }
+        
         return this;
     }
 
-    public Map<String, Object> build() {
+    public Map build() {
 
         return map;
     }

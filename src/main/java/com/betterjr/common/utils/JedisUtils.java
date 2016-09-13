@@ -57,6 +57,68 @@ public class JedisUtils {
         }
         return keys;
     }
+
+
+	   /**
+    * checkBigThanAndSet
+    * 确保写入redis的值是升序的，重试10次，如果写入不成功，则返回anValue+anIdGap
+    * @param anKey
+    * @param anValue
+    * @return
+    */
+   public static long checkBigThanAndSet(String anKey, long anValue,long anIdGap,int expireSeconds) {
+       
+       Jedis jedis = getResource();
+       try {
+           for (int index = 0; index < 10; index++) {
+               jedis.watch(anKey);
+               String valueStr = jedis.get(anKey);
+               if(valueStr==null){
+                   valueStr=String.valueOf(anValue);
+               }
+               Long redisOriValue = Long.valueOf(valueStr);
+               if (anValue < redisOriValue) {
+                   anValue = anValue + (redisOriValue - anValue) + anIdGap;
+               }
+
+               Transaction tran = jedis.multi();
+               tran.set(anKey, String.valueOf(anValue));
+               List<Object> result = tran.exec();
+               if (result != null && result.size() > 0 && "OK".equals(result.get(0))) {
+                   if (expireSeconds != 0) {
+                       jedis.expire(anKey, expireSeconds);
+                   }
+                   return anValue;
+               }
+               
+               jedis.unwatch();
+               
+               try{
+                   int rad=new Random().nextInt(10);
+                   Thread.sleep(100*rad);
+               }catch(Exception ex){}
+           }
+       }
+       finally {
+           jedis.unwatch();
+           returnResource(jedis);
+       }
+       return anValue+anIdGap;
+   }
+   
+   
+   /**
+    * incrby
+    */
+   public static long incrby(String key, long step) {
+       Jedis jedis = getResource();
+       try {
+           return jedis.incrBy(key, step);
+       }
+       finally {
+           returnResource(jedis);
+       }
+   }
     /**
      * 获取缓存
      *

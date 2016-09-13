@@ -1,13 +1,10 @@
 package com.betterjr.common.security.shiro.cache;
 
-import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.Transaction;
 
 public class RedisManager {
 
@@ -29,25 +26,6 @@ public class RedisManager {
 
     public RedisManager() {
 
-    }
-
-    /**
-     * 初始化方法
-     */
-
-    public void init() {
-//        if (jedisPool == null) {
-//            if (password != null && !"".equals(password)) {
-//                jedisPool = new JedisPool(jedisPoolConfig, host, port, timeout, password);
-//            }
-//            else if (timeout != 0) {
-//                jedisPool = new JedisPool(jedisPoolConfig, host, port, timeout);
-//            }
-//            else {
-//                jedisPool = new JedisPool(jedisPoolConfig, host, port);
-//            }
-//
-//        }
     }
 
     /**
@@ -89,52 +67,6 @@ public class RedisManager {
         return value;
     }
 
-    /**
-     * checkBigThanAndSet
-     * 确保写入redis的值是升序的，重试10次，如果写入不成功，则返回anValue+anIdGap
-     * @param anKey
-     * @param anValue
-     * @return
-     */
-    public long checkBigThanAndSet(String anKey, long anValue,long anIdGap) {
-        
-        Jedis jedis = jedisPool.getResource();
-        try {
-            for (int index = 0; index < 10; index++) {
-                jedis.watch(anKey);
-                String valueStr = jedis.get(anKey);
-                if(valueStr==null){
-                    valueStr=String.valueOf(anValue);
-                }
-                Long redisOriValue = Long.valueOf(valueStr);
-                if (anValue < redisOriValue) {
-                    anValue = anValue + (redisOriValue - anValue) + anIdGap;
-                }
-
-                Transaction tran = jedis.multi();
-                tran.set(anKey, String.valueOf(anValue));
-                List<Object> result = tran.exec();
-                if (result != null && result.size() > 0 && "OK".equals(result.get(0))) {
-                    if (this.expire != 0) {
-                        jedis.expire(anKey, this.expire);
-                    }
-                    return anValue;
-                }
-                
-                jedis.unwatch();
-                
-                try{
-                    int rad=new Random().nextInt(10);
-                    Thread.sleep(100*rad);
-                }catch(Exception ex){}
-            }
-        }
-        finally {
-            jedis.unwatch();
-            jedisPool.returnResource(jedis);
-        }
-        return anValue+anIdGap;
-    }
 
     /**
      * set

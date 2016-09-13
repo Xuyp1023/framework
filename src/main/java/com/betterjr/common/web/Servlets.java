@@ -5,7 +5,9 @@
  */
 package com.betterjr.common.web;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
@@ -13,6 +15,7 @@ import java.util.Map.Entry;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
+import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,6 +28,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.betterjr.common.config.Global;
+import com.betterjr.common.security.KeyReader;
+import com.betterjr.common.security.SecurityConstants;
 import com.betterjr.common.utils.Encodes;
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.modules.sys.security.ShiroUser;
@@ -332,4 +337,32 @@ public class Servlets {
         }
         return request.getRemoteAddr();
     }
+
+    
+    /**
+     * 获取数字证书
+     */
+    public static X509Certificate findCertificate(HttpServletRequest anRequest) throws ServletException, IOException {
+        X509Certificate[] certs = (X509Certificate[]) anRequest.getAttribute(SecurityConstants.CERT_ATTR_CER);
+        X509Certificate tmpCerts = null;
+        if (certs == null) {
+            String tmpStr = anRequest.getHeader("X-SSL-Client-Cert");
+            if (BetterStringUtils.isNotBlank(tmpStr)) {
+                //log.info("the request Cert is :" + tmpStr);
+                tmpCerts = (X509Certificate) KeyReader.fromCerBase64String(
+                        tmpStr.replaceFirst("-----BEGIN CERTIFICATE-----", "").replaceFirst("-----END CERTIFICATE-----", "").replaceAll("\t", ""));
+            }
+        }
+        else {
+            tmpCerts = certs[0];
+        }
+
+        return tmpCerts;
+    }
+    
+    public static X509Certificate findCertificate( ) throws ServletException, IOException {
+        
+        return findCertificate(Servlets.getRequest());
+    }
+
 }

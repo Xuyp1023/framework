@@ -109,11 +109,6 @@ public class RedisSessionDAO extends AbstractSessionDAO {
 
 	public void setRedisManager(RedisManager redisManager) {
 		this.redisManager = redisManager;
-		
-		/**
-		 * 初始化redisManager
-		 */
-		this.redisManager.init();
 	}
 
 	/**

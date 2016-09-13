@@ -11,8 +11,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("simpleData")
 public class SimpleDataEntity implements Serializable {
     private static final long serialVersionUID = 3689286741663664469L;
-    private   String name;
-    private   String value;
+    private final String name;
+    private final String value;
 
     @JsonIgnore
     private   String three;
@@ -22,9 +22,11 @@ public class SimpleDataEntity implements Serializable {
 
     @JsonIgnore
     private boolean useSplit = false;
-    
-    public SimpleDataEntity(){
-        
+
+    public SimpleDataEntity() {
+        this.name = null;
+        this.value = null;
+        this.three = null;
     }
     public SimpleDataEntity(String anName, String anValue) {
         this.name = anName;
@@ -52,6 +54,10 @@ public class SimpleDataEntity implements Serializable {
 
     public String getThree() {
         return this.three;
+    }
+
+    public void setThree(String anThree) {
+        this.three = anThree;
     }
 
     public String getName() {
@@ -108,5 +114,33 @@ public class SimpleDataEntity implements Serializable {
         sb.append(", data=").append(data);
         sb.append("]");
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+        if (this == that) {
+            return true;
+        }
+        if (that == null) {
+            return false;
+        }
+        if (getClass() != that.getClass()) {
+            return false;
+        }
+        SimpleDataEntity other = (SimpleDataEntity) that;
+        return (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
+                && (this.getValue() == null ? other.getValue() == null : this.getValue().equals(other.getValue()))
+                && (this.getThree() == null ? other.getThree() == null : this.getThree().equals(other.getThree()));
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
+        result = prime * result + ((getValue() == null) ? 0 : getValue().hashCode());
+        result = prime * result + ((getThree() == null) ? 0 : getThree().hashCode());
+        
+        return result;
     }
 }
