@@ -48,7 +48,6 @@ import com.betterjr.modules.wechat.data.push.SentTmlJobEvent;
  *
  * @author zhoucy
  */
-
 public class WechatKernel {
 
     static String user_auth2_info = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code";

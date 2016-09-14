@@ -57,19 +57,8 @@ public class CustWeChatDubboService implements ICustWeChatService {
      * @see com.betterjr.modules.wechat.dubbo.interfaces.ICustWeChatService#findMpAccount()
      */
     @Override
-    public MPAccount findMpAccount() {
+    public MPAccount getMpAccount() {
         return wechatService.getMpAccount();
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.betterjr.modules.wechat.dubbo.interfaces.ICustWeChatService#saveWeChatInfo(com.betterjr.modules.wechat.entity.CustWeChatInfo,
-     * java.lang.String)
-     */
-    @Override
-    public CustWeChatInfo saveWeChatInfo(final CustWeChatInfo anWeChatInfo, final String anStatus) {
-        return wechatService.saveWeChatInfo(anWeChatInfo, anStatus);
     }
 
     /*
@@ -103,6 +92,7 @@ public class CustWeChatDubboService implements ICustWeChatService {
         return wechatService.saveWeChatInfo(anWeChatInfo);
     }
 
+
     @Override
     public Map<String, Object> saveLogin(final AccessToken anToken) {
         final Map<String, Object> result = new HashMap<>();
@@ -115,7 +105,5 @@ public class CustWeChatDubboService implements ICustWeChatService {
         }
         return result;
     }
-
-
 
 }

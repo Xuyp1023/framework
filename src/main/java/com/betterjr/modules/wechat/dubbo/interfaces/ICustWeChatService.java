@@ -40,13 +40,7 @@ public interface ICustWeChatService {
      *
      */
     @NoSession
-    MPAccount findMpAccount();
-
-    /**
-     * @param anWeChatInfo
-     * @param anStatus
-     */
-    CustWeChatInfo saveWeChatInfo(CustWeChatInfo anWeChatInfo, String anStatus);
+    MPAccount getMpAccount();
 
     /**
      * @param anWeChatEvent
