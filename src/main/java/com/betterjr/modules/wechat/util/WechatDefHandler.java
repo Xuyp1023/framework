@@ -2,6 +2,8 @@ package com.betterjr.modules.wechat.util;
 
 import java.util.Arrays;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.modules.wechat.data.EventType;
 import com.betterjr.modules.wechat.data.event.BasicEvent;
@@ -32,10 +34,10 @@ import com.betterjr.modules.wechat.entity.CustWeChatInfo;
  * @author zhoucy
  */
 public class WechatDefHandler implements WechatHandler {
-    private final CustWeChatDubboClientService wechatDubboService;
+    private final CustWeChatDubboClientService wechatDubboClientService;
 
-    public WechatDefHandler(final CustWeChatDubboClientService anWeChatService){
-        wechatDubboService = anWeChatService;
+    public WechatDefHandler(final CustWeChatDubboClientService anWechatDubboClientService){
+        wechatDubboClientService = anWechatDubboClientService;
     }
 
     @Override
@@ -116,25 +118,37 @@ public class WechatDefHandler implements WechatHandler {
     @Override
     public BasicMsg eSub(final BasicEvent anEvent) {
         final TextMsg text_msg = new TextMsg(anEvent);
-        text_msg.setContent("欢迎关注前海拜特微信开发公众号!");
-        wechatDubboService.saveWeChatInfo(anEvent, EventType.subscribe);
+        wechatDubboClientService.saveWeChatInfo(anEvent, EventType.subscribe);
+        if (StringUtils.startsWith(anEvent.getEventKey(), "qrscene_")) {// 带参数场景扫描
+            final String eventKey = StringUtils.substring(anEvent.getEventKey(), 8);
+            final String fromUserName = anEvent.getFromUserName();
+            final CustWeChatInfo wechatInfo = wechatDubboClientService.saveBindingWeChat(eventKey, fromUserName);
+            if (wechatInfo == null){
+                text_msg.setContent("欢迎关注前海拜特微信开发公众号! 账户绑定扫描失败，账户绑定扫描只能一次，请重新获取扫描二维码。");
+            }
+            else{
+                text_msg.setContent("账户绑定扫描成功，操作员是："+ wechatInfo.getOperName() + " 请继续在平台输入交易密码！");
+            }
+        }
         return text_msg;
     }
 
     @Override
     public void eUnSub(final BasicEvent anEvent){
-        wechatDubboService.saveWeChatInfo(anEvent, EventType.unsubscribe);
+        wechatDubboClientService.saveWeChatInfo(anEvent, EventType.unsubscribe);
     }
 
     @Override
     public BasicMsg eScan(final ScanEvent anEvent) {
         final TextMsg text_msg = new TextMsg(anEvent);
-        final CustWeChatInfo weChatInfo = wechatDubboService.saveBindingWeChat(anEvent);
-        if (weChatInfo == null){
-            text_msg.setContent("账户绑定失败，请注意，账户绑定扫描只能一次；请重新获取扫描二维码");
+        final String eventKey = anEvent.getEventKey();
+        final String fromUserName = anEvent.getFromUserName();
+        final CustWeChatInfo wechatInfo = wechatDubboClientService.saveBindingWeChat(eventKey, fromUserName);
+        if (wechatInfo == null){
+            text_msg.setContent("账户绑定扫描失败，账户绑定扫描只能一次，请重新获取扫描二维码。");
         }
         else{
-            text_msg.setContent("账户绑定成功，业务员是："+weChatInfo.getOperName());
+            text_msg.setContent("账户绑定扫描成功，操作员是："+wechatInfo.getOperName() + " 请继续在平台输入交易密码！");
         }
 
         return text_msg;

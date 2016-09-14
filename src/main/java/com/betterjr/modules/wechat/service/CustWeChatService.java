@@ -2,15 +2,18 @@ package com.betterjr.modules.wechat.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.betterjr.common.data.CustPasswordType;
 import com.betterjr.common.mapper.JsonMapper;
 import com.betterjr.common.service.BaseService;
@@ -18,15 +21,24 @@ import com.betterjr.common.utils.BTAssert;
 import com.betterjr.common.utils.BetterDateUtils;
 import com.betterjr.common.utils.Collections3;
 import com.betterjr.common.utils.Cryptos;
+import com.betterjr.common.utils.DictUtils;
+import com.betterjr.common.utils.JedisUtils;
 import com.betterjr.common.utils.QueryTermBuilder;
 import com.betterjr.common.utils.UserUtils;
+import com.betterjr.modules.account.entity.CustInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
+import com.betterjr.modules.account.service.CustAccountService;
 import com.betterjr.modules.account.service.CustOperatorService;
+import com.betterjr.modules.notification.INotificationSendService;
+import com.betterjr.modules.notification.NotificationModel;
+import com.betterjr.modules.notification.NotificationModel.Builder;
 import com.betterjr.modules.sys.service.SysConfigService;
+import com.betterjr.modules.wechat.constants.WechatConstants;
 import com.betterjr.modules.wechat.dao.CustWeChatInfoMapper;
 import com.betterjr.modules.wechat.data.EventType;
 import com.betterjr.modules.wechat.data.MPAccount;
 import com.betterjr.modules.wechat.data.api.AccessToken;
+import com.betterjr.modules.wechat.data.api.WechatPushTempField;
 import com.betterjr.modules.wechat.data.api.WechatPushTemplate;
 import com.betterjr.modules.wechat.data.event.BasicEvent;
 import com.betterjr.modules.wechat.entity.CustWeChatInfo;
@@ -37,12 +49,14 @@ public class CustWeChatService extends BaseService<CustWeChatInfoMapper, CustWeC
 
     private final MPAccount mpAccount = new MPAccount();
 
+    @Resource
+    private CustOperatorService custOperatorService;
 
-    //private static Thread workThread = null;
-    private final int qCodeTimeOut = 180;
+    @Reference(interfaceClass = INotificationSendService.class)
+    public INotificationSendService notificationSendService;
 
-    @Autowired
-    private CustOperatorService operatorService;
+    @Resource
+    private CustAccountService accountService;
 
     public MPAccount getMpAccount() {
         return this.mpAccount;
@@ -97,7 +111,7 @@ public class CustWeChatService extends BaseService<CustWeChatInfoMapper, CustWeC
             msg = "该微信账户已经被冻结，不能使用!";
         }
         else if ("1".equals(weChatInfo.getBusinStatus())) {
-            final CustOperatorInfo operInfo = operatorService.selectByPrimaryKey(weChatInfo.getOperId());
+            final CustOperatorInfo operInfo = custOperatorService.selectByPrimaryKey(weChatInfo.getOperId());
             if (operInfo == null) {
                 msg = "未能获得绑定的操作员信息";
             }
@@ -132,36 +146,64 @@ public class CustWeChatService extends BaseService<CustWeChatInfoMapper, CustWeC
         }
     }
 
-    public CustWeChatInfo saveMobileTradePass(final String anNewPasswd, final String anOkPasswd, final String anLoginPasswd, final CustPasswordType anPassType){
-        final CustOperatorInfo custOperator = UserUtils.getOperatorInfo();
-        final CustWeChatInfo weChatInfo = saveBindingWeChatInfo(custOperator);
-        if (weChatInfo != null) {
-            this.operatorService.saveBindingTradePassword(anPassType, anNewPasswd, anOkPasswd, anLoginPasswd);
-        }
-        return weChatInfo;
-    }
-
     /**
      * 扫描绑定时，保存操作员和微信账户的关系。
      *
      * @param anCustOperator
+     * @param anOpenId
      * @return
      */
-    public CustWeChatInfo saveBindingWeChatInfo(final CustOperatorInfo anCustOperator) {
-        final String openId = anCustOperator.getContIdentNo();
-        CustWeChatInfo weChatInfo = null;
-        if (StringUtils.isNotBlank(openId)) {
-            weChatInfo = this.selectByPrimaryKey(openId);
-            if (weChatInfo != null) {
-                weChatInfo.setOperId(anCustOperator.getId());
-                weChatInfo.setOperName(anCustOperator.getName());
-                weChatInfo.setOperOrg(anCustOperator.getOperOrg());
-                weChatInfo.modifyValue(anCustOperator);
-                this.updateByPrimaryKey(weChatInfo);
+    public CustWeChatInfo saveBindingWeChatInfo(final CustOperatorInfo anCustOperator, final String anOpenId) {
+        if (StringUtils.isNotBlank(anOpenId)) {
+            final CustWeChatInfo wechatInfo = this.selectByPrimaryKey(anOpenId);
+            if (wechatInfo != null) {
+                wechatInfo.setOperId(anCustOperator.getId());
+                wechatInfo.setOperName(anCustOperator.getName());
+                wechatInfo.setOperOrg(anCustOperator.getOperOrg());
+                wechatInfo.modifyValue(anCustOperator);
+                this.updateByPrimaryKey(wechatInfo);
+
+                return wechatInfo;
             }
         }
 
-        return weChatInfo;
+        return null;
+    }
+
+    public CustWeChatInfo saveMobileTradePass(final String anNewPasswd, final String anOkPasswd, final String anLoginPasswd,
+            final CustPasswordType anPassType) {
+        final CustOperatorInfo operator = UserUtils.getOperatorInfo();
+        final String userKey = WechatConstants.wechatUserPrefix + operator.getId();
+        final String openId = JedisUtils.getObject(userKey); // 取到userKey 对应的 operatorId
+
+        BTAssert.notNull(openId, "扫描信息已过期！");
+        JedisUtils.delObject(userKey);
+
+        // 保存关联关系
+        final CustWeChatInfo wechatInfo = saveBindingWeChatInfo(operator, openId);
+        if (wechatInfo != null) {
+            custOperatorService.saveBindingTradePassword(anPassType, anNewPasswd, anOkPasswd, anLoginPasswd);
+
+            sendNotification(wechatInfo, operator);
+        }
+        return wechatInfo;
+    }
+
+    /**
+     * @param anWechatInfo
+     * @param anOperator
+     */
+    private void sendNotification(final CustWeChatInfo anWechatInfo, final CustOperatorInfo anOperator) {
+        // 发送微信绑定结果通知
+        final Long platformCustNo = Long.valueOf(Collections3.getFirst(DictUtils.getDictList("PlatformGroup")).getItemValue());
+        final CustInfo platformCustomer = accountService.findCustInfo(platformCustNo);
+        final CustOperatorInfo platformOperator = Collections3.getFirst(custOperatorService.queryOperatorInfoByCustNo(platformCustomer.getCustNo()));
+
+        // 发送微信绑定消息
+        final Builder builder = NotificationModel.newBuilder("微信账号绑定状态通知", platformCustomer, platformOperator);
+        builder.setEntity(anWechatInfo);
+        builder.addReceiveOperator(anOperator.getId()); // 接收人
+        notificationSendService.sendNotification(builder.build());
     }
 
     public CustWeChatInfo saveWeChatInfo(final CustWeChatInfo anWeChatInfo, final String anStatus) {
@@ -169,7 +211,7 @@ public class CustWeChatService extends BaseService<CustWeChatInfoMapper, CustWeC
         logger.info("saveWeChatInfo from WeChatInfo:" + anWeChatInfo);
         final CustWeChatInfo weChatInfo = this.selectByPrimaryKey(anWeChatInfo.getOpenId());
         if (weChatInfo != null) {
-            anWeChatInfo.modifyValue((CustOperatorInfo)null, weChatInfo);
+            anWeChatInfo.modifyValue((CustOperatorInfo) null, weChatInfo);
             anWeChatInfo.setAppId(weChatInfo.getAppId());
             if (StringUtils.isNotBlank(anStatus)) {
                 if ("1".equals(anStatus)) {
@@ -201,7 +243,7 @@ public class CustWeChatService extends BaseService<CustWeChatInfoMapper, CustWeC
             subscribeStatus = "1";
             weChatInfo = new CustWeChatInfo(anWeChatEvent, subscribeStatus);
             weChatInfo.setBusinStatus("3");
-            weChatInfo.initValue((CustOperatorInfo)null);
+            weChatInfo.initValue((CustOperatorInfo) null);
             this.insert(weChatInfo);
 
             return weChatInfo;
@@ -227,7 +269,7 @@ public class CustWeChatService extends BaseService<CustWeChatInfoMapper, CustWeC
         }
         BTAssert.notNull(weChatInfo, "没有找到微信账户信息");
         weChatInfo.setSubscribeStatus(subscribeStatus);
-        weChatInfo.modifyValue((CustOperatorInfo)null);
+        weChatInfo.modifyValue((CustOperatorInfo) null);
         this.updateByPrimaryKey(weChatInfo);
 
         return weChatInfo;
@@ -235,15 +277,19 @@ public class CustWeChatService extends BaseService<CustWeChatInfoMapper, CustWeC
 
     /**
      * 给指定操作员发送微信消息
-     * @param anId 操作员或客户编号
-     * @param anMsg 需要发送的消息，是一个WechatPushTemplate类的 JSON序列化，
+     *
+     * @param anId
+     *            操作员或客户编号
+     * @param anMsg
+     *            需要发送的消息，是一个WechatPushTemplate类的 JSON序列化，
      * @return 返回值是long类型，根据该ID，可以获取发送结果.
      */
-    public long sendWechatMessage(final Long anId, final String anMsg){
+    public long sendWechatMessage(final Long anId, final String anMsg) {
         try {
-            final WechatPushTemplate wpt = JsonMapper.buildNonEmptyMapper().readValue(anMsg,  WechatPushTemplate.class);
+            final WechatPushTemplate wpt = JsonMapper.buildNonEmptyMapper().readValue(anMsg, WechatPushTemplate.class);
+            checkWechatPushTemplate(wpt);
             final CustWeChatInfo wechatInfo = Collections3.getFirst(this.selectByProperty("operId", anId));
-            if (CustWeChatInfo.checkSendStatus(wechatInfo)){
+            if (CustWeChatInfo.checkSendStatus(wechatInfo)) {
                 final WechatAPIImpl wechatApi = WechatAPIImpl.create(mpAccount);
                 return wechatApi.sendTemplateMessage(wechatInfo.getOpenId(), wpt);
             }
@@ -252,6 +298,28 @@ public class CustWeChatService extends BaseService<CustWeChatInfoMapper, CustWeC
         catch (final IOException e) {
         }
         return 0L;
+    }
+
+    /**
+     * @param anWpt
+     */
+    private void checkWechatPushTemplate(final WechatPushTemplate anWpt) {
+        BTAssert.notNull(anWpt, "消息不能为空！");
+
+        BTAssert.isTrue(StringUtils.isNotBlank(anWpt.getTempId()), "消息模板ID不允许为空！");
+
+        final Set<WechatPushTempField> fields = anWpt.getFields();
+        for (final WechatPushTempField field : fields) {
+            checkWechatPushTempField(field);
+        }
+    }
+
+    /**
+     * @param anField
+     */
+    private void checkWechatPushTempField(final WechatPushTempField anField) {
+        final String[] fieldNames = new String[] { "first", "remark", "keyword1", "keyword2", "keyword3", "keyword4", "keyword5" };
+        BTAssert.isTrue(Arrays.asList(fieldNames).contains(anField.getName()), anField.getName() + " 模板字段名不正确！");
     }
 
     /**

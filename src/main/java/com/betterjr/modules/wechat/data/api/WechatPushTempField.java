@@ -2,10 +2,15 @@ package com.betterjr.modules.wechat.data.api;
 
 /**
  * 微信模板消息
- * 
+ *
  * @author zhoucy
  */
-public class WechatPushTempField {
+public class WechatPushTempField implements java.io.Serializable  {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = -6008755919656074511L;
 
     /**
      * 模板字段名称
@@ -26,13 +31,13 @@ public class WechatPushTempField {
 
     /**
      * 默认颜色(蓝色)
-     * 
+     *
      * @param name
      *            参数名称
      * @param value
      *            参数值
      */
-    public WechatPushTempField(String name, String value) {
+    public WechatPushTempField(final String name, final String value) {
         this.name = name;
         //this.color = "#119EF3";
         this.value = value;
@@ -40,7 +45,7 @@ public class WechatPushTempField {
 
     /**
      * 带参数构造方法
-     * 
+     *
      * @param name
      *            参数名称
      * @param color
@@ -48,7 +53,7 @@ public class WechatPushTempField {
      * @param value
      *            参数值
      */
-    public WechatPushTempField(String name, String color, String value) {
+    public WechatPushTempField(final String name, final String color, final String value) {
         this.name = name;
         this.color = color;
         this.value = value;
@@ -58,7 +63,7 @@ public class WechatPushTempField {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -66,7 +71,7 @@ public class WechatPushTempField {
         return color;
     }
 
-    public void setColor(String color) {
+    public void setColor(final String color) {
         this.color = color;
     }
 
@@ -74,12 +79,13 @@ public class WechatPushTempField {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(final String value) {
         this.value = value;
     }
 
+    @Override
     public String toString(){
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append("[");
         sb.append("name =").append(name);
         sb.append(", value =").append(value);
@@ -87,12 +93,12 @@ public class WechatPushTempField {
         sb.append("]");
         return sb.toString();
     }
-    
+
     /**
      * 组装模板数据
      */
     public String templateData() {
-        StringBuffer data = new StringBuffer("\"" + name + "\":{");
+        final StringBuffer data = new StringBuffer("\"" + name + "\":{");
         data.append("\"value\":\"").append(value).append("\",");
         data.append("\"color\":\"").append(color).append("\"}");
         return data.toString();

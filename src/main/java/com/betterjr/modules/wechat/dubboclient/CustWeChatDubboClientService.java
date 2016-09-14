@@ -22,11 +22,11 @@ import com.betterjr.common.utils.BTAssert;
 import com.betterjr.common.utils.JedisUtils;
 import com.betterjr.common.utils.UserUtils;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
+import com.betterjr.modules.wechat.constants.WechatConstants;
 import com.betterjr.modules.wechat.data.EventType;
 import com.betterjr.modules.wechat.data.MPAccount;
 import com.betterjr.modules.wechat.data.api.QRTicket;
 import com.betterjr.modules.wechat.data.event.BasicEvent;
-import com.betterjr.modules.wechat.data.event.ScanEvent;
 import com.betterjr.modules.wechat.dubbo.interfaces.ICustWeChatService;
 import com.betterjr.modules.wechat.entity.CustWeChatInfo;
 import com.betterjr.modules.wechat.util.WechatAPIImpl;
@@ -41,33 +41,35 @@ import com.betterjr.modules.wechat.util.WechatAPIImpl;
 public class CustWeChatDubboClientService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    private static final String wechatQrcodePrefix = "wechat::qrcodekey::";
-    private static final String wechatUserPrefix = "wechat::userkey::";
-    private static final String wechatKeyPrefixPattern = wechatQrcodePrefix +"*";
 
-    private static final int qCodeTimeOut = 180;
 
     @Reference(interfaceClass = ICustWeChatService.class)
     ICustWeChatService wechatService;
 
     private MPAccount mpAccount = null;
 
+    /**
+     * 获取 mpAccount
+     * @return
+     */
+    public synchronized MPAccount getMpAccount() {
+        if (mpAccount == null) {
+            mpAccount = wechatService.getMpAccount();
+        }
+        return mpAccount;
+    }
+
+    /**
+     * 保存交易密码
+     * @param anNewPasswd
+     * @param anOkPasswd
+     * @param anLoginPasswd
+     * @return
+     */
     public String saveMobileTradePass(final String anNewPasswd, final String anOkPasswd, final String anLoginPasswd){
         return wechatService.webSaveMobileTradePass(anNewPasswd, anOkPasswd, anLoginPasswd);
     }
 
-    public synchronized MPAccount getMpAccount() {
-        if (mpAccount == null) {
-            mpAccount = wechatService.findMpAccount();
-        }
-        return mpAccount;
-    }
-    /*
-    @PostConstruct
-    public synchronized void init() {
-        // 修改为实际的公众号信息,可以在开发者栏目中查看
-        mpAccount = wechatService.findMpAccount();
-    }*/
 
     /**
      * 检查微信账户是否已经绑定操作员，如果已经绑定或没有登录返回false；表示不能绑定
@@ -75,8 +77,6 @@ public class CustWeChatDubboClientService {
     protected boolean checkOperatorBinding() {
         final CustOperatorInfo op = UserUtils.getOperatorInfo();
         if (op != null) {
-            // 从 CustWeChatInfoMapper 中取回用户
-            //return Collections3.isEmpty(this.selectByProperty("operId", op.getId()));
             return wechatService.checkWeChatInfoByOperId(op.getId());
         }
 
@@ -85,13 +85,14 @@ public class CustWeChatDubboClientService {
 
     /**
      *检查是否已经扫描，如果已经扫描，则返回true
+     *如果返回空，说明已经超时
      * @return
      */
     public Object checkScanStatus() {
         final CustOperatorInfo operator = UserUtils.getOperatorInfo();
         if (operator != null){
-            final String userKey = wechatUserPrefix + operator.getId();
-            final Boolean result = JedisUtils.getObject(userKey);
+            final String scanKey = WechatConstants.wechatScanPrefix + operator.getId();
+            final Boolean result = JedisUtils.getObject(scanKey);
             return result;
         }
 
@@ -107,15 +108,15 @@ public class CustWeChatDubboClientService {
      */
     public String createQcode(int anWorkType) {
         BTAssert.isTrue(checkOperatorBinding(), "已经绑定账户或没有登录，不能获取扫描二维码");
-        final Integer keysCount = JedisUtils.keysCount(wechatKeyPrefixPattern);
+        final Integer keysCount = JedisUtils.keysCount(WechatConstants.wechatQrcodePattern);
         BTAssert.isTrue(keysCount < 100000, "现在申请绑定账户太多，请稍后再试试");
 
         anWorkType = Math.abs(anWorkType);
         BTAssert.isTrue(anWorkType < 21, "业务类型不能大于21");
 
         final WechatAPIImpl wechatApi = WechatAPIImpl.create(this.getMpAccount());
-        final int workQCode = findQCodeKey(anWorkType);
-        final QRTicket qrt = wechatApi.createQR(workQCode, qCodeTimeOut);
+        final int workQCode = findQrcodeKey(anWorkType);
+        final QRTicket qrt = wechatApi.createQR(workQCode, WechatConstants.scanTimeOut);
 
         try {
             return URLEncoder.encode(qrt.getTicket(), "UTF-8");
@@ -125,45 +126,27 @@ public class CustWeChatDubboClientService {
         }
     }
 
-    protected int findQCodeKey(final int anWorkType) {
+    /**
+     * 获取一个 qrcodekey
+     * @param anWorkType
+     * @return
+     */
+    private int findQrcodeKey(final int anWorkType) {
         int limitKey;
         String tmpStr;
         while (true) {
             limitKey = (anWorkType * 10000 * 10000) + SerialGenerator.randomInt(10000 * 10000);
-            tmpStr = Integer.toString(limitKey);
-            final String qcodeKey = wechatQrcodePrefix + tmpStr;
+            tmpStr = String.valueOf(limitKey);
+            final String qcodeKey = WechatConstants.wechatQrcodePrefix + tmpStr;            // 得到Qrcode key
             if (JedisUtils.exists(qcodeKey) == false) {
                 final CustOperatorInfo operator = UserUtils.getOperatorInfo();
-                final String userKey = wechatUserPrefix + operator.getId();
-                JedisUtils.setObject(userKey, Boolean.FALSE, qCodeTimeOut);
-                JedisUtils.setObject(qcodeKey, operator, qCodeTimeOut);
+                final String scanKey = WechatConstants.wechatScanPrefix + operator.getId(); // 得到 scan flag key
+                JedisUtils.set(qcodeKey, String.valueOf(operator.getId()), WechatConstants.scanTimeOut);        // scanTimeOut
+                JedisUtils.set(scanKey, "1", WechatConstants.scanTimeOut);                                      // scanTimeOut
                 break;
             }
         }
         return limitKey;
-    }
-
-    public CustWeChatInfo saveWeChatInfo(final CustWeChatInfo anWeChatInfo, final String anStatus) {
-        BTAssert.notNull(anWeChatInfo, "客户微信信息必须存在");
-        BTAssert.notNull(anStatus, "状态必须存在");
-
-        return wechatService.saveWeChatInfo(anWeChatInfo, anStatus);
-
-        /* logger.info("saveWeChatInfo from WeChatInfo:" + anWeChatInfo);
-        final CustWeChatInfo weChatInfo = this.selectByPrimaryKey(anWeChatInfo.getOpenId());
-        if (weChatInfo != null) {
-            anWeChatInfo.modifyValue(UserUtils.getOperatorInfo(), weChatInfo);
-            anWeChatInfo.setAppId(weChatInfo.getAppId());
-            if (StringUtils.isNotBlank(anStatus)) {
-                if ("1".equals(anStatus)) {
-                    BTAssert.isTrue("1".equals(anWeChatInfo.getSubscribeStatus()), "只有在已订阅情况下，才能修改微信客户的状态为正常");
-                }
-                anWeChatInfo.setBusinStatus(anStatus);
-            }
-            this.updateByPrimaryKey(anWeChatInfo);
-        }
-
-        return anWeChatInfo;*/
     }
 
     /**
@@ -179,28 +162,25 @@ public class CustWeChatDubboClientService {
     }
 
     /**
-     * @param anEvent
-     * @return
+     * @param anEventKey
+     * @param anFromUserName
      */
-    public CustWeChatInfo saveBindingWeChat(final ScanEvent anWeChatEvent) {
-        final CustWeChatInfo weChatInfo = wechatService.findWeChatInfo(anWeChatEvent.getFromUserName());//this.selectByPrimaryKey(anWeChatEvent.getFromUserName());
-        final String tmpKey = anWeChatEvent.getEventKey();
-        if (weChatInfo != null && StringUtils.isNotBlank(tmpKey)) {
-            final String qrcodeKey = wechatQrcodePrefix + tmpKey;
-            final CustOperatorInfo custOperator = JedisUtils.getObject(qrcodeKey);
+    public CustWeChatInfo saveBindingWeChat(final String anEventKey, final String anFromUserName) {
+        if (StringUtils.isBlank(anEventKey) || StringUtils.isNotBlank(anEventKey)) {
+            return null;
+        }
+        final CustWeChatInfo wechatInfo = wechatService.findWeChatInfo(anFromUserName); // 通过用户OpenId找到系统中的wechatInfo
+        if (wechatInfo != null) {
+            final String qrcodeKey = WechatConstants.wechatQrcodePrefix + anEventKey; // 拿到wechatKey
+            final CustOperatorInfo custOperator = JedisUtils.getObject(qrcodeKey);      // 取到wechatKey 存储的用户信息  userId 即可
             if (custOperator != null) {
-                JedisUtils.delObject(qrcodeKey);
-                final CustOperatorInfo operator = UserUtils.getOperatorInfo();
-                if (operator != null){
-                    final String userKey = wechatUserPrefix + operator.getId();
-                    JedisUtils.setObject(userKey, Boolean.TRUE, qCodeTimeOut);
-                }
-                custOperator.setContIdentNo(weChatInfo.getOpenId());
-                weChatInfo.setOperId(custOperator.getId());
-                weChatInfo.setOperName(custOperator.getName());
-                weChatInfo.setOperOrg(custOperator.getOperOrg());
-                // this.updateByPrimaryKey(weChatInfo);
-                return wechatService.saveWeChatInfo(weChatInfo);
+                JedisUtils.delObject(qrcodeKey);                                        // delete qrcodeKey
+                final String scanKey = WechatConstants.wechatScanPrefix + custOperator.getId();
+                JedisUtils.setObject(scanKey, Boolean.TRUE, WechatConstants.scanTimeOut); //置为已扫描
+
+                final String userKey = WechatConstants.wechatUserPrefix + custOperator.getId();
+                JedisUtils.setObject(userKey, wechatInfo.getOpenId(), WechatConstants.userTimeOut);   // 给定超时时间
+                return wechatInfo;
             }
         }
         return null;
