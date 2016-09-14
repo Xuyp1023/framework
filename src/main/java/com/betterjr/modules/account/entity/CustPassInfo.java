@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.time.DateUtils;
+
 import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.data.CustPasswordType;
 import com.betterjr.common.entity.BetterjrEntity;
@@ -40,6 +42,7 @@ public class CustPassInfo implements BetterjrEntity {
     /**
      * 密码类型；0查询密码，1交易密码，6操作员操作密码
      */
+    @Id
     @Column(name = "C_TYPE", columnDefinition = "VARCHAR")
     @MetaData(value = "密码类型", comments = "密码类型；0查询密码，1交易密码，6操作员操作密码")
     private String passType;
@@ -110,17 +113,18 @@ public class CustPassInfo implements BetterjrEntity {
 
     public CustPassInfo() {
     }
-    
-    public void modifyPassword(String anSalt, String anPassword){
+
+    public void modifyPassword(final String anSalt, final String anPassword){
         this.passwd = anPassword;
         this.passSalt = anSalt;
-        this.setModiDate(BetterDateUtils.getNumDateTime()); 
+        this.setModiDate(BetterDateUtils.getNumDateTime());
     }
 
-    public CustPassInfo(CustOperatorInfo operator, String password) {
+    public CustPassInfo(final CustOperatorInfo operator, final String password) {
         this.setPassType("6");
         this.setCustNo(operator.getId());
-        HashPassword hashPassword = new SystemAuthorizingRealm().encrypt(password);
+        new SystemAuthorizingRealm();
+        final HashPassword hashPassword = SystemAuthorizingRealm.encrypt(password);
         this.setPasswd(hashPassword.password);
         this.setPassSalt(hashPassword.salt);
         this.setErrCount(0);
@@ -130,7 +134,7 @@ public class CustPassInfo implements BetterjrEntity {
         this.setEndDate("20501231");
     }
 
-    public CustPassInfo(CustPasswordType anPassType, int anYear, Long anUserNo, String anSalt, String anPassword) {
+    public CustPassInfo(final CustPasswordType anPassType, final int anYear, final Long anUserNo, final String anSalt, final String anPassword) {
         this.setPassType(anPassType.getPassType());
         this.setCustNo(anUserNo);
         this.setPasswd(anPassword);
@@ -139,14 +143,14 @@ public class CustPassInfo implements BetterjrEntity {
         this.setLockStatus("0");
         this.setOperWay("0");
         this.setModiDate(BetterDateUtils.getNumDateTime());
-        this.setEndDate(BetterDateUtils.formatNumberDate(BetterDateUtils.addYears(new Date() , anYear)) );
+        this.setEndDate(BetterDateUtils.formatNumberDate(DateUtils.addYears(new Date() , anYear)) );
     }
 
     public String getConfirmation() {
         return confirmation;
     }
 
-    public void setConfirmation(String anConfirmation) {
+    public void setConfirmation(final String anConfirmation) {
         confirmation = anConfirmation;
     }
 
@@ -154,7 +158,7 @@ public class CustPassInfo implements BetterjrEntity {
         return custNo;
     }
 
-    public void setCustNo(Long custNo) {
+    public void setCustNo(final Long custNo) {
         this.custNo = custNo;
     }
 
@@ -162,7 +166,7 @@ public class CustPassInfo implements BetterjrEntity {
         return errCount;
     }
 
-    public void setErrCount(Integer errCount) {
+    public void setErrCount(final Integer errCount) {
         this.errCount = errCount;
     }
 
@@ -170,7 +174,7 @@ public class CustPassInfo implements BetterjrEntity {
         return passType;
     }
 
-    public void setPassType(String passType) {
+    public void setPassType(final String passType) {
         this.passType = passType == null ? null : passType.trim();
     }
 
@@ -178,7 +182,7 @@ public class CustPassInfo implements BetterjrEntity {
         return passwd;
     }
 
-    public void setPasswd(String passwd) {
+    public void setPasswd(final String passwd) {
         this.passwd = passwd == null ? null : passwd.trim();
     }
 
@@ -186,7 +190,7 @@ public class CustPassInfo implements BetterjrEntity {
         return passSalt;
     }
 
-    public void setPassSalt(String passSalt) {
+    public void setPassSalt(final String passSalt) {
         this.passSalt = passSalt == null ? null : passSalt.trim();
     }
 
@@ -194,7 +198,7 @@ public class CustPassInfo implements BetterjrEntity {
         return lockStatus;
     }
 
-    public void setLockStatus(String lockStatus) {
+    public void setLockStatus(final String lockStatus) {
         this.lockStatus = lockStatus == null ? null : lockStatus.trim();
     }
 
@@ -202,7 +206,7 @@ public class CustPassInfo implements BetterjrEntity {
         return operWay;
     }
 
-    public void setOperWay(String operWay) {
+    public void setOperWay(final String operWay) {
         this.operWay = operWay == null ? null : operWay.trim();
     }
 
@@ -210,7 +214,7 @@ public class CustPassInfo implements BetterjrEntity {
         return lockDate;
     }
 
-    public void setLockDate(String lockDate) {
+    public void setLockDate(final String lockDate) {
         this.lockDate = lockDate == null ? null : lockDate.trim();
     }
 
@@ -218,7 +222,7 @@ public class CustPassInfo implements BetterjrEntity {
         return lockTime;
     }
 
-    public void setLockTime(String lockTime) {
+    public void setLockTime(final String lockTime) {
         this.lockTime = lockTime == null ? null : lockTime.trim();
     }
 
@@ -226,7 +230,7 @@ public class CustPassInfo implements BetterjrEntity {
         return endDate;
     }
 
-    public void setEndDate(String endDate) {
+    public void setEndDate(final String endDate) {
         this.endDate = endDate == null ? null : endDate.trim();
     }
 
@@ -234,14 +238,14 @@ public class CustPassInfo implements BetterjrEntity {
         return modiDate;
     }
 
-    public void setModiDate(String modiDate) {
+    public void setModiDate(final String modiDate) {
         this.modiDate = modiDate == null ? null : modiDate.trim();
     }
 
     /**
-     * 
+     *
      * 检查密码是否锁定
-     * 
+     *
      * @return 锁定返回True， 否则返回False
      * @throws 异常情况
      */
@@ -251,8 +255,8 @@ public class CustPassInfo implements BetterjrEntity {
             return false;
         }
         else if (this.lockStatus.equals("1")) {
-            long lockTime = PropertiesHolder.getLong("operator.lockTime", 2 * 3600 * 1000);
-            long workTime = BetterDateUtils.parseDate(this.getLockDate() + " " + this.getLockTime()).getTime();
+            final long lockTime = PropertiesHolder.getLong("operator.lockTime", 2 * 3600 * 1000);
+            final long workTime = BetterDateUtils.parseDate(this.getLockDate() + " " + this.getLockTime()).getTime();
 
             return (lockTime + workTime) > System.currentTimeMillis();
         }
@@ -265,7 +269,7 @@ public class CustPassInfo implements BetterjrEntity {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
@@ -287,7 +291,7 @@ public class CustPassInfo implements BetterjrEntity {
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(final Object that) {
         if (this == that) {
             return true;
         }
@@ -297,7 +301,7 @@ public class CustPassInfo implements BetterjrEntity {
         if (getClass() != that.getClass()) {
             return false;
         }
-        CustPassInfo other = (CustPassInfo) that;
+        final CustPassInfo other = (CustPassInfo) that;
         return (this.getCustNo() == null ? other.getCustNo() == null : this.getCustNo().equals(other.getCustNo()))
                 && (this.getErrCount() == null ? other.getErrCount() == null : this.getErrCount().equals(other.getErrCount()))
                 && (this.getPassType() == null ? other.getPassType() == null : this.getPassType().equals(other.getPassType()))

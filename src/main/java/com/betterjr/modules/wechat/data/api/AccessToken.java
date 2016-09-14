@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -25,6 +26,8 @@ public class AccessToken implements Serializable {
     @JsonProperty(value = "expires_in")
     private long expiresIn;
 
+    @JsonIgnore
+    private long orginExpireSec;
 
     @JsonProperty(value = "openid")
     private String openId;
@@ -48,7 +51,12 @@ public class AccessToken implements Serializable {
 
     public void setExpiresIn(final long expiresIn) {
         // 考虑到服务器时间同步,故将刷新时间提前60秒.
+        this.orginExpireSec = expiresIn;
         this.expiresIn = System.currentTimeMillis() + (expiresIn - 60) * 1000;
+    }
+
+    public long getOrginExpireSec() {
+        return orginExpireSec;
     }
 
     public boolean isAvailable() {

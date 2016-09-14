@@ -26,7 +26,6 @@ import com.betterjr.modules.wechat.data.message.VoiceMsg;
 import com.betterjr.modules.wechat.data.push.SentAllJobEvent;
 import com.betterjr.modules.wechat.data.push.SentTmlJobEvent;
 import com.betterjr.modules.wechat.dubboclient.CustWeChatDubboClientService;
-import com.betterjr.modules.wechat.entity.CustWeChatInfo;
 
 /**
  * 微信消息,事件处理器(实际生产中需要重写)
@@ -122,12 +121,12 @@ public class WechatDefHandler implements WechatHandler {
         if (StringUtils.startsWith(anEvent.getEventKey(), "qrscene_")) {// 带参数场景扫描
             final String eventKey = StringUtils.substring(anEvent.getEventKey(), 8);
             final String fromUserName = anEvent.getFromUserName();
-            final CustWeChatInfo wechatInfo = wechatDubboClientService.saveBindingWeChat(eventKey, fromUserName);
-            if (wechatInfo == null){
+            final String operName = wechatDubboClientService.saveBindingWeChat(eventKey, fromUserName);
+            if (StringUtils.isBlank(operName)){
                 text_msg.setContent("欢迎关注前海拜特微信开发公众号! 账户绑定扫描失败，账户绑定扫描只能一次，请重新获取扫描二维码。");
             }
             else{
-                text_msg.setContent("账户绑定扫描成功，操作员是："+ wechatInfo.getOperName() + " 请继续在平台输入交易密码！");
+                text_msg.setContent("账户绑定扫描成功，操作员是："+ operName + " 请继续在平台输入交易密码！");
             }
         }
         return text_msg;
@@ -143,12 +142,12 @@ public class WechatDefHandler implements WechatHandler {
         final TextMsg text_msg = new TextMsg(anEvent);
         final String eventKey = anEvent.getEventKey();
         final String fromUserName = anEvent.getFromUserName();
-        final CustWeChatInfo wechatInfo = wechatDubboClientService.saveBindingWeChat(eventKey, fromUserName);
-        if (wechatInfo == null){
+        final String operName = wechatDubboClientService.saveBindingWeChat(eventKey, fromUserName);
+        if (StringUtils.isBlank(operName)){
             text_msg.setContent("账户绑定扫描失败，账户绑定扫描只能一次，请重新获取扫描二维码。");
         }
         else{
-            text_msg.setContent("账户绑定扫描成功，操作员是："+wechatInfo.getOperName() + " 请继续在平台输入交易密码！");
+            text_msg.setContent("账户绑定扫描成功，操作员是："+ operName + " 请继续在平台输入交易密码！");
         }
 
         return text_msg;

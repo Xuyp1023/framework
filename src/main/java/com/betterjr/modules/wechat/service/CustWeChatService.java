@@ -174,18 +174,20 @@ public class CustWeChatService extends BaseService<CustWeChatInfoMapper, CustWeC
             final CustPasswordType anPassType) {
         final CustOperatorInfo operator = UserUtils.getOperatorInfo();
         final String userKey = WechatConstants.wechatUserPrefix + operator.getId();
-        final String openId = JedisUtils.getObject(userKey); // 取到userKey 对应的 operatorId
+        final String openId = JedisUtils.get(userKey); // 取到userKey 对应的 operatorId
 
         BTAssert.notNull(openId, "扫描信息已过期！");
-        JedisUtils.delObject(userKey);
 
         // 保存关联关系
         final CustWeChatInfo wechatInfo = saveBindingWeChatInfo(operator, openId);
-        if (wechatInfo != null) {
-            custOperatorService.saveBindingTradePassword(anPassType, anNewPasswd, anOkPasswd, anLoginPasswd);
 
-            sendNotification(wechatInfo, operator);
-        }
+        BTAssert.notNull(wechatInfo, "微信账号绑定失败!");
+
+        custOperatorService.saveBindingTradePassword(anPassType, anNewPasswd, anOkPasswd, anLoginPasswd);
+
+        sendNotification(wechatInfo, operator);
+
+        JedisUtils.delObject(userKey);
         return wechatInfo;
     }
 
