@@ -49,15 +49,15 @@ public class CustWeChatDubboClientService {
     ICustWeChatService wechatService;
 
     private MPAccount mpAccount = null;
-    
+
     /**
-    *
-    * @param anToken
-    * @return
-    */
-   public Map<String, Object> saveLogin(final AccessToken anToken){
-       return this.wechatService.saveLogin(anToken);
-   }
+     *
+     * @param anToken
+     * @return
+     */
+    public Map<String, Object> saveLogin(final AccessToken anToken){
+        return this.wechatService.saveLogin(anToken);
+    }
 
     /**
      * 获取 mpAccount
@@ -103,7 +103,7 @@ public class CustWeChatDubboClientService {
         final CustOperatorInfo operator = UserUtils.getOperatorInfo();
         if (operator != null){
             final String scanKey = WechatConstants.wechatScanPrefix + operator.getId();
-            final Boolean result = JedisUtils.getObject(scanKey);
+            final String result = JedisUtils.get(scanKey);
             return result;
         }
 
@@ -148,12 +148,12 @@ public class CustWeChatDubboClientService {
         while (true) {
             limitKey = (anWorkType * 10000 * 10000) + SerialGenerator.randomInt(10000 * 10000);
             tmpStr = String.valueOf(limitKey);
-            final String qcodeKey = WechatConstants.wechatQrcodePrefix + tmpStr;            // 得到Qrcode key
-            if (JedisUtils.exists(qcodeKey) == false) {
+            final String qrcodeKey = WechatConstants.wechatQrcodePrefix + tmpStr;            // 得到Qrcode key
+            if (JedisUtils.exists(qrcodeKey) == false) {
                 final CustOperatorInfo operator = UserUtils.getOperatorInfo();
                 final String scanKey = WechatConstants.wechatScanPrefix + operator.getId(); // 得到 scan flag key
-                JedisUtils.set(qcodeKey, String.valueOf(operator.getId()), WechatConstants.scanTimeOut);        // scanTimeOut
-                JedisUtils.set(scanKey, "1", WechatConstants.scanTimeOut);                                      // scanTimeOut
+                JedisUtils.setObject(qrcodeKey, operator, WechatConstants.scanTimeOut);        // scanTimeOut
+                JedisUtils.set(scanKey, WechatConstants.SCAN_NO, WechatConstants.scanTimeOut);                 // scanTimeOut
                 break;
             }
         }
@@ -176,26 +176,25 @@ public class CustWeChatDubboClientService {
      * @param anEventKey
      * @param anFromUserName
      */
-    public CustWeChatInfo saveBindingWeChat(final String anEventKey, final String anFromUserName) {
-        if (StringUtils.isBlank(anEventKey) || StringUtils.isNotBlank(anEventKey)) {
+    public String saveBindingWeChat(final String anEventKey, final String anFromUserName) {
+        if (StringUtils.isBlank(anEventKey) || StringUtils.isBlank(anEventKey)) {
             return null;
         }
         final CustWeChatInfo wechatInfo = wechatService.findWeChatInfo(anFromUserName); // 通过用户OpenId找到系统中的wechatInfo
         if (wechatInfo != null) {
             final String qrcodeKey = WechatConstants.wechatQrcodePrefix + anEventKey; // 拿到wechatKey
-            final CustOperatorInfo custOperator = JedisUtils.getObject(qrcodeKey);      // 取到wechatKey 存储的用户信息  userId 即可
-            if (custOperator != null) {
+            final CustOperatorInfo operator = JedisUtils.getObject(qrcodeKey);            // 取到wechatKey 存储的用户信息  userId 即可
+            if (operator != null) {
                 JedisUtils.delObject(qrcodeKey);                                        // delete qrcodeKey
-                final String scanKey = WechatConstants.wechatScanPrefix + custOperator.getId();
-                JedisUtils.setObject(scanKey, Boolean.TRUE, WechatConstants.scanTimeOut); //置为已扫描
+                final String scanKey = WechatConstants.wechatScanPrefix + operator.getId();
+                JedisUtils.set(scanKey, WechatConstants.SCAN_YES, WechatConstants.scanTimeOut); //置为已扫描
 
-                final String userKey = WechatConstants.wechatUserPrefix + custOperator.getId();
-                JedisUtils.setObject(userKey, wechatInfo.getOpenId(), WechatConstants.userTimeOut);   // 给定超时时间
-                return wechatInfo;
+                final String userKey = WechatConstants.wechatUserPrefix + operator.getId();
+                JedisUtils.set(userKey, wechatInfo.getOpenId(), WechatConstants.userTimeOut);   // 给定超时时间
+                return operator.getName();
             }
         }
         return null;
     }
-
 
 }

@@ -38,7 +38,7 @@ public class CustWeChatDubboService implements ICustWeChatService {
      */
     @Override
     public String webSaveMobileTradePass(final String anNewPasswd, final String anOkPasswd, final String anLoginPasswd) {
-        return AjaxObject.newOk("交易密码保存成功", wechatService.saveMobileTradePass(anNewPasswd, anOkPasswd, anLoginPasswd, CustPasswordType.ORG_TRADE)).toJson();
+        return AjaxObject.newOk("交易密码保存成功", wechatService.saveMobileTradePass(anNewPasswd, anOkPasswd, anLoginPasswd, CustPasswordType.ORG)).toJson();
     }
 
     /*
