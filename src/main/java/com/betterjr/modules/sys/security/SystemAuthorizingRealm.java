@@ -23,6 +23,7 @@ import org.apache.shiro.util.ByteSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.betterjr.common.config.SpringPropertyResourceReader;
 import com.betterjr.common.data.CustPasswordType;
 import com.betterjr.common.data.SimpleDataEntity;
 import com.betterjr.common.data.UserType;
@@ -52,19 +53,19 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
     private static final int INTERATIONS = 1024;
     private static final int SALT_SIZE = 20;
     private static final String ALGORITHM = "SHA-256";
-   
+
     private CustCertDubboClientService certService;
 
-    
+
     private CustLoginDubboClientService userService;
 
-    
+
     private CustOperatorDubboClientService operatorService;
 
-    
+
     private CustPassDubboClientService passService;
-    
-    
+
+
     private CustWeChatDubboClientService weChatService;
 
     /**
@@ -72,13 +73,14 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
      */
     public SystemAuthorizingRealm() {
         super();
-        HashedCredentialsMatcher matcher = new HashedCredentialsMatcher(ALGORITHM);
+        final HashedCredentialsMatcher matcher = new HashedCredentialsMatcher(ALGORITHM);
         matcher.setHashIterations(INTERATIONS);
 
         setCredentialsMatcher(matcher);
     }
 
-    public boolean supports(AuthenticationToken token) {
+    @Override
+    public boolean supports(final AuthenticationToken token) {
 
         return true;
     }
@@ -87,7 +89,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
      * 认证回调函数, 登录时调用.
      */
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) throws AuthenticationException {
+    protected AuthenticationInfo doGetAuthenticationInfo(final AuthenticationToken authcToken) throws AuthenticationException {
 
         CustOperatorInfo user = null;
         String passWD = null;
@@ -101,7 +103,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
             CustCertInfo certInfo = null;
             if ((authcToken instanceof BetterjrWechatToken) == false) {
                 try {
-                    X509Certificate cert = Servlets.findCertificate();
+                    final X509Certificate cert = Servlets.findCertificate();
                     if (cert != null) {
                         certInfo = checkValid(cert);
                     }
@@ -110,21 +112,21 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
                         throw new AuthenticationException("the request has X509Certificate");
                     }
                 }
-                catch (AuthenticationException e) {
+                catch (final AuthenticationException e) {
 
                     throw e;
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     e.printStackTrace();
                     throw new AuthenticationException("数字证书验证失败");
                 }
             }
             if (authcToken instanceof CaptchaUsernamePasswordToken) {
-                CaptchaUsernamePasswordToken token = (CaptchaUsernamePasswordToken) authcToken;
+                final CaptchaUsernamePasswordToken token = (CaptchaUsernamePasswordToken) authcToken;
                 user = operatorService.findCustOperatorByOperCode(certInfo.getOperOrg(), token.getUsername());
                 if (user != null) {
                     log.warn(user.toString());
-                    CustPassInfo passInfo = passService.getOperaterPassByCustNo(user.getId(), CustPasswordType.ORG);
+                    final CustPassInfo passInfo = passService.getOperaterPassByCustNo(user.getId(), CustPasswordType.ORG);
 
                     // 临时锁定
                     if (passInfo == null || passInfo.validLockType()) {
@@ -140,20 +142,31 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
             }
             else if (authcToken instanceof BetterjrSsoToken || authcToken instanceof BetterjrWechatToken) {
                 if (authcToken instanceof BetterjrSsoToken) {
-                    BetterjrSsoToken ssoToken = (BetterjrSsoToken) authcToken;
-                    String ticket = (String) ssoToken.getTicket();
+                    final BetterjrSsoToken ssoToken = (BetterjrSsoToken) authcToken;
+                    final String ticket = ssoToken.getTicket();
                     contextInfo = userService.saveTokenLogin(ticket);
                     user = contextInfo.getOperatorInfo();
                     ssoToken.setUsername(user.getName());
                 }
                 else {
-                    BetterjrWechatToken wechatToken = (BetterjrWechatToken) authcToken;
-                    WechatKernel wk = new WechatKernel(weChatService.getMpAccount(), new WechatDefHandler(weChatService), new HashMap());
-                    AccessToken at = wk.findUserAuth2(wechatToken.getTicket());
-                    
-                    Map<String, Object> mapResult = weChatService.saveLogin(at);
-                    Object operator=mapResult.get("operator");
-                    Object message=mapResult.get("message");
+                    final BetterjrWechatToken wechatToken = (BetterjrWechatToken) authcToken;
+                    final WechatKernel wk = new WechatKernel(weChatService.getMpAccount(), new WechatDefHandler(weChatService), new HashMap());
+
+                    final String sysMode = SpringPropertyResourceReader.getProperty("sys.mode", "prod");
+                    AccessToken at = null;
+                    switch(sysMode.toLowerCase()) {
+                    case "dev":
+                        at = createTestAccessToken(wechatToken);
+                        break;
+                    case "test":
+                    case "prod":
+                        at = wk.findUserAuth2(wechatToken.getTicket());
+                        break;
+                    }
+
+                    final Map<String, Object> mapResult = weChatService.saveLogin(at);
+                    final Object operator=mapResult.get("operator");
+                    final Object message=mapResult.get("message");
                     if(operator instanceof CustOperatorInfo){
                         user= (CustOperatorInfo)operator;
                     }
@@ -188,9 +201,9 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
                     ut = UserType.OPERATOR_ADMIN;
                 }
 
-                ShiroUser shiroUser = new ShiroUser(ut, user.getId(), user.getName(), user, certInfo.getRuleList(), mobileLogin, workData, userPassData);
+                final ShiroUser shiroUser = new ShiroUser(ut, user.getId(), user.getName(), user, certInfo.getRuleList(), mobileLogin, workData, userPassData);
                 log.info("this login user Info is :" + shiroUser);
-                byte[] salt = Encodes.decodeHex(saltStr);
+                final byte[] salt = Encodes.decodeHex(saltStr);
 
                 // 这里可以缓存认证
                 log.warn("ready invoke SimpleAuthenticationInfo");
@@ -200,7 +213,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
                 return null;
             }
         }
-        catch (Exception ex) {
+        catch (final Exception ex) {
             ex.printStackTrace();
             return null;
         }
@@ -208,24 +221,42 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
     }
 
 
-    private CustCertInfo checkValid(X509Certificate anCert) {
-        CustCertInfo certInfo = certService.checkValidity(anCert);
+    /**
+     * @param anWechatToken
+     * @return
+     */
+    private AccessToken createTestAccessToken(final BetterjrWechatToken anWechatToken) {
+        final AccessToken accessToken = new AccessToken();
+        final String code = anWechatToken.getTicket();
+        switch (code) {
+        case "1"://
+            accessToken.setOpenId("oqJfawIAHfDxzz3-LApBxkZwMp9U");
+            break;
+        case "2":
+            accessToken.setOpenId("oqJfawF9wTPihEnGXIhT98M7-g0A");
+            break;
+        }
+        return accessToken;
+    }
+
+    private CustCertInfo checkValid(final X509Certificate anCert) {
+        final CustCertInfo certInfo = certService.checkValidity(anCert);
         Servlets.getSession().setAttribute(SecurityConstants.CUST_CERT_INFO, certInfo);
-//        AccessClientImpl.set(certInfo);
+        //        AccessClientImpl.set(certInfo);
         return certInfo;
     }
 
-    protected CustContextInfo formLogin(CustOperatorInfo custOperatorInfo) {
-        String token = Servlets.getSession().getId();
-        CustContextInfo contextInfo = new CustContextInfo(token, null, null);
+    protected CustContextInfo formLogin(final CustOperatorInfo custOperatorInfo) {
+        final String token = Servlets.getSession().getId();
+        final CustContextInfo contextInfo = new CustContextInfo(token, null, null);
         CustContextInfo.putCustContextInfo(contextInfo);
-        CustOperatorInfo tmpInfo = custOperatorInfo;
+        final CustOperatorInfo tmpInfo = custOperatorInfo;
         // tmpInfo.setName("欧尼");
         // tmpInfo.setOperCode("9857");
         // tmpInfo.setOperOrg("aXXAAAFWQWEQWEQWEEQWEXXXXddpppp");
         tmpInfo.initStatus();
         contextInfo.setOperatorInfo(tmpInfo);
-        List<CustInfo> custList = new ArrayList();
+        final List<CustInfo> custList = new ArrayList();
         contextInfo.login(custList);
 
         // 增加交易账户信息
@@ -239,18 +270,18 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
      * 授权查询回调函数, 进行鉴权但缓存中无用户的授权信息时调用.
      */
     @Override
-    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+    protected AuthorizationInfo doGetAuthorizationInfo(final PrincipalCollection principals) {
         log.warn("this work for doGetAuthorizationInfo 1231");
-        Collection<?> collection = principals.fromRealm(getName());
+        final Collection<?> collection = principals.fromRealm(getName());
         if (Collections3.isEmpty(collection)) {
             return null;
         }
 
-        ShiroUser shiroUser = (ShiroUser) collection.iterator().next();
+        final ShiroUser shiroUser = (ShiroUser) collection.iterator().next();
 
-        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+        final SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 
-        for (String userRule : shiroUser.fingUserRule()) {
+        for (final String userRule : shiroUser.fingUserRule()) {
             log.warn("this use attach rule is :" + userRule);
             info.addRole(userRule);
         }
@@ -263,20 +294,20 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
         public String password;
     }
 
-    public static HashPassword encrypt(String plainText) {
-        HashPassword result = new HashPassword();
-        byte[] salt = Digests.generateSalt(SALT_SIZE);
+    public static HashPassword encrypt(final String plainText) {
+        final HashPassword result = new HashPassword();
+        final byte[] salt = Digests.generateSalt(SALT_SIZE);
         result.salt = Encodes.encodeHex(salt);
 
-        byte[] hashPassword = Digests.sha256(plainText.getBytes(), salt, INTERATIONS);
+        final byte[] hashPassword = Digests.sha256(plainText.getBytes(), salt, INTERATIONS);
         result.password = Encodes.encodeHex(hashPassword);
 
         return result;
     }
 
-    public static String findEncrypt(String plainText, String anSalt) {
-        byte[] salt = Encodes.decodeHex(anSalt);
-        byte[] hashPassword = Digests.sha256(plainText.getBytes(), salt, INTERATIONS);
+    public static String findEncrypt(final String plainText, final String anSalt) {
+        final byte[] salt = Encodes.decodeHex(anSalt);
+        final byte[] hashPassword = Digests.sha256(plainText.getBytes(), salt, INTERATIONS);
 
         return Encodes.encodeHex(hashPassword);
     }
@@ -284,8 +315,8 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
     /**
      * 更新用户授权信息缓存.
      */
-    public void clearCachedAuthorizationInfo(String principal) {
-        SimplePrincipalCollection principals = new SimplePrincipalCollection(principal, getName());
+    public void clearCachedAuthorizationInfo(final String principal) {
+        final SimplePrincipalCollection principals = new SimplePrincipalCollection(principal, getName());
         clearCachedAuthorizationInfo(principals);
     }
 
@@ -293,9 +324,9 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
      * 清除所有用户授权信息缓存.
      */
     public void clearAllCachedAuthorizationInfo() {
-        Cache<Object, AuthorizationInfo> cache = getAuthorizationCache();
+        final Cache<Object, AuthorizationInfo> cache = getAuthorizationCache();
         if (cache != null) {
-            for (Object key : cache.keys()) {
+            for (final Object key : cache.keys()) {
                 cache.remove(key);
             }
         }
