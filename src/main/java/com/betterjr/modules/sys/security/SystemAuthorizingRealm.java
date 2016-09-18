@@ -222,6 +222,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 
 
     /**
+     * 测试账号
      * @param anWechatToken
      * @return
      */
