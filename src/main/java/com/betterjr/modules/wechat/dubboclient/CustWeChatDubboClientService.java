@@ -71,6 +71,25 @@ public class CustWeChatDubboClientService {
     }
 
     /**
+     * 检查是否首次登陆
+     * @param anOperId
+     * @return
+     */
+    public boolean checkFristLogin() {
+        final CustOperatorInfo operator = UserUtils.getOperatorInfo();
+        return wechatService.checkFristLogin(operator.getId());
+    }
+
+    /**
+     * 首次登陆效验登陆密码
+     * @param trade
+     * @return
+     */
+    public String saveVerifyFristLogin(final String tradePassword) {
+        return wechatService.saveCheckFristLogin(tradePassword);
+    }
+
+    /**
      * 保存交易密码
      * @param anNewPasswd
      * @param anOkPasswd

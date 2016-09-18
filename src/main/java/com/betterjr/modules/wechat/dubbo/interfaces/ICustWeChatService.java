@@ -69,4 +69,16 @@ public interface ICustWeChatService {
      * @return
      */
     Map<String, Object> saveLogin(final AccessToken anToken);
+
+    /**
+     * @param anOperId
+     * @return
+     */
+    boolean checkFristLogin(Long anOperId);
+
+    /**
+     * @param anTradePassword
+     * @return
+     */
+    String saveCheckFristLogin(String anTradePassword);
 }
