@@ -26,6 +26,8 @@ import com.betterjr.modules.wechat.data.message.VoiceMsg;
 import com.betterjr.modules.wechat.data.push.SentAllJobEvent;
 import com.betterjr.modules.wechat.data.push.SentTmlJobEvent;
 import com.betterjr.modules.wechat.dubboclient.CustWeChatDubboClientService;
+import com.betterjr.modules.wechat.handler.QrcodeHandler;
+import com.betterjr.modules.wechat.handler.QrcodeHandlerFactory;
 
 /**
  * 微信消息,事件处理器(实际生产中需要重写)
@@ -116,20 +118,17 @@ public class WechatDefHandler implements WechatHandler {
 
     @Override
     public BasicMsg eSub(final BasicEvent anEvent) {
-        final TextMsg text_msg = new TextMsg(anEvent);
         wechatDubboClientService.saveWeChatInfo(anEvent, EventType.subscribe);
         if (StringUtils.startsWith(anEvent.getEventKey(), "qrscene_")) {// 带参数场景扫描
             final String eventKey = StringUtils.substring(anEvent.getEventKey(), 8);
-            final String fromUserName = anEvent.getFromUserName();
-            final String operName = wechatDubboClientService.saveBindingWeChat(eventKey, fromUserName);
-            if (StringUtils.isBlank(operName)){
-                text_msg.setContent("欢迎关注前海拜特微信开发公众号! 账户绑定扫描失败，账户绑定扫描只能一次，请重新获取扫描二维码。");
-            }
-            else{
-                text_msg.setContent("账户绑定扫描成功，操作员是："+ operName + " 请继续在平台输入交易密码！");
-            }
+            final QrcodeHandler handler = QrcodeHandlerFactory.createQrcodeHandler(eventKey);
+            final BasicMsg basicMsg = handler.process(anEvent);
+            return basicMsg;
+        } else {
+            final TextMsg textMsg = new TextMsg(anEvent);
+            textMsg.setContent("欢迎关注前海拜特微信开发公众号!");
+            return textMsg;
         }
-        return text_msg;
     }
 
     @Override
@@ -139,18 +138,9 @@ public class WechatDefHandler implements WechatHandler {
 
     @Override
     public BasicMsg eScan(final ScanEvent anEvent) {
-        final TextMsg text_msg = new TextMsg(anEvent);
-        final String eventKey = anEvent.getEventKey();
-        final String fromUserName = anEvent.getFromUserName();
-        final String operName = wechatDubboClientService.saveBindingWeChat(eventKey, fromUserName);
-        if (StringUtils.isBlank(operName)){
-            text_msg.setContent("账户绑定扫描失败，账户绑定扫描只能一次，请重新获取扫描二维码。");
-        }
-        else{
-            text_msg.setContent("账户绑定扫描成功，操作员是："+ operName + " 请继续在平台输入交易密码！");
-        }
-
-        return text_msg;
+        final QrcodeHandler handler = QrcodeHandlerFactory.createQrcodeHandler(anEvent.getEventKey());
+        final BasicMsg basicMsg = handler.process(anEvent);
+        return basicMsg;
     }
 
     @Override

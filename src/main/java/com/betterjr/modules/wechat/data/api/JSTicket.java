@@ -1,6 +1,7 @@
 package com.betterjr.modules.wechat.data.api;
 
 import com.betterjr.common.utils.BetterStringUtils;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -20,6 +21,9 @@ public class JSTicket {
      */
     @JsonProperty(value = "expires_in")
     private long expiresIn;
+    
+    @JsonIgnore
+    private long orginExpireSec;
 
     public String getTicket() {
         return ticket;
@@ -32,9 +36,14 @@ public class JSTicket {
     public long getExpiresIn() {
         return expiresIn;
     }
+    
+    public long getOrginExpireSec() {
+        return orginExpireSec;
+    }
 
     public void setExpiresIn(long expiresIn) {
-        this.expiresIn = System.currentTimeMillis() + (expiresIn - 60) * 1000;
+    	this.orginExpireSec = expiresIn;
+    	this.expiresIn = System.currentTimeMillis() + (expiresIn - 60) * 1000;
     }
 
     public boolean isAvailable() {

@@ -16,7 +16,11 @@ public final class WechatConstants {
         throw new AssertionError();
     }
 
+    public static final String wechatAccessTokenLockPrefix = "wechat::accessTokenLock::";
+    public static final String wechatJSTicketLockPrefix= "wechat::jsTicketLock::";
+    
     public static final String wechatAccessTokenPrefix = "wechat::accessToken::";
+    public static final String wechatJSTicketPrefix = "wechat::jsTicket::";
 
     public static final String wechatQrcodePrefix = "wechat::qrcodekey::"; // qrcode key 存储
     public static final String wechatScanPrefix = "wechat::scankey::";     // scan flag 存储

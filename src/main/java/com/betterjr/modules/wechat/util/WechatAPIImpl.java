@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.betterjr.common.exception.BytterValidException;
+import com.betterjr.common.lock.SimpleLock;
 import com.betterjr.common.mapper.JsonMapper;
 import com.betterjr.common.utils.Collections3;
 import com.betterjr.common.utils.JedisUtils;
@@ -44,22 +45,11 @@ public class WechatAPIImpl implements WechatAPI {
 
     static int RETRY_COUNT = 3;
     private static JsonMapper jsonMapper = JsonMapper.buildNonNullMapper();
-    //protected static Map<String, AccessToken> atmcMap;
-
-    protected static Map<String, JSTicket> jstmcMap;
 
     private final MPAccount mpAct;
 
     public WechatAPIImpl(final MPAccount mpAct) {
         this.mpAct = mpAct;
-        synchronized (this) {
-            /* if (atmcMap == null) {
-                atmcMap = new HashMap();
-            }*/
-            if (jstmcMap == null) {
-                jstmcMap = new HashMap();
-            }
-        }
     }
 
     /**
@@ -86,8 +76,11 @@ public class WechatAPIImpl implements WechatAPI {
      * 强制刷新微信服务凭证
      */
     private synchronized void refreshAccessToken() {
+        AccessToken at = JedisUtils.getObject(WechatConstants.wechatAccessTokenPrefix + mpAct.getMpId());
+        if (at != null && at.isAvailable()) { // 如果有效，直接返回 否则去微信上取
+            return;
+        }
         final String url = mergeCgiBinUrl(get_at, mpAct.getAppId(), mpAct.getAppSecret());
-        AccessToken at = null;
         ApiResult ar = null;
         for (int i = 0; i < RETRY_COUNT; i++) {
             ar = ApiResult.create(HttpTool.get(url));
@@ -111,16 +104,21 @@ public class WechatAPIImpl implements WechatAPI {
     }
 
     private synchronized void refreshJSTicket() {
+        JSTicket jst = JedisUtils.getObject(WechatConstants.wechatJSTicketPrefix + mpAct.getMpId());
+        if (jst != null && jst.isAvailable()) {
+            return;
+        }
         final String url = mergeCgiBinUrl(js_ticket + getAccessToken());
-        JSTicket jst = null;
         ApiResult ar = null;
         for (int i = 0; i < RETRY_COUNT; i++) {
             ar = ApiResult.create(HttpTool.get(url));
             if (ar.isSuccess()) {
                 jst = jsonMapper.fromJson(ar.getJson(), JSTicket.class);
-                jstmcMap.put(mpAct.getMpId(), jst);
+                if (jst != null) {
+                    JedisUtils.setObject(WechatConstants.wechatJSTicketPrefix + mpAct.getMpId(), jst,
+                            (int) jst.getOrginExpireSec());
+                }
             }
-
             if (jst != null && jst.isAvailable()) {
                 return;
             }
@@ -136,12 +134,11 @@ public class WechatAPIImpl implements WechatAPI {
     public String getAccessToken() {
         AccessToken at = null;
         if (StringUtils.isBlank(mpAct.getMpId()) == false) {
-            //at = atmcMap.get(mpAct.getMpId());
             at = JedisUtils.getObject(WechatConstants.wechatAccessTokenPrefix + mpAct.getMpId());
         }
         if (at == null || !at.isAvailable()) {
-            refreshAccessToken();
-            //at = atmcMap.get(mpAct.getMpId());
+            // ++ 分布式加锁
+            new SimpleLock(WechatConstants.wechatAccessTokenLockPrefix + mpAct.getMpId()).wrap(this::refreshAccessToken);
             at = JedisUtils.getObject(WechatConstants.wechatAccessTokenPrefix + mpAct.getMpId());
         }
         return at.getAccessToken();
@@ -182,10 +179,14 @@ public class WechatAPIImpl implements WechatAPI {
 
     @Override
     public String getJSTicket() {
-        JSTicket jst = jstmcMap.get(mpAct.getMpId());
+        JSTicket jst = null;
+        if (StringUtils.isBlank(mpAct.getMpId()) == false) {
+            jst = JedisUtils.getObject(WechatConstants.wechatJSTicketPrefix + mpAct.getMpId());
+        }
         if (jst == null || !jst.isAvailable()) {
-            refreshJSTicket();
-            jst = jstmcMap.get(mpAct.getMpId());
+            // ++ 分布式加锁
+            new SimpleLock(WechatConstants.wechatJSTicketLockPrefix + mpAct.getMpId()).wrap(this::refreshJSTicket);
+            jst = JedisUtils.getObject(WechatConstants.wechatJSTicketPrefix + mpAct.getMpId());
         }
         return jst.getTicket();
     }

@@ -59,7 +59,7 @@ public class CustPassService extends BaseService<CustPassInfoMapper, CustPassInf
 
     public List<SimpleDataEntity> findPassAndSalt(final Long anPassID, final String[] anPassTypes) {
         final List<SimpleDataEntity> result = new ArrayList(3);
-        final Map mapTerm = QueryTermBuilder.newInstance().put("custNo", anPassID).put("passType", anPassTypes).build();
+        final Map<String, Object> mapTerm = QueryTermBuilder.newInstance().put("custNo", anPassID).put("passType", anPassTypes).build();
         SimpleDataEntity sde;
         for (final CustPassInfo passInfo : this.selectByProperty(mapTerm)) {
             sde = new SimpleDataEntity(passInfo.getPasswd(), passInfo.getPassSalt());
