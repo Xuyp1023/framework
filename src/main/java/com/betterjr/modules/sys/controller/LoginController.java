@@ -39,9 +39,8 @@ public class LoginController {
         // 检查当前用户
         final CustWeChatDubboClientService wechatDubboService = SpringContextHolder.getBean(CustWeChatDubboClientService.class);
         if (wechatDubboService.checkFristLogin()) {
-            return "redirect:/static/wechat/frist.html";
+            return "/static/wechat/frist.html";
         }
-
 
         // 如果已经登录，则跳转到管理首页
         if (principal != null && principal.isMobileLogin()) {

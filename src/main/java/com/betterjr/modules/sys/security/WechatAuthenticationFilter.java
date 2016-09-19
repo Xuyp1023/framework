@@ -122,7 +122,7 @@ public class WechatAuthenticationFilter extends BaseFormAuthenticationFilter {
         // 检查当前用户
         final CustWeChatDubboClientService wechatDubboService = SpringContextHolder.getBean(CustWeChatDubboClientService.class);
         if (wechatDubboService.checkFristLogin()) {
-            tmpKey = "/";
+            tmpKey = "/static/wechat/frist.html";
         }
 
 
