@@ -17,7 +17,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.betterjr.common.security.SignHelper;
+import com.betterjr.common.service.SpringContextHolder;
 import com.betterjr.common.web.Servlets;
+import com.betterjr.modules.wechat.dubboclient.CustWeChatDubboClientService;
 
 public class WechatAuthenticationFilter extends BaseFormAuthenticationFilter {
 
@@ -117,6 +119,13 @@ public class WechatAuthenticationFilter extends BaseFormAuthenticationFilter {
                 tmpKey = getSuccessUrl();
             }
         }
+        // 检查当前用户
+        final CustWeChatDubboClientService wechatDubboService = SpringContextHolder.getBean(CustWeChatDubboClientService.class);
+        if (wechatDubboService.checkFristLogin()) {
+            tmpKey = "/static/wechat/frist.html";
+        }
+
+
         WebUtils.redirectToSavedRequest(request, response, tmpKey);
     }
 
