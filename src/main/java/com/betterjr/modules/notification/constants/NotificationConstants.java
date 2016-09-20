@@ -40,4 +40,8 @@ public interface NotificationConstants {
     String PROFILE_TYPE_CORE = "2";
     String PROFILE_TYPE_SUPPLIER = "3";
     String PROFILE_TYPE_SELLER = "4";
+
+
+    // 是否客户自定义模板
+    String PROFILE_CUSTOM = "1";
 }

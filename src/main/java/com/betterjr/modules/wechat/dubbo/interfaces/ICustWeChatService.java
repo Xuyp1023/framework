@@ -21,14 +21,6 @@ import com.betterjr.modules.wechat.entity.CustWeChatInfo;
  *
  */
 public interface ICustWeChatService {
-    /**
-     *
-     * @param anNewPasswd
-     * @param anOkPasswd
-     * @param anLoginPasswd
-     * @return
-     */
-    String webSaveMobileTradePass(final String anNewPasswd, final String anOkPasswd, final String anLoginPasswd);
 
     /**
      * @param anId
