@@ -130,6 +130,10 @@ public class WechatAPIImpl implements WechatAPI {
         throw new BytterValidException(ar.getJson());
     }
 
+    public void invalidAccessToken() {
+        JedisUtils.delObject(WechatConstants.wechatAccessTokenPrefix + mpAct.getMpId());
+    }
+
     @Override
     public String getAccessToken() {
         AccessToken at = null;
@@ -175,6 +179,10 @@ public class WechatAPIImpl implements WechatAPI {
         }
 
         throw new BytterValidException(ar.getJson());
+    }
+
+    public void invalidJSTicket() {
+        JedisUtils.delObject(WechatConstants.wechatJSTicketPrefix + mpAct.getMpId());
     }
 
     @Override
