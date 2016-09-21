@@ -16,5 +16,16 @@ public final class SmsConstants {
         throw new AssertionError();
     }
 
-    public static final String smsVeriCodePrefix = "sms::veriCode::"; // qrcode key 存储
+    public static final String smsVerifiCodePrefix = "sms::verifiCode::"; // verification code 存储
+    public static final String smsVerifiCodeFrequencyPrefix = "sms::verifiCodeFrequency::"; // verification code 频率 存储
+
+    // 供用户保存用
+    public static final String smsModifyTradePassVerifyCodePrefix = "sms::modifyTradePassVerifyCode::";
+
+    // 常用秒数
+    public static final int SEC_1800 = 1800;
+    public static final int SEC_1200 = 1200;
+    public static final int SEC_600 = 600;
+    public static final int SEC_300 = 300;
+    public static final int SEC_60 = 60;
 }

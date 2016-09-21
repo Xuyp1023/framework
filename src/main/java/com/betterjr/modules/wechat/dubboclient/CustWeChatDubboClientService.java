@@ -90,18 +90,6 @@ public class CustWeChatDubboClientService {
     }
 
     /**
-     * 保存交易密码
-     * @param anNewPasswd
-     * @param anOkPasswd
-     * @param anLoginPasswd
-     * @return
-     */
-    public String saveMobileTradePass(final String anNewPasswd, final String anOkPasswd, final String anLoginPasswd){
-        return wechatService.webSaveMobileTradePass(anNewPasswd, anOkPasswd, anLoginPasswd);
-    }
-
-
-    /**
      * 检查微信账户是否已经绑定操作员，如果已经绑定或没有登录返回false；表示不能绑定
      */
     protected boolean checkOperatorBinding() {

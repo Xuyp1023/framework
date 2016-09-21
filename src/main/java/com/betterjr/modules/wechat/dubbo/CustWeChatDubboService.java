@@ -13,7 +13,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import com.alibaba.dubbo.config.annotation.Service;
-import com.betterjr.common.data.CustPasswordType;
 import com.betterjr.common.utils.UserUtils;
 import com.betterjr.common.web.AjaxObject;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
@@ -34,13 +33,6 @@ public class CustWeChatDubboService implements ICustWeChatService {
     @Inject
     private CustWeChatService wechatService;
 
-    /* (non-Javadoc)
-     * @see com.betterjr.modules.wechat.dubbo.interfaces.ICustWeChatService#saveMobileTradePass(java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
-    public String webSaveMobileTradePass(final String anNewPasswd, final String anOkPasswd, final String anLoginPasswd) {
-        return AjaxObject.newOk("交易密码保存成功", wechatService.saveMobileTradePass(anNewPasswd, anOkPasswd, anLoginPasswd, CustPasswordType.ORG)).toJson();
-    }
 
     /*
      * (non-Javadoc)

@@ -153,4 +153,8 @@ public class CustOperatorService extends BaseService<CustOperatorInfoMapper, Cus
 
         return custPassService.saveBindingTradePassword(anLoginPassType, anNewPasswd, anOkPasswd, anLoginPasswd);
     }
+
+    public boolean saveModifyTradePassword(final String anNewPassword, final String anOkPassword, final String anOldPassword){
+        return custPassService.savePassword(CustPasswordType.ORG_TRADE, anNewPassword, anOkPassword, anOldPassword);
+    }
 }
