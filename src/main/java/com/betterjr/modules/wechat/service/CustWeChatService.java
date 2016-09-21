@@ -34,6 +34,8 @@ import com.betterjr.modules.account.service.CustPassService;
 import com.betterjr.modules.notification.INotificationSendService;
 import com.betterjr.modules.notification.NotificationModel;
 import com.betterjr.modules.notification.NotificationModel.Builder;
+import com.betterjr.modules.sms.constants.SmsConstants;
+import com.betterjr.modules.sms.entity.VerifyCode;
 import com.betterjr.modules.sys.security.SystemAuthorizingRealm;
 import com.betterjr.modules.sys.security.SystemAuthorizingRealm.HashPassword;
 import com.betterjr.modules.sys.service.SysConfigService;
@@ -175,27 +177,6 @@ public class CustWeChatService extends BaseService<CustWeChatInfoMapper, CustWeC
         }
 
         return null;
-    }
-
-    public CustWeChatInfo saveMobileTradePass(final String anNewPasswd, final String anOkPasswd, final String anLoginPasswd,
-            final CustPasswordType anPassType) {
-        final CustOperatorInfo operator = UserUtils.getOperatorInfo();
-        final String userKey = WechatConstants.wechatUserPrefix + operator.getId();
-        final String openId = JedisUtils.get(userKey); // 取到userKey 对应的 operatorId
-
-        BTAssert.notNull(openId, "扫描信息已过期！");
-
-        // 保存关联关系
-        final CustWeChatInfo wechatInfo = saveBindingWeChatInfo(operator, openId);
-
-        BTAssert.notNull(wechatInfo, "微信账号绑定失败!");
-
-        custOperatorService.saveBindingTradePassword(anPassType, anNewPasswd, anOkPasswd, anLoginPasswd);
-
-        sendNotification(wechatInfo, operator);
-
-        JedisUtils.delObject(userKey);
-        return wechatInfo;
     }
 
     /**
@@ -340,33 +321,6 @@ public class CustWeChatService extends BaseService<CustWeChatInfoMapper, CustWeC
     }
 
     /**
-     * @param anId
-     * @return
-     */
-    public boolean checkWeChatInfoByOperId(final Long anId) {
-        return Collections3.isEmpty(this.selectByProperty("operId", anId));
-    }
-
-    /**
-     * 通过 operId 查找WechatInfo
-     * @param anId
-     * @return
-     */
-    public CustWeChatInfo findWechatInfoByOperId(final Long anId) {
-        return Collections3.getFirst(this.selectByProperty("operId", anId));
-    }
-
-    /**
-     * @param anOperId
-     * @return
-     */
-    public boolean checkFristLogin(final Long anOperId) {
-        final CustWeChatInfo wechatInfo = Collections3.getFirst(this.selectByProperty("operId", anOperId));
-        BTAssert.notNull(wechatInfo, "没有找到相应的微信绑定信息！");
-        return wechatInfo.getFirstLogin();
-    }
-
-    /**
      * @param anTradePassword
      * @param anOperator
      * @return
@@ -387,6 +341,82 @@ public class CustWeChatService extends BaseService<CustWeChatInfoMapper, CustWeC
         }
 
         return null;
+    }
+
+    /**
+     * @param anId
+     * @return
+     */
+    public boolean checkWeChatInfoByOperId(final Long anId) {
+        return Collections3.isEmpty(this.selectByProperty("operId", anId));
+    }
+
+    /**
+     * 通过 operId 查找WechatInfo
+     *
+     * @param anId
+     * @return
+     */
+    public CustWeChatInfo findWechatInfoByOperId(final Long anId) {
+        return Collections3.getFirst(this.selectByProperty("operId", anId));
+    }
+
+    /**
+     * @param anOperId
+     * @return
+     */
+    public boolean checkFristLogin(final Long anOperId) {
+        final CustWeChatInfo wechatInfo = Collections3.getFirst(this.selectByProperty("operId", anOperId));
+        BTAssert.notNull(wechatInfo, "没有找到相应的微信绑定信息！");
+        return wechatInfo.getFirstLogin();
+    }
+
+    /**
+     * 保存交易密码
+     *
+     * @param anNewPasswd
+     * @param anOkPasswd
+     * @param anLoginPasswd
+     * @param anPassType
+     * @return
+     */
+    public CustWeChatInfo saveMobileTradePass(final String anNewPasswd, final String anOkPasswd, final String anLoginPasswd,
+            final CustPasswordType anPassType) {
+        final CustOperatorInfo operator = UserUtils.getOperatorInfo();
+        final String userKey = WechatConstants.wechatUserPrefix + operator.getId();
+        final String openId = JedisUtils.get(userKey); // 取到userKey 对应的 operatorId
+
+        BTAssert.notNull(openId, "扫描信息已过期！");
+
+        // 保存关联关系
+        final CustWeChatInfo wechatInfo = saveBindingWeChatInfo(operator, openId);
+
+        BTAssert.notNull(wechatInfo, "微信账号绑定失败!");
+
+        custOperatorService.saveBindingTradePassword(anPassType, anNewPasswd, anOkPasswd, anLoginPasswd);
+
+        sendNotification(wechatInfo, operator);
+
+        JedisUtils.delObject(userKey);
+        return wechatInfo;
+    }
+
+    /**
+     * 修改交易密码
+     *
+     * @param anNewPassword
+     * @param anOkPassword
+     * @param anOldPassword
+     * @param anOrgTrade
+     * @return
+     */
+    public boolean saveModifyTradePass(final String anNewPassword, final String anOkPassword, final String anOldPassword) {
+        final CustOperatorInfo operator = UserUtils.getOperatorInfo();
+        final VerifyCode verifyCode = JedisUtils.getObject(SmsConstants.smsModifyTradePassVerifyCodePrefix + operator.getId());
+
+        BTAssert.notNull(verifyCode, "验证信息已过期，不允许修改密码！");
+
+        return custOperatorService.saveModifyTradePassword(anNewPassword, anOkPassword, anOldPassword);
     }
 
 }
