@@ -201,7 +201,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
                     ut = UserType.OPERATOR_ADMIN;
                 }
 
-                final ShiroUser shiroUser = new ShiroUser(ut, user.getId(), user.getName(), user, certInfo.getRuleList(), mobileLogin, workData, userPassData);
+                final ShiroUser shiroUser = new ShiroUser(ut, user.getId(), user.getName(), user, certInfo, mobileLogin, workData, userPassData);
                 log.info("this login user Info is :" + shiroUser);
                 final byte[] salt = Encodes.decodeHex(saltStr);
 

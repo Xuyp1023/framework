@@ -1,49 +1,66 @@
 package com.betterjr.common.data;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.betterjr.common.utils.BetterStringUtils;
+import com.betterjr.modules.account.entity.CustCertRule;
 
- 
+
 public enum PlatformBaseRuleType {
     NONE_USER("陌生人"), CORE_USER("核心企业"), SUPPLIER_USER("供应商"), FACTOR_USER("资金方"), SELLER_USER("经销商"), PLATFORM_USER("平台");
 
     private final String title;
 
-    PlatformBaseRuleType(String anTitle) {
+    PlatformBaseRuleType(final String anTitle) {
         this.title = anTitle;
     }
 
     public String getTitle() {
         return this.title;
     }
-    
-    public static PlatformBaseRuleType checking(String anWorkType){
+
+    public static PlatformBaseRuleType checking(final String anWorkType){
         try {
             if (StringUtils.isNotBlank(anWorkType)) {
 
                 return PlatformBaseRuleType.valueOf(anWorkType.trim().toUpperCase());
             }
         }
-        catch (Exception ex) {
+        catch (final Exception ex) {
 
         }
         return NONE_USER;
     }
-    
-    public static List<PlatformBaseRuleType> checkList(String anRules){
-        List<PlatformBaseRuleType> result = new ArrayList();
+
+    public static List<PlatformBaseRuleType> checkList(final String anRules){
+        final List<PlatformBaseRuleType> result = new ArrayList<>();
         if (BetterStringUtils.isNotBlank(anRules)){
-            PlatformBaseRuleType tmpRule; 
-            for(String tmpStr : BetterStringUtils.split(anRules, ",|;")){
+            PlatformBaseRuleType tmpRule;
+            for(final String tmpStr : BetterStringUtils.split(anRules, ",|;")){
                 tmpRule = checking(tmpStr);
                 if (tmpRule != NONE_USER){
-                   result.add(tmpRule); 
+                    result.add(tmpRule);
                 }
             }
         }
+        return result;
+    }
+
+    public static List<PlatformBaseRuleType> checkList(final List<CustCertRule> anCertRules){
+        final List<PlatformBaseRuleType> result = new ArrayList<>();
+
+        for (final CustCertRule certRule: anCertRules) {
+            if (BetterStringUtils.isNotBlank(certRule.getRule())){
+                final PlatformBaseRuleType tmpRule  = checking(certRule.getRule());
+                if (tmpRule != NONE_USER){
+                    result.add(tmpRule);
+                }
+            }
+        }
+
         return result;
     }
 }
