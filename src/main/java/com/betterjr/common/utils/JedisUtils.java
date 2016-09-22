@@ -637,8 +637,8 @@ public class JedisUtils {
      *           键
      * @return 值
      */
-    public static Map<String, Object> getObjectMap(final String key) {
-        Map<String, Object> value = null;
+    public static <T> Map<String, T> getObjectMap(final String key) {
+        Map<String, T> value = null;
         Jedis jedis = null;
         try {
             jedis = getResource();
@@ -646,13 +646,40 @@ public class JedisUtils {
                 value = Maps.newHashMap();
                 final Map<byte[], byte[]> map = jedis.hgetAll(getBytesKey(key));
                 for (final Map.Entry<byte[], byte[]> e : map.entrySet()) {
-                    value.put(BetterStringUtils.toString(e.getKey()), toObject(e.getValue()));
+                    value.put(BetterStringUtils.toString(e.getKey()), (T)toObject(e.getValue()));
                 }
                 logger.debug("getObjectMap {} = {}", key, value);
             }
         }
         catch (final Exception e) {
             logger.warn("getObjectMap {} = {}", key, value, e);
+        }
+        finally {
+            returnResource(jedis);
+        }
+        return value;
+    }
+    
+    /**
+     * 获取Map缓存
+     *
+     * @param key
+     *           键
+     * @return 值
+     */
+    public static <T> T getObjectMapField(final String key,final String field) {
+        T value = null;
+        Jedis jedis = null;
+        try {
+            jedis = getResource();
+            if (jedis.exists(getBytesKey(key))) {
+                final byte[] result = jedis.hget(getBytesKey(key),getBytesKey(key));
+                value=(T)toObject(result);
+                logger.debug("getObjectMapField {}.{} = {}", key,field, value);
+            }
+        }
+        catch (final Exception e) {
+            logger.warn("getObjectMapField {}.{} = {}", key,field, value,e);
         }
         finally {
             returnResource(jedis);
@@ -705,7 +732,7 @@ public class JedisUtils {
      *           超时时间，0为不超时
      * @return
      */
-    public static String setObjectMap(final String key, final Map<String, Object> value, final int cacheSeconds) {
+    public static <T> String setObjectMap(final String key, final Map<String, T> value, final int cacheSeconds) {
         String result = null;
         Jedis jedis = null;
         try {
@@ -714,7 +741,7 @@ public class JedisUtils {
                 jedis.del(key);
             }
             final Map<byte[], byte[]> map = Maps.newHashMap();
-            for (final Map.Entry<String, Object> e : value.entrySet()) {
+            for (final Map.Entry<String, T> e : value.entrySet()) {
                 map.put(getBytesKey(e.getKey()), toBytes(e.getValue()));
             }
             result = jedis.hmset(getBytesKey(key), map);
@@ -787,6 +814,34 @@ public class JedisUtils {
         }
         return result;
     }
+    
+    /**
+     * 向Map缓存中添加值
+     *
+     * @param key
+     *           键
+     * @param value
+     *           值
+     * @return
+     */
+    public static <T> String mapFieldObjectPut(final String key, final String field,final T value) {
+        Long result = null;
+        Jedis jedis = null;
+        try {
+            jedis = getResource();
+            result = jedis.hset(getBytesKey(key), getBytesKey(field),getBytesKey(value));
+            logger.debug("mapObjectPut {} = {}", key, value);
+        }
+        catch (final Exception e) {
+            logger.warn("mapObjectPut {} = {}", key, value, e);
+        }
+        finally {
+            returnResource(jedis);
+        }
+        return result==null?null:result.toString();
+    }
+    
+    
 
     /**
      * 移除Map缓存中的值
