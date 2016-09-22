@@ -71,25 +71,6 @@ public class CustWeChatDubboClientService {
     }
 
     /**
-     * 检查是否首次登陆
-     * @param anOperId
-     * @return
-     */
-    public boolean checkFristLogin() {
-        final CustOperatorInfo operator = UserUtils.getOperatorInfo();
-        return wechatService.checkFristLogin(operator.getId());
-    }
-
-    /**
-     * 首次登陆效验登陆密码
-     * @param trade
-     * @return
-     */
-    public String saveVerifyFristLogin(final String tradePassword) {
-        return wechatService.saveCheckFristLogin(tradePassword);
-    }
-
-    /**
      * 检查微信账户是否已经绑定操作员，如果已经绑定或没有登录返回false；表示不能绑定
      */
     protected boolean checkOperatorBinding() {
@@ -204,4 +185,30 @@ public class CustWeChatDubboClientService {
         return null;
     }
 
+    /**
+     *
+     * @param anNewPassword
+     * @param anOkPassword
+     * @param anLoginPassword
+     * @return
+     */
+    public String saveMobileTradePass(final String anNewPassword, final String anOkPassword, final String anLoginPassword) {
+        return wechatService.webSaveMobileTradePass(anNewPassword, anOkPassword, anLoginPassword);
+    }
+
+    /**
+     * @param anTradePassword
+     * @return
+     */
+    public String webSaveFristLoginTradePassword(final String anTradePassword) {
+        return wechatService.webSaveFristLoginTradePassword(anTradePassword);
+    }
+
+    /**
+     * @param anId
+     * @return
+     */
+    public boolean checkFristLogin(final Long anOperId) {
+        return wechatService.checkFristLogin(anOperId);
+    }
 }

@@ -19,25 +19,20 @@ import com.betterjr.common.mapper.JsonMapper;
 import com.betterjr.common.service.BaseService;
 import com.betterjr.common.utils.BTAssert;
 import com.betterjr.common.utils.BetterDateUtils;
-import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.Collections3;
 import com.betterjr.common.utils.Cryptos;
 import com.betterjr.common.utils.DictUtils;
 import com.betterjr.common.utils.JedisUtils;
 import com.betterjr.common.utils.QueryTermBuilder;
 import com.betterjr.common.utils.UserUtils;
+import com.betterjr.modules.account.dubbo.interfaces.ICustTradePassService;
 import com.betterjr.modules.account.entity.CustInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
-import com.betterjr.modules.account.entity.CustPassInfo;
 import com.betterjr.modules.account.service.CustAccountService;
 import com.betterjr.modules.account.service.CustOperatorService;
-import com.betterjr.modules.account.service.CustPassService;
 import com.betterjr.modules.notification.INotificationSendService;
 import com.betterjr.modules.notification.NotificationModel;
 import com.betterjr.modules.notification.NotificationModel.Builder;
-import com.betterjr.modules.sms.constants.SmsConstants;
-import com.betterjr.modules.sys.security.SystemAuthorizingRealm;
-import com.betterjr.modules.sys.security.SystemAuthorizingRealm.HashPassword;
 import com.betterjr.modules.sys.service.SysConfigService;
 import com.betterjr.modules.wechat.constants.WechatConstants;
 import com.betterjr.modules.wechat.dao.CustWeChatInfoMapper;
@@ -64,8 +59,8 @@ public class CustWeChatService extends BaseService<CustWeChatInfoMapper, CustWeC
     @Resource
     private CustAccountService accountService;
 
-    @Resource
-    private CustPassService custPassService;
+    @Reference(interfaceClass = ICustTradePassService.class)
+    public ICustTradePassService tradePassService;
 
     public MPAccount getMpAccount() {
         return this.mpAccount;
@@ -327,12 +322,8 @@ public class CustWeChatService extends BaseService<CustWeChatInfoMapper, CustWeC
      * @return
      */
     public CustWeChatInfo saveFristLogin(final String anTradePassword, final CustOperatorInfo anOperator) {
-        final CustPassInfo custPassInfo = custPassService.getOperaterPassByCustNo(anOperator.getId(), CustPasswordType.PERSON_TRADE);
-        BTAssert.notNull(custPassInfo, "没有找到相应的交易密码信息！");
 
-        final HashPassword result = SystemAuthorizingRealm.encrypt(anTradePassword);
-
-        if (StringUtils.equals(result.password, custPassInfo.getPasswd())) {
+        if (tradePassService.checkTradePassword(anOperator, anTradePassword)) {
             final CustWeChatInfo wechatInfo = Collections3.getFirst(this.selectByProperty("operId", anOperator.getId()));
             BTAssert.notNull(wechatInfo, "没有找到相应的微信绑定信息！");
 
@@ -402,24 +393,5 @@ public class CustWeChatService extends BaseService<CustWeChatInfoMapper, CustWeC
         return wechatInfo;
     }
 
-    /**
-     * 修改交易密码
-     *
-     * @param anNewPassword
-     * @param anOkPassword
-     * @param anOldPassword
-     * @param anOrgTrade
-     * @return
-     */
-    public boolean saveModifyTradePass(final String anNewPassword, final String anOkPassword, final String anOldPassword) {
-        final CustOperatorInfo operator = UserUtils.getOperatorInfo();
-        final Object verifyCode = JedisUtils.getObject(SmsConstants.smsModifyTradePassVerifyCodePrefix + operator.getId());
-
-        BTAssert.notNull(verifyCode, "验证信息已过期，不允许修改密码！");
-
-        BTAssert.isTrue(verifyCode instanceof String && BetterStringUtils.equals((String)verifyCode, "true"), "错误的提交");
-
-        return custOperatorService.saveModifyTradePassword(anNewPassword, anOkPassword, anOldPassword);
-    }
 
 }

@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.betterjr.common.data.CustPasswordType;
 import com.betterjr.common.utils.UserUtils;
 import com.betterjr.common.web.AjaxObject;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
@@ -99,22 +100,26 @@ public class CustWeChatDubboService implements ICustWeChatService {
         return result;
     }
 
+    @Override
+    public String webSaveMobileTradePass(final String anNewPasswd, final String anOkPasswd, final String anLoginPasswd) {
+        return AjaxObject.newOk("交易密码保存成功", wechatService.saveMobileTradePass(anNewPasswd, anOkPasswd, anLoginPasswd, CustPasswordType.ORG)).toJson();
+    }
+
+
+    /* (non-Javadoc)
+     * @see com.betterjr.modules.account.dubbo.interfaces.ICustTradePassService#webSaveFristLoginTradePassword(java.lang.String)
+     */
+    @Override
+    public String webSaveFristLoginTradePassword(final String anTradePassword) {
+        final CustOperatorInfo operator = UserUtils.getOperatorInfo();
+        return AjaxObject.newOk("交易密码验证通过", wechatService.saveFristLogin(anTradePassword, operator)).toJson();
+    }
+
     /* (non-Javadoc)
      * @see com.betterjr.modules.wechat.dubbo.interfaces.ICustWeChatService#checkFristLogin(java.lang.Long)
      */
     @Override
     public boolean checkFristLogin(final Long anOperId) {
-
         return wechatService.checkFristLogin(anOperId);
     }
-
-    /* (non-Javadoc)
-     * @see com.betterjr.modules.wechat.dubbo.interfaces.ICustWeChatService#saveFristLogin(java.lang.String)
-     */
-    @Override
-    public String saveCheckFristLogin(final String anTradePassword) {
-        final CustOperatorInfo operator = UserUtils.getOperatorInfo();
-        return AjaxObject.newOk("交易密码验证通过", wechatService.saveFristLogin(anTradePassword, operator)).toJson();
-    }
-
 }
