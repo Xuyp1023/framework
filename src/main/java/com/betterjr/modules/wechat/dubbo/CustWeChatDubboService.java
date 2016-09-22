@@ -13,8 +13,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import com.alibaba.dubbo.config.annotation.Service;
-import com.betterjr.common.utils.UserUtils;
-import com.betterjr.common.web.AjaxObject;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.wechat.data.EventType;
 import com.betterjr.modules.wechat.data.MPAccount;
@@ -97,24 +95,6 @@ public class CustWeChatDubboService implements ICustWeChatService {
             result.put("message", returnMsg[0]);
         }
         return result;
-    }
-
-    /* (non-Javadoc)
-     * @see com.betterjr.modules.wechat.dubbo.interfaces.ICustWeChatService#checkFristLogin(java.lang.Long)
-     */
-    @Override
-    public boolean checkFristLogin(final Long anOperId) {
-
-        return wechatService.checkFristLogin(anOperId);
-    }
-
-    /* (non-Javadoc)
-     * @see com.betterjr.modules.wechat.dubbo.interfaces.ICustWeChatService#saveFristLogin(java.lang.String)
-     */
-    @Override
-    public String saveCheckFristLogin(final String anTradePassword) {
-        final CustOperatorInfo operator = UserUtils.getOperatorInfo();
-        return AjaxObject.newOk("交易密码验证通过", wechatService.saveFristLogin(anTradePassword, operator)).toJson();
     }
 
 }

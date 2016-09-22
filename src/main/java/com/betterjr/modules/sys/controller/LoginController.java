@@ -10,9 +10,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.betterjr.common.service.SpringContextHolder;
 import com.betterjr.common.utils.UserUtils;
+import com.betterjr.modules.account.dubbo.interfaces.ICustTradePassService;
+import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.sys.security.ShiroUser;
 import com.betterjr.modules.sys.security.WechatAuthenticationFilter;
-import com.betterjr.modules.wechat.dubboclient.CustWeChatDubboClientService;
 
 @Controller
 @RequestMapping(value = "/")
@@ -37,8 +38,9 @@ public class LoginController {
         final ShiroUser principal = UserUtils.getPrincipal();
 
         // 检查当前用户
-        final CustWeChatDubboClientService wechatDubboService = SpringContextHolder.getBean(CustWeChatDubboClientService.class);
-        if (wechatDubboService.checkFristLogin()) {
+        final ICustTradePassService tradePassService = SpringContextHolder.getBean(ICustTradePassService.class);
+        final CustOperatorInfo operator = UserUtils.getOperatorInfo();
+        if (tradePassService.checkFristLogin(operator.getId())) {
             return "/static/wechat/frist.html";
         }
 
