@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.betterjr.common.data.SimpleDataEntity;
+import com.betterjr.common.data.WorkUserInfo;
 import com.betterjr.common.selectkey.SerialGenerator;
 import com.betterjr.common.service.BaseService;
 import com.betterjr.common.utils.BetterDateUtils;
@@ -26,7 +27,6 @@ import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.account.entity.CustOperatorRelation;
 import com.betterjr.modules.account.entity.MechCustBaseInfo;
 import com.betterjr.modules.account.entity.SaleAccoRequestInfo;
-import com.betterjr.modules.sys.entity.WorkUserInfo;
 import com.betterjr.modules.sys.service.SysMenuRuleService;
 import com.betterjr.modules.sys.service.SysMenuService;
 

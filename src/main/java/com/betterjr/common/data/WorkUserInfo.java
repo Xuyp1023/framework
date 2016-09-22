@@ -1,4 +1,4 @@
-package com.betterjr.modules.sys.entity;
+package com.betterjr.common.data;
 
 import java.io.Serializable;
 
