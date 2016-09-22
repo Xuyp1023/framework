@@ -10,12 +10,12 @@ import javax.persistence.Transient;
 
 import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.data.BaseRemoteEntity;
+import com.betterjr.common.data.WorkUserInfo;
 import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.common.mapper.BeanMapper;
 import com.betterjr.common.selectkey.SerialGenerator;
 import com.betterjr.common.utils.BetterDateUtils;
 import com.betterjr.common.utils.IdcardUtils;
-import com.betterjr.modules.sys.entity.WorkUserInfo;
 import com.betterjr.modules.account.data.CustContactInfo;;
 
 

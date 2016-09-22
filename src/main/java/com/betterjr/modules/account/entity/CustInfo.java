@@ -6,7 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
+import com.betterjr.common.data.UserType;
 import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.common.mapper.BeanMapper;
@@ -14,10 +14,13 @@ import com.betterjr.common.selectkey.SerialGenerator;
 import com.betterjr.common.utils.BetterDateUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.betterjr.common.data.WorkUserInfo;
+
 @Access(AccessType.FIELD)
 @Entity
-@Table(name = "t_custinfo")
-public class CustInfo implements BetterjrEntity {
+@Table(name = "T_CUSTINFO")
+public class CustInfo implements BetterjrEntity, WorkUserInfo {
+
     /**
      * 客户编号
      */
@@ -74,7 +77,7 @@ public class CustInfo implements BetterjrEntity {
      */
     @Column(name = "D_VAILDDATE",  columnDefinition="VARCHAR" )
     @MetaData( value="证件有效期", comments = "证件有效期")
-    private String vaildDate;
+    private String validDate;
 
     /**
      * 国籍或地区
@@ -221,6 +224,10 @@ public class CustInfo implements BetterjrEntity {
         return custNo;
     }
 
+    public Long getId() {
+
+        return this.custNo;
+    }
     public void setCustNo(Long custNo) {
         this.custNo = custNo;
     }
@@ -273,12 +280,12 @@ public class CustInfo implements BetterjrEntity {
         this.identType = identType == null ? null : identType.trim();
     }
 
-    public String getVaildDate() {
-        return vaildDate;
+    public String getValidDate() {
+        return validDate;
     }
 
-    public void setVaildDate(String vaildDate) {
-        this.vaildDate = vaildDate == null ? null : vaildDate.trim();
+    public void setValidDate(String validDate) {
+        this.validDate = validDate == null ? null : validDate.trim();
     }
 
     public String getNational() {
@@ -321,6 +328,11 @@ public class CustInfo implements BetterjrEntity {
         this.identValid = identValid;
     }
 
+    public String getRuleList() {
+
+        return UserType.PERSON_USER.name();
+    }
+	
     public String getAduitLevels() {
         return aduitLevels;
     }
@@ -438,7 +450,7 @@ public class CustInfo implements BetterjrEntity {
         sb.append(", shortName=").append(shortName);
         sb.append(", nickName=").append(nickName);
         sb.append(", identType=").append(identType);
-        sb.append(", vaildDate=").append(vaildDate);
+        sb.append(", validDate=").append(validDate);
         sb.append(", national=").append(national);
         sb.append(", regAddr=").append(regAddr);
         sb.append(", userType=").append(userType);
@@ -481,7 +493,7 @@ public class CustInfo implements BetterjrEntity {
             && (this.getShortName() == null ? other.getShortName() == null : this.getShortName().equals(other.getShortName()))
             && (this.getNickName() == null ? other.getNickName() == null : this.getNickName().equals(other.getNickName()))
             && (this.getIdentType() == null ? other.getIdentType() == null : this.getIdentType().equals(other.getIdentType()))
-            && (this.getVaildDate() == null ? other.getVaildDate() == null : this.getVaildDate().equals(other.getVaildDate()))
+            && (this.getValidDate() == null ? other.getValidDate() == null : this.getValidDate().equals(other.getValidDate()))
             && (this.getNational() == null ? other.getNational() == null : this.getNational().equals(other.getNational()))
             && (this.getRegAddr() == null ? other.getRegAddr() == null : this.getRegAddr().equals(other.getRegAddr()))
             && (this.getUserType() == null ? other.getUserType() == null : this.getUserType().equals(other.getUserType()))
@@ -513,7 +525,7 @@ public class CustInfo implements BetterjrEntity {
         result = prime * result + ((getShortName() == null) ? 0 : getShortName().hashCode());
         result = prime * result + ((getNickName() == null) ? 0 : getNickName().hashCode());
         result = prime * result + ((getIdentType() == null) ? 0 : getIdentType().hashCode());
-        result = prime * result + ((getVaildDate() == null) ? 0 : getVaildDate().hashCode());
+        result = prime * result + ((getValidDate() == null) ? 0 : getValidDate().hashCode());
         result = prime * result + ((getNational() == null) ? 0 : getNational().hashCode());
         result = prime * result + ((getRegAddr() == null) ? 0 : getRegAddr().hashCode());
         result = prime * result + ((getUserType() == null) ? 0 : getUserType().hashCode());
@@ -551,5 +563,11 @@ public class CustInfo implements BetterjrEntity {
         this.aduitLevels = "1";
         this.custNo = SerialGenerator.getCustNo();
         anRequest.setCustNo(custNo);
+    }
+
+    @Override
+    public String getName() {
+        
+        return this.custName;
     }
 }

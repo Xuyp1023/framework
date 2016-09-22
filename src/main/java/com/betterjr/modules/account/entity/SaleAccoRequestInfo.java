@@ -8,6 +8,7 @@ import com.betterjr.common.config.ParamNames;
 import com.betterjr.common.data.AttachDataFace;
 import com.betterjr.common.data.BaseRemoteEntity;
 import com.betterjr.common.entity.BetterjrEntity;
+import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.modules.account.data.SaleRequestFace;
 
 import javax.persistence.*;
@@ -873,6 +874,13 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
     private String regAddr;
     @Transient
     private String validDate;
+    // add by hubl
+    @Transient
+    private String certValidForever;
+    @Transient
+    private String isThreeInOne;
+    @Transient
+    private String lawCertValidForever;
     
     @Transient
     private Map<String, String> attach;
@@ -1963,6 +1971,33 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
 
     public void setValidDate(String anValidDate) {
         this.validDate = anValidDate;
+        if (BetterStringUtils.isBlank(certValidDate)){
+            this.certValidDate = anValidDate;
+        }
+    }
+
+    public String getCertValidForever() {
+        return this.certValidForever;
+    }
+
+    public void setCertValidForever(String anCertValidForever) {
+        this.certValidForever = anCertValidForever;
+    }
+
+    public String getIsThreeInOne() {
+        return this.isThreeInOne;
+    }
+
+    public void setIsThreeInOne(String anIsThreeInOne) {
+        this.isThreeInOne = anIsThreeInOne;
+    }
+
+    public String getLawCertValidForever() {
+        return this.lawCertValidForever;
+    }
+
+    public void setLawCertValidForever(String anLawCertValidForever) {
+        this.lawCertValidForever = anLawCertValidForever;
     }
 
     @Override
