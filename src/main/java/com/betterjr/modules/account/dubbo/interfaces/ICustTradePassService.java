@@ -40,19 +40,6 @@ public interface ICustTradePassService {
      */
     String webCheckTradePassword(String anTradePassword);
 
-    /**
-     * 检查用户首次登陆
-     * @param anOperId
-     * @return
-     */
-    boolean checkFristLogin(final Long anOperId);
-
-    /**
-     * @param anTradePassword
-     * @return
-     */
-    String webSaveFristLoginTradePassword(String anTradePassword);
-
 
     /**
      * @param anNewPassword
@@ -62,12 +49,4 @@ public interface ICustTradePassService {
      */
     String webSaveModifyTradePass(String anNewPassword, String anOkPassword, String anOldPassword);
 
-    /**
-     *
-     * @param anNewPasswd
-     * @param anOkPasswd
-     * @param anLoginPasswd
-     * @return
-     */
-    String webSaveMobileTradePass(final String anNewPasswd, final String anOkPasswd, final String anLoginPasswd);
 }

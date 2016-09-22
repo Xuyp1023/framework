@@ -20,8 +20,8 @@ import com.betterjr.common.security.SignHelper;
 import com.betterjr.common.service.SpringContextHolder;
 import com.betterjr.common.utils.UserUtils;
 import com.betterjr.common.web.Servlets;
-import com.betterjr.modules.account.dubbo.interfaces.ICustTradePassService;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
+import com.betterjr.modules.wechat.dubboclient.CustWeChatDubboClientService;
 
 public class WechatAuthenticationFilter extends BaseFormAuthenticationFilter {
 
@@ -121,10 +121,11 @@ public class WechatAuthenticationFilter extends BaseFormAuthenticationFilter {
                 tmpKey = getSuccessUrl();
             }
         }
+
         // 检查当前用户
-        final ICustTradePassService tradePassService = SpringContextHolder.getBean(ICustTradePassService.class);
+        final CustWeChatDubboClientService wechatClientService = SpringContextHolder.getBean(CustWeChatDubboClientService.class);
         final CustOperatorInfo operator = UserUtils.getOperatorInfo();
-        if (tradePassService.checkFristLogin(operator.getId())) {
+        if (wechatClientService.checkFristLogin(operator.getId())) {
             tmpKey = "/static/wechat/frist.html";
         }
 
@@ -138,7 +139,6 @@ public class WechatAuthenticationFilter extends BaseFormAuthenticationFilter {
         System.out.println(subject);
         super.onLoginSuccess(token, subject, request, response);
         return true;
-
     }
 
 }

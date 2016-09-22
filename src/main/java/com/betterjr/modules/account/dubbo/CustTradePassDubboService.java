@@ -30,7 +30,6 @@ import com.betterjr.modules.sms.entity.VerifyCode;
 import com.betterjr.modules.sms.util.VerifyCodeType;
 import com.betterjr.modules.sys.security.SystemAuthorizingRealm;
 import com.betterjr.modules.sys.security.SystemAuthorizingRealm.HashPassword;
-import com.betterjr.modules.wechat.service.CustWeChatService;
 
 /**
  * @author liuwl
@@ -41,9 +40,6 @@ public class CustTradePassDubboService implements ICustTradePassService {
 
     @Reference(interfaceClass = IVerificationCodeService.class)
     private IVerificationCodeService verificationCodeService;
-
-    @Resource
-    private CustWeChatService wechatService;
 
     @Resource
     private CustOperatorService custOperatorService;
@@ -93,19 +89,19 @@ public class CustTradePassDubboService implements ICustTradePassService {
     }
 
     /* (non-Javadoc)
-     * @see com.betterjr.modules.wechat.dubbo.interfaces.ICustWeChatService#saveMobileTradePass(java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
-    public String webSaveMobileTradePass(final String anNewPasswd, final String anOkPasswd, final String anLoginPasswd) {
-        return AjaxObject.newOk("交易密码保存成功", wechatService.saveMobileTradePass(anNewPasswd, anOkPasswd, anLoginPasswd, CustPasswordType.ORG)).toJson();
-    }
-
-    /* (non-Javadoc)
      * @see com.betterjr.modules.operator.ITradePassService#saveModifyTradePass(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public String webSaveModifyTradePass(final String anNewPassword, final String anOkPassword, final String anOldPassword) {
-        return AjaxObject.newOk("交易密码保存成功", wechatService.saveModifyTradePass(anNewPassword, anOkPassword, anOldPassword)).toJson();
+
+        final CustOperatorInfo operator = UserUtils.getOperatorInfo();
+        final Object verifyCode = JedisUtils.getObject(SmsConstants.smsModifyTradePassVerifyCodePrefix + operator.getId());
+
+        BTAssert.notNull(verifyCode, "验证信息已过期，不允许修改密码！");
+
+        BTAssert.isTrue(verifyCode instanceof String && BetterStringUtils.equals((String)verifyCode, "true"), "错误的提交");
+
+        return AjaxObject.newOk("交易密码保存成功", custOperatorService.saveModifyTradePassword(anNewPassword, anOkPassword, anOldPassword)).toJson();
     }
 
     /* (non-Javadoc)
@@ -138,24 +134,6 @@ public class CustTradePassDubboService implements ICustTradePassService {
         } else {
             return AjaxObject.newError("验证交易密码失败").toJson();
         }
-    }
-
-    /* (non-Javadoc)
-     * @see com.betterjr.modules.account.dubbo.interfaces.ICustTradePassService#webSaveFristLoginTradePassword(java.lang.String)
-     */
-    @Override
-    public String webSaveFristLoginTradePassword(final String anTradePassword) {
-        final CustOperatorInfo operator = UserUtils.getOperatorInfo();
-        return AjaxObject.newOk("交易密码验证通过", wechatService.saveFristLogin(anTradePassword, operator)).toJson();
-    }
-
-    /* (non-Javadoc)
-     * @see com.betterjr.modules.wechat.dubbo.interfaces.ICustWeChatService#checkFristLogin(java.lang.Long)
-     */
-    @Override
-    public boolean checkFristLogin(final Long anOperId) {
-
-        return wechatService.checkFristLogin(anOperId);
     }
 
 }

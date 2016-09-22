@@ -185,4 +185,30 @@ public class CustWeChatDubboClientService {
         return null;
     }
 
+    /**
+     *
+     * @param anNewPassword
+     * @param anOkPassword
+     * @param anLoginPassword
+     * @return
+     */
+    public String saveMobileTradePass(final String anNewPassword, final String anOkPassword, final String anLoginPassword) {
+        return wechatService.webSaveMobileTradePass(anNewPassword, anOkPassword, anLoginPassword);
+    }
+
+    /**
+     * @param anTradePassword
+     * @return
+     */
+    public String webSaveFristLoginTradePassword(final String anTradePassword) {
+        return wechatService.webSaveFristLoginTradePassword(anTradePassword);
+    }
+
+    /**
+     * @param anId
+     * @return
+     */
+    public boolean checkFristLogin(final Long anOperId) {
+        return wechatService.checkFristLogin(anOperId);
+    }
 }

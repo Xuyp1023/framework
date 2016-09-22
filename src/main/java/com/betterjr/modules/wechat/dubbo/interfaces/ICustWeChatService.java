@@ -62,4 +62,26 @@ public interface ICustWeChatService {
      */
     Map<String, Object> saveLogin(final AccessToken anToken);
 
+    /**
+     *
+     * @param anNewPasswd
+     * @param anOkPasswd
+     * @param anLoginPasswd
+     * @return
+     */
+    String webSaveMobileTradePass(final String anNewPasswd, final String anOkPasswd, final String anLoginPasswd);
+
+    /**
+     * 检查用户首次登陆
+     * @param anOperId
+     * @return
+     */
+    boolean checkFristLogin(final Long anOperId);
+
+    /**
+     * @param anTradePassword
+     * @return
+     */
+    String webSaveFristLoginTradePassword(String anTradePassword);
+
 }
