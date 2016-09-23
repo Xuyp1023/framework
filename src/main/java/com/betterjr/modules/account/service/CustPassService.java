@@ -41,7 +41,7 @@ public class CustPassService extends BaseService<CustPassInfoMapper, CustPassInf
      * @param anMap
      * @return
      */
-    protected boolean saveChangePassword(final Long anOperId, final String anPassword, final CustPasswordType anPassType) {
+    public boolean saveChangePassword(final Long anOperId, final String anPassword, final CustPasswordType anPassType) {
         CustPassInfo passInfo = this.getOperaterPassByCustNo(anOperId, anPassType);
 
         final HashPassword result = SystemAuthorizingRealm.encrypt(anPassword);
