@@ -3,9 +3,9 @@ package com.betterjr.common.codec.support.fst;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.nustaq.serialization.FSTObjectOutput;
-
 import com.betterjr.common.codec.BtObjectOutput;
+
+import de.ruedigermoeller.serialization.FSTObjectOutput;
 
 
 public class FstObjectOutput implements BtObjectOutput {

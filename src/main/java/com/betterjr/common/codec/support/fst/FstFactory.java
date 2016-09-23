@@ -3,11 +3,11 @@ package com.betterjr.common.codec.support.fst;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.nustaq.serialization.FSTConfiguration;
-import org.nustaq.serialization.FSTObjectInput;
-import org.nustaq.serialization.FSTObjectOutput;
-
 import com.betterjr.common.codec.support.SerializableClassRegistry;
+
+import de.ruedigermoeller.serialization.FSTConfiguration;
+import de.ruedigermoeller.serialization.FSTObjectInput;
+import de.ruedigermoeller.serialization.FSTObjectOutput;
 
 public class FstFactory {
     private static final FstFactory factory = new FstFactory();
