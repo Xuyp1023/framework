@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 
-import org.nustaq.serialization.FSTObjectInput;
-
 import com.betterjr.common.codec.BtObjectInput;
+
+import de.ruedigermoeller.serialization.FSTObjectInput;
 
 public class FstObjectInput implements BtObjectInput {
 
