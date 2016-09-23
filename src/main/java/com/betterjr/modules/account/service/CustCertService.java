@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.Resource;
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
@@ -44,20 +45,23 @@ import com.betterjr.modules.cert.utils.BetterX509CertStore;
 
 @Service
 public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInfo> {
-    private String[] QUERY_TERM = new String[] { "status", "GTEregDate", "LTEregDate", "GTEcreateDate", "LTEvalidDate", "contName", "custName" };
+    private final String[] QUERY_TERM = new String[] { "status", "GTEregDate", "LTEregDate", "GTEcreateDate", "LTEvalidDate", "contName", "custName" };
 
     @Autowired
     private BetterX509CertService betterCertService;
 
-    private CustCertInfo createCertInfo(X509Certificate anX509) {
-        CustCertInfo certInfo = new CustCertInfo();
+    @Resource
+    private CustCertRuleService certRuleService;
+
+    private CustCertInfo createCertInfo(final X509Certificate anX509) {
+        final CustCertInfo certInfo = new CustCertInfo();
         certInfo.setSerialNo(anX509.getSerialNumber().toString());
         certInfo.setVersionUid(anX509.getSigAlgOID());
         certInfo.setSubject(anX509.getSubjectDN().getName());
         try {
             certInfo.setCertInfo(Base64.getEncoder().encodeToString(anX509.getEncoded()));
         }
-        catch (CertificateEncodingException e) {
+        catch (final CertificateEncodingException e) {
             throw new BytterSecurityException(20203, "createCertInfo has error", e);
         }
         certInfo.setValidDate(BetterDateUtils.formatNumberDate(anX509.getNotAfter()));
@@ -71,22 +75,22 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
 
     /**
      * 发布数字证书
-     * 
+     *
      * @param anSerialNo
      *            证书序列号
      * @param anPublishMode
      *            发布模式
      * @return
      */
-    public Map<String, Object> savePublishCert(String anSerialNo, String anPublishMode) {
-        Map result = new HashMap();
-        CustCertInfo certInfo = findBySerialNo(anSerialNo);
+    public Map<String, Object> savePublishCert(final String anSerialNo, final String anPublishMode) {
+        final Map result = new HashMap();
+        final CustCertInfo certInfo = findBySerialNo(anSerialNo);
         BTAssert.notNull(certInfo, "数字证书信息不能为空！");
 
-        String password = createPassword(certInfo.getEmail());
-        BetterX509CertStore certStore = betterCertService.savePublishX509Cert(certInfo.getCertId(), password);
+        final String password = createPassword(certInfo.getEmail());
+        final BetterX509CertStore certStore = betterCertService.savePublishX509Cert(certInfo.getCertId(), password);
         BTAssert.notNull(certStore, String.format("发布数字证书时，不能获取有效的数字证书信息；可能数字证书【%s】已经投入使用", certInfo.getSubject()));
-        X509Certificate x509Certinfo = certStore.findCertificate();
+        final X509Certificate x509Certinfo = certStore.findCertificate();
         certInfo.setVersionUid(x509Certinfo.getSigAlgOID());
         certInfo.setValidDate(BetterDateUtils.formatNumberDate(x509Certinfo.getNotAfter()));
         certInfo.setCreateDate(BetterDateUtils.formatNumberDate(x509Certinfo.getNotBefore()));
@@ -94,7 +98,7 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         try {
             certInfo.setCertInfo(Base64.getEncoder().encodeToString(x509Certinfo.getEncoded()));
         }
-        catch (CertificateEncodingException e) {
+        catch (final CertificateEncodingException e) {
 
         }
         certInfo.publishModifyValue(createToken(80), anPublishMode);
@@ -106,22 +110,22 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
 
     /**
      * 下载颁发的数字证书
-     * 
+     *
      * @param anToken
      *            数字证书关联的token
      * @return
      */
-    public byte[] saveDownloadCert(String anToken) {
+    public byte[] saveDownloadCert(final String anToken) {
         if (BetterStringUtils.isBlank(anToken) || BetterStringUtils.trim(anToken).length() < 80) {
             return new byte[0];
         }
-        List<CustCertInfo> tmpList = selectByProperty("token", anToken);
-        CustCertInfo certInfo = Collections3.getFirst(tmpList);
+        final List<CustCertInfo> tmpList = selectByProperty("token", anToken);
+        final CustCertInfo certInfo = Collections3.getFirst(tmpList);
         if (certInfo == null || tmpList.size() > 1 || certInfo.invalidDownload()) {
 
             return new byte[0];
         }
-        byte[] bbs = this.betterCertService.downloadPublishCert(certInfo.getCertId(), certInfo.getSerialNo());
+        final byte[] bbs = this.betterCertService.downloadPublishCert(certInfo.getCertId(), certInfo.getSerialNo());
         if (Collections3.isEmptyObject(bbs) == false) {
             certInfo.setStatus("0");
             this.updateByPrimaryKey(certInfo);
@@ -129,7 +133,7 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         return bbs;
     }
 
-    public static String createToken(int anLength) {
+    public static String createToken(final int anLength) {
         if (anLength <= 32) {
             return SerialGenerator.uuid();
         }
@@ -138,8 +142,8 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         }
     }
 
-    protected static String createPassword(String anComplexValue) {
-        String tmpStr = BetterStringUtils.createRandomCharAndNum(8);
+    protected static String createPassword(final String anComplexValue) {
+        final String tmpStr = BetterStringUtils.createRandomCharAndNum(8);
         if (BetterStringUtils.isNotBlank(anComplexValue) && (anComplexValue.length() > 6)) {
 
             return tmpStr.concat(anComplexValue.substring(0, 6));
@@ -151,14 +155,14 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
 
     /**
      * 数字证书未发布前，客户证书作废处理
-     * 
+     *
      * @param anSerialNo
      *            数字证书序列号
      * @param anReason
      *            作废原因
      */
-    public void saveCancelCustCert(String anSerialNo, String anReason) {
-        CustCertInfo certInfo = this.findBySerialNo(anSerialNo);
+    public void saveCancelCustCert(final String anSerialNo, final String anReason) {
+        final CustCertInfo certInfo = this.findBySerialNo(anSerialNo);
         if (certInfo != null) {
             certInfo.setStatus("8");
             certInfo.setSerialNo("#" + certInfo.getSerialNo() + ";" + Integer.toString(SerialGenerator.randomInt(10000)));
@@ -171,18 +175,18 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
 
     /**
      * 保存客户数字证书信息
-     * 
+     *
      * @param anMap
      *            数字证书入参信息
      * @return
      */
-    public CustCertInfo saveCustCertInfo(CustCertInfo anCertInfo) {
+    public CustCertInfo saveCustCertInfo(final CustCertInfo anCertInfo) {
 
         return saveCustCertInfo(anCertInfo, false);
     }
 
-    private CustCertInfo saveCustCertInfo(CustCertInfo anCertInfo, boolean anCreate) {
-        CustCertInfo tmpCertInfo = this.selectByPrimaryKey(anCertInfo.getSerialNo());
+    private CustCertInfo saveCustCertInfo(final CustCertInfo anCertInfo, final boolean anCreate) {
+        final CustCertInfo tmpCertInfo = this.selectByPrimaryKey(anCertInfo.getSerialNo());
         if (tmpCertInfo == null) {
             anCertInfo.initValue(UserUtils.getOperatorInfo());
             anCertInfo.setStatus("0");
@@ -199,18 +203,18 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
 
     /**
      * 增加客户数字证书信息
-     * 
+     *
      * @param anMap
      * @return
      */
-    public CustCertInfo addCustCertInfo(Map anMap) {
-        CustCertInfo certInfo = BeanMapper.map(anMap, CustCertInfo.class);
+    public CustCertInfo addCustCertInfo(final Map anMap) {
+        final CustCertInfo certInfo = BeanMapper.map(anMap, CustCertInfo.class);
         return saveCustCertInfo(certInfo, true);
     }
 
     /**
      * 分页查询客户数字证书信息
-     * 
+     *
      * @param anParam
      *            查询条件
      * @param anPageNum
@@ -221,34 +225,34 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
      *            是否需要计算
      * @return
      */
-    public List<CustCertInfo> queryCustCertInfo(Map<String, Object> anParam, int anPageNum, int anPageSize, String anFlag) {
-        Map termMap = Collections3.fuzzyMap(Collections3.filterMap(anParam, QUERY_TERM), new String[] { "contName", "custName" });
+    public List<CustCertInfo> queryCustCertInfo(final Map<String, Object> anParam, final int anPageNum, final int anPageSize, final String anFlag) {
+        final Map termMap = Collections3.fuzzyMap(Collections3.filterMap(anParam, QUERY_TERM), new String[] { "contName", "custName" });
 
         return this.selectPropertyByPage(termMap, anPageNum, anPageSize, "1".equals(anFlag));
     }
 
     /**
      * 根据数字证书序列号，查找客户数字证书信息
-     * 
+     *
      * @param anSerialNo
      *            序列号
      * @return
      */
-    public CustCertInfo findBySerialNo(String anSerialNo) {
+    public CustCertInfo findBySerialNo(final String anSerialNo) {
 
         return this.selectByPrimaryKey(anSerialNo);
     }
 
     /**
      * 根据Role 列表查询对应的 OperOrg 集合
-     * 
+     *
      * @param anRules
      * @return
      */
-    public Set<String> queryOperOrgByRoles(String... anRoles) {
+    public Set<String> queryOperOrgByRoles(final String... anRoles) {
         final Set<String> operOrgSet = new HashSet<>();
 
-        for (String role: anRoles) {
+        for (final String role: anRoles) {
             operOrgSet.addAll(this.selectByProperty("LIKEruleList", "%" + role + "%").stream().map(certInfo -> certInfo.getOperOrg())
                     .collect(Collectors.toSet()));
         }
@@ -258,26 +262,26 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
 
     /**
      * 从数字证书中查找客户数字证书相关的信息
-     * 
+     *
      * @param anSerialNo
      *            序列号
      * @return
      */
-    public CustCertInfo findCustCertFromX509Cert(String anParam) {
+    public CustCertInfo findCustCertFromX509Cert(final String anParam) {
         try {
-            String[] arrParam = anParam.split(";|,");
-            Long certId = Long.parseLong(arrParam[0]);
-            String serialNo = arrParam[1];
+            final String[] arrParam = anParam.split(";|,");
+            final Long certId = Long.parseLong(arrParam[0]);
+            final String serialNo = arrParam[1];
             return findCustCertFromX509Cert(certId, serialNo);
         }
-        catch (Exception ex) {
+        catch (final Exception ex) {
             return null;
         }
     }
 
-    public CustCertInfo findCustCertFromX509Cert(Long anCerId, String anSerialNo) {
-        BetterX509CertInfo x509CertInfo = betterCertService.findX509CertInfo(anCerId, anSerialNo);
-        CustCertInfo certInfo = new CustCertInfo();
+    public CustCertInfo findCustCertFromX509Cert(final Long anCerId, final String anSerialNo) {
+        final BetterX509CertInfo x509CertInfo = betterCertService.findX509CertInfo(anCerId, anSerialNo);
+        final CustCertInfo certInfo = new CustCertInfo();
         BTAssert.notNull(x509CertInfo, "数字证书信息不能为空！");
         if (x509CertInfo != null) {
             BeanMapper.copy(x509CertInfo, certInfo);
@@ -290,15 +294,15 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         return certInfo;
     }
 
-    public static String findOperOrgData(X509Certificate anX509) {
+    public static String findOperOrgData(final X509Certificate anX509) {
         LdapName ldapDN;
         try {
             ldapDN = new LdapName(anX509.getSubjectX500Principal().getName());
 
-            Map<String, Rdn> map = ReflectionUtils.listConvertToMap(ldapDN.getRdns(), "type");
-            StringBuilder sb = new StringBuilder();
+            final Map<String, Rdn> map = ReflectionUtils.listConvertToMap(ldapDN.getRdns(), "type");
+            final StringBuilder sb = new StringBuilder();
             Rdn aa;
-            for (String tmpKey : new String[] { "O", "OU" }) {
+            for (final String tmpKey : new String[] { "O", "OU" }) {
                 aa = map.get(tmpKey);
                 if (aa != null) {
                     sb.append(aa.getValue()).append(";");
@@ -312,31 +316,31 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
                 return anX509.getSubjectDN().getName();
             }
         }
-        catch (InvalidNameException e) {
+        catch (final InvalidNameException e) {
             return anX509.getSubjectDN().getName();
         }
     }
 
     /**
-     * 
+     *
      * 通过证书公钥信息产生证书信息
-     * 
+     *
      * @param 公钥文件
      * @throws 异常情况
      */
-    public void saveFromFile(File anFile) throws GeneralSecurityException, FileNotFoundException {
-        FileInputStream fileIn = new FileInputStream(anFile);
+    public void saveFromFile(final File anFile) throws GeneralSecurityException, FileNotFoundException {
+        final FileInputStream fileIn = new FileInputStream(anFile);
         saveFromFile(fileIn);
     }
 
-    public void saveFromFile(InputStream inFile) throws GeneralSecurityException, FileNotFoundException {
-        CertificateFactory certificate_factory = CertificateFactory.getInstance("X.509");
-        X509Certificate x509 = (X509Certificate) certificate_factory.generateCertificate(inFile);
-        CustCertInfo certInfo = createCertInfo(x509);
+    public void saveFromFile(final InputStream inFile) throws GeneralSecurityException, FileNotFoundException {
+        final CertificateFactory certificate_factory = CertificateFactory.getInstance("X.509");
+        final X509Certificate x509 = (X509Certificate) certificate_factory.generateCertificate(inFile);
+        final CustCertInfo certInfo = createCertInfo(x509);
         this.insert(certInfo);
     }
 
-    public void saveFromFile(String inFile, String anPass) throws GeneralSecurityException, IOException {
+    public void saveFromFile(final String inFile, final String anPass) throws GeneralSecurityException, IOException {
 
         KeyStore ks = null;
         if (inFile.toLowerCase().endsWith(".p12") || inFile.toLowerCase().endsWith(".pfx")) {
@@ -345,23 +349,23 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         else {
             ks = KeyStore.getInstance("JKS");
         }
-        FileInputStream fis = new FileInputStream(inFile);
+        final FileInputStream fis = new FileInputStream(inFile);
         ks.load(fis, anPass.toCharArray());
-        String alias = ks.aliases().nextElement();
-        X509Certificate x509 = (X509Certificate) ks.getCertificate(alias);
-        CustCertInfo certInfo = createCertInfo(x509);
+        final String alias = ks.aliases().nextElement();
+        final X509Certificate x509 = (X509Certificate) ks.getCertificate(alias);
+        final CustCertInfo certInfo = createCertInfo(x509);
         this.insert(certInfo);
     }
 
     /**
-     * 
+     *
      * 客户开户成功后，更新证书中的客户资料信息；开户成功、变更客户关键信息，变更默认经办人需要更新该值
-     * 
+     *
      * @param 证书信息
      * @return 是否成功更新证书中的客户资料信息
      * @throws 异常情况
      */
-    public boolean updateCustInfo(CustCertInfo anCertInfo) {
+    public boolean updateCustInfo(final CustCertInfo anCertInfo) {
         if (this.updateByPrimaryKey(anCertInfo) == 1) {
             return true;
         }
@@ -370,17 +374,19 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
     }
 
     /**
-     * 
+     *
      * 校验证书公钥是否正确
-     * 
+     *
      * @param 证书公钥信息
      * @return 成功返回 证书信息，失败抛出异常
      * @throws 异常情况
      */
-    public CustCertInfo checkValidity(X509Certificate anX509) {
-        CustCertInfo certInfo = this.selectByPrimaryKey(anX509.getSerialNumber().toString());
-        CustCertInfo requestCertInfo = createCertInfo(anX509);
+    public CustCertInfo checkValidity(final X509Certificate anX509) {
+        final CustCertInfo certInfo = this.selectByPrimaryKey(anX509.getSerialNumber().toString());
+        final CustCertInfo requestCertInfo = createCertInfo(anX509);
         if (certInfo.validCertInfo(requestCertInfo)) {
+            // 找回Rule列表
+            certInfo.setCertRuleList(certRuleService.queryCertRuleListBySerialNo(certInfo.getSerialNo()));
             return certInfo;
         }
         else {
@@ -388,8 +394,8 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         }
     }
 
-    public CustCertInfo findCertByToken(String anCustToken) {
-        List<CustCertInfo> list = selectByProperty("token", anCustToken);
+    public CustCertInfo findCertByToken(final String anCustToken) {
+        final List<CustCertInfo> list = selectByProperty("token", anCustToken);
         if (list.size() == 1) {
             return list.get(0);
         }
@@ -399,20 +405,20 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
     }
 
     /**
-     * 
+     *
      * 创建首次访问产生的Token
-     * 
+     *
      * @param 证书信息
      * @return 动态创建的Token
      * @throws 异常情况
      */
-    public int updateToken(CustCertInfo anCertInfo) {
+    public int updateToken(final CustCertInfo anCertInfo) {
         anCertInfo.setStatus("0");
         logger.info(anCertInfo.toString());
         return this.updateByPrimaryKeySelective(anCertInfo);
         /*
          * String token = Base64.getEncoder().encodeToString(Digests.generateSalt(64)); anCertInfo.setToken(token);
-         * 
+         *
          * return this.sqlMapper.update(
          * "update T_CUST_CERTINFO a set a.c_status ='0', a.c_token = #{token} where a.c_subject = #{subject} and a.c_status='9'", anCertInfo);
          */
@@ -420,11 +426,11 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
 
     /**
      * 根据机构信息获得这个几个的第一个数字证书
-     * 
+     *
      * @param anOperOrg
      * @return
      */
-    public CustCertInfo findFirstCertInfoByOperOrg(String anOperOrg) {
+    public CustCertInfo findFirstCertInfoByOperOrg(final String anOperOrg) {
         if (BetterStringUtils.isBlank(anOperOrg)) {
 
             return null;
@@ -434,11 +440,11 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
 
     /**
      * 根据operOrg 取到CertInfo
-     * 
+     *
      * @param anOperOrg
      * @return
      */
-    public CustCertInfo findCertByOperOrg(String anOperOrg) {
+    public CustCertInfo findCertByOperOrg(final String anOperOrg) {
         BTAssert.notNull(anOperOrg);
         return Collections3.getFirst(this.selectByProperty("operOrg", anOperOrg));
     }

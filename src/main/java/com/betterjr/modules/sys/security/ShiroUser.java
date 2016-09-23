@@ -9,8 +9,9 @@ import com.betterjr.common.data.UserType;
 import com.betterjr.common.data.WorkUserInfo;
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.Collections3;
+import com.betterjr.modules.account.entity.CustCertInfo;
 
- 
+
 /**
  * 自定义Authentication对象，使得Subject除了携带用户的登录名外还可以携带更多信息.
  */
@@ -23,50 +24,50 @@ public class ShiroUser implements Serializable {
     private final WorkUserInfo user;
     private final UserType userType;
     private final long loginTime;
-    private Object data;
-    private boolean mobileLogin;
+    private final Object data;
+    private final boolean mobileLogin;
     private List<PlatformBaseRuleType> innerRules = null;
     private List<SimpleDataEntity> userPassData = null;
 
-    public void setInnerRules(List<PlatformBaseRuleType> anInnerRuleList) {
-        
+    public void setInnerRules(final List<PlatformBaseRuleType> anInnerRuleList) {
+
         this.innerRules = anInnerRuleList;
     }
 
     public List<PlatformBaseRuleType> getInnerRules() {
-        
+
         return this.innerRules;
     }
 
-    private static boolean userRuleCheck(ShiroUser anUser, PlatformBaseRuleType anBaseRule){
+    private static boolean userRuleCheck(final ShiroUser anUser, final PlatformBaseRuleType anBaseRule){
         if (anUser != null){
             return anUser.innerRules.contains( anBaseRule );
-         }
-         return false;
+        }
+        return false;
     }
-    
-    public static boolean coreUser(ShiroUser anUser){
-        
+
+    public static boolean coreUser(final ShiroUser anUser){
+
         return userRuleCheck(anUser, PlatformBaseRuleType.CORE_USER);
     }
-    
-    public static boolean sellerUser(ShiroUser anUser){
-        
+
+    public static boolean sellerUser(final ShiroUser anUser){
+
         return userRuleCheck(anUser, PlatformBaseRuleType.SELLER_USER);
     }
-    
-    public static boolean supplierUser(ShiroUser anUser){
-        
+
+    public static boolean supplierUser(final ShiroUser anUser){
+
         return userRuleCheck(anUser, PlatformBaseRuleType.SUPPLIER_USER);
     }
-    
-    public static boolean platformUser(ShiroUser anUser){
-        
+
+    public static boolean platformUser(final ShiroUser anUser){
+
         return userRuleCheck(anUser, PlatformBaseRuleType.PLATFORM_USER);
     }
-    
-    public static boolean factorUser(ShiroUser anUser){
-         
+
+    public static boolean factorUser(final ShiroUser anUser){
+
         return userRuleCheck(anUser, PlatformBaseRuleType.FACTOR_USER);
     }
     public Object getData() {
@@ -81,27 +82,27 @@ public class ShiroUser implements Serializable {
         return userType;
     }
 
-    public boolean checkPass(String anType, String anPass) {
+    public boolean checkPass(final String anType, final String anPass) {
         if (Collections3.isEmpty(userPassData) || BetterStringUtils.isBlank(anType) || BetterStringUtils.isBlank(anPass)) {
-            
+
             return false;
         }
-        
-        for (SimpleDataEntity sde : userPassData) {
+
+        for (final SimpleDataEntity sde : userPassData) {
             if (anType.equals(sde.getThree())) {
-                String passwd = SystemAuthorizingRealm.findEncrypt(anPass, sde.getValue());
-                
+                final String passwd = SystemAuthorizingRealm.findEncrypt(anPass, sde.getValue());
+
                 return passwd.equals(sde.getName());
             }
         }
-        
+
         return false;
     }
 
     public String[] fingUserRule() {
         String[] arrUser = UserType.findUserRule(userType);
         if (BetterStringUtils.isNotBlank(this.user.getRuleList())) {
-            String[] arrRule = BetterStringUtils.split(this.user.getRuleList(), ";|,");
+            final String[] arrRule = BetterStringUtils.split(this.user.getRuleList(), ";|,");
             arrUser = Collections3.mergeArray(arrUser, arrRule);
         }
 
@@ -110,15 +111,15 @@ public class ShiroUser implements Serializable {
 
     /**
      * 构造函数
-     * 
+     *
      * @param id
      * @param loginName
      * @param email
      * @param createTime
      * @param status
      */
-    public ShiroUser(UserType anUserType, Long id, String loginName, WorkUserInfo anUser, String anInnerRuleList, boolean anMobileLogin,
-            Object anData, List<SimpleDataEntity> anUserPassData) {
+    public ShiroUser(final UserType anUserType, final Long id, final String loginName, final WorkUserInfo anUser, final CustCertInfo anCertInfo, final boolean anMobileLogin,
+            final Object anData, final List<SimpleDataEntity> anUserPassData) {
         this.mobileLogin = anMobileLogin;
         this.userType = anUserType;
         this.id = id;
@@ -126,7 +127,7 @@ public class ShiroUser implements Serializable {
         this.user = anUser;
         this.loginTime = System.currentTimeMillis();
         this.data = anData;
-        this.innerRules = PlatformBaseRuleType.checkList(anInnerRuleList);
+        this.innerRules = PlatformBaseRuleType.checkList(anCertInfo.getCertRuleList());
         this.userPassData = anUserPassData;
     }
 
@@ -136,7 +137,7 @@ public class ShiroUser implements Serializable {
 
     /**
      * 返回 id 的值
-     * 
+     *
      * @return id
      */
     public Long getId() {
@@ -145,7 +146,7 @@ public class ShiroUser implements Serializable {
 
     /**
      * 返回 loginName 的值
-     * 
+     *
      * @return loginName
      */
     public String getLoginName() {
@@ -156,13 +157,13 @@ public class ShiroUser implements Serializable {
         return ipAddress;
     }
 
-    public void setIpAddress(String ipAddress) {
+    public void setIpAddress(final String ipAddress) {
         this.ipAddress = ipAddress;
     }
 
     /**
      * 返回 user 的值，根据不同的情况返回不同的对象
-     * 
+     *
      * @return user
      */
     public WorkUserInfo getUser() {
@@ -174,7 +175,7 @@ public class ShiroUser implements Serializable {
      */
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("innerRuleList = ").append(innerRules);
@@ -185,7 +186,7 @@ public class ShiroUser implements Serializable {
         sb.append(", userType=").append(userType);
         sb.append(", loginTime=").append(loginTime);
         sb.append(", data=").append(data);
-        sb.append(", mobileLogin=").append(mobileLogin); 
+        sb.append(", mobileLogin=").append(mobileLogin);
         sb.append("]");
         return sb.toString();
     }

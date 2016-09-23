@@ -1,13 +1,21 @@
 package com.betterjr.modules.account.entity;
 
-import com.betterjr.common.annotation.*;
+import java.util.List;
+
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.data.BetterBaseEntity;
 import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.common.utils.BetterDateUtils;
 import com.betterjr.common.utils.BetterStringUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import javax.persistence.*;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -148,7 +156,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
     @Column(name = "L_CERTID", columnDefinition = "INTEGER")
     @MetaData(value = "数字证书内部序号", comments = "数字证书内部序号")
     private Long certId;
-    
+
     /**
      * 创建人(操作员)ID号
      */
@@ -234,14 +242,17 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
     @Column(name = "c_email",  columnDefinition="VARCHAR" )
     @MetaData( value="email地址", comments = "email地址")
     private String email;
-    
+
+    @Transient
+    private List<CustCertRule> certRuleList;
+
     private static final long serialVersionUID = 1439797394180L;
 
     public String getSerialNo() {
         return serialNo;
     }
 
-    public void setSerialNo(String serialNo) {
+    public void setSerialNo(final String serialNo) {
         this.serialNo = serialNo == null ? null : serialNo.trim();
     }
 
@@ -249,7 +260,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return custNo;
     }
 
-    public void setCustNo(Long custNo) {
+    public void setCustNo(final Long custNo) {
         this.custNo = custNo;
     }
 
@@ -257,7 +268,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return identNo;
     }
 
-    public void setIdentNo(String identNo) {
+    public void setIdentNo(final String identNo) {
         this.identNo = identNo == null ? null : identNo.trim();
     }
 
@@ -265,7 +276,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return custName;
     }
 
-    public void setCustName(String custName) {
+    public void setCustName(final String custName) {
         this.custName = custName == null ? null : custName.trim();
     }
 
@@ -273,7 +284,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return contName;
     }
 
-    public void setContName(String contName) {
+    public void setContName(final String contName) {
         this.contName = contName == null ? null : contName.trim();
     }
 
@@ -281,7 +292,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return contIdentType;
     }
 
-    public void setContIdentType(String contIdentType) {
+    public void setContIdentType(final String contIdentType) {
         this.contIdentType = contIdentType == null ? null : contIdentType.trim();
     }
 
@@ -289,7 +300,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return contIdentNo;
     }
 
-    public void setContIdentNo(String contIdentNo) {
+    public void setContIdentNo(final String contIdentNo) {
         this.contIdentNo = contIdentNo == null ? null : contIdentNo.trim();
     }
 
@@ -297,7 +308,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return contPhone;
     }
 
-    public void setContPhone(String contPhone) {
+    public void setContPhone(final String contPhone) {
         this.contPhone = contPhone == null ? null : contPhone.trim();
     }
 
@@ -305,18 +316,18 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(final String status) {
         this.status = status == null ? null : status.trim();
     }
 
-    public void initOperatorInfo(CustOperatorInfo anOperInfo) {
+    public void initOperatorInfo(final CustOperatorInfo anOperInfo) {
         this.contIdentNo = anOperInfo.getIdentNo();
         this.contIdentType = anOperInfo.getIdentType();
         this.contName = anOperInfo.getName();
         this.contPhone = anOperInfo.getPhone();
     }
 
-    public void initCustInfo(CustInfo anCustInfo) {
+    public void initCustInfo(final CustInfo anCustInfo) {
         this.custNo = anCustInfo.getCustNo();
         this.custName = anCustInfo.getCustName();
         this.identNo = anCustInfo.getIdentNo();
@@ -326,7 +337,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return versionUid;
     }
 
-    public void setVersionUid(String versionUid) {
+    public void setVersionUid(final String versionUid) {
         this.versionUid = versionUid == null ? null : versionUid.trim();
     }
 
@@ -334,7 +345,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return subject;
     }
 
-    public void setSubject(String subject) {
+    public void setSubject(final String subject) {
         this.subject = subject == null ? null : subject.trim();
     }
 
@@ -342,7 +353,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return operNo;
     }
 
-    public void setOperNo(String operNo) {
+    public void setOperNo(final String operNo) {
         this.operNo = operNo == null ? null : operNo.trim();
     }
 
@@ -350,7 +361,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return certInfo;
     }
 
-    public void setCertInfo(String certInfo) {
+    public void setCertInfo(final String certInfo) {
         this.certInfo = certInfo == null ? null : certInfo.trim();
     }
 
@@ -358,7 +369,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return validDate;
     }
 
-    public void setValidDate(String validDate) {
+    public void setValidDate(final String validDate) {
         this.validDate = validDate == null ? null : validDate.trim();
     }
 
@@ -366,7 +377,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return createDate;
     }
 
-    public void setCreateDate(String createDate) {
+    public void setCreateDate(final String createDate) {
         this.createDate = createDate == null ? null : createDate.trim();
     }
 
@@ -374,7 +385,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return token;
     }
 
-    public void setToken(String token) {
+    public void setToken(final String token) {
         this.token = token == null ? null : token.trim();
     }
 
@@ -382,7 +393,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return this.operOrg;
     }
 
-    public void setOperOrg(String anOperOrg) {
+    public void setOperOrg(final String anOperOrg) {
         this.operOrg = anOperOrg;
     }
 
@@ -390,11 +401,11 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return this.description;
     }
 
-    public void setDescription(String anDescription) {
+    public void setDescription(final String anDescription) {
         this.description = anDescription;
     }
 
-    public boolean validCertInfo(CustCertInfo other) {
+    public boolean validCertInfo(final CustCertInfo other) {
 
         return (this.getSerialNo() == null ? other.getSerialNo() == null : this.getSerialNo().equals(other.getSerialNo()))
                 && (this.getVersionUid() == null ? other.getVersionUid() == null : this.getVersionUid().equals(other.getVersionUid()))
@@ -404,35 +415,43 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
                 && (this.getCreateDate() == null ? other.getCreateDate() == null : this.getCreateDate().equals(other.getCreateDate()));
     }
 
+    @Override
     public Long getRegOperId() {
         return this.regOperId;
     }
 
-    public void setRegOperId(Long anRegOperId) {
+    @Override
+    public void setRegOperId(final Long anRegOperId) {
         this.regOperId = anRegOperId;
     }
 
+    @Override
     public String getRegOperName() {
         return this.regOperName;
     }
 
-    public void setRegOperName(String anRegOperName) {
+    @Override
+    public void setRegOperName(final String anRegOperName) {
         this.regOperName = anRegOperName;
     }
 
+    @Override
     public String getRegDate() {
         return this.regDate;
     }
 
-    public void setRegDate(String anRegDate) {
+    @Override
+    public void setRegDate(final String anRegDate) {
         this.regDate = anRegDate;
     }
 
+    @Override
     public String getRegTime() {
         return this.regTime;
     }
 
-    public void setRegTime(String anRegTime) {
+    @Override
+    public void setRegTime(final String anRegTime) {
         this.regTime = anRegTime;
     }
 
@@ -440,7 +459,8 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return this.modiOperId;
     }
 
-    public void setModiOperId(Long anModiOperId) {
+    @Override
+    public void setModiOperId(final Long anModiOperId) {
         this.modiOperId = anModiOperId;
     }
 
@@ -448,7 +468,8 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return this.modiOperName;
     }
 
-    public void setModiOperName(String anModiOperName) {
+    @Override
+    public void setModiOperName(final String anModiOperName) {
         this.modiOperName = anModiOperName;
     }
 
@@ -456,7 +477,8 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return this.modiDate;
     }
 
-    public void setModiDate(String anModiDate) {
+    @Override
+    public void setModiDate(final String anModiDate) {
         this.modiDate = anModiDate;
     }
 
@@ -464,7 +486,8 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return this.modiTime;
     }
 
-    public void setModiTime(String anModiTime) {
+    @Override
+    public void setModiTime(final String anModiTime) {
         this.modiTime = anModiTime;
     }
 
@@ -472,7 +495,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return this.publishDate;
     }
 
-    public void setPublishDate(String anPublishDate) {
+    public void setPublishDate(final String anPublishDate) {
         this.publishDate = anPublishDate;
     }
 
@@ -480,7 +503,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return this.publishMode;
     }
 
-    public void setPublishMode(String anPublishMode) {
+    public void setPublishMode(final String anPublishMode) {
         this.publishMode = anPublishMode;
     }
 
@@ -488,7 +511,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return this.ruleList;
     }
 
-    public void setRuleList(String anRuleList) {
+    public void setRuleList(final String anRuleList) {
         this.ruleList = anRuleList;
     }
 
@@ -496,7 +519,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return this.certId;
     }
 
-    public void setCertId(Long anCertId) {
+    public void setCertId(final Long anCertId) {
         this.certId = anCertId;
     }
 
@@ -504,13 +527,21 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         return this.email;
     }
 
-    public void setEmail(String anEmail) {
+    public void setEmail(final String anEmail) {
         this.email = anEmail;
+    }
+
+    public List<CustCertRule> getCertRuleList() {
+        return certRuleList;
+    }
+
+    public void setCertRuleList(final List<CustCertRule> anCertRuleList) {
+        certRuleList = anCertRuleList;
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("ruleList = ").append(ruleList);
@@ -549,7 +580,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(final Object that) {
         if (this == that) {
             return true;
         }
@@ -559,7 +590,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         if (getClass() != that.getClass()) {
             return false;
         }
-        CustCertInfo other = (CustCertInfo) that;
+        final CustCertInfo other = (CustCertInfo) that;
         return (this.getSerialNo() == null ? other.getSerialNo() == null : this.getSerialNo().equals(other.getSerialNo()))
                 && (this.getCustNo() == null ? other.getCustNo() == null : this.getCustNo().equals(other.getCustNo()))
                 && (this.getIdentNo() == null ? other.getIdentNo() == null : this.getIdentNo().equals(other.getIdentNo()))
@@ -631,13 +662,13 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
 
         return result;
     }
-    
-    public void publishModifyValue(String anToken, String anPublishMode){
-       this.token = anToken;
-       this.publishMode = anPublishMode;
-       this.publishDate = BetterDateUtils.getNumDate();
+
+    public void publishModifyValue(final String anToken, final String anPublishMode){
+        this.token = anToken;
+        this.publishMode = anPublishMode;
+        this.publishDate = BetterDateUtils.getNumDate();
     }
-    
+
     /**
      * 检查是否可以下载数字证书，默认是10天；数字证书发布10天后，就不能下载；数字证书只有在状态为未启用和刚发布的情况下才可以下载
      * @return
@@ -646,7 +677,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         if (BetterStringUtils.isBlank(this.publishDate)){
             return false;
         }
-       String tmpDate = BetterDateUtils.addStrDays(this.publishDate, 10);
-       return (BetterDateUtils.getNumDate().compareTo(tmpDate) >0) && (" 2, 3, 9".indexOf(this.status) > 0);
+        final String tmpDate = BetterDateUtils.addStrDays(this.publishDate, 10);
+        return (BetterDateUtils.getNumDate().compareTo(tmpDate) >0) && (" 2, 3, 9".indexOf(this.status) > 0);
     }
 }

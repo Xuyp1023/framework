@@ -3,50 +3,56 @@ package com.betterjr.common.codec.support.fst;
 import java.io.IOException;
 import java.io.OutputStream;
 
-
+import org.nustaq.serialization.FSTObjectOutput;
 
 import com.betterjr.common.codec.BtObjectOutput;
 
-import de.ruedigermoeller.serialization.FSTObjectOutput;
 
- 
 public class FstObjectOutput implements BtObjectOutput {
 
-    private FSTObjectOutput output;
+    private final FSTObjectOutput output;
 
-    public FstObjectOutput(OutputStream outputStream) {
+    public FstObjectOutput(final OutputStream outputStream) {
         output = FstFactory.getDefaultFactory().getObjectOutput(outputStream);
     }
 
-    public void writeBool(boolean v) throws IOException {
+    @Override
+    public void writeBool(final boolean v) throws IOException {
         output.writeBoolean(v);
     }
 
-    public void writeByte(byte v) throws IOException {
+    @Override
+    public void writeByte(final byte v) throws IOException {
         output.writeByte(v);
     }
 
-    public void writeShort(short v) throws IOException {
+    @Override
+    public void writeShort(final short v) throws IOException {
         output.writeShort(v);
     }
 
-    public void writeInt(int v) throws IOException {
+    @Override
+    public void writeInt(final int v) throws IOException {
         output.writeInt(v);
     }
 
-    public void writeLong(long v) throws IOException {
+    @Override
+    public void writeLong(final long v) throws IOException {
         output.writeLong(v);
     }
 
-    public void writeFloat(float v) throws IOException {
+    @Override
+    public void writeFloat(final float v) throws IOException {
         output.writeFloat(v);
     }
 
-    public void writeDouble(double v) throws IOException {
+    @Override
+    public void writeDouble(final double v) throws IOException {
         output.writeDouble(v);
     }
 
-    public void writeBytes(byte[] v) throws IOException {
+    @Override
+    public void writeBytes(final byte[] v) throws IOException {
         if (v == null) {
             output.writeInt(-1);
         } else {
@@ -54,7 +60,8 @@ public class FstObjectOutput implements BtObjectOutput {
         }
     }
 
-    public void writeBytes(byte[] v, int off, int len) throws IOException {
+    @Override
+    public void writeBytes(final byte[] v, final int off, final int len) throws IOException {
         if (v == null) {
             output.writeInt(-1);
         } else {
@@ -64,14 +71,17 @@ public class FstObjectOutput implements BtObjectOutput {
     }
 
 
-    public void writeUTF(String v) throws IOException {
+    @Override
+    public void writeUTF(final String v) throws IOException {
         output.writeUTF(v);
     }
 
-    public void writeObject(Object v) throws IOException {
+    @Override
+    public void writeObject(final Object v) throws IOException {
         output.writeObject(v);
     }
 
+    @Override
     public void flushBuffer() throws IOException {
         output.flush();
     }
