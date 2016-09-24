@@ -309,6 +309,13 @@ public class BTAssert   {
         notEmpty(map, "数据映射集合不能为空，至少包括条数据");
     }
     
+    public static void notLessThan(int value,int target, String message) {
+        if (value>=target) {
+            
+            createBytterExcepObject(BytterTradeException.class, message);
+        }
+    }
+    
     public static void isInstanceOf(Class<?> clazz, Object obj) {
         
         isInstanceOf(clazz, obj, "");

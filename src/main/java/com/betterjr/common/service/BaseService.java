@@ -780,12 +780,14 @@ public abstract class BaseService<D extends Mapper<T>, T> {
      * 对于pk为id的实体对象，如果id为空，则insert，否则update
      * @param base
      */
-    public void insertOrUpdateWithPkId(final T base,final Object id) {
+    public Object insertOrUpdateWithPkId(final T base,final Object id) {
         if(ReflectionUtils.getFieldValue(base, "id")==null){
             ReflectionUtils.setFieldValue(base, "id", id);
             this.insert(base);
+            return id;
         }else{
             this.updateByPrimaryKey(base);
+            return ReflectionUtils.getFieldValue(base, "id");
         }
     }
 
