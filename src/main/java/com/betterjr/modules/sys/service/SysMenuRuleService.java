@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.betterjr.common.service.BaseService;
+import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.Collections3;
 import com.betterjr.modules.sys.dao.SysMenuRuleInfoMapper;
 import com.betterjr.modules.sys.entity.SysMenuRuleInfo;
@@ -63,7 +64,7 @@ public class SysMenuRuleService extends BaseService<SysMenuRuleInfoMapper, SysMe
         Map anMap = new HashMap<String, Object>();
         anMap.put("ruleId", anRuleIdList);
         List<Integer> menus=  this.menuService.findSubMenu(anMenuId);
-        if (Collections3.isEmpty(menus)){
+        if (Collections3.isEmpty(menus) || Collections3.isEmpty(anRuleIdList)){
             
             return menuList;
         }

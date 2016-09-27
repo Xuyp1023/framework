@@ -58,7 +58,7 @@ public class SysMenuService extends BaseService<SysMenuInfoMapper, SysMenuInfo> 
         List<PlatformBaseRuleType> userInnerRules = UserUtils.findInnerRules();
         logger.info("userInnerRules:"+userInnerRules);
         for(SysMenuInfo menuInfo : allList){
-          if(0==menuInfo.getParentId()&&"1".equals(menuInfo.getStatus())  && menuInfo.hasValidMenu(userInnerRules)){
+          if((menuInfo.getEndNode() == false)&&"1".equals(menuInfo.getStatus())  && menuInfo.hasValidMenu(userInnerRules)){
               parentNoteMap.put(menuInfo.getId(), menuInfo);
           }
         }
@@ -100,7 +100,7 @@ public class SysMenuService extends BaseService<SysMenuInfoMapper, SysMenuInfo> 
         // 父节点
         List<PlatformBaseRuleType> userInnerRules = UserUtils.findInnerRules();
         for(SysMenuInfo menuInfo : allList){
-          if(0==menuInfo.getParentId()&&"1".equals(menuInfo.getStatus())   && menuInfo.hasValidMenu(userInnerRules)){
+          if((menuInfo.getEndNode() == false)&&"1".equals(menuInfo.getStatus())   && menuInfo.hasValidMenu(userInnerRules)){
               parentNoteMap.put(menuInfo.getId(), menuInfo);
           }
         }
