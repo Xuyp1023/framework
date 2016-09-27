@@ -24,6 +24,7 @@ import com.betterjr.common.annotation.RuleServiceType;
 import com.betterjr.common.exception.BettjerRuleException;
 import com.betterjr.common.mapper.BeanMapper;
 import com.betterjr.common.service.BaseService;
+import com.betterjr.common.utils.BetterClassUtils;
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.modules.rule.RuleCheckResult;
 import com.betterjr.modules.rule.annotation.AnnotRuleFunc;
@@ -165,7 +166,8 @@ public class BusinRuleService extends BaseService<RuleBusinessMapper, RuleBusine
 		// 首先处理规则信息
 		for (final Object rule : ruleClasses.values()) {
 			// final Class<? extends Object> ruleClass = rule.getClass();
-			final Class<? extends Object> ruleClass = AopProxyUtils.ultimateTargetClass(rule);
+			Class<? extends Object> ruleClass = AopProxyUtils.ultimateTargetClass(rule);
+			ruleClass=BetterClassUtils.findInterfaceMatchAnnotation(ruleClass, AnnotRuleService.class);
 			final AnnotRuleService annot = ruleClass.getAnnotation(AnnotRuleService.class);
 			if (annot.type() == RuleServiceType.RULE) {
 				if (rule instanceof BasicRule) {
@@ -192,7 +194,8 @@ public class BusinRuleService extends BaseService<RuleBusinessMapper, RuleBusine
 		// 然後處理功能和過程
 		for (final Object rule : ruleClasses.values()) {
 			// final Class<? extends Object> ruleClass = rule.getClass();
-			final Class<? extends Object> ruleClass = AopProxyUtils.ultimateTargetClass(rule);
+			Class<? extends Object> ruleClass = AopProxyUtils.ultimateTargetClass(rule);
+			ruleClass=BetterClassUtils.findInterfaceMatchAnnotation(ruleClass, AnnotRuleService.class);
 			final AnnotRuleService annot = ruleClass.getAnnotation(AnnotRuleService.class);
 			for (Method mm : ruleClass.getMethods()) {
 				for (Annotation subAnnot : mm.getAnnotations()) {
