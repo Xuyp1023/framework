@@ -42,6 +42,21 @@ public class BetterClassUtils {
             System.out.println(i + ":" + list.get(i));
         }
     }
+    
+    public static Class findInterfaceMatchAnnotation(Class anClass,Class annoCls){
+        Annotation anno=anClass.getAnnotation(annoCls);
+         if(anno!=null){
+             return anClass;
+         }
+         Class<?>[] clsA= anClass.getInterfaces();
+         for(Class cls:clsA){
+             anno=cls.getAnnotation(annoCls);
+             if(anno!=null){
+                 return cls;
+             }
+         }
+         return null;
+    }
 
     /**
      * 根据定义路径查找需要的Class

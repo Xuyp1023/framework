@@ -47,10 +47,10 @@ public class RuleServiceDubboFilterInvoker {
     /**
      * 表达式引擎的初始化入口
      */
-    @PostConstruct
-    public void init() {
-        qlExpress.initRunner();
-    }
+//    @PostConstruct
+//    public void init() {
+//        qlExpress.initRunner();
+//    }
 
     
     public QlExpressUtil getQlExpress() {
