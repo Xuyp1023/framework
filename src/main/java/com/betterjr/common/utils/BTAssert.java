@@ -2,6 +2,7 @@ package com.betterjr.common.utils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Map;
 
@@ -342,9 +343,20 @@ public class BTAssert   {
                     subType + " 不是继承类  " + superType);
         }
     }
+    /***
+     * 判断字符是否为数值类型
+     * @param number
+     * @param message
+     */
+    public static void isNumber(String number,String message){
+        if (!number.matches("\\d+(.\\d+)?[fF]?")) {
+            createBytterExcepObject(BytterTradeException.class,message);
+        }
+    }
     
     public static void main(String[] args){
-       isNotShorString("aaaa",5);
+//       isNotShorString("aaaa",5);
+        isNumber("fdfd","不是数值");
        //isNotSmallValue(91L);
     }
 }
