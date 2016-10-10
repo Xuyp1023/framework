@@ -24,6 +24,7 @@ import com.betterjr.common.annotation.RuleServiceType;
 import com.betterjr.common.exception.BettjerRuleException;
 import com.betterjr.common.mapper.BeanMapper;
 import com.betterjr.common.service.BaseService;
+import com.betterjr.common.utils.BTAssert;
 import com.betterjr.common.utils.BetterClassUtils;
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.modules.rule.RuleCheckResult;
@@ -134,6 +135,9 @@ public class BusinRuleService extends BaseService<RuleBusinessMapper, RuleBusine
 				tmpValue = anData.get(fieldName);
 				if (tmpValue != null) {
 					map.put(fieldName, tmpValue);
+				}
+				if(BetterStringUtils.equalsIgnoreCase("N", validator.getDataType())){
+				    BTAssert.isNumber(tmpValue, validator.getShowName()+"必须是数值型");
 				}
 			}
 			System.out.println("this is data Map :" + map);
