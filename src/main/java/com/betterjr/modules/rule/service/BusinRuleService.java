@@ -136,9 +136,6 @@ public class BusinRuleService extends BaseService<RuleBusinessMapper, RuleBusine
 				if (tmpValue != null) {
 					map.put(fieldName, tmpValue);
 				}
-				if(BetterStringUtils.equalsIgnoreCase("N", validator.getDataType())){
-				    BTAssert.isNumber(tmpValue, validator.getShowName()+"必须是数值型");
-				}
 			}
 			System.out.println("this is data Map :" + map);
 			if (request instanceof Map) {
