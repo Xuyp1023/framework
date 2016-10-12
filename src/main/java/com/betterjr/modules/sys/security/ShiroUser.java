@@ -26,6 +26,7 @@ public class ShiroUser implements Serializable {
     private final long loginTime;
     private final Object data;
     private final boolean mobileLogin;
+    private final CustCertInfo cretInfo;
     private List<PlatformBaseRuleType> innerRules = null;
     private List<SimpleDataEntity> userPassData = null;
 
@@ -129,6 +130,7 @@ public class ShiroUser implements Serializable {
         this.data = anData;
         this.innerRules = PlatformBaseRuleType.checkList(anCertInfo.getCertRuleList());
         this.userPassData = anUserPassData;
+        this.cretInfo = anCertInfo;
     }
 
     public boolean isMobileLogin() {
@@ -168,6 +170,14 @@ public class ShiroUser implements Serializable {
      */
     public WorkUserInfo getUser() {
         return user;
+    }
+
+    /**
+     * 返回证书的值
+     * @return
+     */
+    public CustCertInfo getCretInfo() {
+        return cretInfo;
     }
 
     /**

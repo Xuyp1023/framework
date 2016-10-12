@@ -109,6 +109,46 @@ public class UserUtils {
         return null;
     }
 
+    /**
+     * 获取当前证书信息
+     * @return
+     */
+    public static CustCertInfo getCertInfo() {
+        final ShiroUser principal = getPrincipal();
+        if (principal != null) {
+            return principal.getCretInfo();
+        }
+        return null;
+    }
+
+    /**
+     * 获取机构名称
+     * @return
+     */
+    public static String getOrgName() {
+        final CustCertInfo certInfo = getCertInfo();
+        if (certInfo != null) {
+            return certInfo.getCustName();
+        }
+        return null;
+    }
+
+    /**
+     * 获取OperOrg
+     * @return
+     */
+    public static String getOperOrg() {
+        final CustCertInfo certInfo = getCertInfo();
+        if (certInfo != null) {
+            return certInfo.getOperOrg();
+        }
+        return null;
+    }
+
+    /**
+     * 找当前用户的权限列表
+     * @return
+     */
     public static List<String> findRuleList() {
         final ShiroUser principal = getPrincipal();
         final List<String> tmpList = new ArrayList();
@@ -118,6 +158,10 @@ public class UserUtils {
         return tmpList;
     }
 
+    /**
+     * 取用户名
+     * @return
+     */
     public static String getUserName() {
         final WorkUserInfo principal = getUser();
         if (principal != null) {
