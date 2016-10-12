@@ -53,7 +53,7 @@ public class SysMenuService extends BaseService<SysMenuInfoMapper, SysMenuInfo> 
         List<SysMenuInfo> allList=new ArrayList<SysMenuInfo>();
         anMap.put("id", menuIds);
         allList = this.selectByProperty(anMap, "menuOrder");
-        Map<Integer,SysMenuInfo> parentNoteMap = new HashMap<Integer,SysMenuInfo>();
+        Map<Integer,SysMenuInfo> parentNoteMap =new LinkedHashMap<Integer, SysMenuInfo>();
         // 父节点
         List<PlatformBaseRuleType> userInnerRules = UserUtils.findInnerRules();
         logger.info("userInnerRules:"+userInnerRules);
@@ -66,7 +66,7 @@ public class SysMenuService extends BaseService<SysMenuInfoMapper, SysMenuInfo> 
         for(Integer parentId : parentNoteMap.keySet()){
             Map<String, Object> sysMenuMap = new LinkedHashMap<String,Object>();
             SysMenuInfo parentMenuInfo = parentNoteMap.get(parentId);
-            List<SysMenuInfo> noteList = this.selectByProperty("parentId", parentId);
+            List<SysMenuInfo> noteList = this.selectByProperty("parentId", parentId,"menuOrder");
             List<Map<String, String>> noteMenuList = new ArrayList<Map<String,String>>();
             for(SysMenuInfo noteMenuInfo : noteList){
                 if("1".equals(noteMenuInfo.getStatus()) && noteMenuInfo.hasValidMenu(userInnerRules)){
@@ -96,7 +96,7 @@ public class SysMenuService extends BaseService<SysMenuInfoMapper, SysMenuInfo> 
         Map anMap = new HashMap<String, Object>();
         anMap.put("status", "1");
         List<SysMenuInfo> allList = this.selectByProperty(anMap, "menuOrder");
-        Map<Integer,SysMenuInfo> parentNoteMap = new HashMap<Integer,SysMenuInfo>();
+        Map<Integer,SysMenuInfo> parentNoteMap = new LinkedHashMap<Integer,SysMenuInfo>();
         // 父节点
         List<PlatformBaseRuleType> userInnerRules = UserUtils.findInnerRules();
         for(SysMenuInfo menuInfo : allList){
@@ -108,7 +108,7 @@ public class SysMenuService extends BaseService<SysMenuInfoMapper, SysMenuInfo> 
         for(Integer parentId : parentNoteMap.keySet()){
             Map<String, Object> sysMenuMap = new LinkedHashMap<String,Object>();
             SysMenuInfo parentMenuInfo = parentNoteMap.get(parentId);
-            List<SysMenuInfo> noteList = this.selectByProperty("parentId", parentId);
+            List<SysMenuInfo> noteList = this.selectByProperty("parentId", parentId,"menuOrder");
             List<Map<String, String>> noteMenuList = new ArrayList<Map<String,String>>();
             for(SysMenuInfo noteMenuInfo : noteList){
                 if("1".equals(noteMenuInfo.getStatus()) && noteMenuInfo.hasValidMenu(userInnerRules)){
