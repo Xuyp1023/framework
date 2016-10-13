@@ -9,7 +9,7 @@ import com.betterjr.common.data.UserType;
 import com.betterjr.common.data.WorkUserInfo;
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.Collections3;
-import com.betterjr.modules.account.entity.CustCertInfo;
+import com.betterjr.modules.cert.entity.CustCertInfo;
 
 
 /**

@@ -14,10 +14,10 @@ import com.betterjr.common.security.KeyReader;
 import com.betterjr.common.security.SignHelper;
 import com.betterjr.common.utils.CacheUtils;
 import com.betterjr.common.web.WorkSessionContext;
-import com.betterjr.modules.account.entity.CustCertInfo;
 import com.betterjr.modules.account.entity.CustInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.account.entity.SaleTradeAccountInfo;
+import com.betterjr.modules.cert.entity.CustCertInfo;
 
 
 /**

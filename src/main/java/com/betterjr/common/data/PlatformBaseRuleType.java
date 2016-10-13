@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import com.betterjr.common.utils.BetterStringUtils;
-import com.betterjr.modules.account.entity.CustCertRule;
+import com.betterjr.modules.cert.entity.CustCertRule;
 
 
 public enum PlatformBaseRuleType {

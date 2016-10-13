@@ -1,0 +1,64 @@
+package com.betterjr.modules.cert.dubbo.interfaces;
+
+import java.security.cert.X509Certificate;
+import java.util.Map;
+
+import com.betterjr.modules.cert.entity.CustCertInfo;
+
+public interface ICustCertService {
+
+    /**
+     *
+     * 校验证书公钥是否正确
+     *
+     * @param 证书公钥信息
+     * @return 成功返回 证书信息，失败抛出异常
+     * @throws 异常情况
+     */
+    public CustCertInfo checkValidity(X509Certificate anX509);
+
+
+    /**
+     * 根据机构信息获得这个几个的第一个数字证书
+     *
+     * @param anOperOrg
+     * @return
+     */
+    public CustCertInfo findFirstCertInfoByOperOrg(String anOperOrg);
+
+    /**
+     * 查询认证信息
+     *
+     */
+    public String webFindCustCertificate(Long anId);
+
+    /**
+     * 分页查询证书信息
+     */
+    public String webQueryCustCertificate(Map<String, Object> anParam, int anFlag, int anPageNum, int anPageSize);
+
+    /**
+     * 添加客户证书
+     */
+    public String webAddCustCertificate(Map<String, Object> anParam);
+
+    /**
+     * 修改客户证
+     */
+    public String webSaveCustCertificate(Map<String, Object> anParam);
+
+    /**
+     * 发布证书
+     */
+    public String webPublishCustCertificate(Long anId);
+
+    /**
+     * 作废证书
+     */
+    public String webCancelCustCertificate(Long anId);
+
+    /**
+     * 回收证书
+     */
+    public String webRevokeCustCertificate(Long anId);
+}

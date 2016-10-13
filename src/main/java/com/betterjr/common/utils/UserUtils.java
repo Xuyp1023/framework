@@ -24,9 +24,9 @@ import com.betterjr.common.data.WorkUserInfo;
 import com.betterjr.common.security.shiro.session.RedisSessionDAO;
 import com.betterjr.common.service.SpringContextHolder;
 import com.betterjr.modules.account.data.CustContextInfo;
-import com.betterjr.modules.account.entity.CustCertInfo;
 import com.betterjr.modules.account.entity.CustInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
+import com.betterjr.modules.cert.entity.CustCertInfo;
 import com.betterjr.modules.sys.security.ShiroUser;
 
 /**

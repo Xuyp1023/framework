@@ -5,15 +5,15 @@
 // CHANGE LOG
 // V2.0 : 2016年9月22日, liuwl, creation
 // ============================================================================
-package com.betterjr.modules.account.service;
+package com.betterjr.modules.cert.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.betterjr.common.service.BaseService;
-import com.betterjr.modules.account.dao.CustCertRuleMapper;
-import com.betterjr.modules.account.entity.CustCertRule;
+import com.betterjr.modules.cert.dao.CustCertRuleMapper;
+import com.betterjr.modules.cert.entity.CustCertRule;
 
 /**
  * @author liuwl
