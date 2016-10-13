@@ -1,4 +1,4 @@
-package com.betterjr.modules.account.entity;
+package com.betterjr.modules.cert.entity;
 
 import java.util.List;
 
@@ -15,6 +15,8 @@ import com.betterjr.common.data.BetterBaseEntity;
 import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.common.utils.BetterDateUtils;
 import com.betterjr.common.utils.BetterStringUtils;
+import com.betterjr.modules.account.entity.CustInfo;
+import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Access(AccessType.FIELD)

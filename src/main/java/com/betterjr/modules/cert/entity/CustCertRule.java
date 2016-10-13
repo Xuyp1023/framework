@@ -1,4 +1,4 @@
-package com.betterjr.modules.account.entity;
+package com.betterjr.modules.cert.entity;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;

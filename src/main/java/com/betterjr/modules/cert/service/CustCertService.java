@@ -1,4 +1,4 @@
-package com.betterjr.modules.account.service;
+package com.betterjr.modules.cert.service;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,10 +37,9 @@ import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.Collections3;
 import com.betterjr.common.utils.UserUtils;
 import com.betterjr.common.utils.reflection.ReflectionUtils;
-import com.betterjr.modules.account.dao.CustCertInfoMapper;
-import com.betterjr.modules.account.entity.CustCertInfo;
+import com.betterjr.modules.cert.dao.CustCertInfoMapper;
 import com.betterjr.modules.cert.entity.BetterX509CertInfo;
-import com.betterjr.modules.cert.service.BetterX509CertService;
+import com.betterjr.modules.cert.entity.CustCertInfo;
 import com.betterjr.modules.cert.utils.BetterX509CertStore;
 
 @Service

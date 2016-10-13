@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "t_cfg_certinfo")
 public class BetterX509CertInfo implements BetterjrEntity {
-    
+
     /**
      * 编号
      */
@@ -27,6 +27,13 @@ public class BetterX509CertInfo implements BetterjrEntity {
     @Column(name = "ID",  columnDefinition="INTEGER" )
     @MetaData( value="编号", comments = "编号")
     private Long id;
+
+    /**
+     * 年限
+     */
+    @Column(name = "n_year",  columnDefinition="INTEGER" )
+    @MetaData( value="年限", comments = "年限")
+    private Integer year;
 
     /**
      * 证书名称
@@ -174,8 +181,8 @@ public class BetterX509CertInfo implements BetterjrEntity {
      */
     @Column(name = "c_reason",  columnDefinition="VARCHAR" )
     @MetaData( value="数字证书回收的原因", comments = "数字证书回收的原因")
-     private String revokeReason;
-    
+    private String revokeReason;
+
     /**
      * 数字证书内容
      */
@@ -183,7 +190,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
     @MetaData( value="数字证书内容", comments = "数字证书内容")
     @JsonIgnore
     private byte[] data;
-    
+
     /**
      * 数字证书私钥信息
      */
@@ -191,7 +198,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
     @MetaData( value="数字证书私钥信息", comments = "数字证书私钥信息")
     @JsonIgnore
     private byte[] privateKey;
-    
+
     /**
      * 数字证书公钥信息
      */
@@ -206,15 +213,23 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(final Integer anYear) {
+        year = anYear;
     }
 
     public String getCommName() {
         return commName;
     }
 
-    public void setCommName(String commName) {
+    public void setCommName(final String commName) {
         this.commName = commName == null ? null : commName.trim();
     }
 
@@ -222,7 +237,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return signer;
     }
 
-    public void setSigner(String signer) {
+    public void setSigner(final String signer) {
         this.signer = signer == null ? null : signer.trim();
     }
 
@@ -230,7 +245,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return certType;
     }
 
-    public void setCertType(String certType) {
+    public void setCertType(final String certType) {
         this.certType = certType == null ? null : certType.trim();
     }
 
@@ -238,7 +253,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return certAlias;
     }
 
-    public void setCertAlias(String certAlias) {
+    public void setCertAlias(final String certAlias) {
         this.certAlias = certAlias == null ? null : certAlias.trim();
     }
 
@@ -246,7 +261,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return serialNo;
     }
 
-    public void setSerialNo(String serialNo) {
+    public void setSerialNo(final String serialNo) {
         this.serialNo = serialNo == null ? null : serialNo.trim();
     }
 
@@ -254,7 +269,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return createDate;
     }
 
-    public void setCreateDate(String createDate) {
+    public void setCreateDate(final String createDate) {
         this.createDate = createDate == null ? null : createDate.trim();
     }
 
@@ -262,7 +277,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return validDate;
     }
 
-    public void setValidDate(String validDate) {
+    public void setValidDate(final String validDate) {
         this.validDate = validDate == null ? null : validDate.trim();
     }
 
@@ -270,7 +285,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return provinceName;
     }
 
-    public void setProvinceName(String provinceName) {
+    public void setProvinceName(final String provinceName) {
         this.provinceName = provinceName == null ? null : provinceName.trim();
     }
 
@@ -278,7 +293,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return cityName;
     }
 
-    public void setCityName(String cityName) {
+    public void setCityName(final String cityName) {
         this.cityName = cityName == null ? null : cityName.trim();
     }
 
@@ -286,7 +301,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return countryCode;
     }
 
-    public void setCountryCode(String countryCode) {
+    public void setCountryCode(final String countryCode) {
         this.countryCode = countryCode == null ? null : countryCode.trim();
     }
 
@@ -294,7 +309,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return orgUnitName;
     }
 
-    public void setOrgUnitName(String orgUnitName) {
+    public void setOrgUnitName(final String orgUnitName) {
         this.orgUnitName = orgUnitName == null ? null : orgUnitName.trim();
     }
 
@@ -302,7 +317,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return orgName;
     }
 
-    public void setOrgName(String orgName) {
+    public void setOrgName(final String orgName) {
         this.orgName = orgName == null ? null : orgName.trim();
     }
 
@@ -310,7 +325,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(final String email) {
         this.email = email == null ? null : email.trim();
     }
 
@@ -318,7 +333,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return certStatus;
     }
 
-    public void setCertStatus(String certStatus) {
+    public void setCertStatus(final String certStatus) {
         this.certStatus = certStatus == null ? null : certStatus.trim();
     }
 
@@ -326,7 +341,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return regDate;
     }
 
-    public void setRegDate(String regDate) {
+    public void setRegDate(final String regDate) {
         this.regDate = regDate == null ? null : regDate.trim();
     }
 
@@ -334,7 +349,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return regOperId;
     }
 
-    public void setRegOperId(Long regOperId) {
+    public void setRegOperId(final Long regOperId) {
         this.regOperId = regOperId;
     }
 
@@ -342,7 +357,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description == null ? null : description.trim();
     }
 
@@ -350,7 +365,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return regOperName;
     }
 
-    public void setRegOperName(String regOperName) {
+    public void setRegOperName(final String regOperName) {
         this.regOperName = regOperName == null ? null : regOperName.trim();
     }
 
@@ -358,17 +373,17 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return regTime;
     }
 
-    public void setRegTime(String regTime) {
+    public void setRegTime(final String regTime) {
         this.regTime = regTime == null ? null : regTime.trim();
     }
- 
+
     public byte[] getData() {
-        
+
         return this.data;
     }
 
-    public void setData(byte[] anData){
-        
+    public void setData(final byte[] anData){
+
         this.data = anData;
     }
 
@@ -376,7 +391,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return this.revokeReason;
     }
 
-    public void setRevokeReason(String anRevokeReason) {
+    public void setRevokeReason(final String anRevokeReason) {
         this.revokeReason = anRevokeReason;
     }
 
@@ -384,7 +399,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return this.passwd;
     }
 
-    public void setPasswd(String anPasswd) {
+    public void setPasswd(final String anPasswd) {
         this.passwd = anPasswd;
     }
 
@@ -392,7 +407,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return this.privateKey;
     }
 
-    public void setPrivateKey(byte[] anPrivateKey) {
+    public void setPrivateKey(final byte[] anPrivateKey) {
         this.privateKey = anPrivateKey;
     }
 
@@ -400,26 +415,27 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return this.publicKey;
     }
 
-    public void setPublicKey(byte[] anPublicKey) {
+    public void setPublicKey(final byte[] anPublicKey) {
         this.publicKey = anPublicKey;
     }
 
     public String findOperOrg(){
-       if (BetterStringUtils.isNotBlank(this.orgName)){
-           return this.orgName.concat(".").concat(orgUnitName);
-       }
-       else{
-           return this.commName.concat(".").concat(orgUnitName);
-       }
+        if (BetterStringUtils.isNotBlank(this.orgName)){
+            return this.orgName.concat(".").concat(orgUnitName);
+        }
+        else{
+            return this.commName.concat(".").concat(orgUnitName);
+        }
     }
-    
+
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
+        sb.append(", year=").append(year);
         sb.append(", commName=").append(commName);
         sb.append(", signer=").append(signer);
         sb.append(", certType=").append(certType);
@@ -439,14 +455,14 @@ public class BetterX509CertInfo implements BetterjrEntity {
         sb.append(", description=").append(description);
         sb.append(", regOperName=").append(regOperName);
         sb.append(", regTime=").append(regTime);
-        sb.append(", passwd=").append(passwd); 
-        sb.append(", revokeReason=").append(revokeReason); 
+        sb.append(", passwd=").append(passwd);
+        sb.append(", revokeReason=").append(revokeReason);
         sb.append("]");
         return sb.toString();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(final Object that) {
         if (this == that) {
             return true;
         }
@@ -456,32 +472,33 @@ public class BetterX509CertInfo implements BetterjrEntity {
         if (getClass() != that.getClass()) {
             return false;
         }
-        BetterX509CertInfo other = (BetterX509CertInfo) that;
+        final BetterX509CertInfo other = (BetterX509CertInfo) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getCommName() == null ? other.getCommName() == null : this.getCommName().equals(other.getCommName()))
-            && (this.getSigner() == null ? other.getSigner() == null : this.getSigner().equals(other.getSigner()))
-            && (this.getCertType() == null ? other.getCertType() == null : this.getCertType().equals(other.getCertType()))
-            && (this.getCertAlias() == null ? other.getCertAlias() == null : this.getCertAlias().equals(other.getCertAlias()))
-            && (this.getSerialNo() == null ? other.getSerialNo() == null : this.getSerialNo().equals(other.getSerialNo()))
-            && (this.getCreateDate() == null ? other.getCreateDate() == null : this.getCreateDate().equals(other.getCreateDate()))
-            && (this.getValidDate() == null ? other.getValidDate() == null : this.getValidDate().equals(other.getValidDate()))
-            && (this.getProvinceName() == null ? other.getProvinceName() == null : this.getProvinceName().equals(other.getProvinceName()))
-            && (this.getCityName() == null ? other.getCityName() == null : this.getCityName().equals(other.getCityName()))
-            && (this.getCountryCode() == null ? other.getCountryCode() == null : this.getCountryCode().equals(other.getCountryCode()))
-            && (this.getOrgUnitName() == null ? other.getOrgUnitName() == null : this.getOrgUnitName().equals(other.getOrgUnitName()))
-            && (this.getOrgName() == null ? other.getOrgName() == null : this.getOrgName().equals(other.getOrgName()))
-            && (this.getEmail() == null ? other.getEmail() == null : this.getEmail().equals(other.getEmail()))
-            && (this.getCertStatus() == null ? other.getCertStatus() == null : this.getCertStatus().equals(other.getCertStatus()))
-            && (this.getRegDate() == null ? other.getRegDate() == null : this.getRegDate().equals(other.getRegDate()))
-            && (this.getRegOperId() == null ? other.getRegOperId() == null : this.getRegOperId().equals(other.getRegOperId()))
-            && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
-            && (this.getRegOperName() == null ? other.getRegOperName() == null : this.getRegOperName().equals(other.getRegOperName()))
-            && (this.getRegTime() == null ? other.getRegTime() == null : this.getRegTime().equals(other.getRegTime()))
-            && (this.getPasswd() == null ? other.getPasswd() == null : this.getPasswd().equals(other.getPasswd()))
-            && (this.getRevokeReason() == null ? other.getRevokeReason() == null : this.getRevokeReason().equals(other.getRevokeReason()))
-            && (this.getPublicKey() == null ? other.getPublicKey() == null : this.getPublicKey().equals(other.getPublicKey()))
-            && (this.getPrivateKey() == null ? other.getPrivateKey() == null : this.getPrivateKey().equals(other.getPrivateKey()))
-            && (this.getData() == null ? other.getData() == null : this.getData().equals(other.getData()));
+                && (this.getYear() == null ? other.getYear() == null : this.getYear().equals(other.getYear()))
+                && (this.getCommName() == null ? other.getCommName() == null : this.getCommName().equals(other.getCommName()))
+                && (this.getSigner() == null ? other.getSigner() == null : this.getSigner().equals(other.getSigner()))
+                && (this.getCertType() == null ? other.getCertType() == null : this.getCertType().equals(other.getCertType()))
+                && (this.getCertAlias() == null ? other.getCertAlias() == null : this.getCertAlias().equals(other.getCertAlias()))
+                && (this.getSerialNo() == null ? other.getSerialNo() == null : this.getSerialNo().equals(other.getSerialNo()))
+                && (this.getCreateDate() == null ? other.getCreateDate() == null : this.getCreateDate().equals(other.getCreateDate()))
+                && (this.getValidDate() == null ? other.getValidDate() == null : this.getValidDate().equals(other.getValidDate()))
+                && (this.getProvinceName() == null ? other.getProvinceName() == null : this.getProvinceName().equals(other.getProvinceName()))
+                && (this.getCityName() == null ? other.getCityName() == null : this.getCityName().equals(other.getCityName()))
+                && (this.getCountryCode() == null ? other.getCountryCode() == null : this.getCountryCode().equals(other.getCountryCode()))
+                && (this.getOrgUnitName() == null ? other.getOrgUnitName() == null : this.getOrgUnitName().equals(other.getOrgUnitName()))
+                && (this.getOrgName() == null ? other.getOrgName() == null : this.getOrgName().equals(other.getOrgName()))
+                && (this.getEmail() == null ? other.getEmail() == null : this.getEmail().equals(other.getEmail()))
+                && (this.getCertStatus() == null ? other.getCertStatus() == null : this.getCertStatus().equals(other.getCertStatus()))
+                && (this.getRegDate() == null ? other.getRegDate() == null : this.getRegDate().equals(other.getRegDate()))
+                && (this.getRegOperId() == null ? other.getRegOperId() == null : this.getRegOperId().equals(other.getRegOperId()))
+                && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
+                && (this.getRegOperName() == null ? other.getRegOperName() == null : this.getRegOperName().equals(other.getRegOperName()))
+                && (this.getRegTime() == null ? other.getRegTime() == null : this.getRegTime().equals(other.getRegTime()))
+                && (this.getPasswd() == null ? other.getPasswd() == null : this.getPasswd().equals(other.getPasswd()))
+                && (this.getRevokeReason() == null ? other.getRevokeReason() == null : this.getRevokeReason().equals(other.getRevokeReason()))
+                && (this.getPublicKey() == null ? other.getPublicKey() == null : this.getPublicKey().equals(other.getPublicKey()))
+                && (this.getPrivateKey() == null ? other.getPrivateKey() == null : this.getPrivateKey().equals(other.getPrivateKey()))
+                && (this.getData() == null ? other.getData() == null : this.getData().equals(other.getData()));
     }
 
     @Override
@@ -489,6 +506,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
+        result = prime * result + ((getYear() == null) ? 0 : getYear().hashCode());
         result = prime * result + ((getCommName() == null) ? 0 : getCommName().hashCode());
         result = prime * result + ((getSigner() == null) ? 0 : getSigner().hashCode());
         result = prime * result + ((getCertType() == null) ? 0 : getCertType().hashCode());
@@ -515,8 +533,8 @@ public class BetterX509CertInfo implements BetterjrEntity {
         result = prime * result + ((getPrivateKey() == null) ? 0 : getPrivateKey().hashCode());
         return result;
     }
-    
-    public void modifyValue(CustOperatorInfo anOperator, BetterX509CertInfo anCertInfo){
+
+    public void modifyValue(final CustOperatorInfo anOperator, final BetterX509CertInfo anCertInfo){
         this.regDate = anCertInfo.getRegDate();
         this.regTime = anCertInfo.getRegTime();
         this.certStatus = anCertInfo.getCertStatus();
@@ -526,18 +544,36 @@ public class BetterX509CertInfo implements BetterjrEntity {
             this.regOperName = anOperator.getName();
         }
     }
-    
+
+    /**
+     * @param anCertInfo
+     */
+    public void modifyValue(final BetterX509CertInfo anCertInfo) {
+        this.certAlias = anCertInfo.getCertAlias();
+        this.cityName = anCertInfo.getCityName();
+        this.commName = anCertInfo.getCommName();
+        this.countryCode = anCertInfo.getCountryCode();
+        this.provinceName = anCertInfo.getProvinceName();
+        this.description = anCertInfo.getDescription();
+        this.email = anCertInfo.getEmail();
+        this.orgName = anCertInfo.getOrgName();
+        this.orgUnitName = anCertInfo.getOrgUnitName();
+        this.signer = anCertInfo.getSigner();
+        this.year = anCertInfo.getYear();
+        this.description = anCertInfo.getDescription();
+    }
+
     /**
      * 只有序列号匹配，数字证书是最终数字证书以及数字证书状态为发布的证书才允许下载
      * @param anSerialNo 证书序列号
      * @return
      */
-    public boolean validDownload(String anSerialNo){
-        
-       return "3".equals(this.getCertType()) && "1".equals(this.getCertStatus()) && this.getSerialNo().equals(anSerialNo);        
+    public boolean validDownload(final String anSerialNo){
+
+        return "3".equals(this.getCertType()) && "1".equals(this.getCertStatus()) && this.getSerialNo().equals(anSerialNo);
     }
-    
-    public void initDefValue(CustOperatorInfo anOperator){
+
+    public void initDefValue(final CustOperatorInfo anOperator){
         this.regDate = BetterDateUtils.getNumDate();
         this.regTime = BetterDateUtils.getNumTime();
         this.certStatus = "0";
@@ -550,6 +586,6 @@ public class BetterX509CertInfo implements BetterjrEntity {
         if (BetterStringUtils.isBlank(this.serialNo)){
             this.serialNo = Long.toUnsignedString(System.currentTimeMillis() * 10000 + SerialGenerator.randomInt(10000));
         }
-    } 
-    
+    }
+
 }
