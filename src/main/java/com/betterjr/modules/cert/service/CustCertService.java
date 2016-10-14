@@ -37,6 +37,7 @@ import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.Collections3;
 import com.betterjr.common.utils.UserUtils;
 import com.betterjr.common.utils.reflection.ReflectionUtils;
+import com.betterjr.mapper.pagehelper.Page;
 import com.betterjr.modules.cert.dao.CustCertInfoMapper;
 import com.betterjr.modules.cert.entity.BetterX509CertInfo;
 import com.betterjr.modules.cert.entity.CustCertInfo;
@@ -180,6 +181,7 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
      * @return
      */
     public CustCertInfo saveCustCertInfo(final CustCertInfo anCertInfo) {
+        // X509 find certificate
 
         return saveCustCertInfo(anCertInfo, false);
     }
@@ -224,7 +226,7 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
      *            是否需要计算
      * @return
      */
-    public List<CustCertInfo> queryCustCertInfo(final Map<String, Object> anParam, final int anPageNum, final int anPageSize, final String anFlag) {
+    public Page<CustCertInfo> queryCustCertInfo(final Map<String, Object> anParam, final int anPageNum, final int anPageSize, final String anFlag) {
         final Map termMap = Collections3.fuzzyMap(Collections3.filterMap(anParam, QUERY_TERM), new String[] { "contName", "custName" });
 
         return this.selectPropertyByPage(termMap, anPageNum, anPageSize, "1".equals(anFlag));

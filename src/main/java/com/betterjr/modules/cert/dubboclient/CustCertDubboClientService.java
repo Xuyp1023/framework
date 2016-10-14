@@ -12,26 +12,33 @@ import com.betterjr.modules.cert.entity.CustCertInfo;
 @Service
 public class CustCertDubboClientService implements ICustCertService {
 
-    @Reference(interfaceClass=ICustCertService.class)
+    @Reference(interfaceClass = ICustCertService.class)
     private ICustCertService custCertService;
 
     @Override
     public CustCertInfo checkValidity(final X509Certificate anX509) {
         return custCertService.checkValidity(anX509);
     }
+
     @Override
     public CustCertInfo findFirstCertInfoByOperOrg(final String anOperOrg) {
         return custCertService.findFirstCertInfoByOperOrg(anOperOrg);
     }
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     *
      * @see com.betterjr.modules.cert.dubbo.interfaces.ICustCertService#webFindCustCertificate(java.lang.Long)
      */
     @Override
-    public String webFindCustCertificate(final Long anId) {
+    public String webFindCustCertificate(final String anSerialNo) {
         // TODO Auto-generated method stub
         return null;
     }
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     *
      * @see com.betterjr.modules.cert.dubbo.interfaces.ICustCertService#webQueryCustCertificate(java.util.Map, int, int, int)
      */
     @Override
@@ -39,7 +46,10 @@ public class CustCertDubboClientService implements ICustCertService {
         // TODO Auto-generated method stub
         return null;
     }
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     *
      * @see com.betterjr.modules.cert.dubbo.interfaces.ICustCertService#webAddCustCertificate(java.util.Map)
      */
     @Override
@@ -47,35 +57,47 @@ public class CustCertDubboClientService implements ICustCertService {
         // TODO Auto-generated method stub
         return null;
     }
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     *
      * @see com.betterjr.modules.cert.dubbo.interfaces.ICustCertService#webSaveCustCertificate(java.util.Map)
      */
     @Override
-    public String webSaveCustCertificate(final Map<String, Object> anParam) {
+    public String webSaveCustCertificate(final String anSerialNo, final Map<String, Object> anParam) {
         // TODO Auto-generated method stub
         return null;
     }
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     *
      * @see com.betterjr.modules.cert.dubbo.interfaces.ICustCertService#webPublishCustCertificate(java.lang.Long)
      */
     @Override
-    public String webPublishCustCertificate(final Long anId) {
+    public String webPublishCustCertificate(final String anSerialNo) {
         // TODO Auto-generated method stub
         return null;
     }
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     *
      * @see com.betterjr.modules.cert.dubbo.interfaces.ICustCertService#webCancelCustCertificate(java.lang.Long)
      */
     @Override
-    public String webCancelCustCertificate(final Long anId) {
+    public String webCancelCustCertificate(final String anSerialNo) {
         // TODO Auto-generated method stub
         return null;
     }
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     *
      * @see com.betterjr.modules.cert.dubbo.interfaces.ICustCertService#revokeCustCertificate(java.lang.Long)
      */
     @Override
-    public String webRevokeCustCertificate(final Long anId) {
+    public String webRevokeCustCertificate(final String anSerialNo) {
         // TODO Auto-generated method stub
         return null;
     }

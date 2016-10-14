@@ -30,7 +30,7 @@ public interface ICustCertService {
      * 查询认证信息
      *
      */
-    public String webFindCustCertificate(Long anId);
+    public String webFindCustCertificate(String anSerialNo);
 
     /**
      * 分页查询证书信息
@@ -45,20 +45,20 @@ public interface ICustCertService {
     /**
      * 修改客户证
      */
-    public String webSaveCustCertificate(Map<String, Object> anParam);
+    public String webSaveCustCertificate(final String anSerialNo, Map<String, Object> anParam);
 
     /**
      * 发布证书
      */
-    public String webPublishCustCertificate(Long anId);
+    public String webPublishCustCertificate(String anSerialNo);
 
     /**
      * 作废证书
      */
-    public String webCancelCustCertificate(Long anId);
+    public String webCancelCustCertificate(String anSerialNo);
 
     /**
      * 回收证书
      */
-    public String webRevokeCustCertificate(Long anId);
+    public String webRevokeCustCertificate(String anSerialNo);
 }
