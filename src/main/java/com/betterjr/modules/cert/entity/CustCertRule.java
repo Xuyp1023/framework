@@ -9,6 +9,7 @@ import javax.persistence.Table;
 
 import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.entity.BetterjrEntity;
+import com.betterjr.common.selectkey.SerialGenerator;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -115,6 +116,19 @@ public class CustCertRule implements BetterjrEntity {
         result = prime * result + ((getRule() == null) ? 0 : getRule().hashCode());
 
         return result;
+    }
+
+    /**
+     * @param anRule
+     * @param anSerialNo
+     *
+     */
+    public void initDefValue(final String anSerialNo, final String anRule, final String anCustName) {
+        this.id = SerialGenerator.getLongValue("CustCertRule.id");
+
+        this.serialNo = anSerialNo;
+        this.rule = anRule;
+        this.custName = anCustName;
     }
 
 }

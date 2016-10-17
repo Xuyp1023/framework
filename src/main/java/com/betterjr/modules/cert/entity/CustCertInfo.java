@@ -13,11 +13,13 @@ import javax.persistence.Transient;
 import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.data.BetterBaseEntity;
 import com.betterjr.common.entity.BetterjrEntity;
+import com.betterjr.common.mapper.CustDateJsonSerializer;
 import com.betterjr.common.utils.BetterDateUtils;
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.modules.account.entity.CustInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -82,10 +84,10 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
     private String contPhone;
 
     /**
-     * 证书状态，0正常，1暂停，2注销，9未启用。只有状态为9的情况下才允许更新token的值
+     * 证书状态，0正常，1暂停，2注销，3发布，9未启用。只有状态为9的情况下才允许更新token的值
      */
     @Column(name = "C_STATUS", columnDefinition = "VARCHAR")
-    @MetaData(value = "证书状态", comments = "证书状态，0正常，1暂停，2注销，9未启用。只有状态为9的情况下才允许更新token的值")
+    @MetaData(value = "证书状态", comments = "证书状态，0正常，1暂停，2注销，3发布，9未启用。只有状态为9的情况下才允许更新token的值")
     private String status;
 
     /**
@@ -120,6 +122,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
     /**
      * 证书有效期
      */
+    @JsonSerialize(using=CustDateJsonSerializer.class)
     @Column(name = "D_VALIDDATE", columnDefinition = "VARCHAR")
     @MetaData(value = "证书有效期", comments = "证书有效期")
     private String validDate;
@@ -127,6 +130,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
     /**
      * 证书发行日期
      */
+    @JsonSerialize(using=CustDateJsonSerializer.class)
     @Column(name = "D_CREATEDATE", columnDefinition = "VARCHAR")
     @MetaData(value = "证书发行日期", comments = "证书发行日期")
     private String createDate;
@@ -177,6 +181,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
     /**
      * 创建日期
      */
+    @JsonSerialize(using=CustDateJsonSerializer.class)
     @Column(name = "D_REG_DATE", columnDefinition = "VARCHAR")
     @MetaData(value = "创建日期", comments = "创建日期")
     private String regDate;
@@ -220,6 +225,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
     /**
      * 发布日期
      */
+    @JsonSerialize(using=CustDateJsonSerializer.class)
     @Column(name = "C_PUBLISH_DATE", columnDefinition = "VARCHAR")
     @MetaData(value = "发布日期", comments = "发布日期")
     private String publishDate;
@@ -663,6 +669,23 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         result = prime * result + ((getDescription() == null) ? 0 : getDescription().hashCode());
 
         return result;
+    }
+
+    /**
+     * 修改值
+     */
+    public void modifyValue(final CustOperatorInfo anOperInfo, final CustCertInfo anCertInfo) {
+        super.modifyValue(anOperInfo, anCertInfo);
+
+        this.custName = anCertInfo.getCustName();
+        this.identNo = anCertInfo.getIdentNo();
+        this.ruleList = anCertInfo.getRuleList();
+        this.contName = anCertInfo.getContName();
+        this.contPhone = anCertInfo.getContPhone();
+        this.email = anCertInfo.getEmail();
+        this.operOrg = anCertInfo.getOperOrg();
+        this.ruleList = anCertInfo.getRuleList();
+        this.description = anCertInfo.getDescription();
     }
 
     public void publishModifyValue(final String anToken, final String anPublishMode){

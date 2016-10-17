@@ -10,12 +10,13 @@ import java.security.KeyStore;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.betterjr.common.exception.BytterSecurityException;
+import com.betterjr.common.exception.BytterTradeException;
 import com.betterjr.common.exception.ServiceException;
 import com.betterjr.common.mapper.BeanMapper;
 import com.betterjr.common.selectkey.SerialGenerator;
@@ -41,11 +43,14 @@ import com.betterjr.mapper.pagehelper.Page;
 import com.betterjr.modules.cert.dao.CustCertInfoMapper;
 import com.betterjr.modules.cert.entity.BetterX509CertInfo;
 import com.betterjr.modules.cert.entity.CustCertInfo;
+import com.betterjr.modules.cert.entity.CustCertRule;
 import com.betterjr.modules.cert.utils.BetterX509CertStore;
 
 @Service
 public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInfo> {
-    private final String[] QUERY_TERM = new String[] { "status", "GTEregDate", "LTEregDate", "GTEcreateDate", "LTEvalidDate", "contName", "custName" };
+    private final static Pattern COMMA_PATTERN = Pattern.compile(",");
+
+    private final static String[] QUERY_TERM = new String[] { "status", "GTEregDate", "LTEregDate", "GTEcreateDate", "LTEvalidDate", "contName", "custName" };
 
     @Autowired
     private BetterX509CertService betterCertService;
@@ -82,12 +87,12 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
      *            发布模式
      * @return
      */
-    public Map<String, Object> savePublishCert(final String anSerialNo, final String anPublishMode) {
-        final Map result = new HashMap();
+    public CustCertInfo savePublishCert(final String anSerialNo, final String anPublishMode) {
         final CustCertInfo certInfo = findBySerialNo(anSerialNo);
-        BTAssert.notNull(certInfo, "数字证书信息不能为空！");
+        BTAssert.notNull(certInfo, "没有找到客户证书信息！");
 
         final String password = createPassword(certInfo.getEmail());
+
         final BetterX509CertStore certStore = betterCertService.savePublishX509Cert(certInfo.getCertId(), password);
         BTAssert.notNull(certStore, String.format("发布数字证书时，不能获取有效的数字证书信息；可能数字证书【%s】已经投入使用", certInfo.getSubject()));
         final X509Certificate x509Certinfo = certStore.findCertificate();
@@ -105,7 +110,9 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         certInfo.modifyValue(UserUtils.getOperatorInfo());
         certInfo.setStatus("3");
         this.updateByPrimaryKey(certInfo);
-        return result;
+
+        // 开始创建对应的 操作员 并指定 默认角色
+        return certInfo;
     }
 
     /**
@@ -161,15 +168,21 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
      * @param anReason
      *            作废原因
      */
-    public void saveCancelCustCert(final String anSerialNo, final String anReason) {
+    public CustCertInfo saveCancelCustCert(final String anSerialNo, final String anReason) {
         final CustCertInfo certInfo = this.findBySerialNo(anSerialNo);
         if (certInfo != null) {
+            // 检查是否可以作废
+
+
             certInfo.setStatus("8");
             certInfo.setSerialNo("#" + certInfo.getSerialNo() + ";" + Integer.toString(SerialGenerator.randomInt(10000)));
             certInfo.setCertId(-certInfo.getCertId());
             certInfo.setDescription(anReason);
             certInfo.modifyValue(UserUtils.getOperatorInfo());
             this.updateByPrimaryKey(certInfo);
+            return certInfo;
+        } else {
+            throw new BytterTradeException("没有找到对应的数字证书！");
         }
     }
 
@@ -186,20 +199,72 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         return saveCustCertInfo(anCertInfo, false);
     }
 
+    /**
+     * @param anRuleList
+     */
+    private void validateRuleList(final String anRuleList) {
+        final List<String> ruleList = Arrays.asList("CORE_USER", "SUPPLIER_USER", "FACTOR_USER", "SELLER_USER");
+
+        final String[] rules = COMMA_PATTERN.split(anRuleList);
+
+        BTAssert.isTrue(rules.length != 0, "默认角色必需输入");
+
+        for(final String rule: rules) {
+            BTAssert.isTrue(ruleList.contains(rule), "默认角色的可选值为：CORE_USER, SUPPLIER_USER, FACTOR_USER, SELLER_USER");
+        }
+    }
+
     private CustCertInfo saveCustCertInfo(final CustCertInfo anCertInfo, final boolean anCreate) {
+        // 校验角色列表
+        validateRuleList(anCertInfo.getRuleList());
+
+        final String[] rules = COMMA_PATTERN.split(anCertInfo.getRuleList());
+        final String serialNo = anCertInfo.getSerialNo();
+        final String custName = anCertInfo.getCustName();
+
         final CustCertInfo tmpCertInfo = this.selectByPrimaryKey(anCertInfo.getSerialNo());
         if (tmpCertInfo == null) {
             anCertInfo.initValue(UserUtils.getOperatorInfo());
             anCertInfo.setStatus("0");
             this.insert(anCertInfo);
+
+            for (final String rule: rules) {
+                certRuleService.addCustCertRule(serialNo, rule, custName);
+            }
         }
         else {
             BTAssert.isTrue(anCreate == false, "创建客户数字证书时，选择的数字证书已经存在！");
-            anCertInfo.modifyValue(UserUtils.getOperatorInfo(), tmpCertInfo);
-            this.updateByPrimaryKey(anCertInfo);
+            tmpCertInfo.modifyValue(UserUtils.getOperatorInfo(), anCertInfo);
+            this.updateByPrimaryKeySelective(tmpCertInfo);
+
+            // 处理角色关系 certRuleService
+            final List<CustCertRule> certRules = certRuleService.queryCertRuleListBySerialNo(serialNo);
+            for (final String rule: rules) {
+                final CustCertRule certRule = findCertRule(serialNo, rule, certRules);
+                if (certRule != null) {
+                    certRules.remove(certRule);
+                } else {
+                    certRuleService.addCustCertRule(serialNo, rule, custName);
+                }
+            }
+
+            for (final CustCertRule certRule: certRules) {
+                certRuleService.saveDelCertRule(certRule);
+            }
         }
 
+
         return anCertInfo;
+    }
+
+    private CustCertRule findCertRule(final String anSerialNo, final String anRule, final List<CustCertRule> anCertRules) {
+
+        for (final CustCertRule certRule: anCertRules) {
+            if (BetterStringUtils.equals(certRule.getSerialNo(), anSerialNo) && BetterStringUtils.equals(certRule.getRule(), anRule)) {
+                return certRule;
+            }
+        }
+        return null;
     }
 
     /**
@@ -208,8 +273,18 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
      * @param anMap
      * @return
      */
-    public CustCertInfo addCustCertInfo(final Map anMap) {
-        final CustCertInfo certInfo = BeanMapper.map(anMap, CustCertInfo.class);
+    public CustCertInfo addCustCertInfo(final CustCertInfo certInfo) {
+
+        final BetterX509CertInfo x509CertInfo = betterCertService.findX509CertInfo(certInfo.getCertId());
+
+        BTAssert.notNull(x509CertInfo, "找不到相应的数字证书！");
+        BTAssert.isTrue(BetterStringUtils.equals(x509CertInfo.getCertStatus(), "0"), "数字证书已使用！");
+
+        final CustCertInfo tempCertInfo = this.findBySerialNo(x509CertInfo.getSerialNo());
+        BTAssert.isNull(tempCertInfo, "该数字证书已经使用！");
+
+        certInfo.setSerialNo(x509CertInfo.getSerialNo());
+
         return saveCustCertInfo(certInfo, true);
     }
 

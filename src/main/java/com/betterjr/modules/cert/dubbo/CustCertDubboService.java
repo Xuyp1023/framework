@@ -6,6 +6,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.betterjr.common.utils.BTAssert;
+import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.web.AjaxObject;
 import com.betterjr.modules.cert.dubbo.interfaces.ICustCertService;
 import com.betterjr.modules.cert.entity.CustCertInfo;
@@ -47,32 +49,46 @@ public class CustCertDubboService implements ICustCertService {
     @Override
     public String webAddCustCertificate(final Map<String, Object> anParam) {
         final CustCertInfo certInfo = RuleServiceDubboFilterInvoker.getInputObj();
-        return AjaxObject.newOk("添加证书信息成功！", custCertService.saveCustCertInfo(certInfo)).toJson();
+
+        return AjaxObject.newOk("添加证书信息成功！", custCertService.addCustCertInfo(certInfo)).toJson();
     }
 
     @Override
     public String webSaveCustCertificate(final String anSerialNo, final Map<String, Object> anParam) {
         final CustCertInfo certInfo = RuleServiceDubboFilterInvoker.getInputObj();
+        final String serialNo = certInfo.getSerialNo();
+
+        final CustCertInfo tempCertInfo = custCertService.findBySerialNo(serialNo);
+        BTAssert.notNull(tempCertInfo, "没有找到对应的客户证书信息！");
+
+        BTAssert.isTrue(BetterStringUtils.equals(tempCertInfo.getStatus(), "0"), "证书当前状态不允许修改！");
+
         return AjaxObject.newOk("修改证书信息成功！", custCertService.saveCustCertInfo(certInfo)).toJson();
     }
 
     @Override
-    public String webPublishCustCertificate(final String anSerialNo) {
-        return null;
+    public String webPublishCustCertificate(final String anSerialNo, final String anPublishMode) {
+        return AjaxObject.newOk("发布证书成功！", custCertService.savePublishCert(anSerialNo, anPublishMode)).toJson();
     }
 
     @Override
-    public String webCancelCustCertificate(final String anSerialNo) {
-        // TODO Auto-generated method stub
-        return null;
+    public String webCancelCustCertificate(final String anSerialNo, final String anReason) {
+        final CustCertInfo certInfo = custCertService.findBySerialNo(anSerialNo);
+
+        BTAssert.notNull(certInfo, "没有找到相应的客户证书！");
+        BTAssert.isTrue(BetterStringUtils.equals(certInfo.getStatus(), "3"),"客户证书已使用不允许作废！");
+
+        custCertService.saveCancelCustCert(anSerialNo, anReason);
+        return AjaxObject.newOk("作废证书成功！").toJson();
     }
 
     /* (non-Javadoc)
      * @see com.betterjr.modules.cert.dubbo.interfaces.ICustCertService#revokeCustCertificate(java.lang.Long)
      */
     @Override
-    public String webRevokeCustCertificate(final String anSerialNo) {
-        // TODO Auto-generated method stub
+    public String webRevokeCustCertificate(final String anSerialNo, final String anReason) {
+        // 回收涉及
+
         return null;
     }
 

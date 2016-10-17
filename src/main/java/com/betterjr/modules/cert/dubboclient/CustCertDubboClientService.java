@@ -10,96 +10,45 @@ import com.betterjr.modules.cert.dubbo.interfaces.ICustCertService;
 import com.betterjr.modules.cert.entity.CustCertInfo;
 
 @Service
-public class CustCertDubboClientService implements ICustCertService {
+public class CustCertDubboClientService {
 
     @Reference(interfaceClass = ICustCertService.class)
     private ICustCertService custCertService;
 
-    @Override
     public CustCertInfo checkValidity(final X509Certificate anX509) {
         return custCertService.checkValidity(anX509);
     }
 
-    @Override
     public CustCertInfo findFirstCertInfoByOperOrg(final String anOperOrg) {
         return custCertService.findFirstCertInfoByOperOrg(anOperOrg);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.betterjr.modules.cert.dubbo.interfaces.ICustCertService#webFindCustCertificate(java.lang.Long)
-     */
-    @Override
-    public String webFindCustCertificate(final String anSerialNo) {
-        // TODO Auto-generated method stub
-        return null;
+    public String findCustCertificate(final String anSerialNo) {
+        return custCertService.webFindCustCertificate(anSerialNo);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.betterjr.modules.cert.dubbo.interfaces.ICustCertService#webQueryCustCertificate(java.util.Map, int, int, int)
-     */
-    @Override
-    public String webQueryCustCertificate(final Map<String, Object> anParam, final int anFlag, final int anPageNum, final int anPageSize) {
-        // TODO Auto-generated method stub
-        return null;
+    public String queryCustCertificate(final Map<String, Object> anParam, final int anFlag, final int anPageNum, final int anPageSize) {
+        return custCertService.webQueryCustCertificate(anParam, anFlag, anPageNum, anPageSize);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.betterjr.modules.cert.dubbo.interfaces.ICustCertService#webAddCustCertificate(java.util.Map)
-     */
-    @Override
-    public String webAddCustCertificate(final Map<String, Object> anParam) {
-        // TODO Auto-generated method stub
-        return null;
+    public String addCustCertificate(final Map<String, Object> anParam) {
+        return custCertService.webAddCustCertificate(anParam);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.betterjr.modules.cert.dubbo.interfaces.ICustCertService#webSaveCustCertificate(java.util.Map)
-     */
-    @Override
-    public String webSaveCustCertificate(final String anSerialNo, final Map<String, Object> anParam) {
-        // TODO Auto-generated method stub
-        return null;
+    public String modifyCustCertificate(final String anSerialNo, final Map<String, Object> anParam) {
+        return custCertService.webSaveCustCertificate(anSerialNo, anParam);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.betterjr.modules.cert.dubbo.interfaces.ICustCertService#webPublishCustCertificate(java.lang.Long)
-     */
-    @Override
-    public String webPublishCustCertificate(final String anSerialNo) {
-        // TODO Auto-generated method stub
-        return null;
+    public String publishCustCertificate(final String anSerialNo, final String anPublishMode) {
+        return custCertService.webPublishCustCertificate(anSerialNo, anPublishMode);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.betterjr.modules.cert.dubbo.interfaces.ICustCertService#webCancelCustCertificate(java.lang.Long)
-     */
-    @Override
-    public String webCancelCustCertificate(final String anSerialNo) {
-        // TODO Auto-generated method stub
-        return null;
+    public String cancelCustCertificate(final String anSerialNo, final String anReason) {
+        return custCertService.webCancelCustCertificate(anSerialNo, anReason);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.betterjr.modules.cert.dubbo.interfaces.ICustCertService#revokeCustCertificate(java.lang.Long)
-     */
-    @Override
-    public String webRevokeCustCertificate(final String anSerialNo) {
-        // TODO Auto-generated method stub
-        return null;
+    public String revokeCustCertificate(final String anSerialNo, final String anReason) {
+        return custCertService.webRevokeCustCertificate(anSerialNo, anReason);
     }
 
 }

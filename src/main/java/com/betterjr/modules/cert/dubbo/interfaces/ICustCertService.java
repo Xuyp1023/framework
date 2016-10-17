@@ -50,15 +50,15 @@ public interface ICustCertService {
     /**
      * 发布证书
      */
-    public String webPublishCustCertificate(String anSerialNo);
+    public String webPublishCustCertificate(String anSerialNo, final String anPublishMode);
 
     /**
      * 作废证书
      */
-    public String webCancelCustCertificate(String anSerialNo);
+    public String webCancelCustCertificate(String anSerialNo, final String anReason);
 
     /**
      * 回收证书
      */
-    public String webRevokeCustCertificate(String anSerialNo);
+    public String webRevokeCustCertificate(String anSerialNo, final String anReason);
 }

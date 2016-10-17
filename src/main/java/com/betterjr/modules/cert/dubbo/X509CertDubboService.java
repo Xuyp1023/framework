@@ -53,7 +53,7 @@ public class X509CertDubboService implements IX509CertService {
         final BetterX509CertInfo tempCertInfo = betterX509CertService.findX509CertInfo(anId);
         BTAssert.notNull(tempCertInfo, "没有找到相应的数字证书记录");
 
-        BTAssert.isTrue(BetterStringUtils.equals("0", tempCertInfo.getCertStatus()), "已制作证书不允许修改！");
+        BTAssert.isTrue(BetterStringUtils.equals("0", tempCertInfo.getCertStatus()), "已使用证书不允许修改！");
 
         tempCertInfo.modifyValue(certInfo);
         return AjaxObject.newOk("修改证书成功", betterX509CertService.saveX509CertFromWeb(tempCertInfo)).toJson();
