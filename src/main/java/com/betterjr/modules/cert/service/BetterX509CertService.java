@@ -9,6 +9,7 @@ import java.security.PublicKey;
 import java.security.cert.CRLReason;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,6 +34,7 @@ import com.betterjr.common.utils.QueryTermBuilder;
 import com.betterjr.common.utils.UserUtils;
 import com.betterjr.common.utils.reflection.ReflectionUtils;
 import com.betterjr.mapper.pagehelper.Page;
+import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.cert.dao.BetterX509CertInfoMapper;
 import com.betterjr.modules.cert.data.BetterX509CertType;
 import com.betterjr.modules.cert.entity.BetterX509CertInfo;
@@ -66,6 +68,8 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
             return null;
         }
 
+        final String keyAlgorithm = BetterX509Utils.KEY_ALGORITHM;
+
         // 获取中级证书信息
         final BetterX509CertStore middleCertStore = findMiddleCertStore(certInfo.getSigner());
 
@@ -75,6 +79,10 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
          * Cryptos.aesDecrypt(certInfo.getPasswd()), certInfo.getCertAlias(), BetterX509CertType.checking( certInfo.getCertType())); }
          */
         logger.info("this is password :" + anPassword);
+        final Date now = BetterDateUtils.getNow();
+        certInfo.setCreateDate(BetterDateUtils.formatNumberDate(now));
+        certInfo.setValidDate(BetterDateUtils.formatNumberDate(BetterDateUtils.addYears(now, certInfo.getYear())));
+
         final BetterX509MetaData metaData = buildMetaData(certInfo, anPassword);
 
         final PublicKey pubKey = BetterX509Utils.readPublicKeyFromStream(certInfo.getPublicKey());
@@ -82,8 +90,8 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
         final BetterX509CertStore certStore = BetterX509Utils.newCertificate(metaData, middleCertStore, privKey, pubKey, "D:\\cert\\certs\\13.p12");
         final X509Certificate x509Certinfo = certStore.findCertificate();
 
-        certInfo.setValidDate(BetterDateUtils.formatNumberDate(x509Certinfo.getNotAfter()));
-        certInfo.setCreateDate(BetterDateUtils.formatNumberDate(x509Certinfo.getNotBefore()));
+        /*  certInfo.setValidDate(BetterDateUtils.formatNumberDate(x509Certinfo.getNotAfter()));
+        certInfo.setCreateDate(BetterDateUtils.formatNumberDate(x509Certinfo.getNotBefore()));*/
         certInfo.setData(certStore.readOrignData());
         certInfo.setPasswd(Cryptos.aesEncrypt(anPassword));
         certInfo.setCertStatus("1");
@@ -130,7 +138,9 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
         final BetterX509CertInfo certInfo = findX509CertInfo(anId, anSerialNo);
         BTAssert.notNull(certInfo, "没有找到对应的数字证书！");
 
+        BTAssert.isTrue(BetterStringUtils.equals("0", certInfo.getCertStatus()), "此证书不允许作废！");
 
+        this.saveCertStatus(anId, anSerialNo, "9");
     }
 
     /**
@@ -345,11 +355,22 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
         }
         final BetterX509CertInfo certInfo = Collections3.getFirst(selectByProperty("serialNo", anCertInfo.getSerialNo()));
         if (certInfo == null) {
-            anCertInfo.initDefValue(UserUtils.getOperatorInfo());
+            CustOperatorInfo operator = null;
+            try {
+                operator = UserUtils.getOperatorInfo();
+            } catch (final Exception e) {
+            }
+            anCertInfo.initDefValue(operator);
             this.insert(anCertInfo);
         }
         else {
-            anCertInfo.modifyValue(UserUtils.getOperatorInfo(), certInfo);
+            CustOperatorInfo operator = null;
+            try {
+                operator = UserUtils.getOperatorInfo();
+            } catch(final Exception e) {
+
+            }
+            anCertInfo.modifyValue(operator, certInfo);
             this.updateByPrimaryKey(anCertInfo);
         }
 
@@ -406,8 +427,7 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
         BetterX509CertInfo certInfo;
         for (final Map.Entry<String, BetterX509CertInfo> ent : anRootMap.entrySet()) {
             certInfo = ent.getValue();
-            result.put(ent.getKey(),
-                    new BetterX509CertStreamStore(null, certInfo.getData(), null, certInfo.getCertAlias(), BetterX509CertType.ROOT_CA));
+            result.put(ent.getKey(), new BetterX509CertStreamStore(null, certInfo.getData(), null, certInfo.getCertAlias(), BetterX509CertType.ROOT_CA));
         }
         return result;
     }

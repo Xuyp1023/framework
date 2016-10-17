@@ -39,4 +39,24 @@ public class CustCertRuleService extends BaseService<CustCertRuleMapper, CustCer
     public List<CustCertRule> queryCertRuleListByRule(final String anRule) {
         return this.selectByProperty("rule", anRule);
     }
+
+    /**
+     *
+     * @param anCertRule
+     * @return
+     */
+    public CustCertRule addCustCertRule(final String anSerialNo, final String anRule, final String anCustName) {
+        final CustCertRule certRule = new CustCertRule();
+
+        certRule.initDefValue(anSerialNo, anRule, anCustName);
+        this.insert(certRule);
+        return certRule;
+    }
+
+    /**
+     * @param anCertRule
+     */
+    public void saveDelCertRule(final CustCertRule anCertRule) {
+        this.delete(anCertRule);
+    }
 }

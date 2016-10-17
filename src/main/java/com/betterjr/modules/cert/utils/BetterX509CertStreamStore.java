@@ -26,35 +26,36 @@ public class BetterX509CertStreamStore extends BetterX509CertStore {
 
     }
 
-    public BetterX509CertStreamStore(X509Certificate anX509Cert) {
+    public BetterX509CertStreamStore(final X509Certificate anX509Cert) {
         this.userCert = anX509Cert;
         try {
             this.data = anX509Cert.getEncoded();
             this.setCertAlias(BetterX509Utils.findCertificateSubjectItem(userCert, "CN"));
         }
-        catch (CertificateEncodingException e) {
+        catch (final CertificateEncodingException e) {
             e.printStackTrace();
         }
 
     }
 
-    public BetterX509CertStreamStore(BetterX509CertStore anParent, byte[] anData, String anPassword, String anCertAlias,
-            BetterX509CertType anCertType) {
+    public BetterX509CertStreamStore(final BetterX509CertStore anParent, final byte[] anData, final String anPassword, final String anCertAlias,
+            final BetterX509CertType anCertType) {
         super(anParent, anPassword, anCertAlias);
+
         this.data = anData;
         if (anCertType == BetterX509CertType.ROOT_CA && (anData != null)) {
             try {
                 userCert = BetterX509Utils.loadCertFromStream(new ByteArrayInputStream(anData));
                 this.setCertAlias(BetterX509Utils.findCertificateSubjectItem(userCert, "CN"));
             }
-            catch (Exception e) {
+            catch (final Exception e) {
                 logger.warn("数据流不是合法的数字证书格式", e);
             }
         }
     }
 
     @Override
-    public KeyStore openKeyStore(boolean anCreate) {
+    public KeyStore openKeyStore(final boolean anCreate) {
         InputStream fis = null;
         try {
             store = KeyStore.getInstance("PKCS12", BetterX509Utils.BC);
@@ -76,6 +77,7 @@ public class BetterX509CertStreamStore extends BetterX509CertStore {
         return store;
     }
 
+    @Override
     public byte[] readOrignData() {
         if (this.data == null) {
             return new byte[0];
@@ -84,8 +86,8 @@ public class BetterX509CertStreamStore extends BetterX509CertStore {
     }
 
     @Override
-    public void saveKeyStore(KeyStore anStore) {
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+    public void saveKeyStore(final KeyStore anStore) {
+        final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         try {
             anStore.store(outStream, this.findPassword());
             outStream.flush();
