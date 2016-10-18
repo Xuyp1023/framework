@@ -61,4 +61,9 @@ public interface ICustCertService {
      * 回收证书
      */
     public String webRevokeCustCertificate(String anSerialNo, final String anReason);
+
+    /**
+     * 获取证书数据
+     */
+    public byte[] webDownloadCert(final String anToken);
 }

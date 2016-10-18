@@ -1,8 +1,17 @@
 package com.betterjr.modules.cert.dubboclient;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.cert.X509Certificate;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.config.annotation.Reference;
@@ -11,6 +20,7 @@ import com.betterjr.modules.cert.entity.CustCertInfo;
 
 @Service
 public class CustCertDubboClientService {
+    private static final Logger logger = LoggerFactory.getLogger(CustCertDubboClientService.class);
 
     @Reference(interfaceClass = ICustCertService.class)
     private ICustCertService custCertService;
@@ -49,6 +59,44 @@ public class CustCertDubboClientService {
 
     public String revokeCustCertificate(final String anSerialNo, final String anReason) {
         return custCertService.webRevokeCustCertificate(anSerialNo, anReason);
+    }
+
+    public void downloadCertificate(final String anToken, final HttpServletResponse anResponse) {
+        final byte[] data = custCertService.webDownloadCert(anToken);
+        if (data.length != 0) {
+            fileDownloadWithFileName(anResponse, data, "cert.cer");
+        }
+    }
+
+    public void fileDownloadWithFileName(final HttpServletResponse anResponse, final  byte[] anData, final String anFileName) {
+        String msg = null;
+        OutputStream os = null;
+        try (InputStream is = new ByteArrayInputStream(anData)){
+            final StringBuilder sb = new StringBuilder(100);
+            sb.append("attachment").append("; ").append("filename=").append(java.net.URLEncoder.encode(anFileName, "UTF-8"));
+            os = anResponse.getOutputStream();
+            anResponse.setHeader("Content-Disposition", sb.toString());
+            anResponse.setContentType("cer");
+            IOUtils.copy(is, os);
+            return;
+        }
+        catch (final IOException e) {
+            logger.error("下载文件失败，请检查；" + anFileName, e);
+            msg = "出现IO异常，请稍后再试!";
+        }
+        finally {
+            if (msg != null) {
+                anResponse.reset();
+                anResponse.setContentType("text/html;UTF-8");
+                try {
+                    anResponse.getWriter().append(msg);
+                }
+                catch (final IOException e) {
+                    logger.error("关闭文件流失败；" + anFileName, e);
+                }
+            }
+            IOUtils.closeQuietly(os);
+        }
     }
 
 }

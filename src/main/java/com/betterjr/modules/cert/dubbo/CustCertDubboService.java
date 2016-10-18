@@ -92,4 +92,13 @@ public class CustCertDubboService implements ICustCertService {
         return null;
     }
 
+    /* (non-Javadoc)
+     * @see com.betterjr.modules.cert.dubbo.interfaces.ICustCertService#webDownloadCert(java.lang.String)
+     */
+    @Override
+    public byte[] webDownloadCert(final String anToken) {
+        return custCertService.saveDownloadCert(anToken);
+    }
+
+
 }
