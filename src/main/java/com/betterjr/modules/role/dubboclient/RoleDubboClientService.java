@@ -41,10 +41,4 @@ public class RoleDubboClientService implements IRoleService {
     public String webQueryRoleDefault() {
         return roleService.webQueryRoleDefault();
     }
-
-    @Override
-    public String webAddDefRole() {
-        return roleService.webAddDefRole();
-    }
-
 }

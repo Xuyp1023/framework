@@ -67,5 +67,4 @@ public class OperatorDubboClientService implements IOperatorService {
     public String webChangeUserPassword(Long anId, String anPassword, String anOkPasswd) {
         return  operatorService.webChangeUserPassword(anId,anPassword,anOkPasswd);
     }
-
 }

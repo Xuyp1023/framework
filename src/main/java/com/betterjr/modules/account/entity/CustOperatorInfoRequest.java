@@ -346,5 +346,14 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
                 + modiDate + ", operCode=" + operCode + ", operOrg=" + operOrg + ", contactorSerial=" + contactorSerial + ", ruleList=" + ruleList
                 + "]";
     }
+    
+    public void initCustOperator(String anOperOrg){
+        this.operOrg=anOperOrg;
+        this.ruleList="SUPPLIER_USER,SELLER_USER,CORE_USER,FACTOR_USER,PLATFORM_USER";
+        this.operCode="admin123";
+        this.password="123456";
+        this.name="证书管理员";
+        this.defOper="1";
+    }
 
 }
