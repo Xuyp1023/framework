@@ -50,7 +50,8 @@ import com.betterjr.modules.cert.utils.BetterX509CertStore;
 public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInfo> {
     private final static Pattern COMMA_PATTERN = Pattern.compile(",");
 
-    private final static String[] QUERY_TERM = new String[] { "status", "GTEregDate", "LTEregDate", "GTEcreateDate", "LTEvalidDate", "contName", "custName" };
+    private final static String[] QUERY_TERM = new String[] { "status", "GTEregDate", "LTEregDate", "GTEcreateDate", "LTEvalidDate", "contName",
+    "custName" };
 
     @Autowired
     private BetterX509CertService betterCertService;
@@ -112,6 +113,11 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         this.updateByPrimaryKey(certInfo);
 
         // 开始创建对应的 操作员 并指定 默认角色
+
+        // 添加 admin
+
+        // 添加 default role
+
         return certInfo;
     }
 
@@ -173,7 +179,6 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         if (certInfo != null) {
             // 检查是否可以作废
 
-
             certInfo.setStatus("8");
             certInfo.setSerialNo("#" + certInfo.getSerialNo() + ";" + Integer.toString(SerialGenerator.randomInt(10000)));
             certInfo.setCertId(-certInfo.getCertId());
@@ -181,7 +186,8 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
             certInfo.modifyValue(UserUtils.getOperatorInfo());
             this.updateByPrimaryKey(certInfo);
             return certInfo;
-        } else {
+        }
+        else {
             throw new BytterTradeException("没有找到对应的数字证书！");
         }
     }
@@ -209,7 +215,7 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
 
         BTAssert.isTrue(rules.length != 0, "默认角色必需输入");
 
-        for(final String rule: rules) {
+        for (final String rule : rules) {
             BTAssert.isTrue(ruleList.contains(rule), "默认角色的可选值为：CORE_USER, SUPPLIER_USER, FACTOR_USER, SELLER_USER");
         }
     }
@@ -228,7 +234,7 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
             anCertInfo.setStatus("0");
             this.insert(anCertInfo);
 
-            for (final String rule: rules) {
+            for (final String rule : rules) {
                 certRuleService.addCustCertRule(serialNo, rule, custName);
             }
         }
@@ -239,27 +245,27 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
 
             // 处理角色关系 certRuleService
             final List<CustCertRule> certRules = certRuleService.queryCertRuleListBySerialNo(serialNo);
-            for (final String rule: rules) {
+            for (final String rule : rules) {
                 final CustCertRule certRule = findCertRule(serialNo, rule, certRules);
                 if (certRule != null) {
                     certRules.remove(certRule);
-                } else {
+                }
+                else {
                     certRuleService.addCustCertRule(serialNo, rule, custName);
                 }
             }
 
-            for (final CustCertRule certRule: certRules) {
+            for (final CustCertRule certRule : certRules) {
                 certRuleService.saveDelCertRule(certRule);
             }
         }
-
 
         return anCertInfo;
     }
 
     private CustCertRule findCertRule(final String anSerialNo, final String anRule, final List<CustCertRule> anCertRules) {
 
-        for (final CustCertRule certRule: anCertRules) {
+        for (final CustCertRule certRule : anCertRules) {
             if (BetterStringUtils.equals(certRule.getSerialNo(), anSerialNo) && BetterStringUtils.equals(certRule.getRule(), anRule)) {
                 return certRule;
             }
@@ -328,7 +334,7 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
     public Set<String> queryOperOrgByRoles(final String... anRoles) {
         final Set<String> operOrgSet = new HashSet<>();
 
-        for (final String role: anRoles) {
+        for (final String role : anRoles) {
             operOrgSet.addAll(this.selectByProperty("LIKEruleList", "%" + role + "%").stream().map(certInfo -> certInfo.getOperOrg())
                     .collect(Collectors.toSet()));
         }
