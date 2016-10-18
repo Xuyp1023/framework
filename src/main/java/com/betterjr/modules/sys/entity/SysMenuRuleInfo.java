@@ -20,9 +20,9 @@ public class SysMenuRuleInfo implements BetterjrEntity {
     /**
      * 角色编号
      */
-    @Column(name = "N_RULE_ID",  columnDefinition="INTEGER" )
+    @Column(name = "N_RULE_ID",  columnDefinition="VARCHAR" )
     @MetaData( value="角色编号", comments = "角色编号")
-    private Integer ruleId;
+    private String ruleId;
 
     /**
      * 角色名称
@@ -62,12 +62,12 @@ public class SysMenuRuleInfo implements BetterjrEntity {
         this.id = id;
     }
 
-    public Integer getRuleId() {
-        return ruleId;
+    public String getRuleId() {
+        return this.ruleId;
     }
 
-    public void setRuleId(Integer ruleId) {
-        this.ruleId = ruleId;
+    public void setRuleId(String anRuleId) {
+        this.ruleId = anRuleId;
     }
 
     public String getRuleName() {
@@ -154,7 +154,7 @@ public class SysMenuRuleInfo implements BetterjrEntity {
     
     public void initMenuRole(String roleId,String roleName,String menuId,String menuName){
         this.id=SerialGenerator.getIntValue("SysMenuRole.id");
-        this.ruleId=Integer.parseInt(roleId);
+        this.ruleId=roleId;
         this.ruleName=roleName;
         this.menuId=Integer.parseInt(menuId);
         this.menuName=menuName;
