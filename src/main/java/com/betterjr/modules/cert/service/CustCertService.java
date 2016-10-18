@@ -41,10 +41,13 @@ import com.betterjr.common.utils.UserUtils;
 import com.betterjr.common.utils.reflection.ReflectionUtils;
 import com.betterjr.mapper.pagehelper.Page;
 import com.betterjr.modules.cert.dao.CustCertInfoMapper;
+import com.betterjr.modules.cert.dubbo.CustCertNotificationService;
 import com.betterjr.modules.cert.entity.BetterX509CertInfo;
 import com.betterjr.modules.cert.entity.CustCertInfo;
 import com.betterjr.modules.cert.entity.CustCertRule;
 import com.betterjr.modules.cert.utils.BetterX509CertStore;
+import com.betterjr.modules.operator.service.OperatorRequestService;
+import com.betterjr.modules.role.service.RoleService;
 
 @Service
 public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInfo> {
@@ -58,6 +61,15 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
 
     @Resource
     private CustCertRuleService certRuleService;
+
+    @Resource
+    private OperatorRequestService operatorRequestService;
+
+    @Resource
+    private RoleService roleService;
+
+    @Resource
+    private CustCertNotificationService certNotificationService;
 
     private CustCertInfo createCertInfo(final X509Certificate anX509) {
         final CustCertInfo certInfo = new CustCertInfo();
@@ -112,11 +124,13 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         certInfo.setStatus("3");
         this.updateByPrimaryKey(certInfo);
 
-        // 开始创建对应的 操作员 并指定 默认角色
-
         // 添加 admin
+        operatorRequestService.addDefaultOperator(certInfo.getOperOrg());
 
         // 添加 default role
+        roleService.addDefaultRole(certInfo.getOperOrg());
+
+        certNotificationService.sendNotification(certInfo, anPublishMode, password);
 
         return certInfo;
     }

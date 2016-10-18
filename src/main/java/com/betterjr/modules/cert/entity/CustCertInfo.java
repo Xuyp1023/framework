@@ -417,7 +417,6 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
 
         return (this.getSerialNo() == null ? other.getSerialNo() == null : this.getSerialNo().equals(other.getSerialNo()))
                 && (this.getVersionUid() == null ? other.getVersionUid() == null : this.getVersionUid().equals(other.getVersionUid()))
-                && (this.getSubject() == null ? other.getSubject() == null : this.getSubject().equals(other.getSubject()))
                 && (this.getCertInfo() == null ? other.getCertInfo() == null : this.getCertInfo().equals(other.getCertInfo()))
                 && (this.getValidDate() == null ? other.getValidDate() == null : this.getValidDate().equals(other.getValidDate()))
                 && (this.getCreateDate() == null ? other.getCreateDate() == null : this.getCreateDate().equals(other.getCreateDate()));
@@ -703,6 +702,6 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
             return false;
         }
         final String tmpDate = BetterDateUtils.addStrDays(this.publishDate, 10);
-        return (BetterDateUtils.getNumDate().compareTo(tmpDate) >0) && (" 2, 3, 9".indexOf(this.status) > 0);
+        return (BetterDateUtils.getNumDate().compareTo(tmpDate) >0) || (" 2, 3, 9".indexOf(this.status) > 0);
     }
 }

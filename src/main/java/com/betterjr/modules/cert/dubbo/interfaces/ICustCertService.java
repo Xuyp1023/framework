@@ -65,5 +65,5 @@ public interface ICustCertService {
     /**
      * 获取证书数据
      */
-    public byte[] webDownloadCert(final String anToken);
+    public byte[] webDownloadCertificate(final String anToken);
 }

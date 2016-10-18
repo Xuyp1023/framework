@@ -62,9 +62,9 @@ public class CustCertDubboClientService {
     }
 
     public void downloadCertificate(final String anToken, final HttpServletResponse anResponse) {
-        final byte[] data = custCertService.webDownloadCert(anToken);
+        final byte[] data = custCertService.webDownloadCertificate(anToken);
         if (data.length != 0) {
-            fileDownloadWithFileName(anResponse, data, "cert.cer");
+            fileDownloadWithFileName(anResponse, data, "cert.p12");
         }
     }
 
