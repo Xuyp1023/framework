@@ -22,15 +22,32 @@ import com.betterjr.modules.account.entity.CustOperatorInfo;
 public class NotificationModel implements Serializable {
     private static final long serialVersionUID = 1237632554334957458L;
 
+    public static class CustOperPair {
+        private final Long receiveOperator;
+        private final Long receiveCustomer;
+
+        public CustOperPair(final Long receiveCustomer, final Long receiveOperator) {
+            BTAssert.isTrue(!(receiveCustomer == null && receiveOperator == null), "接收人和收接公司不允许同时为空！");
+            this.receiveCustomer = receiveCustomer;
+            this.receiveOperator = receiveOperator;
+        }
+
+        public Long getOperator() {
+            return this.receiveOperator;
+        }
+
+        public Long getCustomer() {
+            return this.receiveCustomer;
+        }
+    }
+
     private final String profileName;
 
     private CustOperatorInfo sendOperator;
 
     private CustInfo sendCustomer;
 
-    private final List<Long> receiveOperators = new ArrayList<>();
-
-    private final List<Long> receiveCustomers = new ArrayList<>();
+    private final List<CustOperPair> receivers = new ArrayList<>();
 
     private final List<String> receiveEmails = new ArrayList<>();
 
@@ -67,13 +84,8 @@ public class NotificationModel implements Serializable {
             return this;
         }
 
-        public Builder addReceiveOperator(final Long anReceiveOperator) {
-            model.receiveOperators.add(anReceiveOperator);
-            return this;
-        }
-
-        public Builder addRecevieCustomer(final Long anRecevieCustomer) {
-            model.receiveCustomers.add(anRecevieCustomer);
+        public Builder addReceiver(final Long anReceiveCustomer, final Long anReceiveOperator) {
+            model.receivers.add(new CustOperPair(anReceiveCustomer, anReceiveOperator));
             return this;
         }
 
@@ -106,8 +118,7 @@ public class NotificationModel implements Serializable {
             BTAssert.notNull(model.sendCustomer, "发送机构不允许为空！");
             BTAssert.notNull(model.sendOperator, "发送人不允许为空！");
 
-            if (Collections3.isEmpty(model.receiveOperators)
-                    && Collections3.isEmpty(model.receiveCustomers)
+            if (Collections3.isEmpty(model.receivers)
                     && Collections3.isEmpty(model.receiveEmails)
                     && Collections3.isEmpty(model.receiveMobiles)) {
                 throw new BetterMqException("请指定接收人!");
@@ -137,12 +148,8 @@ public class NotificationModel implements Serializable {
         sendCustomer = anSendCustomer;
     }
 
-    public List<Long> getReceiveOperators() {
-        return receiveOperators;
-    }
-
-    public List<Long> getReceiveCustomers() {
-        return receiveCustomers;
+    public List<CustOperPair> getReceivers() {
+        return receivers;
     }
 
     public List<String> getReceiveEmails() {

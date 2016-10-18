@@ -23,6 +23,7 @@ import com.betterjr.modules.sys.service.SysMenuRuleService;
 
 /****
  * 角色管理
+ *
  * @author hubl
  *
  */
@@ -30,117 +31,126 @@ import com.betterjr.modules.sys.service.SysMenuRuleService;
 public class RoleService extends BaseService<RoleMapper, Role> {
 
     @Autowired
-    private SysOperatorRoleRelationService sysOperatorRoleService; 
+    private SysOperatorRoleRelationService sysOperatorRoleService;
     @Autowired
     private SysMenuRuleService sysMenuRuleService;
+
     /***
      * 添加角色信息
+     *
      * @param role
      * @return
      */
-    public boolean addRole(String anRoleName,String anRoleType,String anBusinStatus){
-        CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();
-        Role anRole=new Role("",anRoleName,anRoleType,anBusinStatus,custOperator.getOperOrg(),"1");
-        if(checkRoleName(anRole.getRoleName())){
+    public boolean addRole(final String anRoleName, final String anRoleType, final String anBusinStatus) {
+        final CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();
+        final Role anRole = new Role("", anRoleName, anRoleType, anBusinStatus, custOperator.getOperOrg(), "1");
+        if (checkRoleName(anRole.getRoleName())) {
             throw new BytterDeclareException("角色名称已存在");
         }
-        return this.insert(anRole)==1;
+        return this.insert(anRole) == 1;
     }
-    
+
     /***
      * 修改角色信息
+     *
      * @param role
      * @return
      */
-    public boolean updateRole(String anRoleId,String anRoleName,String anRoleType,String anBusinStatus){
-        if(BetterStringUtils.isBlank(anRoleId)){
+    public boolean updateRole(final String anRoleId, final String anRoleName, final String anRoleType, final String anBusinStatus) {
+        if (BetterStringUtils.isBlank(anRoleId)) {
             throw new BytterDeclareException("要修改的角色ID不存在");
         }
-        CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();
-        Role anRole=new Role(anRoleId,anRoleName,anRoleType,anBusinStatus,custOperator.getOperOrg(),"1");
-        return this.updateByPrimaryKey(anRole)==1;
+        final CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();
+        final Role anRole = new Role(anRoleId, anRoleName, anRoleType, anBusinStatus, custOperator.getOperOrg(), "1");
+        return this.updateByPrimaryKey(anRole) == 1;
     }
-    
+
     /***
      * 检查角色名称是否存在
+     *
      * @param roleName
      * @return
      */
-    public boolean checkRoleName(String roleName){
-       List<Role> roleList= this.selectByProperty("roleName", roleName);
-       if(roleList.size()>0){
-           return true;
-       }
-       return false;
+    public boolean checkRoleName(final String roleName) {
+        final List<Role> roleList = this.selectByProperty("roleName", roleName);
+        if (roleList.size() > 0) {
+            return true;
+        }
+        return false;
     }
-    
+
     /***
      * 删除
+     *
      * @param anRoleId
      * @return
      */
-    public boolean delRole(Long anRoleId){
-        Role role=this.selectByPrimaryKey(anRoleId);
+    public boolean delRole(final Long anRoleId) {
+        final Role role = this.selectByPrimaryKey(anRoleId);
         // 绑定的操作员，菜单关系表都相应的删除
         sysOperatorRoleService.delSysOperatorRole(role.getId());
         sysMenuRuleService.delMenuRole(role.getId());
-        return this.delete(role)==1;
+        return this.delete(role) == 1;
     }
-    
+
     /***
      * 分页查询
+     *
      * @param anMap
      * @param anPageNum
      * @param anPageSize
      * @return
      */
-    public Page<Role> queryRole(Map<String, Object> anMap,int anPageNum,int anPageSize){
-        Map<String, Object> map=new HashMap<String, Object>();
-        CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();
+    public Page<Role> queryRole(final Map<String, Object> anMap, final int anPageNum, final int anPageSize) {
+        final Map<String, Object> map = new HashMap<String, Object>();
+        final CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();
         map.put("operOrg", custOperator.getOperOrg());
-        if(BetterStringUtils.isNotBlank((String)anMap.get("roleName"))){
+        if (BetterStringUtils.isNotBlank((String) anMap.get("roleName"))) {
             map.put("roleName", anMap.get("roleName"));
         }
-        
-        return this.selectPropertyByPage(Role.class,map, anPageNum, anPageSize, "1".equals(anMap.get("flag")));
+
+        return this.selectPropertyByPage(Role.class, map, anPageNum, anPageSize, "1".equals(anMap.get("flag")));
     }
-    
+
     /***
      * 查询所有角色信息
+     *
      * @return
      */
-    public List<Role> findRole(){
-        Map<String, Object> roleMp=new HashMap<>();
+    public List<Role> findRole() {
+        final Map<String, Object> roleMp = new HashMap<>();
         roleMp.put("businStatus", "1");
-        CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();
+        final CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();
         roleMp.put("operOrg", custOperator.getOperOrg());
         return this.selectByProperty(roleMp);
     }
-    
+
     /***
      * 根据名称获取对象
+     *
      * @param roleName
      * @return
      */
-    public Role findRoleById(Long roleId){
-        Map<String, Object> roleMp=new HashMap<>();
+    public Role findRoleById(final Long roleId) {
+        final Map<String, Object> roleMp = new HashMap<>();
         roleMp.put("id", roleId);
         roleMp.put("businStatus", "1");
-        List<Role> roleList= this.selectByProperty(roleMp);
+        final List<Role> roleList = this.selectByProperty(roleMp);
         return Collections3.getFirst(roleList);
     }
-    
+
     /****
      * 查询默认角色
+     *
      * @return
      */
-    public List<SimpleDataEntity> queryRoleDefault(){
-        List<SimpleDataEntity> result = new ArrayList<SimpleDataEntity>();
-        Map<String, Object> roleMp=new HashMap<>();
+    public List<SimpleDataEntity> queryRoleDefault() {
+        final List<SimpleDataEntity> result = new ArrayList<SimpleDataEntity>();
+        final Map<String, Object> roleMp = new HashMap<>();
         roleMp.put("def", "0");
-        CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();
+        final CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();
         roleMp.put("operOrg", custOperator.getOperOrg());
-        for(Role role :this.selectByProperty(roleMp)){
+        for (final Role role : this.selectByProperty(roleMp)) {
             result.add(new SimpleDataEntity(role.getRoleName(), role.getRoleType()));
         }
         logger.info(result.toString());
@@ -149,28 +159,30 @@ public class RoleService extends BaseService<RoleMapper, Role> {
 
     /****
      * 添加系统角色
+     *
      * @param anOperOrg
      * @return true 添加成功，false 该操作员的默认角色已添加
      */
-    public boolean addSysRole(String anOperOrg){
-        Map anMap=new HashMap();
+    public boolean addDefaultRole(final String anOperOrg) {
+        final Map<String, Object> anMap = new HashMap<>();
         anMap.put("def", "0");
         anMap.put("operOrg", anOperOrg);
-        List<Role> roleList=this.selectByProperty(anMap);
-        if(roleList.size()<=0){
+        final List<Role> roleList = this.selectByProperty(anMap);
+        if (roleList.size() <= 0) {
             // 默认添加三个角色信息，管理员，审批员，复核员，经办员
-            Role anRole=new Role("","管理员","OPERATOR_ADMIN","1",anOperOrg,"0");
+            Role anRole = new Role("", "管理员", "OPERATOR_ADMIN", "1", anOperOrg, "0");
             this.insert(anRole);
-            anRole=new Role("","审批员","OPERATOR_ADUIT","1",anOperOrg,"0");
+            anRole = new Role("", "审批员", "OPERATOR_ADUIT", "1", anOperOrg, "0");
             this.insert(anRole);
-            anRole=new Role("","复核员","OPERATOR_CHECKER","1",anOperOrg,"0");
+            anRole = new Role("", "复核员", "OPERATOR_CHECKER", "1", anOperOrg, "0");
             this.insert(anRole);
-            anRole=new Role("","经办员","OPERATOR_USER","1",anOperOrg,"0");
+            anRole = new Role("", "经办员", "OPERATOR_USER", "1", anOperOrg, "0");
             this.insert(anRole);
             return true;
-        }else{
+        }
+        else {
             return false;
         }
     }
-    
+
 }

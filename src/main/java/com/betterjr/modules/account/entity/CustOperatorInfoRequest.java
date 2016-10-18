@@ -1,8 +1,7 @@
 package com.betterjr.modules.account.entity;
 
 import com.betterjr.mapper.entity.ReferClass;
-import com.betterjr.modules.account.entity.CustOperatorInfo;
- 
+
 @ReferClass(CustOperatorInfo.class)
 public class CustOperatorInfoRequest implements java.io.Serializable {
 
@@ -123,7 +122,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
      */
     private String ruleList;
     /**
-     * 
+     *
      * 操作员密码
      */
     private String password;
@@ -131,7 +130,6 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
      * 默认经办人；1默认经办人，0非默认经办人
      */
     private String defOper;
- 
 
     public CustOperatorInfoRequest() {
 
@@ -141,7 +139,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -149,7 +147,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return defOper;
     }
 
-    public void setDefOper(String defOper) {
+    public void setDefOper(final String defOper) {
         this.defOper = defOper;
     }
 
@@ -157,7 +155,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this.password = password;
     }
 
@@ -165,7 +163,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -173,7 +171,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return sex;
     }
 
-    public void setSex(String sex) {
+    public void setSex(final String sex) {
         this.sex = sex;
     }
 
@@ -181,7 +179,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return zipCode;
     }
 
-    public void setZipCode(String zipCode) {
+    public void setZipCode(final String zipCode) {
         this.zipCode = zipCode;
     }
 
@@ -189,7 +187,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(final String address) {
         this.address = address;
     }
 
@@ -197,7 +195,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return phone;
     }
 
-    public void setPhone(String phone) {
+    public void setPhone(final String phone) {
         this.phone = phone;
     }
 
@@ -205,7 +203,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return faxNo;
     }
 
-    public void setFaxNo(String faxNo) {
+    public void setFaxNo(final String faxNo) {
         this.faxNo = faxNo;
     }
 
@@ -213,7 +211,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return mobileNo;
     }
 
-    public void setMobileNo(String mobileNo) {
+    public void setMobileNo(final String mobileNo) {
         this.mobileNo = mobileNo;
     }
 
@@ -221,7 +219,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(final String email) {
         this.email = email;
     }
 
@@ -229,7 +227,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return identClass;
     }
 
-    public void setIdentClass(String identClass) {
+    public void setIdentClass(final String identClass) {
         this.identClass = identClass;
     }
 
@@ -237,7 +235,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return transBusin;
     }
 
-    public void setTransBusin(String transBusin) {
+    public void setTransBusin(final String transBusin) {
         this.transBusin = transBusin;
     }
 
@@ -245,7 +243,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return revokeBusin;
     }
 
-    public void setRevokeBusin(String revokeBusin) {
+    public void setRevokeBusin(final String revokeBusin) {
         this.revokeBusin = revokeBusin;
     }
 
@@ -253,7 +251,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(final String status) {
         this.status = status;
     }
 
@@ -261,7 +259,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return lastStatus;
     }
 
-    public void setLastStatus(String lastStatus) {
+    public void setLastStatus(final String lastStatus) {
         this.lastStatus = lastStatus;
     }
 
@@ -269,7 +267,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return regDate;
     }
 
-    public void setRegDate(String regDate) {
+    public void setRegDate(final String regDate) {
         this.regDate = regDate;
     }
 
@@ -277,7 +275,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return modiDate;
     }
 
-    public void setModiDate(String modiDate) {
+    public void setModiDate(final String modiDate) {
         this.modiDate = modiDate;
     }
 
@@ -285,7 +283,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return operCode;
     }
 
-    public void setOperCode(String operCode) {
+    public void setOperCode(final String operCode) {
         this.operCode = operCode;
     }
 
@@ -293,7 +291,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return operOrg;
     }
 
-    public void setOperOrg(String operOrg) {
+    public void setOperOrg(final String operOrg) {
         this.operOrg = operOrg;
     }
 
@@ -301,7 +299,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return ruleList;
     }
 
-    public void setRuleList(String ruleList) {
+    public void setRuleList(final String ruleList) {
         this.ruleList = ruleList;
     }
 
@@ -309,7 +307,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return contIdentType;
     }
 
-    public void setContIdentType(String contIdentType) {
+    public void setContIdentType(final String contIdentType) {
         this.contIdentType = contIdentType;
     }
 
@@ -317,7 +315,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return contIdentNo;
     }
 
-    public void setContIdentNo(String contIdentNo) {
+    public void setContIdentNo(final String contIdentNo) {
         this.contIdentNo = contIdentNo;
     }
 
@@ -325,7 +323,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return contCertValidDate;
     }
 
-    public void setContCertValidDate(String contCertValidDate) {
+    public void setContCertValidDate(final String contCertValidDate) {
         this.contCertValidDate = contCertValidDate;
     }
 
@@ -333,7 +331,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return contactorSerial;
     }
 
-    public void setContactorSerial(Long contactorSerial) {
+    public void setContactorSerial(final Long contactorSerial) {
         this.contactorSerial = contactorSerial;
     }
 
@@ -346,14 +344,14 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
                 + modiDate + ", operCode=" + operCode + ", operOrg=" + operOrg + ", contactorSerial=" + contactorSerial + ", ruleList=" + ruleList
                 + "]";
     }
-    
-    public void initCustOperator(String anOperOrg){
-        this.operOrg=anOperOrg;
-        this.ruleList="SUPPLIER_USER,SELLER_USER,CORE_USER,FACTOR_USER,PLATFORM_USER";
-        this.operCode="admin123";
-        this.password="123456";
-        this.name="证书管理员";
-        this.defOper="1";
+
+    public void initAdminOperator(final String anOperOrg) {
+        this.operOrg = anOperOrg;
+        this.ruleList = "SUPPLIER_USER,SELLER_USER,CORE_USER,FACTOR_USER,PLATFORM_USER";
+        this.operCode = "admin";
+        this.password = "123456";
+        this.name = "证书管理员";
+        this.defOper = "1";
     }
 
 }
