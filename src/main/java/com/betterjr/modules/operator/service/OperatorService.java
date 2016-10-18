@@ -107,6 +107,13 @@ public class OperatorService extends BaseService<CustOperatorInfoMapper, CustOpe
         return this.insert(operator);
     }
 
+    public int addSysCustOperator(CustOperatorInfoRequest request) {
+        CustOperatorInfo operator = new CustOperatorInfo(request);
+        CustPassInfo custPassInfo = new CustPassInfo(operator, request.getPassword());
+        this.custPassService.insert(custPassInfo);
+        return this.insert(operator);
+    }
+
     public void insertCustPass(CustPassInfo custPssInfo) {
         this.custPassService.insert(custPssInfo);
     }

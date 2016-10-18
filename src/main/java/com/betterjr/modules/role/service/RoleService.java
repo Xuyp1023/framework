@@ -96,8 +96,6 @@ public class RoleService extends BaseService<RoleMapper, Role> {
      */
     public Page<Role> queryRole(Map<String, Object> anMap,int anPageNum,int anPageSize){
         Map<String, Object> map=new HashMap<String, Object>();
-//        map.put("businStatus", "1");
-//        map.put("def", "1");
         CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();
         map.put("operOrg", custOperator.getOperOrg());
         if(BetterStringUtils.isNotBlank((String)anMap.get("roleName"))){
@@ -148,16 +146,7 @@ public class RoleService extends BaseService<RoleMapper, Role> {
         logger.info(result.toString());
         return result;
     }
-    
-    public String addDefRole(){
-        CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();
-        if(addSysRole(custOperator.getOperOrg())){
-            return "SUCCESS";
-        }else{
-            return "FAILURE";
-        }
-    }
-    
+
     /****
      * 添加系统角色
      * @param anOperOrg

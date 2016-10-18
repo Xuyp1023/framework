@@ -49,6 +49,4 @@ public interface IRoleService {
      * @return
      */
     public String webQueryRoleDefault();
-    
-    public String webAddDefRole();
 }

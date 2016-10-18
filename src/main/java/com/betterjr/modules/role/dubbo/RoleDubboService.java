@@ -74,9 +74,4 @@ public class RoleDubboService implements IRoleService {
     public String webQueryRoleDefault(){
         return AjaxObject.newOk("查询默认角色",roleService.queryRoleDefault()).toJson();
     }
-    
-    public String webAddDefRole(){
-        return AjaxObject.newOk("查询默认角色",roleService.addDefRole()).toJson();
-    }
-
 }

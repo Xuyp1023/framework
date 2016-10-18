@@ -216,4 +216,26 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
         
         return false;
     }
+    
+    /**
+     * 新增系统默认操作员
+     * 
+     * @param anMap
+     * @return
+     */
+    public boolean saveSysCustOperator(String anOperOrg) {
+        boolean bool=false;
+        CustOperatorInfoRequest request=new CustOperatorInfoRequest();
+        request.initCustOperator(anOperOrg);
+        // 判断该操作员是否存在
+        boolean operCodeExists = this.custOptService.checkExistsByOperCodeAndOperOrg(request.getOperCode(), request.getOperOrg());
+        if (operCodeExists) {
+            throw new BytterTradeException(401, "该机构已经添加系统操作员");
+        }
+        int res=custOptService.addSysCustOperator(request);
+        if(res>0){
+            bool=true;
+        }
+        return bool;
+    }
 }
