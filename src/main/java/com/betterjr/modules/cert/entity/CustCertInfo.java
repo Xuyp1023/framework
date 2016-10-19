@@ -702,6 +702,6 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
             return false;
         }
         final String tmpDate = BetterDateUtils.addStrDays(this.publishDate, 10);
-        return (BetterDateUtils.getNumDate().compareTo(tmpDate) >0) || (" 2, 3, 9".indexOf(this.status) > 0);
+        return (BetterDateUtils.getNumDate().compareTo(tmpDate) > 0) || ("  0,1,2".indexOf(this.status) > 0);
     }
 }
