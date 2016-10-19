@@ -1,5 +1,6 @@
 package com.betterjr.modules.cert.entity;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.Access;
@@ -415,7 +416,8 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
 
     public boolean validCertInfo(final CustCertInfo other) {
 
-        return (this.getSerialNo() == null ? other.getSerialNo() == null : this.getSerialNo().equals(other.getSerialNo()))
+        return (Arrays.asList("0", "9").contains(this.getStatus())
+                && this.getSerialNo() == null ? other.getSerialNo() == null : this.getSerialNo().equals(other.getSerialNo()))
                 && (this.getVersionUid() == null ? other.getVersionUid() == null : this.getVersionUid().equals(other.getVersionUid()))
                 && (this.getCertInfo() == null ? other.getCertInfo() == null : this.getCertInfo().equals(other.getCertInfo()))
                 && (this.getValidDate() == null ? other.getValidDate() == null : this.getValidDate().equals(other.getValidDate()))
@@ -702,6 +704,6 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
             return false;
         }
         final String tmpDate = BetterDateUtils.addStrDays(this.publishDate, 10);
-        return (BetterDateUtils.getNumDate().compareTo(tmpDate) > 0) || ("  0,1,2".indexOf(this.status) > 0);
+        return (BetterDateUtils.getNumDate().compareTo(tmpDate) > 0) || Arrays.asList("0", "1", "2").contains(this.getStatus());
     }
 }

@@ -88,6 +88,10 @@ public class CustCertDubboService implements ICustCertService {
     @Override
     public String webRevokeCustCertificate(final String anSerialNo, final String anReason) {
         // 回收涉及
+        final CustCertInfo certInfo = custCertService.findBySerialNo(anSerialNo);
+
+        BTAssert.notNull(certInfo, "没有找到相应的客户证书！");
+        BTAssert.isTrue(BetterStringUtils.equals(certInfo.getStatus(), "3"),"客户证书已使用不允许作废！");
 
         return null;
     }
