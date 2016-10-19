@@ -154,7 +154,7 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         }
         final byte[] bbs = this.betterCertService.downloadPublishCert(certInfo.getCertId(), certInfo.getSerialNo());
         if (Collections3.isEmptyObject(bbs) == false) {
-            certInfo.setStatus("0");
+            certInfo.setStatus("9");
             this.updateByPrimaryKey(certInfo);
         }
         return bbs;
@@ -483,6 +483,11 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         if (certInfo.validCertInfo(requestCertInfo)) {
             // 找回Rule列表
             certInfo.setCertRuleList(certRuleService.queryCertRuleListBySerialNo(certInfo.getSerialNo()));
+
+            if (BetterStringUtils.equals(certInfo.getStatus(), "9") == true) { // 首次访问
+                certInfo.setStatus("0");
+                this.updateByPrimaryKeySelective(certInfo);
+            }
             return certInfo;
         }
         else {

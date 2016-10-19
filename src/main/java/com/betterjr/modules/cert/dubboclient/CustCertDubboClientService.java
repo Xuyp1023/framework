@@ -76,7 +76,7 @@ public class CustCertDubboClientService {
             sb.append("attachment").append("; ").append("filename=").append(java.net.URLEncoder.encode(anFileName, "UTF-8"));
             os = anResponse.getOutputStream();
             anResponse.setHeader("Content-Disposition", sb.toString());
-            anResponse.setContentType("cer");
+            anResponse.setContentType("application/x-pkcs12");
             IOUtils.copy(is, os);
             return;
         }
