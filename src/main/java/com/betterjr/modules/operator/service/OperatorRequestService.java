@@ -113,7 +113,6 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
         final CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();
         final String operOrg = custOperator.getOperOrg();
         map.put("operOrg", operOrg);
-        map.put("status", "1");
         final Page page = this.selectPropertyByPage(CustOperatorInfo.class, map, pageNum, pageSize, "1".equals(anParam.get("flag")));
         final List list = page.getResult();
         final List result = new ArrayList<>();
