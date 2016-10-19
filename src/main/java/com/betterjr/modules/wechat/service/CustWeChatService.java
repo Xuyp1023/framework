@@ -11,6 +11,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.config.annotation.Reference;
@@ -46,6 +47,7 @@ import com.betterjr.modules.wechat.entity.CustWeChatInfo;
 import com.betterjr.modules.wechat.util.WechatAPIImpl;
 
 @Service
+@DependsOn("sysConfigService")
 public class CustWeChatService extends BaseService<CustWeChatInfoMapper, CustWeChatInfo> {
 
     private final MPAccount mpAccount = new MPAccount();
@@ -64,6 +66,10 @@ public class CustWeChatService extends BaseService<CustWeChatInfoMapper, CustWeC
 
     public MPAccount getMpAccount() {
         return this.mpAccount;
+    }
+
+    public static void main(final String[] args) {
+        System.out.println(Cryptos.aesDecrypt("bc71a127841bda8b2c33f1e57c744493887acfd2aa7d764609bdccf836299b31c01fc95682169f9b08d7604d6d2b8d9ef801aaccc061f1b662b39fb8d3696da60e96f52201e390dfb2351b07c9529b7058ce7e723d0b35b6592597c65bd85a666fab98c11388d932e224a02b7093bda2db3b00cec23a7bef2304edba7baa06d68a7d79f74908d12ac98395f6ed3432b1e8a62e263ffd34807c619d72ed1d17a18d72bbf275757537820f6511102245f845d1e3e9fe8ad46282d22c59d3b8db5fd9b0e281ecbff75ac9b5c6b36be7c9b0"));
     }
 
     @PostConstruct
