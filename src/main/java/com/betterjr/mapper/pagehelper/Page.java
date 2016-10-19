@@ -92,6 +92,7 @@ public class Page<E> extends ArrayList<E> {
         pp.pages = 1;
         pp.startRow = 0;
         pp.pageNum = 1;
+        pp.total=anList.size();
         pp.pageSize = anList.size();
         
         return pp;
