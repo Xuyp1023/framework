@@ -1,19 +1,26 @@
 package com.betterjr.modules.cert.entity;
 
+import java.util.Date;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.entity.BetterjrEntity;
+import com.betterjr.common.mapper.CustDateJsonSerializer;
+import com.betterjr.common.mapper.CustTimeJsonSerializer;
 import com.betterjr.common.selectkey.SerialGenerator;
 import com.betterjr.common.utils.BetterDateUtils;
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -73,6 +80,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
     /**
      * 证书发行日期
      */
+    @JsonSerialize(using=CustDateJsonSerializer.class)
     @Column(name = "d_createdate",  columnDefinition="VARCHAR" )
     @MetaData( value="证书发行日期", comments = "证书发行日期")
     private String createDate;
@@ -80,6 +88,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
     /**
      * 证书有效期
      */
+    @JsonSerialize(using=CustDateJsonSerializer.class)
     @Column(name = "d_validdate",  columnDefinition="VARCHAR" )
     @MetaData( value="证书有效期", comments = "证书有效期")
     private String validDate;
@@ -136,8 +145,10 @@ public class BetterX509CertInfo implements BetterjrEntity {
     /**
      * 创建日期
      */
+    @JsonSerialize(using=CustTimeJsonSerializer.class)
     @Column(name = "d_reg_date",  columnDefinition="VARCHAR" )
     @MetaData( value="创建日期", comments = "创建日期")
+    @OrderBy("DESC")
     private String regDate;
 
     /**
@@ -164,8 +175,10 @@ public class BetterX509CertInfo implements BetterjrEntity {
     /**
      * 创建时间
      */
+    @JsonSerialize(using=CustTimeJsonSerializer.class)
     @Column(name = "t_reg_time",  columnDefinition="VARCHAR" )
     @MetaData( value="创建时间", comments = "创建时间")
+    @OrderBy("DESC")
     private String regTime;
 
     /**
@@ -206,6 +219,17 @@ public class BetterX509CertInfo implements BetterjrEntity {
     @MetaData( value="数字证书公钥信息", comments = "数字证书公钥信息")
     @JsonIgnore
     private byte[] publicKey;
+
+    @Transient
+    private String subject;
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(final String anSubject) {
+        subject = anSubject;
+    }
 
     private static final long serialVersionUID = -7927551280143276694L;
 
@@ -571,6 +595,12 @@ public class BetterX509CertInfo implements BetterjrEntity {
     public boolean validDownload(final String anSerialNo){
 
         return "3".equals(this.getCertType()) && "1".equals(this.getCertStatus()) && this.getSerialNo().equals(anSerialNo);
+    }
+
+    public void calcValidDate() {
+        final Date now = BetterDateUtils.getNow();
+        this.setCreateDate(BetterDateUtils.formatNumberDate(now));
+        this.setValidDate(BetterDateUtils.formatNumberDate(BetterDateUtils.addYears(now, this.getYear())));
     }
 
     public void initDefValue(final CustOperatorInfo anOperator){

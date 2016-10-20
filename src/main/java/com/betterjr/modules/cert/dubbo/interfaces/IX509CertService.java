@@ -9,7 +9,12 @@ import java.util.Map;
  */
 public interface IX509CertService {
     /**
-     * 查询认证信息
+     * 查询证书信息
+     */
+    public String webFindCertificateInfo(Long anId);
+
+    /**
+     * 查询证书信息
      */
     public String webFindCertificateInfo(Long anId, String anSerialNo);
 
@@ -22,6 +27,10 @@ public interface IX509CertService {
      * 分页查询证书信息
      */
     public String webQueryCertificateInfo(Map<String, Object> anParam, int anFlag, int anPageNum, int anPageSize);
+    /**
+     * 分页查询证书信息
+     */
+    public String webQueryUnusedCertificateInfo();
 
     /**
      * 添加证书

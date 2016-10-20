@@ -53,8 +53,8 @@ public class CustCertDubboClientService {
         return custCertService.webPublishCustCertificate(anSerialNo, anPublishMode);
     }
 
-    public String cancelCustCertificate(final String anSerialNo, final String anReason) {
-        return custCertService.webCancelCustCertificate(anSerialNo, anReason);
+    public String cancelCustCertificate(final String anSerialNo) {
+        return custCertService.webCancelCustCertificate(anSerialNo);
     }
 
     public String revokeCustCertificate(final String anSerialNo, final String anReason) {

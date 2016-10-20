@@ -35,6 +35,13 @@ public class X509CertDubboClientService {
     }
 
     /**
+     * 查询数字证书
+     */
+    public String queryUnusedCertificateInfo() {
+        return betterX509CertService.webQueryUnusedCertificateInfo();
+    }
+
+    /**
      * 新增数字证书
      */
     public String addCertificateInfo(final Map<String, Object> anParam) {
@@ -46,6 +53,13 @@ public class X509CertDubboClientService {
      */
     public String modifyCertificateInfo(final Long anId, final Map<String, Object> anParam) {
         return betterX509CertService.webSaveCertificateInfo(anId, anParam);
+    }
+
+    /**
+     * 查询数字证书详情
+     */
+    public String findCertificateInfo(final Long anId) {
+        return betterX509CertService.webFindCertificateInfo(anId);
     }
 
     /**

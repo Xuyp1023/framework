@@ -188,18 +188,17 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
      * @param anReason
      *            作废原因
      */
-    public CustCertInfo saveCancelCustCert(final String anSerialNo, final String anReason) {
+    public void saveCancelCustCert(final String anSerialNo) {
         final CustCertInfo certInfo = this.findBySerialNo(anSerialNo);
         if (certInfo != null) {
             // 检查是否可以作废
+            BTAssert.isTrue(BetterStringUtils.equals(certInfo.getStatus(), "1"), "证书状态不允许作废！");
 
-            certInfo.setStatus("8");
-            certInfo.setSerialNo("#" + certInfo.getSerialNo() + ";" + Integer.toString(SerialGenerator.randomInt(10000)));
-            certInfo.setCertId(-certInfo.getCertId());
-            certInfo.setDescription(anReason);
-            certInfo.modifyValue(UserUtils.getOperatorInfo());
-            this.updateByPrimaryKey(certInfo);
-            return certInfo;
+            betterCertService.saveCertStatus(certInfo.getCertId(), anSerialNo, "0");    // 释放数字证书
+
+            certRuleService.saveDelCertRuleBySerialNo(certInfo.getSerialNo());  // 删除关联关系
+
+            this.delete(certInfo); // 删除当前数字证书
         }
         else {
             throw new BytterTradeException("没有找到对应的数字证书！");
@@ -245,7 +244,7 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         final CustCertInfo tmpCertInfo = this.selectByPrimaryKey(anCertInfo.getSerialNo());
         if (tmpCertInfo == null) {
             anCertInfo.initValue(UserUtils.getOperatorInfo());
-            anCertInfo.setStatus("0");
+            anCertInfo.setStatus("1");
             this.insert(anCertInfo);
 
             for (final String rule : rules) {
@@ -304,6 +303,10 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         BTAssert.isNull(tempCertInfo, "该数字证书已经使用！");
 
         certInfo.setSerialNo(x509CertInfo.getSerialNo());
+        certInfo.setCreateDate(x509CertInfo.getCreateDate());
+        certInfo.setValidDate(x509CertInfo.getValidDate());
+
+        betterCertService.saveCertStatus(x509CertInfo.getId(), x509CertInfo.getSerialNo(), "2");
 
         return saveCustCertInfo(certInfo, true);
     }
@@ -324,7 +327,13 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
     public Page<CustCertInfo> queryCustCertInfo(final Map<String, Object> anParam, final int anPageNum, final int anPageSize, final String anFlag) {
         final Map termMap = Collections3.fuzzyMap(Collections3.filterMap(anParam, QUERY_TERM), new String[] { "contName", "custName" });
 
-        return this.selectPropertyByPage(termMap, anPageNum, anPageSize, "1".equals(anFlag));
+        final Page<CustCertInfo> certInfos = this.selectPropertyByPage(termMap, anPageNum, anPageSize, "1".equals(anFlag));
+
+        certInfos.forEach(certInfo -> {
+            final BetterX509CertInfo x509CertInfo = betterCertService.findX509CertInfo(certInfo.getCertId());
+            certInfo.setCommName(x509CertInfo !=null ? x509CertInfo.getCommName(): "");
+        });
+        return certInfos;
     }
 
     /**
@@ -548,5 +557,20 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
     public CustCertInfo findCertByOperOrg(final String anOperOrg) {
         BTAssert.notNull(anOperOrg);
         return Collections3.getFirst(this.selectByProperty("operOrg", anOperOrg));
+    }
+
+    /**
+     * @param anSerialNo
+     * @param anReason
+     */
+    public void saveRevokeCustCertificate(final String anSerialNo, final String anReason) {
+        final CustCertInfo certInfo = this.findBySerialNo(anSerialNo);
+
+        BTAssert.notNull(certInfo, "没有找到相应的客户证书！");
+
+        betterCertService.saveRevokeCert(certInfo.getCertId(), anSerialNo, anReason);
+
+        certInfo.setStatus("2");
+        this.updateByPrimaryKeySelective(certInfo);
     }
 }
