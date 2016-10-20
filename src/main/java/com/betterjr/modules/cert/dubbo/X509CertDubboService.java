@@ -20,6 +20,11 @@ public class X509CertDubboService implements IX509CertService {
     private BetterX509CertService betterX509CertService;
 
     @Override
+    public String webFindCertificateInfo(final Long anId) {
+        return AjaxObject.newOk("查询证书成功", betterX509CertService.findX509CertInfo(anId)).toJson();
+    }
+
+    @Override
     public String webFindCertificateInfo(final Long anId, final String anSerialNo) {
         return AjaxObject.newOk("查询证书成功", betterX509CertService.findX509CertInfo(anId, anSerialNo)).toJson();
     }
@@ -33,6 +38,10 @@ public class X509CertDubboService implements IX509CertService {
     public String webQueryCertificateInfo(final Map<String, Object> anParam, final int anFlag, final int anPageNum, final int anPageSize) {
         final Map<String, Object> param = RuleServiceDubboFilterInvoker.getInputObj();
         return AjaxObject.newOkWithPage("查询证书列表成功", betterX509CertService.queryX509CertInfo(param, anPageNum, anPageSize, anFlag)).toJson();
+    }
+    @Override
+    public String webQueryUnusedCertificateInfo() {
+        return AjaxObject.newOk("查询证书列表成功", betterX509CertService.queryUnusedX509CertInfo()).toJson();
     }
 
     @Override

@@ -8,6 +8,7 @@ import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -185,6 +186,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
     @JsonSerialize(using=CustDateJsonSerializer.class)
     @Column(name = "D_REG_DATE", columnDefinition = "VARCHAR")
     @MetaData(value = "创建日期", comments = "创建日期")
+    @OrderBy("DESC")
     private String regDate;
 
     /**
@@ -192,6 +194,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
      */
     @Column(name = "T_REG_TIME", columnDefinition = "VARCHAR")
     @MetaData(value = "创建时间", comments = "创建时间")
+    @OrderBy("DESC")
     private String regTime;
 
     /**
@@ -254,6 +257,8 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
 
     @Transient
     private List<CustCertRule> certRuleList;
+    @Transient
+    private String commName;
 
     private static final long serialVersionUID = 1439797394180L;
 
@@ -412,6 +417,14 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
 
     public void setDescription(final String anDescription) {
         this.description = anDescription;
+    }
+
+    public String getCommName() {
+        return commName;
+    }
+
+    public void setCommName(final String anCommName) {
+        commName = anCommName;
     }
 
     public boolean validCertInfo(final CustCertInfo other) {

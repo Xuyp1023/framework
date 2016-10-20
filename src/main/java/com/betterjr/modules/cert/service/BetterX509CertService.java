@@ -9,11 +9,11 @@ import java.security.PublicKey;
 import java.security.cert.CRLReason;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -79,9 +79,7 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
          * Cryptos.aesDecrypt(certInfo.getPasswd()), certInfo.getCertAlias(), BetterX509CertType.checking( certInfo.getCertType())); }
          */
         logger.info("this is password :" + anPassword);
-        final Date now = BetterDateUtils.getNow();
-        certInfo.setCreateDate(BetterDateUtils.formatNumberDate(now));
-        certInfo.setValidDate(BetterDateUtils.formatNumberDate(BetterDateUtils.addYears(now, certInfo.getYear())));
+        certInfo.calcValidDate();
 
         final BetterX509MetaData metaData = buildMetaData(certInfo, anPassword);
 
@@ -186,6 +184,10 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
      */
     public BetterX509CertInfo findX509CertInfo(final Long anId) {
         final BetterX509CertInfo certInfo = this.selectByPrimaryKey(anId);
+        if (certInfo != null) {
+            final String subject = exportMetaOids(certInfo).toString();
+            certInfo.setSubject(BetterStringUtils.substring(subject, 1, subject.length() - 1));
+        }
         return certInfo;
     }
 
@@ -200,8 +202,8 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
      */
     public BetterX509CertInfo findX509CertInfo(final Long anId, final String anSerialNo) {
         final BetterX509CertInfo certInfo = this.selectByPrimaryKey(anId);
-        if (certInfo.getSerialNo().equals(anSerialNo)) {
-
+        if (certInfo != null && certInfo.getSerialNo().equals(anSerialNo)) {
+            certInfo.setSubject(exportMetaOids(certInfo).toString());
             return certInfo;
         }
         else {
@@ -224,9 +226,31 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
      * @return
      */
     public Page<BetterX509CertInfo> queryX509CertInfo(final Map<String, Object> anParam, final int anPageNum, final int anPageSize, final int anFlag) {
-        final Map termMap = Collections3.filterMap(anParam, QUERY_TERM);
+        final Map<String, Object> termMap = Collections3.filterMap(anParam, QUERY_TERM);
         termMap.put("certType", "3");
         return this.selectPropertyByPage(termMap, anPageNum, anPageSize, anFlag == 1);
+    }
+    /**
+     * 分页查询数字证书信息
+     *
+     * @param anParam
+     *            查询条件
+     * @param anPageNum
+     *            页码
+     * @param anPageSize
+     *            每页条数
+     * @param anFlag
+     *            是否需要统计
+     * @return
+     */
+    public List<SimpleDataEntity> queryUnusedX509CertInfo() {
+        final Map<String, Object> termMap = new HashMap<>();
+        termMap.put("certStatus", "0");
+        termMap.put("certType", "3");
+
+        return this.selectByProperty(termMap).stream().map(certInfo -> {
+            return new SimpleDataEntity(certInfo.getCommName(), certInfo.getId() + "");
+        }).collect(Collectors.toList());
     }
 
     /**
@@ -361,6 +385,7 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
             } catch (final Exception e) {
             }
             anCertInfo.initDefValue(operator);
+            anCertInfo.calcValidDate();
             this.insert(anCertInfo);
         }
         else {
@@ -371,6 +396,7 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
 
             }
             anCertInfo.modifyValue(operator, certInfo);
+            anCertInfo.calcValidDate();
             this.updateByPrimaryKey(anCertInfo);
         }
 

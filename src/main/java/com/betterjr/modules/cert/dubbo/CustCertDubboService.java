@@ -61,7 +61,7 @@ public class CustCertDubboService implements ICustCertService {
         final CustCertInfo tempCertInfo = custCertService.findBySerialNo(serialNo);
         BTAssert.notNull(tempCertInfo, "没有找到对应的客户证书信息！");
 
-        BTAssert.isTrue(BetterStringUtils.equals(tempCertInfo.getStatus(), "0"), "证书当前状态不允许修改！");
+        BTAssert.isTrue(BetterStringUtils.equals(tempCertInfo.getStatus(), "1"), "证书当前状态不允许修改！");
 
         return AjaxObject.newOk("修改证书信息成功！", custCertService.saveCustCertInfo(certInfo)).toJson();
     }
@@ -72,13 +72,13 @@ public class CustCertDubboService implements ICustCertService {
     }
 
     @Override
-    public String webCancelCustCertificate(final String anSerialNo, final String anReason) {
+    public String webCancelCustCertificate(final String anSerialNo) {
         final CustCertInfo certInfo = custCertService.findBySerialNo(anSerialNo);
 
         BTAssert.notNull(certInfo, "没有找到相应的客户证书！");
-        BTAssert.isTrue(BetterStringUtils.equals(certInfo.getStatus(), "3"),"客户证书已使用不允许作废！");
+        BTAssert.isTrue(BetterStringUtils.equals(certInfo.getStatus(), "1"),"客户证书已使用不允许作废！");
 
-        custCertService.saveCancelCustCert(anSerialNo, anReason);
+        custCertService.saveCancelCustCert(anSerialNo);
         return AjaxObject.newOk("作废证书成功！").toJson();
     }
 
@@ -87,13 +87,8 @@ public class CustCertDubboService implements ICustCertService {
      */
     @Override
     public String webRevokeCustCertificate(final String anSerialNo, final String anReason) {
-        // 回收涉及
-        final CustCertInfo certInfo = custCertService.findBySerialNo(anSerialNo);
-
-        BTAssert.notNull(certInfo, "没有找到相应的客户证书！");
-        BTAssert.isTrue(BetterStringUtils.equals(certInfo.getStatus(), "3"),"客户证书已使用不允许作废！");
-
-        return null;
+        custCertService.saveRevokeCustCertificate(anSerialNo, anReason);
+        return AjaxObject.newOk("回收证书成功！").toJson();
     }
 
     /* (non-Javadoc)

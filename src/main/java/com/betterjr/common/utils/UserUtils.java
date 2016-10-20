@@ -109,6 +109,10 @@ public class UserUtils {
         return null;
     }
 
+    public static CustInfo getDefCustInfo() {
+        return Collections3.getFirst(findCustInfoList());
+    }
+
     /**
      * 获取当前证书信息
      * @return

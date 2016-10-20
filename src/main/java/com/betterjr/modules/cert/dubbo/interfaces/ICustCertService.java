@@ -55,7 +55,7 @@ public interface ICustCertService {
     /**
      * 作废证书
      */
-    public String webCancelCustCertificate(String anSerialNo, final String anReason);
+    public String webCancelCustCertificate(String anSerialNo);
 
     /**
      * 回收证书

@@ -53,6 +53,14 @@ public class CustCertRuleService extends BaseService<CustCertRuleMapper, CustCer
         return certRule;
     }
 
+    public void saveDelCertRuleBySerialNo(final String anSerialNo) {
+        final List<CustCertRule> certRules = this.selectByProperty("serialNo", anSerialNo);
+
+        for (final CustCertRule certRule: certRules) {
+            this.delete(certRule);
+        }
+    }
+
     /**
      * @param anCertRule
      */
