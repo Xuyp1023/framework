@@ -63,7 +63,7 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
         }
 
         final BetterX509CertInfo certInfo = this.selectByPrimaryKey(anId);
-        if (certInfo == null || " 0, 1".indexOf(certInfo.getCertStatus()) < 0) {
+        if (certInfo == null || !BetterStringUtils.equals(certInfo.getCertStatus(), "2")) {
 
             return null;
         }
@@ -162,16 +162,18 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
             final BetterX509CertStore certStore = new BetterX509CertStreamStore(middleCertStore, certInfo.getData(),
                     Cryptos.aesDecrypt(certInfo.getPasswd()), certInfo.getCommName(), BetterX509CertType.checking(certInfo.getCertType()));
             final String revokeFile = SysConfigService.getString("CertificateCRLFile");
-            if (BetterX509Utils.revoke(certStore.findCertificate(), tmpReason, middleCertStore, revokeFile)) {
+            // 回收列表
+            /*if (BetterX509Utils.revoke(certStore.findCertificate(), tmpReason, middleCertStore, revokeFile)) {
                 if (CRLReason.REMOVE_FROM_CRL == tmpReason) {
                     certInfo.setCertStatus("1");
                 }
                 else {
                     certInfo.setCertStatus("9");
-                }
-                certInfo.setRevokeReason(anReason);
-                this.updateByPrimaryKey(certInfo);
-            }
+                }*/
+            certInfo.setRevokeReason(anReason);
+            certInfo.setCertStatus("9");
+            this.updateByPrimaryKey(certInfo);
+            //}
         }
     }
 
