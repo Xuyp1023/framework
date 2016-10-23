@@ -124,7 +124,7 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
             }
             result.add(custOperatorInfo);
         }
-        return Page.listToPage(result);
+        return Page.listToPage(result, pageNum, pageSize,page.getPages(),page.getStartRow());
     }
 
     /***

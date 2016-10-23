@@ -86,6 +86,18 @@ public class Page<E> extends ArrayList<E> {
         super();
     }
 
+    public static Page listToPage(Collection anList,int pageNum,int pageSize,int pages,int startRow) {
+        Page pp = new Page();
+        pp.pages = pages;
+        pp.startRow = startRow;
+        pp.addAll(anList);
+        pp.pageNum = pageNum;
+        pp.pageSize=pageSize;
+        pp.total=anList.size();
+        
+        return pp;
+    }
+    
     public static Page listToPage(Collection anList) {
         Page pp = new Page();
         pp.addAll(anList);
@@ -93,10 +105,9 @@ public class Page<E> extends ArrayList<E> {
         pp.startRow = 0;
         pp.pageNum = 1;
         pp.total=anList.size();
-        pp.pageSize = anList.size();
         
         return pp;
-    }
+   }
 
     public static Page listToPage(Collection anList, Class anClass) {
         Page pp = new Page();
