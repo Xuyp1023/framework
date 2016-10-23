@@ -84,4 +84,9 @@ public interface ICustWeChatService {
      */
     String webSaveFristLoginTradePassword(String anTradePassword);
 
+    /**
+     * @return
+     */
+    String checkBindStatus();
+
 }

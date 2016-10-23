@@ -122,4 +122,12 @@ public class CustWeChatDubboService implements ICustWeChatService {
     public boolean checkFristLogin(final Long anOperId) {
         return wechatService.checkFristLogin(anOperId);
     }
+
+    /* (non-Javadoc)
+     * @see com.betterjr.modules.wechat.dubbo.interfaces.ICustWeChatService#checkBindStatus()
+     */
+    @Override
+    public String checkBindStatus() {
+        return AjaxObject.newOk("检查当前操作员微信账户绑定状态", wechatService.checkBindStatus()).toJson();
+    }
 }

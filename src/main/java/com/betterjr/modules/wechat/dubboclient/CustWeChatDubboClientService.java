@@ -211,4 +211,11 @@ public class CustWeChatDubboClientService {
     public boolean checkFristLogin(final Long anOperId) {
         return wechatService.checkFristLogin(anOperId);
     }
+
+    /**
+     * @return
+     */
+    public Object checkBindStatus() {
+        return wechatService.checkBindStatus();
+    }
 }
