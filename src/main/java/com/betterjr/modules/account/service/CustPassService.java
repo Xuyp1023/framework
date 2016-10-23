@@ -103,7 +103,7 @@ public class CustPassService extends BaseService<CustPassInfoMapper, CustPassInf
 
         final HashPassword result = SystemAuthorizingRealm.encrypt(anOkPasswd);
         final CustPassInfo newPassInfo = new CustPassInfo(anLoginPassType.exchangeTrade(), passValidLimit, user.getId(), result.salt, result.password);
-        this.updateByPrimaryKeySelective(newPassInfo);
+        this.insert(newPassInfo);
 
         return true;
     }

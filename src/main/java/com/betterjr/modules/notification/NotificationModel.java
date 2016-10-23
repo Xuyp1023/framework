@@ -22,7 +22,12 @@ import com.betterjr.modules.account.entity.CustOperatorInfo;
 public class NotificationModel implements Serializable {
     private static final long serialVersionUID = 1237632554334957458L;
 
-    public static class CustOperPair {
+    public static class CustOperPair implements Serializable {
+        /**
+         *
+         */
+        private static final long serialVersionUID = 916552259919057616L;
+
         private final Long receiveOperator;
         private final Long receiveCustomer;
 

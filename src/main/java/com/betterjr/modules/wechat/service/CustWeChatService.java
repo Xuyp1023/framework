@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.betterjr.common.data.CustPasswordType;
+import com.betterjr.common.exception.BytterTradeException;
 import com.betterjr.common.mapper.JsonMapper;
 import com.betterjr.common.service.BaseService;
 import com.betterjr.common.utils.BTAssert;
@@ -160,12 +161,16 @@ public class CustWeChatService extends BaseService<CustWeChatInfoMapper, CustWeC
      * @return
      */
     public CustWeChatInfo saveBindingWeChatInfo(final CustOperatorInfo anCustOperator, final String anOpenId) {
+        if (checkBindStatus()) {
+            throw new BytterTradeException("当前账户已经绑定微信号！");
+        }
         if (StringUtils.isNotBlank(anOpenId)) {
             final CustWeChatInfo wechatInfo = this.selectByPrimaryKey(anOpenId);
             if (wechatInfo != null) {
                 wechatInfo.setOperId(anCustOperator.getId());
                 wechatInfo.setOperName(anCustOperator.getName());
                 wechatInfo.setOperOrg(anCustOperator.getOperOrg());
+                wechatInfo.setBusinStatus("1");
                 wechatInfo.modifyValue(anCustOperator);
                 this.updateByPrimaryKey(wechatInfo);
 
@@ -395,5 +400,21 @@ public class CustWeChatService extends BaseService<CustWeChatInfoMapper, CustWeC
         return wechatInfo;
     }
 
+    /**
+     * 检查当前操作员是否已经被绑定
+     * @return
+     */
+    public boolean checkBindStatus() {
+        final Long operId = UserUtils.getOperatorInfo().getId();
+
+        final List<CustWeChatInfo> wechatInfos = this.selectByProperty("operId", operId);
+
+        if (Collections3.isEmpty(wechatInfos)) {
+            return Boolean.FALSE;
+        }
+        else {
+            return Boolean.TRUE;
+        }
+    }
 
 }
