@@ -236,7 +236,7 @@ public class BetterX509Utils {
             final ContentSigner signer = new JcaContentSignerBuilder(SIGNING_ALGORITHM).setProvider(BC).build(anCaCertStore.findPrivateKey());
 
             final X509Certificate userCert = new JcaX509CertificateConverter().setProvider(BC).getCertificate(certBuilder.build(signer));
-            final PKCS12BagAttributeCarrier bagAttr = (PKCS12BagAttributeCarrier) anPrivKey;
+            final PKCS12BagAttributeCarrier bagAttr = (PKCS12BagAttributeCarrier) userCert;
             bagAttr.setBagAttribute(PKCSObjectIdentifiers.pkcs_9_at_localKeyId, extUtils.createSubjectKeyIdentifier(anPubKey));
 
             // 验证最终的数字证书
