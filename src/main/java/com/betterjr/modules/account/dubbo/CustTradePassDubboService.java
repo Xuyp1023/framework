@@ -148,4 +148,16 @@ public class CustTradePassDubboService implements ICustTradePassService {
         }
     }
 
+    /* (non-Javadoc)
+     * @see com.betterjr.modules.account.dubbo.interfaces.ICustTradePassService#checkTradePassword(java.lang.Long, java.lang.String)
+     */
+    @Override
+    public boolean checkTradePassword(final Long anOperatorId, final String anPassword) {
+        final CustOperatorInfo operator = custOperatorService.findCustOperatorInfo(anOperatorId);
+        if (operator == null) {
+            return false;
+        }
+        return this.checkTradePassword(operator, anPassword);
+    }
+
 }

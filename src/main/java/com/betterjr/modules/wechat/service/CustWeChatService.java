@@ -41,6 +41,7 @@ import com.betterjr.modules.wechat.dao.CustWeChatInfoMapper;
 import com.betterjr.modules.wechat.data.EventType;
 import com.betterjr.modules.wechat.data.MPAccount;
 import com.betterjr.modules.wechat.data.api.AccessToken;
+import com.betterjr.modules.wechat.data.api.Follower;
 import com.betterjr.modules.wechat.data.api.WechatPushTempField;
 import com.betterjr.modules.wechat.data.api.WechatPushTemplate;
 import com.betterjr.modules.wechat.data.event.BasicEvent;
@@ -415,6 +416,59 @@ public class CustWeChatService extends BaseService<CustWeChatInfoMapper, CustWeC
         else {
             return Boolean.TRUE;
         }
+    }
+
+    public Follower getWechatFollower(final String anOpenId) {
+        final WechatAPIImpl wechatApi = WechatAPIImpl.create(this.getMpAccount());
+        final Follower follower = wechatApi.getFollower(anOpenId, null);
+        return follower;
+    }
+
+    /**
+     * @param anAppId
+     * @param anOpenId
+     * @return
+     */
+    public CustWeChatInfo saveNewWeChatInfo(final String anAppId, final String anOpenId, final int anSubscribeStatus) {
+
+        if (anAppId == null || anOpenId == null) {
+            return null;
+        }
+
+        final CustWeChatInfo wechatInfo = new CustWeChatInfo();
+        wechatInfo.setBusinStatus("3");
+        wechatInfo.setAppId(anAppId);
+        wechatInfo.setOpenId(anOpenId);
+        wechatInfo.setSubscribeStatus(String.valueOf(anSubscribeStatus));  //这个需要检查状态
+        wechatInfo.initValue(UserUtils.getOperatorInfo());
+
+        this.insert(wechatInfo);
+
+        final Follower follower = getWechatFollower(anOpenId);
+        if (follower != null) {
+            if (follower.getSubscribe() == 0) {
+                wechatInfo.modifySubscribe("0", 0L);
+            } else {
+                wechatInfo.modifySubscribe("1", follower.getSubscribeTime());
+                wechatInfo.setCityName(follower.getCity());
+                wechatInfo.setProvinceName(follower.getProvince());
+                wechatInfo.setCountryName(follower.getCountry());
+                wechatInfo.putCustSex(follower.getSex());
+                wechatInfo.setDescription(follower.getRemark());
+                wechatInfo.setGroupId(Integer.toString(follower.getGroupid()));
+                wechatInfo.setNickName(follower.getNickname());
+            }
+        }
+
+        return wechatInfo;
+    }
+
+    /**
+     * @param anOpenId
+     * @return
+     */
+    public CustWeChatInfo findWechatUserByOpenId(final String anOpenId) {
+        return Collections3.getFirst(this.selectByProperty("openId", anOpenId));
     }
 
 }

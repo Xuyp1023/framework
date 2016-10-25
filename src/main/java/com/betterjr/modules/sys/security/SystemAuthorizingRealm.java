@@ -23,7 +23,6 @@ import org.apache.shiro.util.ByteSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.betterjr.common.config.SpringPropertyResourceReader;
 import com.betterjr.common.data.CustPasswordType;
 import com.betterjr.common.data.SimpleDataEntity;
 import com.betterjr.common.data.UserType;
@@ -43,7 +42,9 @@ import com.betterjr.modules.account.entity.CustPassInfo;
 import com.betterjr.modules.cert.dubboclient.CustCertDubboClientService;
 import com.betterjr.modules.cert.entity.CustCertInfo;
 import com.betterjr.modules.wechat.data.api.AccessToken;
+import com.betterjr.modules.wechat.data.api.Follower;
 import com.betterjr.modules.wechat.dubboclient.CustWeChatDubboClientService;
+import com.betterjr.modules.wechat.entity.CustWeChatInfo;
 import com.betterjr.modules.wechat.util.WechatDefHandler;
 import com.betterjr.modules.wechat.util.WechatKernel;
 
@@ -66,7 +67,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
     private CustPassDubboClientService passService;
 
 
-    private CustWeChatDubboClientService weChatService;
+    private CustWeChatDubboClientService wechatService;
 
     /**
      * 给ShiroDbRealm提供编码信息，用于密码密码比对 描述
@@ -108,16 +109,14 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
                         certInfo = checkValid(cert);
                     }
                     else {
-
                         throw new AuthenticationException("the request has X509Certificate");
                     }
                 }
                 catch (final AuthenticationException e) {
-
                     throw e;
                 }
                 catch (final Exception e) {
-                    e.printStackTrace();
+                    log.error("数字证数验证失败", e);
                     throw new AuthenticationException("数字证书验证失败");
                 }
             }
@@ -130,7 +129,6 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 
                     // 临时锁定
                     if (passInfo == null || passInfo.validLockType()) {
-
                         throw new DisabledAccountException("操作员密码被锁定，请稍后再试");
                     }
                     mobileLogin = token.isMobileLogin();
@@ -141,6 +139,10 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
                 }
             }
             else if (authcToken instanceof BetterjrSsoToken || authcToken instanceof BetterjrWechatToken) {
+                // 用证书登录方式，控制在拜特资金管理系统，原则上不存在过期或无效的问题
+                // 统一使用Form形式的验证！
+                saltStr = "985a44369b063938a6a7";
+                passWD = "8438d772e1eac7d8e57aecaae5fb0b8c2e369283cbe31857d89dc87430160a2b";
                 if (authcToken instanceof BetterjrSsoToken) {
                     final BetterjrSsoToken ssoToken = (BetterjrSsoToken) authcToken;
                     final String ticket = ssoToken.getTicket();
@@ -150,41 +152,54 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
                 }
                 else {
                     final BetterjrWechatToken wechatToken = (BetterjrWechatToken) authcToken;
-                    final WechatKernel wk = new WechatKernel(weChatService.getMpAccount(), new WechatDefHandler(weChatService), new HashMap());
+                    final WechatKernel wk = new WechatKernel(wechatService.getMpAccount(), new WechatDefHandler(wechatService), new HashMap());
 
-                    final String sysMode = SpringPropertyResourceReader.getProperty("sys.mode", "prod");
-                    AccessToken at = null;
-                    switch(sysMode.toLowerCase()) {
-                    case "dev":
-                        at = createTestAccessToken(wechatToken);
-                        break;
-                    case "test":
-                    case "prod":
-                        at = wk.findUserAuth2(wechatToken.getTicket());
-                        break;
-                    }
+                    final AccessToken at = wk.findUserAuth2(wechatToken.getTicket());
 
-                    final Map<String, Object> mapResult = weChatService.saveLogin(at);
-                    final Object operator=mapResult.get("operator");
-                    final Object message=mapResult.get("message");
-                    if(operator instanceof CustOperatorInfo){
-                        user= (CustOperatorInfo)operator;
+                    if (at != null) {
+                        final Map<String, Object> mapResult = wechatService.saveLogin(at);
+                        final Object operator=mapResult.get("operator");
+                        final Object message=mapResult.get("message");
+                        if(operator instanceof CustOperatorInfo){
+                            user= (CustOperatorInfo)operator;
+                        }
+                        if (user == null) {
+                            Servlets.getSession().invalidate();
+                            throw new AuthenticationException(new BytterSecurityException(20401, message.toString()));
+                        }
+                        else {
+                            contextInfo = userService.saveFormLogin(user);
+                            certInfo = certService.findFirstCertInfoByOperOrg(user.getOperOrg());
+                        }
+                        wechatToken.setUsername(user.getName());
+                    } else { // 拿不到操作员
+                        final Follower follower = wechatService.findFollower(at.getOpenId());
+                        final CustWeChatInfo weChatInfo = wechatService.findWechatUserByOpenId(at.getOpenId());
+                        if (follower != null) { //必须找到这个订阅用户
+                            if (weChatInfo == null) {
+                                wechatService.saveNewWeChatInfo(wechatService.getAppId(), at.getOpenId(), follower.getSubscribe());
+                            }
+                            else {
+                                weChatInfo.setSubscribeStatus(String.valueOf(follower.getSubscribe()));
+                                wechatService.saveWeChatInfo(weChatInfo);
+                            }
+                        } else {
+                            if (weChatInfo != null) {
+                                weChatInfo.setSubscribeStatus("0");
+                                wechatService.saveWeChatInfo(weChatInfo);
+                            }
+                        }
+                        final UserType ut = UserType.NONE_USER;
+                        // 构造匿名用户
+                        mobileLogin = true;
+                        final ShiroUser shiroUser = new ShiroUser(ut, 0L, "1X2Y3W4o5m6", user, null, mobileLogin, workData, userPassData);
+                        final byte[] salt = Encodes.decodeHex(saltStr);
+                        return new SimpleAuthenticationInfo(shiroUser, passWD, ByteSource.Util.bytes(salt), getName());
                     }
-                    if (user == null) {
-                        Servlets.getSession().invalidate();
-                        throw new AuthenticationException(new BytterSecurityException(20401, message.toString()));
-                    }
-                    else {
-                        contextInfo = userService.saveFormLogin(user);
-                        certInfo = certService.findFirstCertInfoByOperOrg(user.getOperOrg());
-                    }
-                    wechatToken.setUsername(user.getName());
                     mobileLogin = true;
+
                 }
-                // 用证书登录方式，控制在拜特资金管理系统，原则上不存在过期或无效的问题
-                // 统一使用Form形式的验证！
-                saltStr = "985a44369b063938a6a7";
-                passWD = "8438d772e1eac7d8e57aecaae5fb0b8c2e369283cbe31857d89dc87430160a2b";
+
             }
             workData = contextInfo;
 
