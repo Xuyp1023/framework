@@ -27,6 +27,7 @@ import com.betterjr.modules.wechat.constants.WechatConstants;
 import com.betterjr.modules.wechat.data.EventType;
 import com.betterjr.modules.wechat.data.MPAccount;
 import com.betterjr.modules.wechat.data.api.AccessToken;
+import com.betterjr.modules.wechat.data.api.Follower;
 import com.betterjr.modules.wechat.data.api.QRTicket;
 import com.betterjr.modules.wechat.data.event.BasicEvent;
 import com.betterjr.modules.wechat.dubbo.interfaces.ICustWeChatService;
@@ -217,5 +218,47 @@ public class CustWeChatDubboClientService {
      */
     public Object checkBindStatus() {
         return wechatService.checkBindStatus();
+    }
+
+    /**
+     *
+     * @param anOpenId
+     * @return
+     */
+    public Follower findFollower(final String anOpenId) {
+        BTAssert.notNull(anOpenId, "openId 不允许为空！");
+        final WechatAPIImpl wechatApi = WechatAPIImpl.create(this.getMpAccount());
+        final Follower follower = wechatApi.getFollower(anOpenId, null);
+
+        return follower;
+    }
+
+    /**
+     * @param anOpenId
+     */
+    public CustWeChatInfo findWechatUserByOpenId(final String anOpenId) {
+        return wechatService.findWechatUserByOpenId(anOpenId);
+    }
+
+    /**
+     * @return
+     */
+    public String getAppId() {
+        return mpAccount.getAppId();
+    }
+
+    public CustWeChatInfo saveWeChatInfo(final CustWeChatInfo anWeChatInfo) {
+
+        return wechatService.saveWeChatInfo(anWeChatInfo);
+    }
+
+    /**
+     * @param anWeChatInfo
+     * @param anString2
+     * @param anAppId
+     * @param anI
+     */
+    public CustWeChatInfo saveNewWeChatInfo(final String anAppId, final String anOpenId, final int anSubscribeStatus) {
+        return wechatService.saveNewWeChatInfo(anAppId, anOpenId, anSubscribeStatus);
     }
 }

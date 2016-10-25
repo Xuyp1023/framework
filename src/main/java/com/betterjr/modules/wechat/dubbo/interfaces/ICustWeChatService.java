@@ -89,4 +89,17 @@ public interface ICustWeChatService {
      */
     String checkBindStatus();
 
+    /**
+     * @param anOpenId
+     * @return
+     */
+    CustWeChatInfo findWechatUserByOpenId(String anOpenId);
+
+    /**
+     * @param anAppId
+     * @param anOpenId
+     * @return
+     */
+    CustWeChatInfo saveNewWeChatInfo(String anAppId, String anOpenId, int anSubscribeStatus);
+
 }

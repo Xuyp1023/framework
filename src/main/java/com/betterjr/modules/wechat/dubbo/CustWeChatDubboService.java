@@ -130,4 +130,20 @@ public class CustWeChatDubboService implements ICustWeChatService {
     public String checkBindStatus() {
         return AjaxObject.newOk("检查当前操作员微信账户绑定状态", wechatService.checkBindStatus()).toJson();
     }
+
+    /* (non-Javadoc)
+     * @see com.betterjr.modules.wechat.dubbo.interfaces.ICustWeChatService#findWechatUserByOpenId(java.lang.String)
+     */
+    @Override
+    public CustWeChatInfo findWechatUserByOpenId(final String anOpenId) {
+        return wechatService.findWechatUserByOpenId(anOpenId);
+    }
+
+    /* (non-Javadoc)
+     * @see com.betterjr.modules.wechat.dubbo.interfaces.ICustWeChatService#saveNewWeChatInfo(java.lang.String, java.lang.String)
+     */
+    @Override
+    public CustWeChatInfo saveNewWeChatInfo(final String anAppId, final String anOpenId, final int anSubscribeStatus) {
+        return wechatService.saveNewWeChatInfo(anAppId, anOpenId, anSubscribeStatus);
+    }
 }

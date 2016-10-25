@@ -49,4 +49,11 @@ public interface ICustTradePassService {
      */
     String webSaveModifyTradePass(String anNewPassword, String anOkPassword, String anOldPassword);
 
+    /**
+     * @param anOperatorId
+     * @param anPassword
+     * @return
+     */
+    boolean checkTradePassword(Long anOperatorId, String anPassword);
+
 }
