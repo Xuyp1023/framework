@@ -30,7 +30,6 @@ import com.betterjr.modules.sms.entity.VerifyCode;
 import com.betterjr.modules.sms.util.VerifyCodeType;
 import com.betterjr.modules.sys.security.SystemAuthorizingRealm;
 import com.betterjr.modules.sys.security.SystemAuthorizingRealm.HashPassword;
-import com.betterjr.modules.wechat.service.CustWeChatService;
 
 /**
  * @author liuwl
@@ -48,9 +47,9 @@ public class CustTradePassDubboService implements ICustTradePassService {
     @Resource
     private CustPassService custPassService;
 
-    @Resource
+    /* @Resource
     private CustWeChatService wechatService;
-
+     */
 
     /* (non-Javadoc)
      * @see com.betterjr.modules.operator.ITradePassService#sendVerifyCode()
@@ -58,7 +57,7 @@ public class CustTradePassDubboService implements ICustTradePassService {
     @Override
     public String webSendVerifyCode() {
         // 首先判断有没有绑定微信号
-        BTAssert.isTrue(wechatService.checkBindStatus(), "当前操作员还未绑定微信号，不允许修改交易密码！");
+        //BTAssert.isTrue(wechatService.checkBindStatus(), "当前操作员还未绑定微信号，不允许修改交易密码！");
 
         final CustOperatorInfo operator = UserUtils.getOperatorInfo();
 
@@ -81,7 +80,7 @@ public class CustTradePassDubboService implements ICustTradePassService {
     @Override
     public String webCheckVerifyCode(final String anVerifyCode) {
         // 首先判断有没有绑定微信号
-        BTAssert.isTrue(wechatService.checkBindStatus(), "当前操作员还未绑定微信号，不允许修改交易密码！");
+        //BTAssert.isTrue(wechatService.checkBindStatus(), "当前操作员还未绑定微信号，不允许修改交易密码！");
 
         final CustOperatorInfo operator = UserUtils.getOperatorInfo();
 
@@ -104,7 +103,7 @@ public class CustTradePassDubboService implements ICustTradePassService {
     @Override
     public String webSaveModifyTradePass(final String anNewPassword, final String anOkPassword, final String anOldPassword) {
         // 首先判断有没有绑定微信号
-        BTAssert.isTrue(wechatService.checkBindStatus(), "当前操作员还未绑定微信号，不允许修改交易密码！");
+        //BTAssert.isTrue(wechatService.checkBindStatus(), "当前操作员还未绑定微信号，不允许修改交易密码！");
 
         final CustOperatorInfo operator = UserUtils.getOperatorInfo();
         final Object verifyCode = JedisUtils.getObject(SmsConstants.smsModifyTradePassVerifyCodePrefix + operator.getId());
