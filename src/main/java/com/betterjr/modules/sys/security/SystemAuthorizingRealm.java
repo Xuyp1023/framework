@@ -3,9 +3,7 @@ package com.betterjr.modules.sys.security;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -26,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import com.betterjr.common.data.CustPasswordType;
 import com.betterjr.common.data.SimpleDataEntity;
 import com.betterjr.common.data.UserType;
-import com.betterjr.common.exception.BytterSecurityException;
 import com.betterjr.common.security.SecurityConstants;
 import com.betterjr.common.utils.Collections3;
 import com.betterjr.common.utils.Digests;
@@ -41,12 +38,6 @@ import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.account.entity.CustPassInfo;
 import com.betterjr.modules.cert.dubboclient.CustCertDubboClientService;
 import com.betterjr.modules.cert.entity.CustCertInfo;
-import com.betterjr.modules.wechat.data.api.AccessToken;
-import com.betterjr.modules.wechat.data.api.Follower;
-import com.betterjr.modules.wechat.dubboclient.CustWeChatDubboClientService;
-import com.betterjr.modules.wechat.entity.CustWeChatInfo;
-import com.betterjr.modules.wechat.util.WechatDefHandler;
-import com.betterjr.modules.wechat.util.WechatKernel;
 
 public class SystemAuthorizingRealm extends AuthorizingRealm {
     private static final Logger log = LoggerFactory.getLogger(SystemAuthorizingRealm.class);
@@ -65,9 +56,6 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 
 
     private CustPassDubboClientService passService;
-
-
-    private CustWeChatDubboClientService wechatService;
 
     /**
      * 给ShiroDbRealm提供编码信息，用于密码密码比对 描述
@@ -151,53 +139,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
                     ssoToken.setUsername(user.getName());
                 }
                 else {
-                    final BetterjrWechatToken wechatToken = (BetterjrWechatToken) authcToken;
-                    final WechatKernel wk = new WechatKernel(wechatService.getMpAccount(), new WechatDefHandler(wechatService), new HashMap());
-
-                    final AccessToken at = wk.findUserAuth2(wechatToken.getTicket());
-
-                    if (at != null) {
-                        final Map<String, Object> mapResult = wechatService.saveLogin(at);
-                        final Object operator=mapResult.get("operator");
-                        final Object message=mapResult.get("message");
-                        if(operator instanceof CustOperatorInfo){
-                            user= (CustOperatorInfo)operator;
-                        }
-                        if (user == null) {
-                            Servlets.getSession().invalidate();
-                            throw new AuthenticationException(new BytterSecurityException(20401, message.toString()));
-                        }
-                        else {
-                            contextInfo = userService.saveFormLogin(user);
-                            certInfo = certService.findFirstCertInfoByOperOrg(user.getOperOrg());
-                        }
-                        wechatToken.setUsername(user.getName());
-                    } else { // 拿不到操作员
-                        final Follower follower = wechatService.findFollower(at.getOpenId());
-                        final CustWeChatInfo weChatInfo = wechatService.findWechatUserByOpenId(at.getOpenId());
-                        if (follower != null) { //必须找到这个订阅用户
-                            if (weChatInfo == null) {
-                                wechatService.saveNewWeChatInfo(wechatService.getAppId(), at.getOpenId(), follower.getSubscribe());
-                            }
-                            else {
-                                weChatInfo.setSubscribeStatus(String.valueOf(follower.getSubscribe()));
-                                wechatService.saveWeChatInfo(weChatInfo);
-                            }
-                        } else {
-                            if (weChatInfo != null) {
-                                weChatInfo.setSubscribeStatus("0");
-                                wechatService.saveWeChatInfo(weChatInfo);
-                            }
-                        }
-                        final UserType ut = UserType.NONE_USER;
-                        // 构造匿名用户
-                        mobileLogin = true;
-                        final ShiroUser shiroUser = new ShiroUser(ut, 0L, "1X2Y3W4o5m6", user, null, mobileLogin, workData, userPassData);
-                        final byte[] salt = Encodes.decodeHex(saltStr);
-                        return new SimpleAuthenticationInfo(shiroUser, passWD, ByteSource.Util.bytes(salt), getName());
-                    }
                     mobileLogin = true;
-
                 }
 
             }
@@ -233,26 +175,6 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
             return null;
         }
 
-    }
-
-
-    /**
-     * 测试账号
-     * @param anWechatToken
-     * @return
-     */
-    private AccessToken createTestAccessToken(final BetterjrWechatToken anWechatToken) {
-        final AccessToken accessToken = new AccessToken();
-        final String code = anWechatToken.getTicket();
-        switch (code) {
-        case "1"://
-            accessToken.setOpenId("oqJfawIAHfDxzz3-LApBxkZwMp9U");
-            break;
-        case "2":
-            accessToken.setOpenId("oqJfawF9wTPihEnGXIhT98M7-g0A");
-            break;
-        }
-        return accessToken;
     }
 
     private CustCertInfo checkValid(final X509Certificate anCert) {
