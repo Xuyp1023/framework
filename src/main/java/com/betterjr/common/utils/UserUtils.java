@@ -15,6 +15,8 @@ import org.apache.shiro.session.mgt.SimpleSession;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.subject.support.DefaultSubjectContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.data.PlatformBaseRuleType;
@@ -35,6 +37,8 @@ import com.betterjr.modules.sys.security.ShiroUser;
  * @author zhoucy
  */
 public class UserUtils {
+    private static Logger logger = LoggerFactory.getLogger(UserUtils.class);
+
     private static final String SesessionIdKey = UserUtils.class.getName() + "_sessionId";
     private static final String SesessionKey = UserUtils.class.getName() + "_session";
     private static ThreadLocal<Map<String, Object>> sessionLocal = new ThreadLocal<Map<String, Object>>();
@@ -287,13 +291,17 @@ public class UserUtils {
             return session;
         }
 
-        // web access
-        final Subject subject = SecurityUtils.getSubject();
-        if (subject != null) {
-            final Session se = subject.getSession();
-            if (se != null) {
-                return se;
+        try {
+            // web access
+            final Subject subject = SecurityUtils.getSubject();
+            if (subject != null) {
+                final Session se = subject.getSession();
+                if (se != null) {
+                    return se;
+                }
             }
+        } catch (final Exception e) {
+            logger.error("获取session出错：", e);
         }
         return null;
     }
