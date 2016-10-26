@@ -27,10 +27,12 @@ package com.betterjr.mapper.pagehelper;
 import org.apache.ibatis.session.RowBounds;
 
 import com.betterjr.common.mapper.BeanMapper;
+import com.betterjr.common.utils.Collections3;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Mybatis - 分页对象
@@ -86,6 +88,99 @@ public class Page<E> extends ArrayList<E> {
         super();
     }
 
+    /**
+     * 复制一个分页信息
+     * 
+     * @param anPage
+     */
+    public static Page copyPageInfo(Page anPage) {
+        if (Collections3.isEmpty(anPage)) {
+
+            return emptyPage();
+        }
+        else {
+            Page pp = new Page(anPage.pageNum, anPage.pageSize, anPage.total, true);
+            pp.addAll(anPage);
+            return pp;
+        }
+    }
+
+    /**
+     * 将Page对象的内容转换为Map对象，对外输出
+     * @param anObj
+     * @return
+     */
+    public static Object converObject(Object anObj) {
+        if (anObj instanceof Page) {
+            Page myPage = (Page) anObj;
+            if (Collections3.isEmpty(myPage)) {
+
+                return emptyPage();
+            }
+            else {
+                Page pp = new Page(myPage.pageNum, myPage.pageSize, myPage.total, true);
+                for (Object obj : myPage) {
+                    if (obj instanceof Map){
+                        pp.add(obj);
+                    }
+                    else {
+                        pp.add(BeanMapper.map(obj, Map.class));
+                    }
+                }
+
+                return pp;
+            }
+        }
+        else {
+            return anObj;
+        }
+    }
+
+    /**
+     * 创建一个空的分页信息
+     * 
+     * @return
+     */
+    public static Page emptyPage() {
+
+        return new Page(1, Integer.MAX_VALUE, 0, true);
+    }
+
+    /**
+     * 根据列表创建一个分页信息
+     * 
+     * @param anList
+     * @return
+     */
+    public static Page listToPage(Collection anList) {
+
+        return listToPage(anList, null);
+    }
+
+    /**
+     * 
+     * @param anList
+     * @param anClass
+     * @return
+     */
+    public static Page listToPage(Collection anList, Class anClass) {
+        if (Collections3.isEmpty(anList)) {
+            return emptyPage();
+        }
+        else {
+            Page pp = new Page(1, anList.size(), anList.size(), true);
+            if (anClass == null) {
+                pp.addAll(anList);
+            }
+            else {
+                for (Object obj : anList) {
+                    pp.add(BeanMapper.map(obj, anClass));
+                }
+            }
+            pp.setTotal(anList.size());
+            return pp;
+        }
+    }
     public static Page listToPage(Collection anList,int pageNum,int pageSize,int pages,int startRow,long total) {
         Page pp = new Page();
         pp.pages = pages;
@@ -97,30 +192,7 @@ public class Page<E> extends ArrayList<E> {
         
         return pp;
     }
-    
-    public static Page listToPage(Collection anList) {
-        Page pp = new Page();
-        pp.addAll(anList);
-        pp.pages = 1;
-        pp.startRow = 0;
-        pp.pageNum = 1;
-        pp.total=anList.size();
-        
-        return pp;
-   }
-
-    public static Page listToPage(Collection anList, Class anClass) {
-        Page pp = new Page();
-        for (Object obj : anList){
-           pp.add( BeanMapper.map(obj, anClass));
-        }
-        pp.pages = 1;
-        pp.startRow = 0;
-        pp.pageNum = 1;
-        pp.pageSize = anList.size();
-        
-        return pp;
-    }
+     
     
     public Page(int pageNum, int pageSize) {
         this(pageNum, pageSize, SQL_COUNT, null);
