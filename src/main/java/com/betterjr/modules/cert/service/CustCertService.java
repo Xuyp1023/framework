@@ -507,7 +507,9 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
     public CustCertInfo findCertByToken(final String anCustToken) {
         final List<CustCertInfo> list = selectByProperty("token", anCustToken);
         if (list.size() == 1) {
-            return list.get(0);
+            final CustCertInfo certInfo = list.get(0);
+            certInfo.setCertRuleList(certRuleService.queryCertRuleListBySerialNo(certInfo.getSerialNo()));
+            return certInfo;
         }
         else {
             return new CustCertInfo();
@@ -545,7 +547,11 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
 
             return null;
         }
-        return Collections3.getFirst(selectByProperty("operOrg", anOperOrg, "serialNo"));
+        final CustCertInfo certInfo =  Collections3.getFirst(selectByProperty("operOrg", anOperOrg, "serialNo"));
+        if (certInfo != null) {
+            certInfo.setCertRuleList(certRuleService.queryCertRuleListBySerialNo(certInfo.getSerialNo()));
+        }
+        return certInfo;
     }
 
     /**

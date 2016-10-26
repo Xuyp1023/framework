@@ -11,7 +11,6 @@ import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.Collections3;
 import com.betterjr.modules.cert.entity.CustCertInfo;
 
-
 /**
  * 自定义Authentication对象，使得Subject除了携带用户的登录名外还可以携带更多信息.
  */
@@ -40,39 +39,40 @@ public class ShiroUser implements Serializable {
         return this.innerRules;
     }
 
-    private static boolean userRuleCheck(final ShiroUser anUser, final PlatformBaseRuleType anBaseRule){
-        if (anUser != null){
-            return anUser.innerRules.contains( anBaseRule );
+    private static boolean userRuleCheck(final ShiroUser anUser, final PlatformBaseRuleType anBaseRule) {
+        if (anUser != null) {
+            return anUser.innerRules.contains(anBaseRule);
         }
         return false;
     }
 
-    public static boolean coreUser(final ShiroUser anUser){
+    public static boolean coreUser(final ShiroUser anUser) {
 
         return userRuleCheck(anUser, PlatformBaseRuleType.CORE_USER);
     }
 
-    public static boolean sellerUser(final ShiroUser anUser){
+    public static boolean sellerUser(final ShiroUser anUser) {
 
         return userRuleCheck(anUser, PlatformBaseRuleType.SELLER_USER);
     }
 
-    public static boolean supplierUser(final ShiroUser anUser){
+    public static boolean supplierUser(final ShiroUser anUser) {
 
         return userRuleCheck(anUser, PlatformBaseRuleType.SUPPLIER_USER);
     }
 
-    public static boolean platformUser(final ShiroUser anUser){
+    public static boolean platformUser(final ShiroUser anUser) {
 
         return userRuleCheck(anUser, PlatformBaseRuleType.PLATFORM_USER);
     }
 
-    public static boolean factorUser(final ShiroUser anUser){
+    public static boolean factorUser(final ShiroUser anUser) {
 
         return userRuleCheck(anUser, PlatformBaseRuleType.FACTOR_USER);
     }
-    public Object getData() {
-        return data;
+
+    public <T> T getData() {
+        return (T)data;
     }
 
     public long getLoginTime() {
@@ -119,8 +119,8 @@ public class ShiroUser implements Serializable {
      * @param createTime
      * @param status
      */
-    public ShiroUser(final UserType anUserType, final Long id, final String loginName, final WorkUserInfo anUser, final CustCertInfo anCertInfo, final boolean anMobileLogin,
-            final Object anData, final List<SimpleDataEntity> anUserPassData) {
+    public ShiroUser(final UserType anUserType, final Long id, final String loginName, final WorkUserInfo anUser, final CustCertInfo anCertInfo,
+            final boolean anMobileLogin, final Object anData, final List<SimpleDataEntity> anUserPassData) {
         this.mobileLogin = anMobileLogin;
         this.userType = anUserType;
         this.id = id;
@@ -128,7 +128,7 @@ public class ShiroUser implements Serializable {
         this.user = anUser;
         this.loginTime = System.currentTimeMillis();
         this.data = anData;
-        this.innerRules = PlatformBaseRuleType.checkList(anCertInfo.getCertRuleList());
+        this.innerRules = anUserType.equals(UserType.NONE_USER) ? null : PlatformBaseRuleType.checkList(anCertInfo.getCertRuleList());
         this.userPassData = anUserPassData;
         this.cretInfo = anCertInfo;
     }
@@ -174,6 +174,7 @@ public class ShiroUser implements Serializable {
 
     /**
      * 返回证书的值
+     *
      * @return
      */
     public CustCertInfo getCretInfo() {
