@@ -294,19 +294,21 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
      */
     public CustCertInfo addCustCertInfo(final CustCertInfo certInfo) {
 
-        final BetterX509CertInfo x509CertInfo = betterCertService.findX509CertInfo(certInfo.getCertId());
+        if (certInfo.getCertId() > 0) {
+            final BetterX509CertInfo x509CertInfo = betterCertService.findX509CertInfo(certInfo.getCertId());
 
-        BTAssert.notNull(x509CertInfo, "找不到相应的数字证书！");
-        BTAssert.isTrue(BetterStringUtils.equals(x509CertInfo.getCertStatus(), "0"), "数字证书已使用！");
+            BTAssert.notNull(x509CertInfo, "找不到相应的数字证书！");
+            BTAssert.isTrue(BetterStringUtils.equals(x509CertInfo.getCertStatus(), "0"), "数字证书已使用！");
+            final CustCertInfo tempCertInfo = this.findBySerialNo(x509CertInfo.getSerialNo());
+            BTAssert.isNull(tempCertInfo, "该数字证书已经使用！");
 
-        final CustCertInfo tempCertInfo = this.findBySerialNo(x509CertInfo.getSerialNo());
-        BTAssert.isNull(tempCertInfo, "该数字证书已经使用！");
+            certInfo.setSerialNo(x509CertInfo.getSerialNo());
+            certInfo.setCreateDate(x509CertInfo.getCreateDate());
+            certInfo.setValidDate(x509CertInfo.getValidDate());
 
-        certInfo.setSerialNo(x509CertInfo.getSerialNo());
-        certInfo.setCreateDate(x509CertInfo.getCreateDate());
-        certInfo.setValidDate(x509CertInfo.getValidDate());
+            betterCertService.saveCertStatus(x509CertInfo.getId(), x509CertInfo.getSerialNo(), "2");
+        }
 
-        betterCertService.saveCertStatus(x509CertInfo.getId(), x509CertInfo.getSerialNo(), "2");
 
         return saveCustCertInfo(certInfo, true);
     }
