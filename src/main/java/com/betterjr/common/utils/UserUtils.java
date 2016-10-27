@@ -248,7 +248,11 @@ public class UserUtils {
             return custContext.getOperatorInfo();
         }
         else {
-            return null;
+            final CustOperatorInfo operator = new CustOperatorInfo();
+            operator.setId(-1L);
+            operator.setName("system");
+            operator.setOperOrg("system");
+            return operator;
         }
     }
 
