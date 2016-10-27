@@ -76,6 +76,20 @@ public class DictUtils {
         return anValue;
     }
 
+    public static String getDictValueByCode(String anType, String anValue) {
+        String itemCode;
+        if (StringUtils.isNotBlank(anType) && StringUtils.isNotBlank(anValue)) {
+            for (DictItemInfo dictItem : getDictList(anType)) {
+                itemCode = dictItem.getItemCode();
+                if (BetterStringUtils.isNotBlank(itemCode) && itemCode.equalsIgnoreCase(anValue)) {
+
+                    return dictItem.getItemValue();
+                }
+            }
+        }
+        return anValue;
+    }
+
     public static String getDictCode(String anType, String anValue) {
 
         return getDictCode(anType, anValue, null);
@@ -120,6 +134,15 @@ public class DictUtils {
 
     }
 
+    public static void addDictItem(String anType, DictItemInfo anItem) {
+        List<DictItemInfo> data = getDictList(anType);
+        if (Collections3.isEmpty(data)) {
+            data = new ArrayList<DictItemInfo>();
+            Map<String, List<DictItemInfo>> dictMap = (Map<String, List<DictItemInfo>>) CacheUtils.get(CACHE_DICT_MAP);
+            dictMap.put(anType, data);
+        }
+        data.add(anItem);
+    }
 
     public static void saveObject(String anType, String anKey, Object anObj) {
 
