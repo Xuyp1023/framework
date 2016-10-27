@@ -102,10 +102,26 @@ public class CustPassService extends BaseService<CustPassInfoMapper, CustPassInf
         }
 
         final HashPassword result = SystemAuthorizingRealm.encrypt(anOkPasswd);
-        final CustPassInfo newPassInfo = new CustPassInfo(anLoginPassType.exchangeTrade(), passValidLimit, user.getId(), result.salt, result.password);
-        this.insert(newPassInfo);
+        final CustPasswordType passType = anLoginPassType.exchangeTrade();
+        final CustPassInfo newPassInfo = new CustPassInfo(passType, passValidLimit, user.getId(), result.salt, result.password);
+
+        final CustPassInfo tempPassInfo = findPassByIdAndType(user.getId(), passType);
+        if (tempPassInfo == null) {
+            this.insert(newPassInfo);
+        } else {
+            this.updateByPrimaryKeySelective(newPassInfo);
+        }
 
         return true;
+    }
+
+    /**
+     * @param anId
+     * @param anPassType
+     */
+    private CustPassInfo findPassByIdAndType(final Long anId, final CustPasswordType anPassType) {
+        final Map<String, Object> termMap = QueryTermBuilder.newInstance().put("custNo", anId).put("passType", anPassType).build();
+        return Collections3.getFirst(this.selectByProperty(termMap));
     }
 
     public boolean savePassword(final CustPasswordType anPassType, final String anNewPasswd, final String anOkPasswd, final String anPasswd) {

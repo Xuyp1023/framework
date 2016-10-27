@@ -1,7 +1,9 @@
 package com.betterjr.modules.sys.security;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.betterjr.common.data.PlatformBaseRuleType;
 import com.betterjr.common.data.SimpleDataEntity;
@@ -26,8 +28,17 @@ public class ShiroUser implements Serializable {
     private final Object data;
     private final boolean mobileLogin;
     private final CustCertInfo cretInfo;
+    private final Map<String, Object> param;
     private List<PlatformBaseRuleType> innerRules = null;
     private List<SimpleDataEntity> userPassData = null;
+
+    public void addParam(final String anKey, final Object anValue) {
+        param.put(anKey, anValue);
+    }
+
+    public <T> T getParam(final String anKey) {
+        return (T)param.get(anKey);
+    }
 
     public void setInnerRules(final List<PlatformBaseRuleType> anInnerRuleList) {
 
@@ -131,6 +142,7 @@ public class ShiroUser implements Serializable {
         this.innerRules = anUserType.equals(UserType.NONE_USER) ? null : PlatformBaseRuleType.checkList(anCertInfo.getCertRuleList());
         this.userPassData = anUserPassData;
         this.cretInfo = anCertInfo;
+        this.param = new HashMap<>();
     }
 
     public boolean isMobileLogin() {
