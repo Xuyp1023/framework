@@ -22,6 +22,10 @@ public abstract class BetterBaseEntity {
             this.setRegOperId(anOperInfo.getId());
             this.setRegOperName(anOperInfo.getName());
         }
+        else{
+            this.setRegOperId(-1L);
+            this.setRegOperName("匿名");
+        }
     }
     
     public void modifyValue(CustOperatorInfo anOperInfo, BetterBaseEntity anEntity){
@@ -34,10 +38,12 @@ public abstract class BetterBaseEntity {
      * @param anEntity
      */
     public void modifyValue(BetterBaseEntity anEntity){
-        this.setRegDate( anEntity.getRegDate());
-        this.setRegTime( anEntity.getRegTime());
-        this.setRegOperId(anEntity.getRegOperId());
-        this.setRegOperName(anEntity.getRegOperName());
+        if (anEntity != null){
+            this.setRegDate( anEntity.getRegDate());
+            this.setRegTime( anEntity.getRegTime());
+            this.setRegOperId(anEntity.getRegOperId());
+            this.setRegOperName(anEntity.getRegOperName());
+        }
     }
 
     /**
@@ -50,6 +56,10 @@ public abstract class BetterBaseEntity {
         if (anOperInfo != null) {
             this.setModiOperId(anOperInfo.getId());
             this.setModiOperName(anOperInfo.getName());
+        }
+        else{
+            this.setModiOperId(-1L);
+            this.setModiOperName("匿名");
         }
     }
     
