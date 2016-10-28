@@ -340,4 +340,20 @@ public class DictUtils {
         return map;
 
     }
-}
+
+    /**
+     * 查询核心企业信息，主要查询核心企业
+     * @return
+     */
+    public static List<Long> findCoreCustNoList() {
+        List<Long> result = new ArrayList();
+        for (DictItemInfo item : DictUtils.getDictList("FactorCoreCustInfo")) {
+            try {
+                result.add(Long.parseLong(item.getItemCode()));
+            }
+            catch (Exception ex) {
+            }
+        }
+        return result;
+    }
+    }
