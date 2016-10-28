@@ -35,20 +35,6 @@ public enum PlatformBaseRuleType {
         return NONE_USER;
     }
 
-    public static List<PlatformBaseRuleType> checkList(final String anRules){
-        final List<PlatformBaseRuleType> result = new ArrayList<>();
-        if (BetterStringUtils.isNotBlank(anRules)){
-            PlatformBaseRuleType tmpRule;
-            for(final String tmpStr : BetterStringUtils.split(anRules, ",|;")){
-                tmpRule = checking(tmpStr);
-                if (tmpRule != NONE_USER){
-                    result.add(tmpRule);
-                }
-            }
-        }
-        return result;
-    }
-
     public static List<PlatformBaseRuleType> checkList(final List<CustCertRule> anCertRules){
         final List<PlatformBaseRuleType> result = new ArrayList<>();
 

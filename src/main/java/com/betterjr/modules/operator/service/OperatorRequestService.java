@@ -230,10 +230,10 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
      * @param anMap
      * @return
      */
-    public boolean addDefaultOperator(final String anOperOrg) {
+    public boolean addDefaultOperator(final String anOperOrg, final String anName, final String anPassword) {
         boolean bool = false;
         final CustOperatorInfoRequest request = new CustOperatorInfoRequest();
-        request.initAdminOperator(anOperOrg);
+        request.initAdminOperator(anOperOrg, anName, anPassword);
         // 判断该操作员是否存在
         final boolean operCodeExists = this.custOptService.checkExistsByOperCodeAndOperOrg(request.getOperCode(), request.getOperOrg());
         if (operCodeExists) {

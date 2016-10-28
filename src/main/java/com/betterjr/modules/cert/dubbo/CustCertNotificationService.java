@@ -40,7 +40,7 @@ public class CustCertNotificationService {
     @Resource
     private CustOperatorService custOperatorService;
 
-    public void sendNotification(final CustCertInfo anCertInfo, final String anPublishMode, final String anPassword) {
+    public void sendNotification(final CustCertInfo anCertInfo, final String anPublishMode, final String anCertPassword, final String anLoginPassword) {
         final Long platformCustNo = Long.valueOf(Collections3.getFirst(DictUtils.getDictList("PlatformGroup")).getItemValue());
         final CustInfo platformCustomer = accountService.findCustInfo(platformCustNo);
         final CustOperatorInfo platformOperator = Collections3.getFirst(custOperatorService.queryOperatorInfoByCustNo(platformCustomer.getCustNo()));
@@ -54,7 +54,8 @@ public class CustCertNotificationService {
             builder.addParam("createDate", BetterDateUtils.formatDispDate(anCertInfo.getCreateDate()));
             builder.addParam("validDate", BetterDateUtils.formatDispDate(anCertInfo.getValidDate()));
             builder.addParam("phone", anCertInfo.getContPhone());
-            builder.addParam("password", anPassword);
+            builder.addParam("certPassword", anCertPassword);
+            builder.addParam("loginPassword", anLoginPassword);
 
             builder.addReceiveEmail(anCertInfo.getEmail());
             builder.addReceiveMobile(anCertInfo.getContPhone());
@@ -69,7 +70,8 @@ public class CustCertNotificationService {
             builder.addParam("createDate", BetterDateUtils.formatDispDate(anCertInfo.getCreateDate()));
             builder.addParam("validDate", BetterDateUtils.formatDispDate(anCertInfo.getValidDate()));
             builder.addParam("phone", anCertInfo.getContPhone());
-            builder.addParam("password", anPassword);
+            builder.addParam("certPassword", anCertPassword);
+            builder.addParam("loginPassword", anLoginPassword);
 
             notificationSendService.sendNotification(builder.build());
         }

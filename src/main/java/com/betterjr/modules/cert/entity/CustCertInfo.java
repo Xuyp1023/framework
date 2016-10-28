@@ -2,6 +2,7 @@ package com.betterjr.modules.cert.entity;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -154,8 +155,9 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
     /**
      * 使用证书的角色，内置角色，颁发证书的指定，例如：CORE_USER，SUPPLIER_USER，FACTOR_USER，SELLER_USER
      */
-    @Column(name = "C_RULE_LIST", columnDefinition = "VARCHAR")
-    @MetaData(value = " 使用证书的角色", comments = "内置角色，颁发证书的指定，例如：CORE_USER，SUPPLIER_USER，FACTOR_USER，SELLER_USER")
+    //    @Column(name = "C_RULE_LIST", columnDefinition = "VARCHAR")
+    //    @MetaData(value = " 使用证书的角色", comments = "内置角色，颁发证书的指定，例如：CORE_USER，SUPPLIER_USER，FACTOR_USER，SELLER_USER")
+    @Transient
     private String ruleList;
 
     /**
@@ -260,7 +262,16 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
     @Transient
     private String commName;
 
+
     private static final long serialVersionUID = 1439797394180L;
+
+    public String getRuleList() {
+        return this.ruleList;
+    }
+
+    public void setRuleList(final String anRuleList) {
+        this.ruleList = anRuleList;
+    }
 
     public String getSerialNo() {
         return serialNo;
@@ -529,13 +540,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         this.publishMode = anPublishMode;
     }
 
-    public String getRuleList() {
-        return this.ruleList;
-    }
 
-    public void setRuleList(final String anRuleList) {
-        this.ruleList = anRuleList;
-    }
 
     public Long getCertId() {
         return this.certId;
@@ -559,6 +564,9 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
 
     public void setCertRuleList(final List<CustCertRule> anCertRuleList) {
         certRuleList = anCertRuleList;
+        if (anCertRuleList != null) {
+            ruleList = anCertRuleList.stream().map(certRule->{return certRule.getRule();}).collect(Collectors.joining(","));
+        }
     }
 
     @Override
@@ -566,7 +574,6 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         final StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
         sb.append(" [");
-        sb.append("ruleList = ").append(ruleList);
         sb.append(", serialNo=").append(serialNo);
         sb.append(", custNo=").append(custNo);
         sb.append(", identNo=").append(identNo);
@@ -642,8 +649,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
                 && (this.getPublishDate() == null ? other.getPublishDate() == null : this.getPublishDate().equals(other.getPublishDate()))
                 && (this.getPublishMode() == null ? other.getPublishMode() == null : this.getPublishMode().equals(other.getPublishMode()))
                 && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
-                && (this.getEmail() == null ? other.getEmail() == null : this.getEmail().equals(other.getEmail()))
-                && (this.getRuleList() == null ? other.getRuleList() == null : this.getRuleList().equals(other.getRuleList()));
+                && (this.getEmail() == null ? other.getEmail() == null : this.getEmail().equals(other.getEmail()));
     }
 
     @Override
@@ -667,7 +673,6 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         result = prime * result + ((getCreateDate() == null) ? 0 : getCreateDate().hashCode());
         result = prime * result + ((getToken() == null) ? 0 : getToken().hashCode());
         result = prime * result + ((getOperOrg() == null) ? 0 : getOperOrg().hashCode());
-        result = prime * result + ((getRuleList() == null) ? 0 : getRuleList().hashCode());
         result = prime * result + ((getCertId() == null) ? 0 : getCertId().hashCode());
         result = prime * result + ((getRegOperId() == null) ? 0 : getRegOperId().hashCode());
         result = prime * result + ((getRegOperName() == null) ? 0 : getRegOperName().hashCode());
@@ -693,12 +698,10 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
 
         this.custName = anCertInfo.getCustName();
         this.identNo = anCertInfo.getIdentNo();
-        this.ruleList = anCertInfo.getRuleList();
         this.contName = anCertInfo.getContName();
         this.contPhone = anCertInfo.getContPhone();
         this.email = anCertInfo.getEmail();
         this.operOrg = anCertInfo.getOperOrg();
-        this.ruleList = anCertInfo.getRuleList();
         this.description = anCertInfo.getDescription();
     }
 

@@ -29,6 +29,7 @@ import com.betterjr.modules.account.data.CustContextInfo;
 import com.betterjr.modules.account.entity.CustInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.cert.entity.CustCertInfo;
+import com.betterjr.modules.cert.entity.CustCertRule;
 import com.betterjr.modules.sys.security.ShiroUser;
 
 /**
@@ -344,11 +345,11 @@ public class UserUtils {
         if (anCertInfo == null) {
             return false;
         }
-        final String tempInnerRules = anCertInfo.getRuleList();
-        if (BetterStringUtils.isBlank(tempInnerRules)) {
+        final List<CustCertRule> certRuleList = anCertInfo.getCertRuleList();
+        if (Collections3.isEmpty(certRuleList)) {
             return false;
         }
-        final List<PlatformBaseRuleType> innerRules = PlatformBaseRuleType.checkList(tempInnerRules);
+        final List<PlatformBaseRuleType> innerRules = PlatformBaseRuleType.checkList(certRuleList);
         if (innerRules == null) {
             return false;
         }

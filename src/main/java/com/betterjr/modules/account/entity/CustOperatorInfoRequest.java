@@ -345,12 +345,12 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
                 + "]";
     }
 
-    public void initAdminOperator(final String anOperOrg) {
+    public void initAdminOperator(final String anOperOrg, final String anName, final String anPassword) {
         this.operOrg = anOperOrg;
         this.ruleList = "SUPPLIER_USER,SELLER_USER,CORE_USER,FACTOR_USER,PLATFORM_USER";
         this.operCode = "admin";
-        this.password = "123456";
-        this.name = "证书管理员";
+        this.password = anPassword;
+        this.name = anName;
         this.defOper = "1";
     }
 

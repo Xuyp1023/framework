@@ -104,9 +104,10 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         final CustCertInfo certInfo = findBySerialNo(anSerialNo);
         BTAssert.notNull(certInfo, "没有找到客户证书信息！");
 
-        final String password = createPassword(certInfo.getEmail());
+        final String certPassword = createPassword(certInfo.getEmail());
+        final String loginPassword = createPassword(certInfo.getEmail());
 
-        final BetterX509CertStore certStore = betterCertService.savePublishX509Cert(certInfo.getCertId(), password);
+        final BetterX509CertStore certStore = betterCertService.savePublishX509Cert(certInfo.getCertId(), certPassword);
         BTAssert.notNull(certStore, String.format("发布数字证书时，不能获取有效的数字证书信息；可能数字证书【%s】已经投入使用", certInfo.getSubject()));
         final X509Certificate x509Certinfo = certStore.findCertificate();
         certInfo.setVersionUid(x509Certinfo.getSigAlgOID());
@@ -125,12 +126,12 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         this.updateByPrimaryKey(certInfo);
 
         // 添加 admin
-        operatorRequestService.addDefaultOperator(certInfo.getOperOrg());
+        operatorRequestService.addDefaultOperator(certInfo.getOperOrg(), "管理员", loginPassword);
 
         // 添加 default role
         roleService.addDefaultRole(certInfo.getOperOrg());
 
-        certNotificationService.sendNotification(certInfo, anPublishMode, password);
+        certNotificationService.sendNotification(certInfo, anPublishMode, certPassword, loginPassword);
 
         return certInfo;
     }
@@ -221,23 +222,21 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
     /**
      * @param anRuleList
      */
-    private void validateRuleList(final String anRuleList) {
+    private void validateRuleList(final String[] anRules) {
         final List<String> ruleList = Arrays.asList("CORE_USER", "SUPPLIER_USER", "FACTOR_USER", "SELLER_USER");
 
-        final String[] rules = COMMA_PATTERN.split(anRuleList);
+        BTAssert.isTrue(anRules.length != 0, "默认角色必需输入");
 
-        BTAssert.isTrue(rules.length != 0, "默认角色必需输入");
-
-        for (final String rule : rules) {
+        for (final String rule : anRules) {
             BTAssert.isTrue(ruleList.contains(rule), "默认角色的可选值为：CORE_USER, SUPPLIER_USER, FACTOR_USER, SELLER_USER");
         }
     }
 
     private CustCertInfo saveCustCertInfo(final CustCertInfo anCertInfo, final boolean anCreate) {
         // 校验角色列表
-        validateRuleList(anCertInfo.getRuleList());
-
         final String[] rules = COMMA_PATTERN.split(anCertInfo.getRuleList());
+        validateRuleList(rules);
+
         final String serialNo = anCertInfo.getSerialNo();
         final String custName = anCertInfo.getCustName();
 
@@ -334,6 +333,7 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         certInfos.forEach(certInfo -> {
             final BetterX509CertInfo x509CertInfo = betterCertService.findX509CertInfo(certInfo.getCertId());
             certInfo.setCommName(x509CertInfo !=null ? x509CertInfo.getCommName(): "");
+            certInfo.setCertRuleList(certRuleService.queryCertRuleListBySerialNo(certInfo.getSerialNo()));
         });
         return certInfos;
     }
@@ -347,7 +347,13 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
      */
     public CustCertInfo findBySerialNo(final String anSerialNo) {
 
-        return this.selectByPrimaryKey(anSerialNo);
+        final CustCertInfo certInfo = this.selectByPrimaryKey(anSerialNo);
+
+        if (certInfo != null) {
+            certInfo.setCertRuleList(certRuleService.queryCertRuleListBySerialNo(certInfo.getSerialNo()));
+        }
+
+        return certInfo;
     }
 
     /**

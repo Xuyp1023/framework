@@ -1,6 +1,7 @@
 package com.betterjr.modules.sys.security;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -139,7 +140,7 @@ public class ShiroUser implements Serializable {
         this.user = anUser;
         this.loginTime = System.currentTimeMillis();
         this.data = anData;
-        this.innerRules = anUserType.equals(UserType.NONE_USER) || anCertInfo == null ? null : PlatformBaseRuleType.checkList(anCertInfo.getCertRuleList());
+        this.innerRules = anUserType.equals(UserType.NONE_USER) || anCertInfo == null ? new ArrayList<>() : PlatformBaseRuleType.checkList(anCertInfo.getCertRuleList());
         this.userPassData = anUserPassData;
         this.cretInfo = anCertInfo;
         this.param = new HashMap<>();
