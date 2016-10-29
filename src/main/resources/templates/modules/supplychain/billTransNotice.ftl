@@ -6971,9 +6971,9 @@
 
           <div id="letter">
            <h3 class="div-center">应收账款债权转让通知书</h3>
-           <div><div class="right">编号：&nbsp;${noticeInfo.noticeNo}</div></div>
+           <div><div class="right">编号：&nbsp;${(noticeInfo.noticeNo)!}</div></div>
   	       <h5>致:&nbsp;${noticeInfo.buyer}(买方名称)</h5>
-           <p>根据百乐润小微保理（深圳）有限公司(以下简称保理公司)与我方签订《&nbsp;${noticeInfo.agreeName}国内保理合同》(编号:&nbsp;${noticeInfo.noticeNo})的约定，我方已将下表所列对贵方的应收账款转让给保理公司，现通知贵方，并请贵方按以下要求支付应收账款。</p>
+           <p>根据百乐润小微保理（深圳）有限公司(以下简称保理公司)与我方签订《&nbsp;${(noticeInfo.agreeName)!}国内保理合同》(编号:&nbsp;${(noticeInfo.noticeNo)!})的约定，我方已将下表所列对贵方的应收账款转让给保理公司，现通知贵方，并请贵方按以下要求支付应收账款。</p>
 
            <table class="table table-bordered div-center">
              <thead>
@@ -6989,12 +6989,12 @@
              <tbody>
              	 <#list creditInfos as creditInfo> 
                    <tr>
-                     <td>&nbsp;${creditInfo.transNo}</td>
-                     <td>&nbsp;${creditInfo.balance}</td>
-                     <td>&nbsp;${creditInfo.endDate}</td>
-                     <td>&nbsp;${creditInfo.agreeNo}</td>
-                     <td>&nbsp;${creditInfo.invoiceNo}</td>
-                     <td>&nbsp;${creditInfo.invoiceBalance}</td>
+                     <td>&nbsp;${(creditInfo.transNo)!}</td>
+                     <td>&nbsp;${(creditInfo.balance)!}</td>
+                     <td>&nbsp;${(creditInfo.endDate)!}</td>
+                     <td>&nbsp;${(creditInfo.agreeNo)!}</td>
+                     <td>&nbsp;${(creditInfo.invoiceNo)!}</td>
+                     <td>&nbsp;${(creditInfo.invoiceBalance)!}</td>
                    </tr>
                  </#list>
              </tbody>
@@ -7002,15 +7002,15 @@
 
            
             <p>1.对于保理公司所受让之账款，保理公司有权按照本通知书及相关的交易合同的规定以自身名义向你方提出及处理索赔，你方应按照本通知书的要求进行支付。</p>
-            <p>2.你方应按时足额将上表所列应收账款支付至保理公司。贵方付款时，请根据上表填写进账单/贷记凭证(同城)、结算业务申请书(异地电汇)，具体格式如下:栏位“收款人”，填写保理公司名称;栏位“收款账号”，填写&nbsp;${noticeInfo.bankAccount}(保理公司内部账号)。</p>
+            <p>2.你方应按时足额将上表所列应收账款支付至保理公司。贵方付款时，请根据上表填写进账单/贷记凭证(同城)、结算业务申请书(异地电汇)，具体格式如下:栏位“收款人”，填写保理公司名称;栏位“收款账号”，填写&nbsp;${(noticeInfo.bankAccount)!}(保理公司内部账号)。</p>
             <p>3.根据前述《国内保理合同》，所有交易合同项下的义务仍由我方承担，并未转让给保理公司，所有与我方承担义务有关的诉讼、反诉或反索赔或者抵销，不论是否基于交易合同，均只能向我方提起，不得向保理公司提起，但在向本公司提出相关争议的同时，应通知保理公司有关争议事项。你方就上表所列任一应收账款发生争议并拒绝按以上第2条承诺向保理公司支付上述任一应收账款的，你方应在有关应收账款相应的到期日前将该等争议事项按本通知书附件《商业纠纷通知书》的格式书面通知保理公司。</p>
             <p>4.上表所列的各笔应收账款中，如我方转让给保理公司的应收账款金额小于你方在应收账款到期日的实际应付金额，你方仍应就差额部分向我方履行付款义务，该差额部分应通过保理公司向我方支付。</p>
             <p>5.你方按以上第3条发送通知，应寄送或提交至保理公司。</p>
 
             <div class="input-detail">
-              地址：&nbsp;${noticeInfo.factorAddr}<br/>
-              邮政编码：&nbsp;${noticeInfo.factorPost}<br/>
-              联系人：&nbsp;${noticeInfo.factorLinkMan}
+              地址：&nbsp;${(noticeInfo.factorAddr)!}<br/>
+              邮政编码：&nbsp;${(noticeInfo.factorPost)!}<br/>
+              联系人：&nbsp;${(noticeInfo.factorLinkMan)!}
             </div>
             <div class="div-width-100">
               <table class="div-width-100">
@@ -7035,7 +7035,7 @@
                 <tr>
                   <td width="70%"></td>
                   <td width="30%">
-                    &nbsp;${signDate}
+                    &nbsp;${(signDate)!}
                   </td>
                 </tr>
               </table>
