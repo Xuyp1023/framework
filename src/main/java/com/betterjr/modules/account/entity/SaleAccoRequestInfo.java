@@ -889,6 +889,10 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
         return this.attach;
     }
 
+    public void setAttach(Map<String, String> anAttach) {
+        this.attach = anAttach;
+    }
+
     /**
      * 基金公司资金账户
      */
@@ -903,6 +907,15 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
     @MetaData(value = "组织机构代码证", comments = "组织机构代码证")
     private String busiLicence;
 
+    private String coreList;
+    
+    public String getCoreList() {
+        return this.coreList;
+    }
+
+    public void setCoreList(String anCoreList) {
+        this.coreList = anCoreList;
+    }
 
     private static final long serialVersionUID = 1443065594917L;
 

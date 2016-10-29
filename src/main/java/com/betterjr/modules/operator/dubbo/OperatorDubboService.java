@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.betterjr.common.web.AjaxObject;
+import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfoRequest;
 import com.betterjr.modules.operator.service.OperatorRequestService;
 import com.betterjr.modules.operator.service.SysMenuManagerService;
@@ -134,5 +135,11 @@ public class OperatorDubboService implements IOperatorService {
         }else{
             return AjaxObject.newError("密码修改失败").toJson();
         }
+    }
+
+    @Override
+    public CustOperatorInfo findCustClerkMan(String anOperOrg){
+
+        return operatorRequestService.findCustClerkMan(anOperOrg);
     }
 }
