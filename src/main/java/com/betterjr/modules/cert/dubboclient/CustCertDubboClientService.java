@@ -49,6 +49,10 @@ public class CustCertDubboClientService {
         return custCertService.webSaveCustCertificate(anSerialNo, anParam);
     }
 
+    public String modifyWechatCustCertificate(final String anSerialNo, final String anOrginSerialNo, final Map<String, Object> anParam) {
+        return custCertService.webSaveCustCertificate(anSerialNo, anOrginSerialNo, anParam);
+    }
+
     public String publishCustCertificate(final String anSerialNo, final String anPublishMode) {
         return custCertService.webPublishCustCertificate(anSerialNo, anPublishMode);
     }

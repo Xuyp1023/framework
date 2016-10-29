@@ -48,6 +48,11 @@ public interface ICustCertService {
     public String webSaveCustCertificate(final String anSerialNo, Map<String, Object> anParam);
 
     /**
+     * 修改来自微信的客户证书
+     */
+    public String webSaveCustCertificate(String anSerialNo, String anOrginSerialNo, Map<String, Object> anParam);
+
+    /**
      * 发布证书
      */
     public String webPublishCustCertificate(String anSerialNo, final String anPublishMode);
@@ -66,4 +71,5 @@ public interface ICustCertService {
      * 获取证书数据
      */
     public byte[] webDownloadCertificate(final String anToken);
+
 }

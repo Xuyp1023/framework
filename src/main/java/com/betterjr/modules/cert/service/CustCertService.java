@@ -207,6 +207,30 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
     }
 
     /**
+     * 保存来自微信的证书，删除之前的certInfo, 保存新的 certInfo
+     * @param anTempCertInfo
+     * @param anCertInfo
+     * @return
+     */
+    public Object saveCustCertInfo(final CustCertInfo anTempCertInfo, final CustCertInfo anCertInfo) {
+
+        anCertInfo.setOperOrg(anTempCertInfo.getOperOrg());
+
+        final CustCertInfo certInfo =  saveCustCertInfo(anCertInfo, false);
+
+        saveDelOrginCertInfo(anTempCertInfo);
+
+        return certInfo;
+    }
+    /**
+     * @param anTempCertInfo
+     */
+    private void saveDelOrginCertInfo(final CustCertInfo anTempCertInfo) {
+        certRuleService.saveDelCertRuleBySerialNo(anTempCertInfo.getSerialNo());
+        this.delete(anTempCertInfo);
+    }
+
+    /**
      * 保存客户数字证书信息
      *
      * @param anMap
@@ -587,4 +611,6 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         certInfo.setStatus("2");
         this.updateByPrimaryKeySelective(certInfo);
     }
+
+
 }
