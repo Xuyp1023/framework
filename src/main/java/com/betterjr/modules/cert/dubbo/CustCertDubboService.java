@@ -1,6 +1,7 @@
 package com.betterjr.modules.cert.dubbo;
 
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,9 +62,21 @@ public class CustCertDubboService implements ICustCertService {
         final CustCertInfo tempCertInfo = custCertService.findBySerialNo(serialNo);
         BTAssert.notNull(tempCertInfo, "没有找到对应的客户证书信息！");
 
-        BTAssert.isTrue(BetterStringUtils.equals(tempCertInfo.getStatus(), "1"), "证书当前状态不允许修改！");
+        BTAssert.isTrue(Arrays.asList("1").contains(tempCertInfo.getStatus()), "证书当前状态不允许修改！");
 
         return AjaxObject.newOk("修改证书信息成功！", custCertService.saveCustCertInfo(certInfo)).toJson();
+    }
+
+    @Override
+    public String webSaveCustCertificate(final String anSerialNo, final String anOrginSerialNo, final Map<String, Object> anParam) {
+        final CustCertInfo certInfo = RuleServiceDubboFilterInvoker.getInputObj();
+
+        final CustCertInfo tempCertInfo = custCertService.findBySerialNo(anOrginSerialNo);
+        BTAssert.notNull(tempCertInfo, "没有找到对应的客户证书信息！");
+
+        BTAssert.isTrue(Arrays.asList("8").contains(tempCertInfo.getStatus()), "证书当前状态不允许修改！");
+
+        return AjaxObject.newOk("修改证书信息成功！", custCertService.saveCustCertInfo(tempCertInfo, certInfo)).toJson();
     }
 
     @Override

@@ -90,7 +90,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
      * 证书状态，0正常，1暂停，2注销，3发布，9未启用。只有状态为9的情况下才允许更新token的值
      */
     @Column(name = "C_STATUS", columnDefinition = "VARCHAR")
-    @MetaData(value = "证书状态", comments = "证书状态，0正常，1暂停，2注销，3发布，9未启用。只有状态为9的情况下才允许更新token的值")
+    @MetaData(value = "证书状态", comments = "证书状态，0正常，1暂停，2注销，3发布，8由微信端生成，需要绑定数字证书，9未启用。只有状态为9的情况下才允许更新token的值")
     private String status;
 
     /**
