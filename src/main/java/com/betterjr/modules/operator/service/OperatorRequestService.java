@@ -15,6 +15,8 @@ import com.betterjr.common.exception.BytterTradeException;
 import com.betterjr.common.mapper.BeanMapper;
 import com.betterjr.common.service.BaseService;
 import com.betterjr.common.utils.BetterStringUtils;
+import com.betterjr.common.utils.Collections3;
+import com.betterjr.common.utils.QueryTermBuilder;
 import com.betterjr.common.utils.UserUtils;
 import com.betterjr.mapper.pagehelper.Page;
 import com.betterjr.modules.account.dao.CustOperatorInfoMapper;
@@ -244,5 +246,17 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
             bool = true;
         }
         return bool;
+    }
+    
+    /**
+     * 根据客户信息，查找机构默认经办人信息
+     * @param anOperOrg
+     * @return
+     */
+    public CustOperatorInfo findCustClerkMan(String anOperOrg){
+        Map termMap = QueryTermBuilder.newInstance().put("operOrg", anOperOrg).put("clerkMan", "2").build();
+        List<CustOperatorInfo> tmpList = this.selectByProperty(termMap);
+        
+        return Collections3.getFirst(tmpList);
     }
 }

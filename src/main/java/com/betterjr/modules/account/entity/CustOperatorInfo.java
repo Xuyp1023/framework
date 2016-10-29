@@ -192,6 +192,13 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
     @MetaData(value = "操作员角色", comments = "操作员角色")
     private String ruleList;
 
+    /**
+     * 人员办理业务类型；0：普通操作员，2:实际经办人
+     */
+    @Column(name = "C_CLERK", columnDefinition = "VARCHAR")
+    @MetaData(value = "人员办理业务类型", comments = "人员办理业务类型；0：普通操作员，2:实际经办人")
+    private String  clerkMan = "0";
+
     private String contIdentType;
 
     /**
@@ -206,6 +213,14 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
 
     @Transient
     private String accessType;
+
+    public String getClerkMan() {
+        return this.clerkMan;
+    }
+
+    public void setClerkMan(String anClerkMan) {
+        this.clerkMan = anClerkMan;
+    }
 
     public String getContIdentType() {
         return contIdentType;

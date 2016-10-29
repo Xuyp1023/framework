@@ -5,6 +5,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.operator.dubbo.IOperatorService;
 
 @Service
@@ -66,5 +67,11 @@ public class OperatorDubboClientService implements IOperatorService {
     @Override
     public String webChangeUserPassword(Long anId, String anPassword, String anOkPasswd) {
         return  operatorService.webChangeUserPassword(anId,anPassword,anOkPasswd);
+    }
+    
+    @Override
+    public CustOperatorInfo findCustClerkMan(String anOperOrg){
+
+        return operatorService.findCustClerkMan(anOperOrg);
     }
 }

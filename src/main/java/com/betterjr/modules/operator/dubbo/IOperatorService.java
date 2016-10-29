@@ -2,6 +2,8 @@ package com.betterjr.modules.operator.dubbo;
 
 import java.util.Map;
 
+import com.betterjr.modules.account.entity.CustOperatorInfo;
+
 /***
  * 操作员管理
  * @author hubl
@@ -91,4 +93,12 @@ public interface IOperatorService {
      * @return
      */
     public String webChangeUserPassword(Long anId, String anPassword, String anOkPasswd);
+    
+    /**
+     * 根据客户信息，查找机构默认经办人信息
+     * @param anOperOrg
+     * @return
+     */
+    public CustOperatorInfo findCustClerkMan(String anOperOrg);
+
 }
