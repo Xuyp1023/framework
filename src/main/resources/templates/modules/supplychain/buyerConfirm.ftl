@@ -6969,9 +6969,9 @@
 
             <div id="letter">
              <h3 class="center">买方确认意见</h3>
-             <div class="clearFix"><div class="right">编号：&nbsp;${opinionInfo.confirmNo}</div></div>
-			 <span>致：&nbsp;${opinionInfo.supplier}(卖方名称)</span>
-             <p>我方已收到你方签署的《应收账款转让通知书》(编号:&nbsp;${opinionInfo.noticeNo})，现确认同意你方在该通知书中就相关账款转让所作出的各项安排和约定，我方将遵守其中所载各项指示。应收账款到期日，我方应主动支付《应收账款转让通知书》中所载的应收账款，如百乐润小微保理(深圳)有限公司未收到我方付款的：</p>
+             <div class="clearFix"><div class="right">编号：&nbsp;${(opinionInfo.confirmNo)!}</div></div>
+			 <span>致：&nbsp;${(opinionInfo.supplier)!}(卖方名称)</span>
+             <p>我方已收到你方签署的《应收账款转让通知书》(编号:&nbsp;${(opinionInfo.noticeNo)!})，现确认同意你方在该通知书中就相关账款转让所作出的各项安排和约定，我方将遵守其中所载各项指示。应收账款到期日，我方应主动支付《应收账款转让通知书》中所载的应收账款，如百乐润小微保理(深圳)有限公司未收到我方付款的：</p>
              <p>(适用本条内容请在“□”打“√”，不适用本条内容请在“□”打“x”，如未填写视为适用本条。)</p>
             </div>  
             <p>
@@ -7006,7 +7006,7 @@
                 <tr>
                   <td width="60%"></td>
                   <td width="40%">
-                    ${signDate}
+                    ${(signDate)!}
                   </td>
                 </tr>
               </table>
