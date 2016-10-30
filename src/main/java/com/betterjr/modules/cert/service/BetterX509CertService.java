@@ -267,7 +267,7 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
      */
     public void saveCertStatus(final Long anId, final String anSerialNo, final String anStatus) {
         final BetterX509CertInfo certInfo = this.selectByPrimaryKey(anId);
-        if (certInfo.getSerialNo().equals(anSerialNo)) {
+        if (certInfo != null && certInfo.getSerialNo().equals(anSerialNo)) {
             certInfo.setCertStatus(anStatus);
             this.updateByPrimaryKey(certInfo);
         }

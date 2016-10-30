@@ -136,6 +136,7 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         return certInfo;
     }
 
+
     /**
      * 下载颁发的数字证书
      *
@@ -218,16 +219,14 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
 
         final CustCertInfo certInfo =  saveCustCertInfo(anCertInfo, false);
 
-        saveDelOrginCertInfo(anTempCertInfo);
-
         return certInfo;
     }
     /**
      * @param anTempCertInfo
      */
-    private void saveDelOrginCertInfo(final CustCertInfo anTempCertInfo) {
-        certRuleService.saveDelCertRuleBySerialNo(anTempCertInfo.getSerialNo());
-        this.delete(anTempCertInfo);
+    private void saveDelOrginCertInfo(final String anSerialNo) {
+        certRuleService.saveDelCertRuleBySerialNo(anSerialNo);
+        this.deleteByPrimaryKey(anSerialNo);
     }
 
     /**
@@ -276,23 +275,54 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         }
         else {
             BTAssert.isTrue(anCreate == false, "创建客户数字证书时，选择的数字证书已经存在！");
-            tmpCertInfo.modifyValue(UserUtils.getOperatorInfo(), anCertInfo);
-            this.updateByPrimaryKeySelective(tmpCertInfo);
 
-            // 处理角色关系 certRuleService
-            final List<CustCertRule> certRules = certRuleService.queryCertRuleListBySerialNo(serialNo);
-            for (final String rule : rules) {
-                final CustCertRule certRule = findCertRule(serialNo, rule, certRules);
-                if (certRule != null) {
-                    certRules.remove(certRule);
+            final String orginSerialNo = anCertInfo.getSerialNo();
+            final Long orginCertId = tmpCertInfo.getCertId();
+            if (BetterStringUtils.equals(tmpCertInfo.getStatus(), "8")) {
+                final BetterX509CertInfo x509CertInfo = betterCertService.findX509CertInfo(anCertInfo.getCertId());
+
+                BTAssert.notNull(x509CertInfo, "找不到相应的数字证书！");
+                BTAssert.isTrue(BetterStringUtils.equals(x509CertInfo.getCertStatus(), "0"), "数字证书已使用！");
+                final CustCertInfo tempCertInfo = this.findBySerialNo(x509CertInfo.getSerialNo());
+                BTAssert.isNull(tempCertInfo, "该数字证书已经使用！");
+
+                tmpCertInfo.setSerialNo(x509CertInfo.getSerialNo());
+                tmpCertInfo.setCreateDate(x509CertInfo.getCreateDate());
+                tmpCertInfo.setValidDate(x509CertInfo.getValidDate());
+                tmpCertInfo.setCertId(anCertInfo.getCertId());
+            }
+            // 两个序列号相同处理
+            if (BetterStringUtils.equals(orginSerialNo, tmpCertInfo.getSerialNo())) {
+                tmpCertInfo.modifyValue(UserUtils.getOperatorInfo(), anCertInfo);
+                this.updateByPrimaryKeySelective(tmpCertInfo);
+
+                // 处理角色关系 certRuleService
+                final List<CustCertRule> certRules = certRuleService.queryCertRuleListBySerialNo(serialNo);
+                for (final String rule : rules) {
+                    final CustCertRule certRule = findCertRule(serialNo, rule, certRules);
+                    if (certRule != null) {
+                        certRules.remove(certRule);
+                    }
+                    else {
+                        certRuleService.addCustCertRule(serialNo, rule, custName);
+                    }
                 }
-                else {
+
+                for (final CustCertRule certRule : certRules) {
+                    certRuleService.saveDelCertRule(certRule);
+                }
+            } else {
+                betterCertService.saveCertStatus(orginCertId, orginSerialNo, "0");    // 释放数字证书
+                saveDelOrginCertInfo(orginSerialNo);
+
+                betterCertService.saveCertStatus(tmpCertInfo.getCertId(), tmpCertInfo.getSerialNo(), "2");    // 占用数字证书
+                tmpCertInfo.initValue(UserUtils.getOperatorInfo());
+                tmpCertInfo.setStatus("1");
+                this.insert(tmpCertInfo);
+
+                for (final String rule : rules) {
                     certRuleService.addCustCertRule(serialNo, rule, custName);
                 }
-            }
-
-            for (final CustCertRule certRule : certRules) {
-                certRuleService.saveDelCertRule(certRule);
             }
         }
 
