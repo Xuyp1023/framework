@@ -624,7 +624,12 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
      */
     public CustCertInfo findCertByOperOrg(final String anOperOrg) {
         BTAssert.notNull(anOperOrg);
-        return Collections3.getFirst(this.selectByProperty("operOrg", anOperOrg));
+        CustCertInfo certInfo = Collections3.getFirst(this.selectByProperty("operOrg", anOperOrg));
+        if (certInfo != null) {
+            certInfo.setCertRuleList(certRuleService.queryCertRuleListBySerialNo(certInfo.getSerialNo()));
+        }
+        
+        return certInfo;
     }
 
     /**
