@@ -321,7 +321,7 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
                 this.insert(tmpCertInfo);
 
                 for (final String rule : rules) {
-                    certRuleService.addCustCertRule(serialNo, rule, custName);
+                    certRuleService.addCustCertRule(tmpCertInfo.getSerialNo(), rule, custName);
                 }
             }
         }
