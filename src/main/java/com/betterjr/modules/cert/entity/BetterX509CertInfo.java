@@ -600,7 +600,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
     public void calcValidDate() {
         final Date now = BetterDateUtils.getNow();
         this.setCreateDate(BetterDateUtils.formatNumberDate(now));
-        this.setValidDate(BetterDateUtils.formatNumberDate(BetterDateUtils.addYears(now, this.getYear())));
+        this.setValidDate(BetterDateUtils.formatNumberDate(BetterDateUtils.addYears(now, this.getYear() == null ? 99 : this.getYear())));
     }
 
     public void initDefValue(final CustOperatorInfo anOperator){
