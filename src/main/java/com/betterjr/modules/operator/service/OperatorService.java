@@ -16,6 +16,7 @@ import com.betterjr.modules.account.data.CustContextInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfoRequest;
 import com.betterjr.modules.account.entity.CustPassInfo;
+import com.betterjr.modules.account.service.CustAndOperatorRelaService;
 import com.betterjr.modules.account.service.CustOperatorHelper;
 import com.betterjr.modules.account.service.CustPassService;
 import com.betterjr.common.utils.UserUtils;
@@ -29,6 +30,8 @@ public class OperatorService extends BaseService<CustOperatorInfoMapper, CustOpe
     private CustPassService custPassService;
     @Autowired
     private SysOperatorRoleRelationService operatorRoleRelationService;
+    @Autowired
+    private CustAndOperatorRelaService custAndOpService;
 
     public boolean isFirstOperator(String anOperOrg) {
 
@@ -103,6 +106,7 @@ public class OperatorService extends BaseService<CustOperatorInfoMapper, CustOpe
         // 操作员角色信息绑定修改
         operatorRoleRelationService.saveSysOperatorRoleRelation(operator.getId(), operator.getRuleList());
         this.custPassService.insert(custPassInfo);
+        custAndOpService.addCustOperatorRelation(operator.getId(),operator.getOperOrg(),request.getCustList());// 添加客户绑定操作员关系
         operator.setRuleList("");
         return this.insert(operator);
     }

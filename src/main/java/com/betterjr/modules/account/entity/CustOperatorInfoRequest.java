@@ -130,6 +130,11 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
      * 默认经办人；1默认经办人，0非默认经办人
      */
     private String defOper;
+    
+    /***
+     * 客户列表 
+     */
+    private String custList;
 
     public CustOperatorInfoRequest() {
 
@@ -335,13 +340,21 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         this.contactorSerial = contactorSerial;
     }
 
+    public String getCustList() {
+        return this.custList;
+    }
+
+    public void setCustList(String anCustList) {
+        this.custList = anCustList;
+    }
+
     @Override
     public String toString() {
         return "CustOperatorInfoRequest [id=" + id + ", contIdentType=" + contIdentType + ", name=" + name + ", contIdentNo=" + contIdentNo
                 + ", contCertValidDate=" + contCertValidDate + ", sex=" + sex + ", zipCode=" + zipCode + ", address=" + address + ", phone=" + phone
                 + ", faxNo=" + faxNo + ", mobileNo=" + mobileNo + ", email=" + email + ", identClass=" + identClass + ", transBusin=" + transBusin
                 + ", revokeBusin=" + revokeBusin + ", status=" + status + ", lastStatus=" + lastStatus + ", regDate=" + regDate + ", modiDate="
-                + modiDate + ", operCode=" + operCode + ", operOrg=" + operOrg + ", contactorSerial=" + contactorSerial + ", ruleList=" + ruleList
+                + modiDate + ", operCode=" + operCode + ", operOrg=" + operOrg + ", contactorSerial=" + contactorSerial + ", ruleList=" + ruleList+ ", custList=" + custList
                 + "]";
     }
 

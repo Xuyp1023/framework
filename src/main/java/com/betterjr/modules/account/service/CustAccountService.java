@@ -332,7 +332,7 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
     }
 
     public List<CustInfo> findCustInfoByOperator(final Long anOperNo, final String anOperOrg) {
-        final List<Long> custList = custAndOpService.findCustNoList(anOperOrg);
+        final List<Long> custList = custAndOpService.findCustNoList(anOperNo,anOperOrg);
         return this.selectByProperty("custNo", custList);
     }
 
@@ -376,6 +376,23 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
     public CustInfo findCustInfo(final Long anCustNo) {
         final CustInfo custInfo = this.selectByPrimaryKey(anCustNo);
         return custInfo;
+    }
+    
+    /**
+     * 查询当前机构下有效的用户
+     * @return
+     */
+    public List<SimpleDataEntity> findCustOperator() {
+        final CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();
+        final Map<String, Object> conditionMap = new HashMap<>();
+        conditionMap.put("identValid", "1");
+        conditionMap.put("businStatus", "0");
+        conditionMap.put("operOrg", custOperator.getOperOrg());
+        final List<SimpleDataEntity> dataList = new ArrayList();
+        for (final CustInfo custInfo : this.selectByProperty(conditionMap)) {
+            dataList.add(new SimpleDataEntity(custInfo.getCustName(), custInfo.getCustNo().toString()));
+        }
+        return dataList;
     }
 
 }

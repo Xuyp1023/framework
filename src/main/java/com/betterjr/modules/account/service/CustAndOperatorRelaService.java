@@ -2,10 +2,8 @@ package com.betterjr.modules.account.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
@@ -39,11 +37,14 @@ public class CustAndOperatorRelaService extends BaseService<CustOperatorRelation
     }
     
     public List<Long> findCustNoList(String anOperOrg){
+        
+        
         return this.findCustNoList(null,anOperOrg);
     }
     
-    public List<Long> findCustNoList(Long anCustNo,String anOperOrg){
+    public List<Long> findCustNoList(Long anOperNo,String anOperOrg){
         Map<String, Object> map = new HashMap();
+        map.put("operNo", anOperNo);
         map.put("operOrg", anOperOrg);
         map.put("status", "1");
         List<Long> custNoList =  new ArrayList<>();
@@ -71,5 +72,42 @@ public class CustAndOperatorRelaService extends BaseService<CustOperatorRelation
        else{
            return Collections3.getFirst(tmpList).getOperOrg();
        }
+    }
+    
+    /****
+     * 查询客户操作员绑定关系信息
+     * @param anOperId
+     * @param anOperOrg
+     * @return
+     */
+    public String findCustOperator(Long anOperId,String anOperOrg){
+        StringBuffer sb=new StringBuffer();
+        Map<String, Object> map = new HashMap();
+        map.put("operOrg", anOperOrg);
+        map.put("operNo", anOperId);
+        map.put("status", "1");
+        int i=0;
+        for(CustOperatorRelation custOR : this.selectByProperty(map)){
+            if(i==0){
+                sb.append(custOR.getCustNo());
+            }else{
+                sb.append(","+custOR.getCustNo());
+            }
+           i++;
+        }
+        return sb.toString();
+    }
+    
+    /***
+     * 添加绑定客户操作员
+     * @param anCustList
+     */
+    public void addCustOperatorRelation(Long anOperId,String anOperOrg,String anCustList){
+        String[] custArr=anCustList.split(",");
+        for(int i=0;i<custArr.length;i++){
+            String custStr=custArr[i];
+            // 增加操作员和客户之间关系
+            this.insert(new CustOperatorRelation(anOperId, Long.parseLong(custStr),anOperOrg));
+        }
     }
 }

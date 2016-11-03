@@ -17,7 +17,7 @@ public interface IOperatorService {
      * @param anMap
      * @return
      */
-    public String webAddCustOperator(Map<String, Object> anMap);
+    public String webAddCustOperator(Map<String, Object> anMap,String anCustList);
     
     
     /****
@@ -25,7 +25,7 @@ public interface IOperatorService {
      * @param anMap
      * @return
      */
-    public String webUpdateCustOperator(Map<String, Object> anMap);
+    public String webUpdateCustOperator(Map<String, Object> anMap,String anCustList);
     
     /****
      * 操作员分页查询
@@ -100,5 +100,11 @@ public interface IOperatorService {
      * @return
      */
     public CustOperatorInfo findCustClerkMan(String anOperOrg);
+    
+    /***
+     * 查询机构绑定的客户信息
+     * @return
+     */
+    public String webFindOperatorCustInfo();
 
 }
