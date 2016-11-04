@@ -213,6 +213,8 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
 
     @Transient
     private String accessType;
+    @Transient
+    private String custList;
 
     public String getClerkMan() {
         return this.clerkMan;
@@ -457,6 +459,14 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         this.accessType = anAccessType;
     }
 
+    public String getCustList() {
+        return this.custList;
+    }
+
+    public void setCustList(String anCustList) {
+        this.custList = anCustList;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -486,6 +496,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         sb.append(", operOrg=").append(operOrg);
         sb.append(", contactorSerial=").append(contactorSerial);
         sb.append(", ruleList=").append(ruleList);
+        sb.append(", custList=").append(custList);
         sb.append("]");
         return sb.toString();
     }

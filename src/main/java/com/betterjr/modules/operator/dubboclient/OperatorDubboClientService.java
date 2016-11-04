@@ -15,13 +15,13 @@ public class OperatorDubboClientService implements IOperatorService {
     private IOperatorService operatorService;
     
     @Override
-    public String webAddCustOperator(Map<String, Object> anMap) {
-        return operatorService.webAddCustOperator(anMap);
+    public String webAddCustOperator(Map<String, Object> anMap,String anCustList) {
+        return operatorService.webAddCustOperator(anMap,anCustList);
     }
 
     @Override
-    public String webUpdateCustOperator(Map<String, Object> anMap) {
-        return operatorService.webUpdateCustOperator(anMap);
+    public String webUpdateCustOperator(Map<String, Object> anMap,String anCustList) {
+        return operatorService.webUpdateCustOperator(anMap,anCustList);
     }
 
     @Override
@@ -73,5 +73,13 @@ public class OperatorDubboClientService implements IOperatorService {
     public CustOperatorInfo findCustClerkMan(String anOperOrg){
 
         return operatorService.findCustClerkMan(anOperOrg);
+    }
+    
+    /***
+     * 查询机构绑定的客户信息
+     * @return
+     */
+    public String webFindOperatorCustInfo(){
+        return operatorService.webFindOperatorCustInfo();
     }
 }

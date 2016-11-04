@@ -8,6 +8,7 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.betterjr.common.web.AjaxObject;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfoRequest;
+import com.betterjr.modules.account.service.CustAccountService;
 import com.betterjr.modules.operator.service.OperatorRequestService;
 import com.betterjr.modules.operator.service.SysMenuManagerService;
 import com.betterjr.modules.rule.service.RuleServiceDubboFilterInvoker;
@@ -23,23 +24,25 @@ public class OperatorDubboService implements IOperatorService {
     private OperatorRequestService operatorRequestService;
     @Autowired
     private SysMenuManagerService manuManagerService;
+    @Autowired
+    private CustAccountService custAccountService;
     
     /***
      * 新增操作员
      */
     @Override
-    public String webAddCustOperator(Map<String, Object> anMap) {
+    public String webAddCustOperator(Map<String, Object> anMap,String anCustList) {
         CustOperatorInfoRequest request=(CustOperatorInfoRequest)RuleServiceDubboFilterInvoker.getInputObj();
-        return AjaxObject.newOk("新增操作员",operatorRequestService.saveCustOperator(request)).toJson();
+        return AjaxObject.newOk("新增操作员",operatorRequestService.addCustOperator(request,anCustList)).toJson();
     }
 
     /****
      * 编辑操作员
      */
     @Override
-    public String webUpdateCustOperator(Map<String, Object> anMap) {
+    public String webUpdateCustOperator(Map<String, Object> anMap,String anCustList) {
         CustOperatorInfoRequest request=(CustOperatorInfoRequest)RuleServiceDubboFilterInvoker.getInputObj();
-        return AjaxObject.newOk("编辑操作员",operatorRequestService.updateCustOperator(request)).toJson();
+        return AjaxObject.newOk("编辑操作员",operatorRequestService.saveCustOperator(request,anCustList)).toJson();
     }
 
     /****
@@ -115,7 +118,7 @@ public class OperatorDubboService implements IOperatorService {
      * @return
      */
     public String webUpdatePassword(String anNewPasswd,String anOkPasswd,String anPasswd){
-        if(operatorRequestService.updatePasword(anNewPasswd,anOkPasswd,anPasswd)){
+        if(operatorRequestService.savePasword(anNewPasswd,anOkPasswd,anPasswd)){
             return AjaxObject.newOk("密码修改成功").toJson();
         }else{
             return AjaxObject.newError("密码修改失败").toJson();
@@ -141,5 +144,13 @@ public class OperatorDubboService implements IOperatorService {
     public CustOperatorInfo findCustClerkMan(String anOperOrg){
 
         return operatorRequestService.findCustClerkMan(anOperOrg);
+    }
+    
+    /***
+     * 查询机构绑定的客户信息
+     * @return
+     */
+    public String webFindOperatorCustInfo(){
+        return AjaxObject.newOk("查询操作员关联客户信息", custAccountService.findCustOperator()).toJson();
     }
 }
