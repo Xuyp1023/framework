@@ -33,7 +33,7 @@ public class OperatorDubboService implements IOperatorService {
     @Override
     public String webAddCustOperator(Map<String, Object> anMap,String anCustList) {
         CustOperatorInfoRequest request=(CustOperatorInfoRequest)RuleServiceDubboFilterInvoker.getInputObj();
-        return AjaxObject.newOk("新增操作员",operatorRequestService.saveCustOperator(request,anCustList)).toJson();
+        return AjaxObject.newOk("新增操作员",operatorRequestService.addCustOperator(request,anCustList)).toJson();
     }
 
     /****
@@ -42,7 +42,7 @@ public class OperatorDubboService implements IOperatorService {
     @Override
     public String webUpdateCustOperator(Map<String, Object> anMap,String anCustList) {
         CustOperatorInfoRequest request=(CustOperatorInfoRequest)RuleServiceDubboFilterInvoker.getInputObj();
-        return AjaxObject.newOk("编辑操作员",operatorRequestService.updateCustOperator(request,anCustList)).toJson();
+        return AjaxObject.newOk("编辑操作员",operatorRequestService.saveCustOperator(request,anCustList)).toJson();
     }
 
     /****
@@ -118,7 +118,7 @@ public class OperatorDubboService implements IOperatorService {
      * @return
      */
     public String webUpdatePassword(String anNewPasswd,String anOkPasswd,String anPasswd){
-        if(operatorRequestService.updatePasword(anNewPasswd,anOkPasswd,anPasswd)){
+        if(operatorRequestService.savePasword(anNewPasswd,anOkPasswd,anPasswd)){
             return AjaxObject.newOk("密码修改成功").toJson();
         }else{
             return AjaxObject.newError("密码修改失败").toJson();

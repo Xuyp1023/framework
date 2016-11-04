@@ -23,7 +23,6 @@ import com.betterjr.modules.account.dao.CustOperatorInfoMapper;
 import com.betterjr.modules.account.data.CustOptData;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfoRequest;
-import com.betterjr.modules.account.entity.CustOperatorRelation;
 import com.betterjr.modules.account.service.CustAndOperatorRelaService;
 import com.betterjr.modules.account.service.CustPassService;
 
@@ -55,7 +54,7 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
      * @param anMap
      * @return
      */
-    public CustOptData saveCustOperator(final CustOperatorInfoRequest request,String anCustList) {
+    public CustOptData addCustOperator(final CustOperatorInfoRequest request,String anCustList) {
         final boolean optExists = this.custOptService.checkOperatorExists(request.getContIdentType(), request.getContIdentNo());
         if (optExists) {
             throw new BytterTradeException(40001, "抱歉，该证件号码已存在");
@@ -92,7 +91,7 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
      * @param anMap
      * @return
      */
-    public CustOptData updateCustOperator(final CustOperatorInfoRequest request,String anCustList) {
+    public CustOptData saveCustOperator(final CustOperatorInfoRequest request,String anCustList) {
         final CustOperatorInfo operator = BeanMapper.map(request, CustOperatorInfo.class);
         if (operator.getId() == null) {
             throw new BytterTradeException(40001, "抱歉，操作员编号不能为空");
@@ -109,10 +108,6 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
             CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();// 获取当前登录机构
             operator.setOperOrg(custOperator.getOperOrg());
         }
-        Map<String, Object> operatorMp=new HashMap<String, Object>();
-        operatorMp.put("operNo", operator.getId());
-        operatorMp.put("operOrg", operator.getOperOrg());
-        custAndOpService.deleteByExample(operatorMp);
         custAndOpService.addCustOperatorRelation(operator.getId(),operator.getOperOrg(),anCustList);
         final CustOptData workData = BeanMapper.map(operator, CustOptData.class);
         return workData;
@@ -203,7 +198,7 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
      * @param anPasswd
      * @return
      */
-    public boolean updatePasword(final String anNewPasswd, final String anOkPasswd, final String anPasswd) {
+    public boolean savePasword(final String anNewPasswd, final String anOkPasswd, final String anPasswd) {
         try {
             return custPassService.savePassword(CustPasswordType.ORG, anNewPasswd, anOkPasswd, anPasswd);
         }

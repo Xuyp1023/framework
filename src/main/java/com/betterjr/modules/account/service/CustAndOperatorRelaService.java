@@ -103,6 +103,11 @@ public class CustAndOperatorRelaService extends BaseService<CustOperatorRelation
      * @param anCustList
      */
     public void addCustOperatorRelation(Long anOperId,String anOperOrg,String anCustList){
+        Map<String, Object> operatorMp=new HashMap<String, Object>();
+        operatorMp.put("operNo",anOperId);
+        operatorMp.put("operOrg", anOperOrg);
+        this.deleteByExample(operatorMp);
+        
         String[] custArr=anCustList.split(",");
         for(int i=0;i<custArr.length;i++){
             String custStr=custArr[i];
