@@ -34,7 +34,7 @@
       <p class="21" style="margin-top:0.0000pt;margin-bottom:0.0000pt;line-height:18.0000pt;mso-line-height-rule:exactly;background:rgb(255,255,255);">
         <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);font-size:10.0000pt;mso-font-kerning:0.0000pt;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
         <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);font-size:12.0000pt;mso-font-kerning:0.0000pt;">&nbsp;
-          <font face="宋体">协议编号：${(protacalInfo.protocalNo)!}</font>&nbsp;&nbsp;&nbsp;
+          <font face="宋体">协议编号：${(protacalInfo.protocalNo)!''}</font>&nbsp;&nbsp;&nbsp;
           <font face="宋体">保兑仓合作字</font>&nbsp;&nbsp;&nbsp;
           <font face="宋体">号</font></span>
         <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);font-size:12.0000pt;mso-font-kerning:0.0000pt;">
@@ -43,64 +43,30 @@
       </p>
       <p class="21" style="margin-top:0.0000pt;margin-bottom:0.0000pt;line-height:20.0000pt;mso-line-height-rule:exactly;background:rgb(255,255,255);">
         <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
-          <font face="宋体">甲方：${(protacalInfo.firstName)!}</font></span>
+          <font face="宋体">甲方：${(protacalInfo.firstName)!''}</font></span>
         <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
           <o:p></o:p>
         </span>
       </p>
       <p class="21" style="margin-top:0.0000pt;margin-bottom:0.0000pt;line-height:20.0000pt;mso-line-height-rule:exactly;background:rgb(255,255,255);">
         <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
-          <font face="宋体">地址：${(protacalInfo.firstAddress)!}</font></span>
+          <font face="宋体">地址：${(protacalInfo.firstAddress)!''}</font></span>
         <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
           <o:p></o:p>
         </span>
       </p>
       <p class="21" style="margin-top:0.0000pt;margin-bottom:0.0000pt;line-height:20.0000pt;mso-line-height-rule:exactly;background:rgb(255,255,255);">
         <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
-          <font face="宋体">电话：${(protacalInfo.firstPhone)!}</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <font face="宋体">传真：${(protacalInfo.firstFax)!}</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <font face="宋体">电话：${(protacalInfo.firstPhone)!''}</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <font face="宋体">传真：${(protacalInfo.firstFax)!''}</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
         <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
           <o:p></o:p>
         </span>
       </p>
       <p class="21" style="margin-top:0.0000pt;margin-bottom:0.0000pt;line-height:20.0000pt;mso-line-height-rule:exactly;background:rgb(255,255,255);">
         <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
-          <font face="宋体">负责人：${(protacalInfo.firstLegal)!}</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <font face="宋体">职务：${(protacalInfo.firstJob)!}</font></span>
-        <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
-          <o:p></o:p>
-        </span>
-      </p>
-      <p class="21" style="margin-top:0.0000pt;margin-bottom:0.0000pt;line-height:20.0000pt;mso-line-height-rule:exactly;background:rgb(255,255,255);">
-        <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
-          <o:p>&nbsp;</o:p></span>
-      </p>
-      <p class="21" style="margin-top:0.0000pt;margin-bottom:0.0000pt;line-height:20.0000pt;mso-line-height-rule:exactly;background:rgb(255,255,255);">
-        <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
-          <font face="宋体">乙方（买方）：${(protacalInfo.secondName)!}</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
-          <o:p></o:p>
-        </span>
-      </p>
-      <p class="21" style="margin-top:0.0000pt;margin-bottom:0.0000pt;line-height:20.0000pt;mso-line-height-rule:exactly;background:rgb(255,255,255);">
-        <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
-          <font face="宋体">地址：${(protacalInfo.secondAddress)!}</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-        <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
-          <o:p></o:p>
-        </span>
-      </p>
-      <p class="21" style="margin-top:0.0000pt;margin-bottom:0.0000pt;line-height:20.0000pt;mso-line-height-rule:exactly;background:rgb(255,255,255);">
-        <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
-          <font face="宋体">电话：${(protacalInfo.secondPhone)!}</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <font face="宋体">传真：${(protacalInfo.secondFax)!}</font></span>
-        <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
-          <o:p></o:p>
-        </span>
-      </p>
-      <p class="21" style="margin-top:0.0000pt;margin-bottom:0.0000pt;line-height:20.0000pt;mso-line-height-rule:exactly;background:rgb(255,255,255);">
-        <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
-          <font face="宋体">法定代表人或负责人：${(protacalInfo.secondLegal)!}</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <font face="宋体">职务：${(protacalInfo.secondJob)!}</font></span>
+          <font face="宋体">负责人：${(protacalInfo.firstLegal)!''}</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <font face="宋体">职务：${(protacalInfo.firstJob)!''}</font></span>
         <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
           <o:p></o:p>
         </span>
@@ -111,28 +77,62 @@
       </p>
       <p class="21" style="margin-top:0.0000pt;margin-bottom:0.0000pt;line-height:20.0000pt;mso-line-height-rule:exactly;background:rgb(255,255,255);">
         <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
-          <font face="宋体">丙方（卖方）：${(protacalInfo.threeName)!}</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <font face="宋体">乙方（买方）：${(protacalInfo.secondName)!''}</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
         <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
           <o:p></o:p>
         </span>
       </p>
       <p class="21" style="margin-top:0.0000pt;margin-bottom:0.0000pt;line-height:20.0000pt;mso-line-height-rule:exactly;background:rgb(255,255,255);">
         <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
-          <font face="宋体">地址：${(protacalInfo.threeAddress)!}</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <font face="宋体">地址：${(protacalInfo.secondAddress)!''}</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
         <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
           <o:p></o:p>
         </span>
       </p>
       <p class="21" style="margin-top:0.0000pt;margin-bottom:0.0000pt;line-height:20.0000pt;mso-line-height-rule:exactly;background:rgb(255,255,255);">
         <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
-          <font face="宋体">电话：${(protacalInfo.threePhone)!}</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;传真：${(protacalInfo.threeFax)!}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <font face="宋体">电话：${(protacalInfo.secondPhone)!''}</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <font face="宋体">传真：${(protacalInfo.secondFax)!''}</font></span>
         <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
           <o:p></o:p>
         </span>
       </p>
       <p class="21" style="margin-top:0.0000pt;margin-bottom:0.0000pt;line-height:20.0000pt;mso-line-height-rule:exactly;background:rgb(255,255,255);">
         <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
-          <font face="宋体">法定代表人或负责人：${(protacalInfo.threeLegal)!}</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font face="宋体">职务：${(protacalInfo.threeJob)!}</font></span>
+          <font face="宋体">法定代表人或负责人：${(protacalInfo.secondLegal)!''}</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <font face="宋体">职务：${(protacalInfo.secondJob)!''}</font></span>
+        <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
+          <o:p></o:p>
+        </span>
+      </p>
+      <p class="21" style="margin-top:0.0000pt;margin-bottom:0.0000pt;line-height:20.0000pt;mso-line-height-rule:exactly;background:rgb(255,255,255);">
+        <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
+          <o:p>&nbsp;</o:p></span>
+      </p>
+      <p class="21" style="margin-top:0.0000pt;margin-bottom:0.0000pt;line-height:20.0000pt;mso-line-height-rule:exactly;background:rgb(255,255,255);">
+        <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
+          <font face="宋体">丙方（卖方）：${(protacalInfo.threeName)!''}</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
+          <o:p></o:p>
+        </span>
+      </p>
+      <p class="21" style="margin-top:0.0000pt;margin-bottom:0.0000pt;line-height:20.0000pt;mso-line-height-rule:exactly;background:rgb(255,255,255);">
+        <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
+          <font face="宋体">地址：${(protacalInfo.threeAddress)!''}</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
+          <o:p></o:p>
+        </span>
+      </p>
+      <p class="21" style="margin-top:0.0000pt;margin-bottom:0.0000pt;line-height:20.0000pt;mso-line-height-rule:exactly;background:rgb(255,255,255);">
+        <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
+          <font face="宋体">电话：${(protacalInfo.threePhone)!''}</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;传真：${(protacalInfo.threeFax)!''}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
+          <o:p></o:p>
+        </span>
+      </p>
+      <p class="21" style="margin-top:0.0000pt;margin-bottom:0.0000pt;line-height:20.0000pt;mso-line-height-rule:exactly;background:rgb(255,255,255);">
+        <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
+          <font face="宋体">法定代表人或负责人：${(protacalInfo.threeLegal)!''}</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font face="宋体">职务：${(protacalInfo.threeJob)!''}</font></span>
         <span style="mso-spacerun:'yes';font-family:宋体;color:rgb(0,0,0);letter-spacing:0.4500pt;font-size:10.5000pt;mso-font-kerning:0.0000pt;">
           <o:p></o:p>
         </span>
