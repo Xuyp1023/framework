@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.betterjr.common.security.KeyReader;
 import com.betterjr.common.utils.BTAssert;
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.web.AjaxObject;
@@ -25,6 +26,12 @@ public class CustCertDubboService implements ICustCertService {
     @Autowired
     private BetterX509CertService x509CertService;
 
+    @Override
+    public CustCertInfo checkValidityWithBase64(final String anX509Str) {
+        X509Certificate tmpX509 = (X509Certificate) KeyReader.fromCerBase64String(anX509Str);
+        return custCertService.checkValidity(tmpX509);
+    }
+    
     @Override
     public CustCertInfo checkValidity(final X509Certificate anX509) {
         return custCertService.checkValidity(anX509);

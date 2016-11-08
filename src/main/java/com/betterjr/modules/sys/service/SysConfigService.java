@@ -3,6 +3,7 @@ package com.betterjr.modules.sys.service;
 import com.betterjr.common.config.ConfigBaseService;
 import com.betterjr.common.config.ConfigFace;
 import com.betterjr.common.service.BaseService;
+import com.betterjr.common.service.SpringContextHolder;
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.modules.sys.dao.SysConfigInfoMapper;
 import com.betterjr.modules.sys.entity.SysConfigInfo;
@@ -51,7 +52,12 @@ public class SysConfigService extends BaseService<SysConfigInfoMapper, SysConfig
             return null;
         }
     }
-
+    
+    public static void saveParamValue(String anParamName, String anParamValue) {
+        SysConfigService sysConfigService = SpringContextHolder.getBean(SysConfigService.class);
+        sysConfigService.updateParamValue(anParamName, anParamValue);
+    }
+    
     public void updateParamValue(String anParamName, String anParamValue) {
         ConfigFace face = configService.getConfig(anParamName);
         if (face != null && face instanceof SysConfigInfo) {

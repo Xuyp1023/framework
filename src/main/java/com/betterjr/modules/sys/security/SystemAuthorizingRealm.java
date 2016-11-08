@@ -1,5 +1,6 @@
 package com.betterjr.modules.sys.security;
 
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,12 +49,9 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 
     private CustCertDubboClientService certService;
 
-
     private CustLoginDubboClientService userService;
 
-
     private CustOperatorDubboClientService operatorService;
-
 
     private CustPassDubboClientService passService;
 
@@ -146,7 +144,8 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
             workData = contextInfo;
 
             if (user != null) {
-                userPassData = passService.findPassAndSalt(user.getId(), new String[]{CustPasswordType.PERSON_TRADE.getPassType(), CustPasswordType.ORG_TRADE.getPassType()});
+                userPassData = passService.findPassAndSalt(user.getId(),
+                        new String[] { CustPasswordType.PERSON_TRADE.getPassType(), CustPasswordType.ORG_TRADE.getPassType() });
                 log.warn(user.toString());
                 if (user.getStatus().equals("1") == false) {
                     throw new DisabledAccountException("操作员被要求暂停业务或者已经被注销");
@@ -178,10 +177,16 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
     }
 
     private CustCertInfo checkValid(final X509Certificate anCert) {
-        final CustCertInfo certInfo = certService.checkValidity(anCert);
-        Servlets.getSession().setAttribute(SecurityConstants.CUST_CERT_INFO, certInfo);
-        //        AccessClientImpl.set(certInfo);
-        return certInfo;
+        CustCertInfo certInfo;
+        try {
+            certInfo = certService.checkValidityWithBase64(Encodes.encodeBase64(anCert.getEncoded()));
+            Servlets.getSession().setAttribute(SecurityConstants.CUST_CERT_INFO, certInfo);
+            return certInfo;
+        }
+        catch (CertificateEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     protected CustContextInfo formLogin(final CustOperatorInfo custOperatorInfo) {

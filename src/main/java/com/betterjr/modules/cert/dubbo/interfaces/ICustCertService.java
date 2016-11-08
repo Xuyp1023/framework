@@ -16,7 +16,7 @@ public interface ICustCertService {
      * @throws 异常情况
      */
     public CustCertInfo checkValidity(X509Certificate anX509);
-
+    public CustCertInfo checkValidityWithBase64(final String anX509Str);
 
     /**
      * 根据机构信息获得这个几个的第一个数字证书

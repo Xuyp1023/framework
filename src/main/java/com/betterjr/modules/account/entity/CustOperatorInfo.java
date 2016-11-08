@@ -380,6 +380,9 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
     }
 
     public Boolean getDefOper() {
+        if (defOper == null){
+            return Boolean.FALSE;
+        }
         return defOper;
     }
 
