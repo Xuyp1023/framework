@@ -43,7 +43,7 @@ public class SysMenuManagerService {
      */
     public List findSysMenuByMenuId(Integer anMenuId) {
         List<String> menuIds = sysMenuRuleService.findAllByRuleAndMenu(findRoleByOperator(""), anMenuId);
-        return sysMenuService.findMenuList(menuIds);
+        return sysMenuService.findMenuList(findRoleByOperator(""),menuIds);
     }
     
     /**
@@ -54,7 +54,7 @@ public class SysMenuManagerService {
      * @return
      */
     public List findSysMenuByRoleMenu(String anRoleId) {
-        List<String> menuIds = sysMenuRuleService.findAllByRuleAndMenu(findRoleByOperator(anRoleId), 0);
+        List<String> menuIds = sysMenuRuleService.findAllByRuleAndMenu(findRoleByOperator(anRoleId), -1);
         return sysMenuService.findAllMenuList(menuIds);
     }
     

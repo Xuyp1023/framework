@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.betterjr.common.service.BaseService;
-import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.Collections3;
 import com.betterjr.modules.sys.dao.SysMenuRuleInfoMapper;
 import com.betterjr.modules.sys.entity.SysMenuRuleInfo;
@@ -63,7 +62,12 @@ public class SysMenuRuleService extends BaseService<SysMenuRuleInfoMapper, SysMe
         List<String> menuList = new ArrayList<String>();
         Map anMap = new HashMap<String, Object>();
         anMap.put("ruleId", anRuleIdList);
-        List<Integer> menus=  this.menuService.findSubMenu(anMenuId);
+        List<Integer> menus=new ArrayList<Integer>();  
+        if(-1==anMenuId){
+            menus=this.menuService.findAllMenu();
+        }else{
+            menus=this.menuService.findSubMenu(anMenuId);
+        }
         if (Collections3.isEmpty(menus) || Collections3.isEmpty(anRuleIdList)){
             
             return menuList;
@@ -107,5 +111,23 @@ public class SysMenuRuleService extends BaseService<SysMenuRuleInfoMapper, SysMe
      */
     public boolean delMenuRole(Long anRoleId){
         return this.deleteByProperty("ruleId", anRoleId)>0;
+    }
+    
+    /**
+     * 获取角色对应指定的菜单
+     * @param ruleNames
+     * @return
+     */
+    public boolean checkMenuRole(List<String> anRuleIdList, Integer anMenuId){
+        Map anMap = new HashMap<String, Object>();
+        anMap.put("ruleId", anRuleIdList);
+        anMap.put("menuId", anMenuId);
+        logger.info("checkMenuRole ruleNames "+ anRuleIdList +", anMenuId = " + anMenuId +", " + anMap);
+        List<SysMenuRuleInfo> ruleList = this.selectByProperty(anMap);
+        if(Collections3.isEmpty(ruleList)){
+            return false;
+        }else{
+            return true;
+        }
     }
 }
