@@ -29,6 +29,10 @@ public class CustCertDubboClientService {
         return custCertService.checkValidity(anX509);
     }
 
+    public CustCertInfo checkValidityWithBase64(final String anX509Str) {
+        return custCertService.checkValidityWithBase64(anX509Str);
+    }
+    
     public CustCertInfo findFirstCertInfoByOperOrg(final String anOperOrg) {
         return custCertService.findFirstCertInfoByOperOrg(anOperOrg);
     }
