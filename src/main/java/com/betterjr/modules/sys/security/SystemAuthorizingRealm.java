@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import com.betterjr.common.data.CustPasswordType;
 import com.betterjr.common.data.SimpleDataEntity;
 import com.betterjr.common.data.UserType;
+import com.betterjr.common.exception.BytterException;
 import com.betterjr.common.security.SecurityConstants;
 import com.betterjr.common.utils.Collections3;
 import com.betterjr.common.utils.Digests;
@@ -88,23 +89,24 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
         List<SimpleDataEntity> userPassData = null;
         try {
             CustCertInfo certInfo = null;
-            if ((authcToken instanceof BetterjrWechatToken) == false) {
-                try {
-                    final X509Certificate cert = Servlets.findCertificate();
-                    if (cert != null) {
-                        certInfo = checkValid(cert);
-                    }
-                    else {
-                        throw new AuthenticationException("the request has X509Certificate");
-                    }
+            try {
+                final X509Certificate cert = Servlets.findCertificate();
+                if (cert != null) {
+                    certInfo = checkValid(cert);
+                    log.info("数字证数验证成功: certInfo = " + certInfo);
                 }
-                catch (final AuthenticationException e) {
-                    throw e;
+                else {
+                    log.error("数字证数验证失败");
+                    throw new AuthenticationException("the request has X509Certificate");
                 }
-                catch (final Exception e) {
-                    log.error("数字证数验证失败", e);
-                    throw new AuthenticationException("数字证书验证失败");
-                }
+            }
+            catch (final AuthenticationException e) {
+                log.error("数字证数验证失败", e);
+                throw e;
+            }
+            catch (final Exception e) {
+                log.error("数字证数验证失败", e);
+                throw new AuthenticationException("数字证书验证失败");
             }
             if (authcToken instanceof CaptchaUsernamePasswordToken) {
                 final CaptchaUsernamePasswordToken token = (CaptchaUsernamePasswordToken) authcToken;
@@ -124,7 +126,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
                     contextInfo = userService.saveFormLogin(user);
                 }
             }
-            else if (authcToken instanceof BetterjrSsoToken || authcToken instanceof BetterjrWechatToken) {
+            else if (authcToken instanceof BetterjrSsoToken) {
                 // 用证书登录方式，控制在拜特资金管理系统，原则上不存在过期或无效的问题
                 // 统一使用Form形式的验证！
                 saltStr = "985a44369b063938a6a7";
@@ -183,9 +185,8 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
             Servlets.getSession().setAttribute(SecurityConstants.CUST_CERT_INFO, certInfo);
             return certInfo;
         }
-        catch (CertificateEncodingException e) {
-            e.printStackTrace();
-            return null;
+        catch (final CertificateEncodingException e) {
+            throw new BytterException(e);
         }
     }
 

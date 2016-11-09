@@ -26,40 +26,40 @@ public class CaptchaFormAuthenticationFilter extends BaseFormAuthenticationFilte
     private static final Logger log = LoggerFactory.getLogger(BaseFormAuthenticationFilter.class);
     public static final String DEFAULT_MOBILE_PARAM = "mobileLogin";
     public static final String DEFAULT_MESSAGE_PARAM = "message";
-    private String captchaParam = SecurityConstants.CAPTCHA_KEY;
-    private String mobileLoginParam = DEFAULT_MOBILE_PARAM;
+    private final String captchaParam = SecurityConstants.CAPTCHA_KEY;
+    private final String mobileLoginParam = DEFAULT_MOBILE_PARAM;
 
     public String getCaptchaParam() {
         return captchaParam;
     }
 
-    protected String getCaptcha(ServletRequest request) {
+    protected String getCaptcha(final ServletRequest request) {
         return WebUtils.getCleanParam(request, getCaptchaParam());
     }
 
     @Override
-    protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {
+    protected AuthenticationToken createToken(final ServletRequest request, final ServletResponse response) {
         String tmpIp = null;
         if (request instanceof HttpServletRequest) {
-            HttpServletRequest workRequest = (HttpServletRequest) request;
+            final HttpServletRequest workRequest = (HttpServletRequest) request;
             tmpIp = Servlets.getRemoteAddr(workRequest);
         }
         else {
             tmpIp = "";
         }
 
-        String username = getUsername(request);
-        String password = getPassword(request);
-        String captcha = getCaptcha(request);
-        String identType = WebUtils.getCleanParam(request, "indetType");
+        final String username = getUsername(request);
+        final String password = getPassword(request);
+        final String captcha = getCaptcha(request);
+        final String identType = WebUtils.getCleanParam(request, "indetType");
 
-        CaptchaUsernamePasswordToken token = new CaptchaUsernamePasswordToken(identType, username, password, tmpIp, captcha, isMobileLogin(request),
+        final CaptchaUsernamePasswordToken token = new CaptchaUsernamePasswordToken(identType, username, password, tmpIp, captcha, isMobileLogin(request),
                 (HttpServletRequest) request, (HttpServletResponse) response);
 
         return token;
     }
 
-    protected boolean isMobileLogin(ServletRequest request) {
+    protected boolean isMobileLogin(final ServletRequest request) {
 
         return WebUtils.isTrue(request, mobileLoginParam);
     }
@@ -67,12 +67,13 @@ public class CaptchaFormAuthenticationFilter extends BaseFormAuthenticationFilte
     /**
      * 登录成功之后跳转URL
      */
+    @Override
     public String getSuccessUrl() {
         return super.getSuccessUrl();
     }
 
     @Override
-    protected void issueSuccessRedirect(ServletRequest request, ServletResponse response) throws Exception {
+    protected void issueSuccessRedirect(final ServletRequest request, final ServletResponse response) throws Exception {
         // Principal p = UserUtils.getPrincipal();
         // if (p != null && !p.isMobileLogin()){
         WebUtils.issueRedirect(request, response, getSuccessUrl(), null, true);
@@ -85,8 +86,9 @@ public class CaptchaFormAuthenticationFilter extends BaseFormAuthenticationFilte
      * 登录失败调用事件
      */
     @Override
-    protected boolean onLoginFailure(AuthenticationToken token, AuthenticationException e, ServletRequest request, ServletResponse response) {
-        String className = e.getClass().getName(), message = "";
+    protected boolean onLoginFailure(final AuthenticationToken token, final AuthenticationException e, final ServletRequest request, final ServletResponse response) {
+        final String className = e.getClass().getName();
+        String message = "";
         if (IncorrectCredentialsException.class.getName().equals(className) || UnknownAccountException.class.getName().equals(className)) {
             message = "用户或密码错误, 请重试.";
         }
@@ -103,26 +105,26 @@ public class CaptchaFormAuthenticationFilter extends BaseFormAuthenticationFilte
         log.warn("loginFailure : " + message);
         request.setAttribute(getFailureKeyAttribute(), className);
         request.setAttribute("message", message);
-        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+        final HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        final HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         if (!"XMLHttpRequest".equalsIgnoreCase(httpServletRequest.getHeader("X-Requested-With"))) {// 不是ajax请求
             try {
                 httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/p/pages/login.html?success=0&message=" + message);
             }
-            catch (IOException e1) {
+            catch (final IOException e1) {
                 e1.printStackTrace();
             }
         }
         else {
             // httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/login/timeout/success");
-            Map<String, Object> reslut = new HashMap<>();
-            reslut.put("code", 4001);
+            final Map<String, Object> reslut = new HashMap<>();
+            reslut.put("code", 401);
             reslut.put("message", message);
             response.setContentType("application/json");
             try {
                 httpServletResponse.getWriter().write(JsonMapper.toJsonString(reslut));
             }
-            catch (IOException e1) {
+            catch (final IOException e1) {
                 e1.printStackTrace();
             }
             return false;
