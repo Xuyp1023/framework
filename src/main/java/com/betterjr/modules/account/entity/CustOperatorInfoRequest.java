@@ -360,7 +360,8 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
 
     public void initAdminOperator(final String anOperOrg, final String anName, final String anPassword) {
         this.operOrg = anOperOrg;
-        this.ruleList = "SUPPLIER_USER,SELLER_USER,CORE_USER,FACTOR_USER,PLATFORM_USER";
+//        this.ruleList = "SUPPLIER_USER,SELLER_USER,CORE_USER,FACTOR_USER,PLATFORM_USER";
+        this.ruleList = "OPERATOR_ADMIN";
         this.operCode = "admin";
         this.password = anPassword;
         this.name = anName;

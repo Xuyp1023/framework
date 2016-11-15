@@ -170,9 +170,9 @@ public class RoleService extends BaseService<RoleMapper, Role> {
         final List<Role> roleList = this.selectByProperty(anMap);
         if (roleList.size() <= 0) {
             // 默认添加三个角色信息，管理员，审批员，复核员，经办员
-            Role anRole = new Role("", "管理员", "OPERATOR_ADMIN", "1", anOperOrg, "0");
-            this.insert(anRole);
-            anRole = new Role("", "审批员", "OPERATOR_ADUIT", "1", anOperOrg, "0");
+//            Role anRole = new Role("", "管理员", "OPERATOR_ADMIN", "1", anOperOrg, "0");
+//            this.insert(anRole);
+            Role anRole = new Role("", "审批员", "OPERATOR_ADUIT", "1", anOperOrg, "0");
             this.insert(anRole);
             anRole = new Role("", "复核员", "OPERATOR_CHECKER", "1", anOperOrg, "0");
             this.insert(anRole);
