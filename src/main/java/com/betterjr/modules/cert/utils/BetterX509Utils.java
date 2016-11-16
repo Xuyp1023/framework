@@ -61,6 +61,7 @@ import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.crypto.digests.SHA256Digest;
 import org.bouncycastle.jce.interfaces.PKCS12BagAttributeCarrier;
+import org.bouncycastle.jce.provider.X509CertificateObject;
 import org.bouncycastle.openssl.PEMEncryptor;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.openssl.jcajce.JcePEMEncryptorBuilder;
@@ -215,13 +216,14 @@ public class BetterX509Utils {
      *            文件保存目标目录
      * @return
      */
-    public static BetterX509CertStore newCertificate(final BetterX509MetaData anMetadata, final BetterX509CertStore anCaCertStore, final String anTargetFile) {
+    public static BetterX509CertStore newCertificate(final BetterX509MetaData anMetadata, final BetterX509CertStore anCaCertStore,
+            final String anTargetFile) {
         final KeyPair pair = anMetadata.newKeyPair();
         return newCertificate(anMetadata, anCaCertStore, pair.getPrivate(), pair.getPublic(), anTargetFile);
     }
 
-    public static BetterX509CertStore newCertificate(final BetterX509MetaData anMetadata, final BetterX509CertStore anCaCertStore, final PrivateKey anPrivKey,
-            final PublicKey anPubKey, final String anTargetFile) {
+    public static BetterX509CertStore newCertificate(final BetterX509MetaData anMetadata, final BetterX509CertStore anCaCertStore,
+            final PrivateKey anPrivKey, final PublicKey anPubKey, final String anTargetFile) {
         try {
             final X500Name userDN = anMetadata.buildDistinguishedName();
             final X509Certificate caCert = anCaCertStore.findCertificate();
@@ -236,8 +238,17 @@ public class BetterX509Utils {
             final ContentSigner signer = new JcaContentSignerBuilder(SIGNING_ALGORITHM).setProvider(BC).build(anCaCertStore.findPrivateKey());
 
             final X509Certificate userCert = new JcaX509CertificateConverter().setProvider(BC).getCertificate(certBuilder.build(signer));
-            final PKCS12BagAttributeCarrier bagAttr = (PKCS12BagAttributeCarrier) userCert;
-            bagAttr.setBagAttribute(PKCSObjectIdentifiers.pkcs_9_at_localKeyId, extUtils.createSubjectKeyIdentifier(anPubKey));
+            if (userCert instanceof PKCS12BagAttributeCarrier) {
+                final PKCS12BagAttributeCarrier bagAttr = (PKCS12BagAttributeCarrier) userCert;
+                bagAttr.setBagAttribute(PKCSObjectIdentifiers.pkcs_9_at_localKeyId, extUtils.createSubjectKeyIdentifier(anPubKey));
+            }
+            else if (userCert instanceof X509CertificateObject) {
+                final X509CertificateObject bagAttr = (X509CertificateObject) userCert;
+                bagAttr.setBagAttribute(PKCSObjectIdentifiers.pkcs_9_at_localKeyId, extUtils.createSubjectKeyIdentifier(anPubKey));
+            }
+            else {
+                logger.warn("not find work X509Certificate class");
+            }
 
             // 验证最终的数字证书
             userCert.checkValidity();
@@ -257,7 +268,7 @@ public class BetterX509Utils {
             certStorer.saveKeyStore(userStore);
 
             // 如果是文件模式，则保存数字证书文件相关信息
-            if ( certStorer instanceof BetterX509CertStreamStore){
+            if (certStorer instanceof BetterX509CertStreamStore) {
 
                 return certStorer;
             }
@@ -446,7 +457,8 @@ public class BetterX509Utils {
      * @param x509log
      * @return true 表示回收成功
      */
-    public static boolean revoke(final X509Certificate anCert, final CRLReason anReason, final BetterX509CertStore anCaStoreInfo, final String anCaRevocationList) {
+    public static boolean revoke(final X509Certificate anCert, final CRLReason anReason, final BetterX509CertStore anCaStoreInfo,
+            final String anCaRevocationList) {
         final KeyStore store = anCaStoreInfo.openKeyStore(false);
         PrivateKey caPrivateKey;
         try {
@@ -472,7 +484,8 @@ public class BetterX509Utils {
      * @param x509log
      * @return true 表示回收成功
      */
-    public static boolean revoke(final X509Certificate anCert, final CRLReason anReason, final String anCaRevocationList, final PrivateKey anCaPrivateKey) {
+    public static boolean revoke(final X509Certificate anCert, final CRLReason anReason, final String anCaRevocationList,
+            final PrivateKey anCaPrivateKey) {
         try {
             final X500Name issuerDN = new X500Name(anCert.getIssuerX500Principal().getName());
             final X509v2CRLBuilder crlBuilder = new X509v2CRLBuilder(issuerDN, new Date());
@@ -508,7 +521,8 @@ public class BetterX509Utils {
                     tmpFile.delete();
                 }
             }
-            final JcaPEMWriter pemWriter = new JcaPEMWriter(new FileWriter(anCaRevocationList.substring(0, anCaRevocationList.length() - 4) + ".pem"));
+            final JcaPEMWriter pemWriter = new JcaPEMWriter(
+                    new FileWriter(anCaRevocationList.substring(0, anCaRevocationList.length() - 4) + ".pem"));
             pemWriter.writeObject(crl);
             pemWriter.flush();
             pemWriter.close();
