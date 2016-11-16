@@ -295,6 +295,7 @@ public class BetterX509Utils {
             return certStorer;
         }
         catch (final Throwable t) {
+            logger.error("创建数字证书失败!", t);
             throw new RuntimeException("创建数字证书失败!", t);
         }
     }
