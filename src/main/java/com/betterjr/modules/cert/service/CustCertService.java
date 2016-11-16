@@ -266,7 +266,9 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         final CustCertInfo tmpCertInfo = this.selectByPrimaryKey(anCertInfo.getSerialNo());
         if (tmpCertInfo == null) {
             anCertInfo.initValue(UserUtils.getOperatorInfo());
-            anCertInfo.setStatus("1");
+            if (!BetterStringUtils.equals(anCertInfo.getStatus(), "8")) {
+                anCertInfo.setStatus("1");
+            }
             this.insert(anCertInfo);
 
             for (final String rule : rules) {
