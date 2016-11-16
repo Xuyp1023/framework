@@ -61,6 +61,7 @@ import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.crypto.digests.SHA256Digest;
 import org.bouncycastle.jce.interfaces.PKCS12BagAttributeCarrier;
+import org.bouncycastle.jce.provider.X509CertificateObject;
 import org.bouncycastle.openssl.PEMEncryptor;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.openssl.jcajce.JcePEMEncryptorBuilder;
@@ -236,7 +237,7 @@ public class BetterX509Utils {
             final ContentSigner signer = new JcaContentSignerBuilder(SIGNING_ALGORITHM).setProvider(BC).build(anCaCertStore.findPrivateKey());
 
             final X509Certificate userCert = new JcaX509CertificateConverter().setProvider(BC).getCertificate(certBuilder.build(signer));
-            final PKCS12BagAttributeCarrier bagAttr = (PKCS12BagAttributeCarrier) userCert;
+            final X509CertificateObject bagAttr = (X509CertificateObject) userCert;
             bagAttr.setBagAttribute(PKCSObjectIdentifiers.pkcs_9_at_localKeyId, extUtils.createSubjectKeyIdentifier(anPubKey));
 
             // 验证最终的数字证书
