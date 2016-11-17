@@ -125,7 +125,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
     /**
      * 证书有效期
      */
-    @JsonSerialize(using=CustDateJsonSerializer.class)
+    @JsonSerialize(using = CustDateJsonSerializer.class)
     @Column(name = "D_VALIDDATE", columnDefinition = "VARCHAR")
     @MetaData(value = "证书有效期", comments = "证书有效期")
     private String validDate;
@@ -133,7 +133,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
     /**
      * 证书发行日期
      */
-    @JsonSerialize(using=CustDateJsonSerializer.class)
+    @JsonSerialize(using = CustDateJsonSerializer.class)
     @Column(name = "D_CREATEDATE", columnDefinition = "VARCHAR")
     @MetaData(value = "证书发行日期", comments = "证书发行日期")
     private String createDate;
@@ -155,8 +155,8 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
     /**
      * 使用证书的角色，内置角色，颁发证书的指定，例如：CORE_USER，SUPPLIER_USER，FACTOR_USER，SELLER_USER
      */
-    //    @Column(name = "C_RULE_LIST", columnDefinition = "VARCHAR")
-    //    @MetaData(value = " 使用证书的角色", comments = "内置角色，颁发证书的指定，例如：CORE_USER，SUPPLIER_USER，FACTOR_USER，SELLER_USER")
+    // @Column(name = "C_RULE_LIST", columnDefinition = "VARCHAR")
+    // @MetaData(value = " 使用证书的角色", comments = "内置角色，颁发证书的指定，例如：CORE_USER，SUPPLIER_USER，FACTOR_USER，SELLER_USER")
     @Transient
     private String ruleList;
 
@@ -185,7 +185,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
     /**
      * 创建日期
      */
-    @JsonSerialize(using=CustDateJsonSerializer.class)
+    @JsonSerialize(using = CustDateJsonSerializer.class)
     @Column(name = "D_REG_DATE", columnDefinition = "VARCHAR")
     @MetaData(value = "创建日期", comments = "创建日期")
     @OrderBy("DESC")
@@ -231,7 +231,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
     /**
      * 发布日期
      */
-    @JsonSerialize(using=CustDateJsonSerializer.class)
+    @JsonSerialize(using = CustDateJsonSerializer.class)
     @Column(name = "C_PUBLISH_DATE", columnDefinition = "VARCHAR")
     @MetaData(value = "发布日期", comments = "发布日期")
     private String publishDate;
@@ -253,15 +253,14 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
     /**
      * email地址
      */
-    @Column(name = "c_email",  columnDefinition="VARCHAR" )
-    @MetaData( value="email地址", comments = "email地址")
+    @Column(name = "c_email", columnDefinition = "VARCHAR")
+    @MetaData(value = "email地址", comments = "email地址")
     private String email;
 
     @Transient
     private List<CustCertRule> certRuleList;
     @Transient
     private String commName;
-
 
     private static final long serialVersionUID = 1439797394180L;
 
@@ -438,9 +437,12 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         commName = anCommName;
     }
 
+    private static final List<String> ALLOW_STATUS = Arrays.asList("0", "9");
+    public boolean validCertInfo() {
+        return ALLOW_STATUS.contains(this.getStatus());
+    }
     public boolean validCertInfo(final CustCertInfo other) {
-
-        return (Arrays.asList("0", "9").contains(this.getStatus())
+        return (ALLOW_STATUS.contains(this.getStatus())
                 && this.getSerialNo() == null ? other.getSerialNo() == null : this.getSerialNo().equals(other.getSerialNo()))
                 && (this.getVersionUid() == null ? other.getVersionUid() == null : this.getVersionUid().equals(other.getVersionUid()))
                 && (this.getCertInfo() == null ? other.getCertInfo() == null : this.getCertInfo().equals(other.getCertInfo()))
@@ -540,8 +542,6 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         this.publishMode = anPublishMode;
     }
 
-
-
     public Long getCertId() {
         return this.certId;
     }
@@ -565,7 +565,9 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
     public void setCertRuleList(final List<CustCertRule> anCertRuleList) {
         certRuleList = anCertRuleList;
         if (anCertRuleList != null) {
-            ruleList = anCertRuleList.stream().map(certRule->{return certRule.getRule();}).collect(Collectors.joining(","));
+            ruleList = anCertRuleList.stream().map(certRule -> {
+                return certRule.getRule();
+            }).collect(Collectors.joining(","));
         }
     }
 
@@ -705,7 +707,7 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
         this.description = anCertInfo.getDescription();
     }
 
-    public void publishModifyValue(final String anToken, final String anPublishMode){
+    public void publishModifyValue(final String anToken, final String anPublishMode) {
         this.token = anToken;
         this.publishMode = anPublishMode;
         this.publishDate = BetterDateUtils.getNumDate();
@@ -713,10 +715,11 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
 
     /**
      * 检查是否可以下载数字证书，默认是10天；数字证书发布10天后，就不能下载；数字证书只有在状态为未启用和刚发布的情况下才可以下载
+     *
      * @return
      */
-    public boolean invalidDownload(){
-        if (BetterStringUtils.isBlank(this.publishDate)){
+    public boolean invalidDownload() {
+        if (BetterStringUtils.isBlank(this.publishDate)) {
             return false;
         }
         final String tmpDate = BetterDateUtils.addStrDays(this.publishDate, 10);

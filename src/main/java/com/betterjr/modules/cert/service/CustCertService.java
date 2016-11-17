@@ -553,6 +553,7 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
     public CustCertInfo checkValidity(final X509Certificate anX509) {
         final CustCertInfo certInfo = this.selectByPrimaryKey(anX509.getSerialNumber().toString());
         final CustCertInfo requestCertInfo = createCertInfo(anX509);
+        logger.debug(" checkValidity 1 :" + certInfo);
         if (certInfo.validCertInfo(requestCertInfo)) {
             // 找回Rule列表
             certInfo.setCertRuleList(certRuleService.queryCertRuleListBySerialNo(certInfo.getSerialNo()));
@@ -561,6 +562,7 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
                 certInfo.setStatus("0");
                 this.updateByPrimaryKeySelective(certInfo);
             }
+            logger.debug(" checkValidity 2 :" + certInfo);
             return certInfo;
         }
         else {
@@ -626,11 +628,11 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
      */
     public CustCertInfo findCertByOperOrg(final String anOperOrg) {
         BTAssert.notNull(anOperOrg);
-        CustCertInfo certInfo = Collections3.getFirst(this.selectByProperty("operOrg", anOperOrg));
+        final CustCertInfo certInfo = Collections3.getFirst(this.selectByProperty("operOrg", anOperOrg));
         if (certInfo != null) {
             certInfo.setCertRuleList(certRuleService.queryCertRuleListBySerialNo(certInfo.getSerialNo()));
         }
-        
+
         return certInfo;
     }
 
