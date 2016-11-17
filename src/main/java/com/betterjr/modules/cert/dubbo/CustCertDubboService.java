@@ -28,10 +28,10 @@ public class CustCertDubboService implements ICustCertService {
 
     @Override
     public CustCertInfo checkValidityWithBase64(final String anX509Str) {
-        X509Certificate tmpX509 = (X509Certificate) KeyReader.fromCerBase64String(anX509Str);
+        final X509Certificate tmpX509 = (X509Certificate) KeyReader.fromCerBase64String(anX509Str);
         return custCertService.checkValidity(tmpX509);
     }
-    
+
     @Override
     public CustCertInfo checkValidity(final X509Certificate anX509) {
         return custCertService.checkValidity(anX509);

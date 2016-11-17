@@ -27,6 +27,7 @@ import com.betterjr.common.data.SimpleDataEntity;
 import com.betterjr.common.data.UserType;
 import com.betterjr.common.exception.BytterException;
 import com.betterjr.common.security.SecurityConstants;
+import com.betterjr.common.utils.BTAssert;
 import com.betterjr.common.utils.Collections3;
 import com.betterjr.common.utils.Digests;
 import com.betterjr.common.utils.Encodes;
@@ -183,6 +184,8 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
         try {
             certInfo = certService.checkValidityWithBase64(Encodes.encodeBase64(anCert.getEncoded()));
             Servlets.getSession().setAttribute(SecurityConstants.CUST_CERT_INFO, certInfo);
+            log.debug(" checkValid: = " + certInfo);
+            BTAssert.isTrue(certInfo.validCertInfo(), "证书验证失败！");
             return certInfo;
         }
         catch (final CertificateEncodingException e) {
