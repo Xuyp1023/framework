@@ -82,6 +82,7 @@ public class CaptchaFormAuthenticationFilter extends BaseFormAuthenticationFilte
         // }
     }
 
+
     /**
      * 登录失败调用事件
      */
@@ -118,7 +119,7 @@ public class CaptchaFormAuthenticationFilter extends BaseFormAuthenticationFilte
         else {
             // httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/login/timeout/success");
             final Map<String, Object> reslut = new HashMap<>();
-            reslut.put("code", 401);
+            reslut.put("code", 4001);
             reslut.put("message", message);
             response.setContentType("application/json");
             try {
