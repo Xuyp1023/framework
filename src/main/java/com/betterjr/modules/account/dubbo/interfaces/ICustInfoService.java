@@ -21,4 +21,10 @@ public interface ICustInfoService {
      * @return
      */
     public Collection<CustInfo> queryCustInfo();
+    
+    /***
+     * 获取当前登录的客户号
+     * @return
+     */
+    public Long findCustNo();
 }
