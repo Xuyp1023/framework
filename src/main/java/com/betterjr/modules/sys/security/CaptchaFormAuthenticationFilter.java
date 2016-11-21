@@ -101,7 +101,7 @@ public class CaptchaFormAuthenticationFilter extends BaseFormAuthenticationFilte
         }
         else {
             message = "系统出现点问题，请稍后再试！";
-            e.printStackTrace(); // 输出到控制台
+            log.error("系统异常：", e);
         }
         log.warn("loginFailure : " + message);
         request.setAttribute(getFailureKeyAttribute(), className);
@@ -113,7 +113,7 @@ public class CaptchaFormAuthenticationFilter extends BaseFormAuthenticationFilte
                 httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/p/pages/login.html?success=0&message=" + message);
             }
             catch (final IOException e1) {
-                e1.printStackTrace();
+                log.error("系统异常：", e1);
             }
         }
         else {
@@ -126,7 +126,7 @@ public class CaptchaFormAuthenticationFilter extends BaseFormAuthenticationFilte
                 httpServletResponse.getWriter().write(JsonMapper.toJsonString(reslut));
             }
             catch (final IOException e1) {
-                e1.printStackTrace();
+                log.error("系统异常：", e1);
             }
             return false;
         }

@@ -88,27 +88,24 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
         boolean mobileLogin = false;
         log.warn("this work for doGetAuthenticationInfo");
         List<SimpleDataEntity> userPassData = null;
+
+        CustCertInfo certInfo = null;
         try {
-            CustCertInfo certInfo = null;
-            try {
-                final X509Certificate cert = Servlets.findCertificate();
-                if (cert != null) {
-                    certInfo = checkValid(cert);
-                    log.info("数字证数验证成功: certInfo = " + certInfo);
-                }
-                else {
-                    log.error("数字证数验证失败");
-                    throw new AuthenticationException("the request has X509Certificate");
-                }
+            final X509Certificate cert = Servlets.findCertificate();
+            if (cert != null) {
+                certInfo = checkValid(cert);
+                log.info("数字证数验证成功: certInfo = " + certInfo);
             }
-            catch (final AuthenticationException e) {
-                log.error("数字证数验证失败", e);
-                throw e;
+            else {
+                log.error("数字证数验证失败");
+                throw new AuthenticationException("数字证书验证失败！");
             }
-            catch (final Exception e) {
-                log.error("数字证数验证失败", e);
-                throw new AuthenticationException("数字证书验证失败");
-            }
+        }
+        catch (final Exception e) {
+            log.error("数字证数验证失败", e);
+            throw new AuthenticationException("数字证书验证失败！");
+        }
+        try {
             if (authcToken instanceof CaptchaUsernamePasswordToken) {
                 final CaptchaUsernamePasswordToken token = (CaptchaUsernamePasswordToken) authcToken;
                 user = operatorService.findCustOperatorByOperCode(certInfo.getOperOrg(), token.getUsername());
@@ -173,7 +170,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
             }
         }
         catch (final Exception ex) {
-            ex.printStackTrace();
+            log.error("登陆发生异常:", ex);
             return null;
         }
 
