@@ -129,6 +129,16 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
         conditionMap.put("businStatus", "0");
         return this.selectByProperty(conditionMap);
     }
+    
+    /**
+    * 根据条件查询
+    * @return
+    */
+   public List<CustInfo> findValidCustInfo(Map<String,Object> anMap) {
+       anMap.put("identValid", "1");
+       anMap.put("businStatus", "0");
+       return this.selectByProperty(anMap);
+   }
 
     /**
      * 查询所有可用客户 分页
