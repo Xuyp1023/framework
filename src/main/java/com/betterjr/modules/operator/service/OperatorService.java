@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -106,7 +107,9 @@ public class OperatorService extends BaseService<CustOperatorInfoMapper, CustOpe
         // 操作员角色信息绑定修改
         operatorRoleRelationService.saveSysOperatorRoleRelation(operator.getId(), operator.getRuleList());
         this.custPassService.insert(custPassInfo);
-        custAndOpService.addCustOperatorRelation(operator.getId(),operator.getOperOrg(),request.getCustList());// 添加客户绑定操作员关系
+        if(StringUtils.isNotBlank(request.getCustList())){
+            custAndOpService.addCustOperatorRelation(operator.getId(),operator.getOperOrg(),request.getCustList());// 添加客户绑定操作员关系
+        }
         operator.setRuleList("");
         return this.insert(operator);
     }

@@ -68,10 +68,10 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
             logger.error("角色不能为空");
             throw new BytterTradeException(40001, "抱歉，角色不能为空");
         }
-        if (BetterStringUtils.isBlank(anCustList)) {
-            logger.error("机构信息不能为空");
-            throw new BytterTradeException(40001, "抱歉，机构信息为空");
-        }
+//        if (BetterStringUtils.isBlank(anCustList)) {
+//            logger.error("机构信息不能为空");
+//            throw new BytterTradeException(40001, "抱歉，机构信息为空");
+//        }
         final CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();
         final String operOrg = custOperator.getOperOrg();
         request.setOperOrg(operOrg);
@@ -96,10 +96,10 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
         if (operator.getId() == null) {
             throw new BytterTradeException(40001, "抱歉，操作员编号不能为空");
         }
-        if (BetterStringUtils.isBlank(anCustList)) {
-            logger.error("机构信息不能为空");
-            throw new BytterTradeException(40001, "抱歉，机构信息为空");
-        }
+//        if (BetterStringUtils.isBlank(anCustList)) {
+//            logger.error("机构信息不能为空");
+//            throw new BytterTradeException(40001, "抱歉，机构信息为空");
+//        }
         // 操作员角色信息绑定修改
         operatorRoleRelationService.saveSysOperatorRoleRelation(operator.getId(), operator.getRuleList());
         this.updateByPrimaryKeySelective(operator);
@@ -108,7 +108,9 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
             CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();// 获取当前登录机构
             operator.setOperOrg(custOperator.getOperOrg());
         }
-        custAndOpService.addCustOperatorRelation(operator.getId(),operator.getOperOrg(),anCustList);
+        if (BetterStringUtils.isNotBlank(anCustList)) {
+            custAndOpService.addCustOperatorRelation(operator.getId(),operator.getOperOrg(),anCustList);
+        }
         final CustOptData workData = BeanMapper.map(operator, CustOptData.class);
         return workData;
     }
