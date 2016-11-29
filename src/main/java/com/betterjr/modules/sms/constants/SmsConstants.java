@@ -21,6 +21,7 @@ public final class SmsConstants {
 
     // 供用户保存用
     public static final String smsModifyTradePassVerifyCodePrefix = "sms::modifyTradePassVerifyCode::";
+    public static final String smsOpenAccountVerifyCodePrefix = "sms::openAccountVerifyCode::";
 
     // 常用秒数
     public static final int SEC_1800 = 1800;
