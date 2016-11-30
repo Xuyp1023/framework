@@ -151,6 +151,12 @@ public class OperatorService extends BaseService<CustOperatorInfoMapper, CustOpe
         return false;
     }
     
+    public boolean checkExistsByMap(Map<String, Object> anMap) {
+        List list = this.selectByProperty(anMap);
+        return list.size() > 0;
+    }
+    
+    
     public CustOperatorInfo queryCustOperatorInfo(Long operId){
         return this.selectByPrimaryKey(operId);
     }

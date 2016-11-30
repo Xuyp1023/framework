@@ -196,7 +196,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
      * 人员办理业务类型；0：普通操作员，2:实际经办人
      */
     @Column(name = "C_CLERK", columnDefinition = "VARCHAR")
-    @MetaData(value = "人员办理业务类型", comments = "人员办理业务类型；0：普通操作员，2:实际经办人")
+    @MetaData(value = "人员办理业务类型", comments = "人员办理业务类型；0：普通操作员，1对外经办人, 2:账户业务办理人员，3:交易业务办理人员")
     private String  clerkMan = "0";
 
     private String contIdentType;
