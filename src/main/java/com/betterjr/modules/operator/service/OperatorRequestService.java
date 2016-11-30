@@ -55,25 +55,9 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
      * @return
      */
     public CustOptData addCustOperator(final CustOperatorInfoRequest request,String anCustList) {
-        final boolean optExists = this.custOptService.checkOperatorExists(request.getContIdentType(), request.getContIdentNo());
-        if (optExists) {
-            throw new BytterTradeException(40001, "抱歉，该证件号码已存在");
-        }
-        // 判断该操作员是否存在
-        final boolean operCodeExists = this.custOptService.checkExistsByOperCodeAndOperOrg(request.getOperCode(), request.getOperOrg());
-        if (operCodeExists) {
-            throw new BytterTradeException(401, "抱歉，该操作员用户名存在【" + request.getOperCode() + "】");
-        }
-        if (BetterStringUtils.isBlank(request.getRuleList())) {
-            logger.error("角色不能为空");
-            throw new BytterTradeException(40001, "抱歉，角色不能为空");
-        }
-//        if (BetterStringUtils.isBlank(anCustList)) {
-//            logger.error("机构信息不能为空");
-//            throw new BytterTradeException(40001, "抱歉，机构信息为空");
-//        }
         final CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();
         final String operOrg = custOperator.getOperOrg();
+        checkParam(request,anCustList,operOrg); // 参数检查
         request.setOperOrg(operOrg);
         request.setCustList(anCustList);
         final int res = custOptService.addCustOperator(request);
@@ -283,5 +267,46 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
         List<CustOperatorInfo> tmpList = this.selectByProperty(termMap);
         
         return Collections3.getFirst(tmpList);
+    }
+    
+    /***
+     * 检查参数约束
+     * @param request
+     * @param anCustList
+     */
+    public void checkParam(final CustOperatorInfoRequest request,String anCustList,String anOperOrg){
+        final boolean optExists = this.custOptService.checkOperatorExists(request.getContIdentType(), request.getContIdentNo());
+        if (optExists) {
+            throw new BytterTradeException(40001, "抱歉，该证件号码已存在");
+        }
+        // 判断该操作员是否存在
+        final boolean operCodeExists = this.custOptService.checkExistsByOperCodeAndOperOrg(request.getOperCode(), anOperOrg);
+        if (operCodeExists) {
+            throw new BytterTradeException(401, "抱歉，该操作员用户名存在【" + request.getOperCode() + "】");
+        }
+        //判断邮箱是否存在
+        Map<String, Object> anMap=new HashMap<String, Object>();
+        anMap.put("email", request.getEmail());
+        final boolean emailExists=this.custOptService.checkExistsByMap(anMap);
+        if(emailExists){
+            throw new BytterTradeException(402, "抱歉，该操作员邮箱已存在");
+        }
+        //判断手机号码是否存在
+        anMap=new HashMap<String, Object>();
+        anMap.put("mobileNo", request.getMobileNo());
+        final boolean mobileExists=this.custOptService.checkExistsByMap(anMap);
+        if(mobileExists){
+            throw new BytterTradeException(403, "抱歉，该操作员手机号已存在");
+        }
+        
+        if (BetterStringUtils.isBlank(request.getRuleList())) {
+            logger.error("角色不能为空");
+            throw new BytterTradeException(40001, "抱歉，角色不能为空");
+        }
+        
+//        if (BetterStringUtils.isBlank(anCustList)) {
+//            logger.error("机构信息不能为空");
+//            throw new BytterTradeException(40001, "抱歉，机构信息为空");
+//        }
     }
 }
