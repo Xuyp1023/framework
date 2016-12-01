@@ -40,7 +40,8 @@ public class BaseException extends RuntimeException {
 
     public String getMessage() {
         if (getCause() == null) {
-            return "Error Code :".concat(this.errorCode).concat("; ").concat(super.getMessage());
+//            return "Error Code :".concat(this.errorCode).concat("; ").concat(super.getMessage());
+            return super.getMessage();
         }
         else {
             return "Error Code :".concat(this.errorCode).concat("; ")
