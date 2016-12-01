@@ -284,4 +284,23 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
         
         return Collections3.getFirst(tmpList);
     }
+
+    public List<CustOptData> findCustOperatorByClerk(String anClerk) {
+        final List result = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<String, Object>();
+        final CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();
+        final String operOrg = custOperator.getOperOrg();
+        map.put("operOrg", operOrg);
+        map.put("clerkMan", anClerk);
+        final List<CustOperatorInfo> list = this.selectByProperty(map);
+        for (int i = 0; i < list.size(); i++) {
+            final CustOperatorInfo custOperatorInfo = list.get(i);
+            final String ruleList = operatorRoleRelationService.findSysRoleByOperatorId(custOperatorInfo.getId());
+            if (BetterStringUtils.isNotBlank(ruleList)) {
+                custOperatorInfo.setRuleList(ruleList);
+            }
+            result.add(custOperatorInfo);
+        }
+        return result;
+    }
 }

@@ -153,4 +153,9 @@ public class OperatorDubboService implements IOperatorService {
     public String webFindOperatorCustInfo(){
         return AjaxObject.newOk("查询操作员关联客户信息", custAccountService.findCustOperator()).toJson();
     }
+
+    @Override
+    public String webFindCustOperatorByClerk(String anClerk) {
+        return AjaxObject.newOk("查询当前登录机构下的操作员", operatorRequestService.findCustOperatorByClerk(anClerk)).toJson();
+    }
 }
