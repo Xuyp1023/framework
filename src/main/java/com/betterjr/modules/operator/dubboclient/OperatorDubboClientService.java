@@ -82,4 +82,11 @@ public class OperatorDubboClientService implements IOperatorService {
     public String webFindOperatorCustInfo(){
         return operatorService.webFindOperatorCustInfo();
     }
+
+    /**
+     * 根据入参查询对应操作机构操作员
+     */
+    public String webFindCustOperatorByClerk(String anClerk) {
+        return operatorService.webFindCustOperatorByClerk(anClerk);
+    }
 }

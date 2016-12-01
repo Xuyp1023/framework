@@ -107,4 +107,10 @@ public interface IOperatorService {
      */
     public String webFindOperatorCustInfo();
 
+    
+    /**
+     * 根据入参查询对应操作机构操作员
+     */
+    public String webFindCustOperatorByClerk(String anClerk);
+
 }
