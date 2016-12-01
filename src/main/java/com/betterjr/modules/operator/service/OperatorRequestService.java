@@ -80,6 +80,9 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
         if (operator.getId() == null) {
             throw new BytterTradeException(40001, "抱歉，操作员编号不能为空");
         }
+        checkSaveParam(operator);
+        operator.setIdentNo(operator.getContIdentNo());
+        operator.setIdentType(operator.getIdentType());
 //        if (BetterStringUtils.isBlank(anCustList)) {
 //            logger.error("机构信息不能为空");
 //            throw new BytterTradeException(40001, "抱歉，机构信息为空");
@@ -308,5 +311,39 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
 //            logger.error("机构信息不能为空");
 //            throw new BytterTradeException(40001, "抱歉，机构信息为空");
 //        }
+    }
+    
+    public void checkSaveParam(final CustOperatorInfo request){
+        CustOperatorInfo operator=this.selectByPrimaryKey(request.getId());
+        if(!BetterStringUtils.equalsIgnoreCase(request.getContIdentNo(), operator.getContIdentNo())){
+            boolean optExists = this.custOptService.checkOperatorExists(request.getContIdentType(), request.getContIdentNo());
+            if (optExists) {
+                throw new BytterTradeException(40001, "抱歉，该证件号码已存在");
+            }
+        }
+        if(!BetterStringUtils.equalsIgnoreCase(request.getOperCode(), operator.getOperCode())){
+            boolean operCodeExists = this.custOptService.checkExistsByOperCodeAndOperOrg(request.getOperCode(), operator.getOperOrg());
+            if (operCodeExists) {
+                throw new BytterTradeException(401, "抱歉，该操作员用户名存在【" + request.getOperCode() + "】");
+            }
+        }
+        
+        Map<String, Object> anMap=new HashMap<String, Object>();
+        if(!BetterStringUtils.equalsIgnoreCase(request.getEmail(), operator.getEmail())){
+            anMap.put("email", request.getEmail());
+            final boolean emailExists=this.custOptService.checkExistsByMap(anMap);
+            if(emailExists){
+                throw new BytterTradeException(402, "抱歉，该操作员邮箱已存在");
+            }
+        }
+        
+        if(!BetterStringUtils.equalsIgnoreCase(request.getMobileNo(), operator.getMobileNo())){
+            anMap=new HashMap<String, Object>();
+            anMap.put("mobileNo", request.getMobileNo());
+            final boolean mobileExists=this.custOptService.checkExistsByMap(anMap);
+            if(mobileExists){
+                throw new BytterTradeException(403, "抱歉，该操作员手机号已存在");
+            }
+        }
     }
 }
