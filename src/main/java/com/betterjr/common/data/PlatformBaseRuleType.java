@@ -10,7 +10,7 @@ import com.betterjr.modules.cert.entity.CustCertRule;
 
 
 public enum PlatformBaseRuleType {
-    NONE_USER("陌生人"), CORE_USER("核心企业"), SUPPLIER_USER("供应商"), FACTOR_USER("资金方"), SELLER_USER("经销商"), PLATFORM_USER("平台");
+    NONE_USER("陌生人"), CORE_USER("核心企业"), SUPPLIER_USER("供应商"), FACTOR_USER("资金方"), SELLER_USER("经销商"), PLATFORM_USER("平台"), WOS("电子合同服务商");
 
     private final String title;
 
