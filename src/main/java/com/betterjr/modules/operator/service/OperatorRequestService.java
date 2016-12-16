@@ -266,7 +266,7 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
      * @return
      */
     public CustOperatorInfo findCustClerkMan(String anOperOrg){
-        Map termMap = QueryTermBuilder.newInstance().put("operOrg", anOperOrg).put("clerkMan", "2").build();
+        Map termMap = QueryTermBuilder.newInstance().put("operOrg", anOperOrg).put("clerkMan", "1").build();
         List<CustOperatorInfo> tmpList = this.selectByProperty(termMap);
         
         return Collections3.getFirst(tmpList);
