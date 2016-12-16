@@ -5,7 +5,8 @@ package com.betterjr.common.data;
  * @author zhoucy
  *
  */
-public class CheckDataResult {
+public class CheckDataResult implements java.io.Serializable {
+    private static final long serialVersionUID = 8684723931526584282L;
     //处理结果
     private final boolean ok;
     //处理状态码
