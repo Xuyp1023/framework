@@ -136,6 +136,8 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
             if (BetterStringUtils.isNotBlank(custList)) {
                 custOperatorInfo.setCustList(custList);
             }
+            custOperatorInfo.setContIdentType(custOperatorInfo.getIdentType());
+            custOperatorInfo.setContIdentNo(custOperatorInfo.getIdentNo());
             result.add(custOperatorInfo);
         }
         return Page.listToPage(result, pageNum, pageSize,page.getPages(),page.getStartRow(),page.getTotal());
