@@ -99,7 +99,7 @@ public interface IOperatorService {
      * @param anOperOrg
      * @return
      */
-    public CustOperatorInfo findCustClerkMan(String anOperOrg);
+    public CustOperatorInfo findCustClerkMan(String anOperOrg,String anClerkMan);
     
     /***
      * 查询机构绑定的客户信息
