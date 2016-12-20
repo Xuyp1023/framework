@@ -82,7 +82,7 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
         }
         checkSaveParam(operator);
         operator.setIdentNo(operator.getContIdentNo());
-        operator.setIdentType(operator.getIdentType());
+        operator.setIdentType(operator.getContIdentType());
 //        if (BetterStringUtils.isBlank(anCustList)) {
 //            logger.error("机构信息不能为空");
 //            throw new BytterTradeException(40001, "抱歉，机构信息为空");
