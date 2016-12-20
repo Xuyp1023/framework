@@ -141,9 +141,9 @@ public class OperatorDubboService implements IOperatorService {
     }
 
     @Override
-    public CustOperatorInfo findCustClerkMan(String anOperOrg){
+    public CustOperatorInfo findCustClerkMan(String anOperOrg,String anClerkMan){
 
-        return operatorRequestService.findCustClerkMan(anOperOrg);
+        return operatorRequestService.findCustClerkMan(anOperOrg,anClerkMan);
     }
     
     /***
