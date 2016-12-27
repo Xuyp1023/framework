@@ -308,6 +308,10 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
             logger.error("角色不能为空");
             throw new BytterTradeException(40001, "抱歉，角色不能为空");
         }
+        CustOperatorInfo custOperator =findCustClerkMan(anOperOrg,"1");
+        if(custOperator!=null && BetterStringUtils.equalsIgnoreCase(request.getClerkMan(), "1")){
+            throw new BytterTradeException(40001, "对外经办人已存在，如需设置当前操作员为对外经办人，请先解除已有的对外经办人-"+custOperator.getName());
+        }
         
 //        if (BetterStringUtils.isBlank(anCustList)) {
 //            logger.error("机构信息不能为空");
@@ -347,6 +351,15 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
                 throw new BytterTradeException(403, "抱歉，该操作员手机号已存在");
             }
         }
+        if(BetterStringUtils.equalsIgnoreCase(request.getClerkMan(), "1")){
+            CustOperatorInfo custOperator =findCustClerkMan(operator.getOperOrg(),"1");
+            if(custOperator!=null){
+                if(!BetterStringUtils.equalsIgnoreCase(operator.getId().toString(), custOperator.getId().toString())){
+                    throw new BytterTradeException(40001, "对外经办人已存在，如需设置当前操作员为对外经办人，请先解除已有的对外经办人-"+custOperator.getName());
+                }
+            }
+        }
+        
     }
 
     public List<CustOptData> findCustOperatorByClerk(String anClerk) {
