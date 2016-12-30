@@ -15,6 +15,7 @@ import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -170,6 +171,18 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
             return SerialGenerator.uuid() + SerialGenerator.randomBase62(anLength - 32);
         }
     }
+
+    public static String getRandomString(final int length) {
+        final StringBuffer buffer = new StringBuffer("0123456789abcdefghijklmnopqrstuvwxyz");
+        final StringBuffer sb = new StringBuffer();
+        final Random r = new Random();
+        final int range = buffer.length();
+        for (int i = 0; i < length; i ++) {
+            sb.append(buffer.charAt(r.nextInt(range)));
+        }
+        return sb.toString();
+    }
+
 
     protected static String createPassword(final String anComplexValue) {
         final String tmpStr = BetterStringUtils.createRandomCharAndNum(8);
