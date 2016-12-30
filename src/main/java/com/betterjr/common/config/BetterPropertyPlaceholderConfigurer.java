@@ -9,48 +9,48 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 /**
- * 
+ *
  * spring配置文件自定义加载器
  *
  */
 public class BetterPropertyPlaceholderConfigurer extends PropertySourcesPlaceholderConfigurer {
     private static final String BETTER_CONFIG = "better.config";
 
-    public void setBetterLocations(Set<String> betterLocations) {
-        String betterConfig = System.getProperty(BETTER_CONFIG);
-        Properties properties = new Properties();
+    public void setBetterLocations(final Set<String> betterLocations) {
+        final String betterConfig = System.getProperty(BETTER_CONFIG);
+        final Properties properties = new Properties();
         if (betterConfig == null) {
-            for (String betterLocation : betterLocations) {
+            for (final String betterLocation : betterLocations) {
                 try {
-                    Resource resource = new ClassPathResource(betterLocation);
-                    logger.info("Loading properites file from " + resource.getFilename());
+                    final Resource resource = new ClassPathResource(betterLocation);
+                    logger.info("Default Loading properites file from " + resource.getFilename());
                     try (InputStream inputStream = resource.getInputStream()) {
-                        Properties prop = new Properties();
+                        final Properties prop = new Properties();
                         prop.load(inputStream);
                         if (prop != null) {
                             properties.putAll(prop);
                         }
                     }
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     logger.fatal("配置文件加载错误!");
                 }
             }
         }
         else {
-            for (String betterLocation : betterLocations) {
+            for (final String betterLocation : betterLocations) {
                 try {
-                    Resource resource = new FileSystemResource(betterConfig + betterLocation);
-                    logger.info("Loading properites file from " + resource.getFilename());
+                    final Resource resource = new FileSystemResource(betterConfig + betterLocation);
+                    logger.info("Config Loading properites file from " + resource.getFilename());
                     try (InputStream inputStream = resource.getInputStream()) {
-                        Properties prop = new Properties();
+                        final Properties prop = new Properties();
                         prop.load(inputStream);
                         if (prop != null) {
                             properties.putAll(prop);
                         }
                     }
                 }
-                catch (Exception e) {
+                catch (final Exception e) {
                     logger.fatal("配置文件加载错误!");
                 }
             }
