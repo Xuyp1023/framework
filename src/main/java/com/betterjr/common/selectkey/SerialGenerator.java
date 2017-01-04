@@ -8,12 +8,16 @@ import javax.annotation.PostConstruct;
 
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.mgt.eis.SessionIdGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.betterjr.common.utils.BetterDateUtils;
+import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.Encodes;
 
 public class SerialGenerator implements SessionIdGenerator {
+    private final Logger logger = LoggerFactory.getLogger(SerialGenerator.class);
 
     public static final String BANK_SERIAL = "bank.serial";
     private static final String TRADE_ACCO = "SaleAccoRequestInfo.tradeAccount";
@@ -179,5 +183,55 @@ public class SerialGenerator implements SessionIdGenerator {
         else {
             return tmpStr;
         }
+    }
+    
+    /**
+     * 根据客户号和业务类型，获取循环序列号，循环的信息定义在序列数据表中<BR>
+     * 循环序号号的KEY值是：客户号+“_” + 业务类型
+     * @param anCustNo 客户号
+     * @param anWorkType 业务类型
+     * @return
+     */
+    public static String findAppNoWithDayAndType(Long anCustNo, String anWorkType){
+       if (anCustNo == null){
+           
+           return "";
+       }
+       
+       if (anWorkType == null){
+           
+           anWorkType = "";
+       }
+       
+       return anWorkType.concat(findAppNoWithDay(Long.toString(anCustNo).concat("_").concat(anWorkType)));
+    }
+    
+    /**
+     * 根据业务类型，获取循环序列号，循环的信息定义在序列数据表中
+     * @param anWorkType
+     * @return
+     */
+    public static String findAppNoWithDayAndType(String anWorkType){
+        if (BetterStringUtils.isBlank(anWorkType)){
+            
+            return "";
+        }
+        
+        return anWorkType.concat(findAppNoWithDay(anWorkType));
+    }
+    
+    /**
+     * 根据业务类型获取循环序列号
+     * @param anWorkType 业务类型
+     * @return
+     */
+    public static String findAppNoWithDay(String anWorkType){
+       
+        return generator.findAppNo(anWorkType);
+    }
+    
+    private String findAppNo(String anWorkType){
+        
+      return this.selectKeyGenIDService.findAppNoWithDay(anWorkType); 
     }
 }

@@ -8,10 +8,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.betterjr.common.exception.BytterException;
 import com.betterjr.common.security.shiro.cache.RedisManager;
+import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.JedisUtils;
 import com.betterjr.mapper.entity.Example;
 import com.betterjr.modules.sys.dao.SnoGeneralInfoMapper;
@@ -24,219 +27,245 @@ import com.betterjr.modules.sys.entity.SnoGeneralInfo;
  *
  */
 
- public class SelectKeyGenIDService extends Thread {
+public class SelectKeyGenIDService extends Thread {
 
-	private static Map<String, SnoGeneralInfo> dataMap = new ConcurrentHashMap();
-	private static Object obj = new Object();
-	private static ArrayBlockingQueue abq = new ArrayBlockingQueue(10000);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-	private static final String DefaultIdRedisKeyPrefix="betterjr.id.";
-	private static final long IdGap = 10;
-	
-	
-	@Autowired
-	private SqlSessionFactoryBean sqlSessionFactory;
-	private int checkTimeOut = 10;
+    private static Map<String, SnoGeneralInfo> dataMap = new ConcurrentHashMap();
+    private static Object obj = new Object();
+    private static ArrayBlockingQueue abq = new ArrayBlockingQueue(10000);
 
-	public int getCheckTimeOut() {
-		return checkTimeOut;
-	}
+    private static final String DefaultIdRedisKeyPrefix = "betterjr.id.";
+    private static final long IdGap = 10;
 
-	public void setCheckTimeOut(int anCheckTimeOut) {
-		checkTimeOut = anCheckTimeOut;
-	}
+    public static final String DEF_DAY_PREX="LIMIT_";
+    
+    @Autowired
+    private SqlSessionFactoryBean sqlSessionFactory;
+    private int checkTimeOut = 10;
 
-	public SelectKeyGenIDService() {
+    public int getCheckTimeOut() {
+        return checkTimeOut;
+    }
 
-	}
+    public void setCheckTimeOut(int anCheckTimeOut) {
+        checkTimeOut = anCheckTimeOut;
+    }
 
-	public void init() {
-		System.out.println("this is init KeyGenService");
+    public SelectKeyGenIDService() {
 
-		SqlSession sqlSession = null;
-		Map<String, SnoGeneralInfo> tmpMap = new ConcurrentHashMap();
-		try {
-			sqlSession = sqlSessionFactory.getObject().openSession();
-			SnoGeneralInfoMapper snoInfoMapper = sqlSession.getMapper(SnoGeneralInfoMapper.class);
-			Example exa = new Example(SnoGeneralInfo.class);
-			List<SnoGeneralInfo> snoList = snoInfoMapper.selectByExample(exa);
-			for (SnoGeneralInfo snoInfo : snoList) {
-				tmpMap.put(snoInfo.getOperType(), snoInfo);
-				snoInfo.updateOldNo(snoInfo.getLastNo());
-		//		System.out.println("对象: " + snoInfo);
-			}
-		//	System.out.println("数据量是: " + tmpMap.size());
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+    }
 
-		synchronized (dataMap) {
-			dataMap = tmpMap;
-			//init redis
-			this.initRedis(tmpMap);
-		}
-		// 初始化完毕后，启动服务
-		this.start();
-	}
+    public void init() {
+        System.out.println("this is init KeyGenService");
 
-	/**
-	 * 检查数据重新加载
-	 * @param 最后检查时间
-	 * @return 检查完毕的时间
-	 * @throws Exception 
-	 */
-	private long checkReload(long anLast) throws Exception {
- 		if ((anLast + this.checkTimeOut * 1000) < System.currentTimeMillis()) {
-			SqlSession sqlSession = null;
-			sqlSession = sqlSessionFactory.getObject().openSession();
-			SnoGeneralInfoMapper snoInfoMapper = sqlSession.getMapper(SnoGeneralInfoMapper.class);
-			Example exa = new Example(SnoGeneralInfo.class);
-			List<SnoGeneralInfo> snoList = snoInfoMapper.selectByExample(exa);
-			Map<String, SnoGeneralInfo> tmpMap =  dataMap;
-			for (SnoGeneralInfo snoInfo : snoList) {
-				SnoGeneralInfo oldSnoInfo = tmpMap.get(snoInfo.getOperType());
-				
-				//存在就检查更新，不存在就加入
-				if (oldSnoInfo != null){
-					oldSnoInfo.updateLastNo(snoInfo.getLastNo());
-				}
-				else{
-					dataMap.put(snoInfo.getOperType(), snoInfo);
-				}
-			}
-			anLast = System.currentTimeMillis();
-			sqlSession.close();
-		}
-		return anLast;
-	}
+        SqlSession sqlSession = null;
+        Map<String, SnoGeneralInfo> tmpMap = new ConcurrentHashMap();
+        try {
+            sqlSession = sqlSessionFactory.getObject().openSession();
+            SnoGeneralInfoMapper snoInfoMapper = sqlSession.getMapper(SnoGeneralInfoMapper.class);
+            Example exa = new Example(SnoGeneralInfo.class);
+            List<SnoGeneralInfo> snoList = snoInfoMapper.selectByExample(exa);
+            for (SnoGeneralInfo snoInfo : snoList) {
+                tmpMap.put(snoInfo.getOperType(), snoInfo);
+                snoInfo.updateOldNo(snoInfo.getLastNo());
+                // System.out.println("对象: " + snoInfo);
+            }
+            // System.out.println("数据量是: " + tmpMap.size());
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
-	@Override
-	public void run() {
-		SqlSession sqlSession = null;
-		boolean hasError = false;
-		long lastTime = System.currentTimeMillis();
-		while (true) {
-			try {
-				System.out.println("waiting for data");
-				if (hasError == false) {
-					abq.take();
-				}
-				hasError = false;
-			  
-				lastTime = checkReload(lastTime);
-			 
-				Map<String, SnoGeneralInfo> tmpMap = dataMap;
-				List<SnoGeneralInfo> workList = new ArrayList();
+        synchronized (dataMap) {
+            dataMap = tmpMap;
+            // init redis
+            this.initRedis(tmpMap);
+        }
+        // 初始化完毕后，启动服务
+        this.start();
+    }
 
-				// 获取需要更新的列表
-				for (Map.Entry<String, SnoGeneralInfo> ent : tmpMap.entrySet()) {
-					SnoGeneralInfo snoInfo = ent.getValue();
-					if (snoInfo.hasSave()) {
-						workList.add(snoInfo.clone());
-					}
-				}
-				
-				if (workList.size() > 0) {
-					sqlSession = sqlSessionFactory.getObject().openSession();
-					// sqlSession = tmpFactory.openSession();
-					SnoGeneralInfoMapper snoInfoMapper = sqlSession.getMapper(SnoGeneralInfoMapper.class);
+    /**
+     * 检查数据重新加载
+     * 
+     * @param 最后检查时间
+     * @return 检查完毕的时间
+     * @throws Exception
+     */
+    private long checkReload(long anLast) throws Exception {
+        if ((anLast + this.checkTimeOut * 1000) < System.currentTimeMillis()) {
+            SqlSession sqlSession = null;
+            sqlSession = sqlSessionFactory.getObject().openSession();
+            SnoGeneralInfoMapper snoInfoMapper = sqlSession.getMapper(SnoGeneralInfoMapper.class);
+            Example exa = new Example(SnoGeneralInfo.class);
+            List<SnoGeneralInfo> snoList = snoInfoMapper.selectByExample(exa);
+            Map<String, SnoGeneralInfo> tmpMap = dataMap;
+            for (SnoGeneralInfo snoInfo : snoList) {
+                SnoGeneralInfo oldSnoInfo = tmpMap.get(snoInfo.getOperType());
 
-					// 更新列表
-					for (SnoGeneralInfo snoInfo : workList) {
-						int xx = snoInfoMapper.updateSimple(snoInfo);
-					//	System.out.println("this is update count :" + xx);
-					}
-					sqlSession.commit();
-					sqlSession.close();
-					// 更新旧的序号
-					for (SnoGeneralInfo snoInfo : workList) {
-						SnoGeneralInfo tmpSnoInfo = tmpMap.get(snoInfo.getOperType());
-						if (tmpSnoInfo != null) {
-							tmpSnoInfo.updateOldNo(snoInfo.getLastNo());
-						}
-					}
-				}
-			} catch (Exception e1) {
-				hasError = true;
-				try {
-					Thread.sleep(5000);
-					e1.printStackTrace();
-					if (sqlSession != null) {
+                // 存在就检查更新，不存在就加入
+                if (oldSnoInfo != null) {
+                    oldSnoInfo.updateLastNo(snoInfo.getLastNo());
+                }
+                else {
+                    dataMap.put(snoInfo.getOperType(), snoInfo);
+                }
+            }
+            anLast = System.currentTimeMillis();
+            sqlSession.close();
+        }
+        return anLast;
+    }
 
-						sqlSession.rollback();
-						sqlSession.close();
+    @Override
+    public void run() {
+        SqlSession sqlSession = null;
+        boolean hasError = false;
+        long lastTime = System.currentTimeMillis();
+        while (true) {
+            try {
+                System.out.println("waiting for data");
+                if (hasError == false) {
+                    abq.take();
+                }
+                hasError = false;
 
-					}
-				} catch (Exception e) {
+                lastTime = checkReload(lastTime);
 
-				}
-			}
-		}
-	}
+                Map<String, SnoGeneralInfo> tmpMap = dataMap;
+                List<SnoGeneralInfo> workList = new ArrayList();
 
-	public long getLongValue(String anKey) {
-		SnoGeneralInfo snoInfo = dataMap.get(anKey);
-		if (snoInfo != null) {
-			synchronized (snoInfo) {
-				if (abq.size() < 1000) {
-					try {
-						abq.put(obj);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-				return this.incrby(snoInfo);
-			}
-		}
+                // 获取需要更新的列表
+                for (Map.Entry<String, SnoGeneralInfo> ent : tmpMap.entrySet()) {
+                    SnoGeneralInfo snoInfo = ent.getValue();
+                    if (snoInfo.hasSave()) {
+                        workList.add(snoInfo.clone());
+                    }
+                }
 
-		return 0;
-	}
-	
-	private String buildKey(String anKey){
-	    if(StringUtils.isBlank(anKey)){
-	        return anKey;
-	    }
-	    return DefaultIdRedisKeyPrefix+anKey;
-	}
-	
-	private void initRedis(Map<String, SnoGeneralInfo> anMap){
-	    if(anMap==null){
-	        return ;
-	    }
-	    for(SnoGeneralInfo info:anMap.values()){
-	        String type=info.getOperType();
-	        long no=info.getLastNo();
-	        
-	        String key=this.buildKey(type);
-	        long newid=JedisUtils.checkBigThanAndSet(key, no,IdGap,0);
-	        info.updateLastNo(newid);
-	    }
-	    
-	}
-	
-	/**
-	 * 1.利用redis 自增1
-	 * 2.如果内部buffer的id> redis的返回值，为保证id的升序，设置内部id自增到redis
-	 * 3.回写最终写入redis的值到内部buffer
-	 * @param anInfo
-	 * @return
-	 */
-	private long incrby(SnoGeneralInfo anInfo){
-	    String type=anInfo.getOperType();
-	    
-	    String key=this.buildKey(type);
-	    long newid=JedisUtils.incrby(key, 1);
-	   
-	    if(anInfo.getLastNo()>=newid){
-	        anInfo.addValue();
-	        newid=JedisUtils.checkBigThanAndSet(key, anInfo.getLastNo(),IdGap,0);
-	    }
-	    
-	    anInfo.updateLastNo(newid);
-	    return newid;
-	}
+                if (workList.size() > 0) {
+                    sqlSession = sqlSessionFactory.getObject().openSession();
+                    // sqlSession = tmpFactory.openSession();
+                    SnoGeneralInfoMapper snoInfoMapper = sqlSession.getMapper(SnoGeneralInfoMapper.class);
 
-	public static void main(String[] args) {
+                    // 更新列表
+                    for (SnoGeneralInfo snoInfo : workList) {
+                        int xx = snoInfoMapper.updateSimple(snoInfo);
+                        // System.out.println("this is update count :" + xx);
+                    }
+                    sqlSession.commit();
+                    sqlSession.close();
+                    // 更新旧的序号
+                    for (SnoGeneralInfo snoInfo : workList) {
+                        SnoGeneralInfo tmpSnoInfo = tmpMap.get(snoInfo.getOperType());
+                        if (tmpSnoInfo != null) {
+                            tmpSnoInfo.updateOldNo(snoInfo.getLastNo());
+                        }
+                    }
+                }
+            }
+            catch (Exception e1) {
+                hasError = true;
+                try {
+                    Thread.sleep(5000);
+                    e1.printStackTrace();
+                    if (sqlSession != null) {
 
-	}
+                        sqlSession.rollback();
+                        sqlSession.close();
+
+                    }
+                }
+                catch (Exception e) {
+
+                }
+            }
+        }
+    }
+
+    public long getLongValue(String anKey) {
+        SnoGeneralInfo snoInfo = dataMap.get(anKey);
+        if (snoInfo != null) {
+            synchronized (snoInfo) {
+                if (abq.size() < 1000) {
+                    try {
+                        abq.put(obj);
+                    }
+                    catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return this.incrby(snoInfo);
+            }
+        }
+
+        return 0;
+    }
+
+    private String buildKey(String anKey) {
+        if (StringUtils.isBlank(anKey)) {
+            return anKey;
+        }
+        return DefaultIdRedisKeyPrefix + anKey;
+    }
+
+    private void initRedis(Map<String, SnoGeneralInfo> anMap) {
+        if (anMap == null) {
+            return;
+        }
+        for (SnoGeneralInfo info : anMap.values()) {
+            String type = info.getOperType();
+            long no = info.getLastNo();
+
+            String key = this.buildKey(type);
+            long newid = JedisUtils.checkBigThanAndSet(key, no, IdGap, 0);
+            info.updateLastNo(newid);
+        }
+
+    }
+
+    /**
+     * 1.利用redis 自增1 2.如果内部buffer的id> redis的返回值，为保证id的升序，设置内部id自增到redis 3.回写最终写入redis的值到内部buffer
+     * 
+     * @param anInfo
+     * @return
+     */
+    private long incrby(SnoGeneralInfo anInfo) {
+        String type = anInfo.getOperType();
+
+        String key = this.buildKey(type);
+        long newid = JedisUtils.incrby(key, 1);
+
+        if (anInfo.getLastNo() >= newid) {
+            anInfo.addValue();
+            newid = JedisUtils.checkBigThanAndSet(key, anInfo.getLastNo(), IdGap, 0);
+        }
+
+        anInfo.updateLastNo(newid);
+        return newid;
+    }
+
+    
+    public String findAppNoWithDay(String anWorkType) {
+        String tmpWorkType =  DEF_DAY_PREX.concat(anWorkType);
+        SnoGeneralInfo snoInfo = dataMap.get(tmpWorkType);
+        if (snoInfo != null) {
+            synchronized (snoInfo){
+                if (abq.size() < 1000){
+                    try {
+                        abq.put(obj);
+                    }
+                    catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                long tmpValue = incrby(snoInfo);
+                
+                return snoInfo.findMachValue().concat( BetterStringUtils.leftPad(Long.toString(tmpValue), snoInfo.getDataLen(),"0"));
+            }
+        }
+        logger.warn("not find anWorkType = " + tmpWorkType);
+        return "";
+    }
 }
