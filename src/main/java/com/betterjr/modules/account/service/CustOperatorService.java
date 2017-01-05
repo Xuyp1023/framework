@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.betterjr.common.data.CustPasswordType;
 import com.betterjr.common.service.BaseService;
+import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.UserUtils;
 import com.betterjr.modules.account.dao.CustOperatorInfoMapper;
 import com.betterjr.modules.account.data.CustContextInfo;
@@ -94,9 +95,11 @@ public class CustOperatorService extends BaseService<CustOperatorInfoMapper, Cus
         map.put("operCode", anOperCode);
         // return operatorMapper.findCustOperatorByOperCode(anOperOrg, anOperCode);
         final List<CustOperatorInfo> list = this.selectByProperty(map);
-        if (list.size() > 0) {
-
-            return list.get(0);
+        //验证用户名大小写
+        for(CustOperatorInfo anInfo : list) {
+            if(BetterStringUtils.equals(anInfo.getOperCode(), anOperCode)) {
+                return anInfo;
+            }
         }
         return null;
     }
