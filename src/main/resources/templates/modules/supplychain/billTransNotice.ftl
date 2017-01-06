@@ -141,7 +141,7 @@
       电子邮箱：<span class="text-under-line">${(noticeInfo.email)!''}</span>
     </p>
     <p class="line">
-      联系人及联系电话：<span class="text-under-line">${(noticeInfo.phone)!''}</span>
+      联系人及联系电话：<span class="text-under-line">${(noticeInfo.factorLinkMan)!''} &nbsp;&nbsp; ${(noticeInfo.phone)!''}</span>
     </p>
 
     <table class="table width-100 margin-auto margin-top-30 font-14">
