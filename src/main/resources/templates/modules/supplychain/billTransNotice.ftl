@@ -1,10 +1,12 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN\" \"<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="zh-CN">
 <head>
-  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=7,9,10,11" />
   <title>应收账款债权转让通知书</title>
   <style style="text/css">
-    .container{width: 800px;font: normal normal 16px 宋体;}
+    .container{width: 800px;font: normal normal 13px 宋体;padding:40px;}
 
     .width-100{width: 100%;}
     .width-90{width: 90%;}
@@ -24,9 +26,9 @@
     .text-under-line{text-decoration: underline;}
     .text-indent{text-indent: 2em;}
 
-    .font-14{font-size: 14px;}
+    .font-14{font-size: 13px;}
 
-    .line{font-size: 16px;font-family: 宋体;line-height: 2em;}
+    .line{font-size: 13px;font-family: 宋体;line-height: 2em;}
     .line.line-condensed{line-height: 1em;margin: 5px 0;}
 
     .table{border-collapse: collapse;}
@@ -45,10 +47,11 @@
       致:<span class="text-under-line">${(noticeInfo.buyer)!''}</span>(买方名称)
     </p>
     <p class="line text-indent">
-      根据${(noticeInfo.factorName)!''}(${(noticeInfo.factorName)!''}，以下简称保理公司)与卖方签订《${(noticeInfo.factorAgreementName)!''}》(编号： <span class="text-under-line">${(noticeInfo.factorAgreementNo)!''}</span>)的约定，卖方已将下表所列对贵方的应收账款转让给保理公司，现通知贵方，并请贵方按以下要求支付应收账款。
+      根据${(noticeInfo.factorName)!''}(以下简称保理公司)与卖方签订《公开型有追索权国内保理合同》(编号： <span class="text-under-line">${(noticeInfo.factorAgreementNo)!''}</span>)的约定，卖方已将下表所列对贵方的应收账款转让给保理公司，现通知贵方，并请贵方按以下要求支付应收账款。
     </p>
-
-    <table class="table table-bordered width-100 margin-auto">
+	
+	
+    <table class="table table-bordered width-100 margin-auto font-14">
       <thead>
         <tr>
           <td width="15%">应收账款转让编号</td>
@@ -59,16 +62,27 @@
           <td width="15%">发票金额(元)</td>
         </tr>
       </thead>
+      
       <tbody>
-		<#list creditInfos as creditInfo> 
-		   <tr>
-			 <td rowspan="creditInfos.size()">&nbsp;${(creditInfo.transNo)!''}</td>
-			 <td>&nbsp;￥${(creditInfo.balance)!''}</td>
-			 <td>&nbsp;${(creditInfo.endDate)!''}</td>
-			 <td>&nbsp;${(creditInfo.agreeNo)!''}</td>
-			 <td>&nbsp;${(creditInfo.invoiceNo)!''}</td>
-			 <td>&nbsp;￥${(creditInfo.invoiceBalance)!''}</td>
-		   </tr>
+      	<#assign flag=true>
+		<#list creditInfos.creditBillList as creditInfo>
+			<#assign billFlag=true>
+			<#list creditInfo.billList as bill>
+			   <tr>
+			   <#if flag>
+				 <td rowspan="${creditInfos.total}"  class="text-align-left-im">&nbsp;${(creditInfos.requestNo)!''}</td>
+				 <#assign flag=false>	 
+			   </#if>
+			   <#if billFlag>
+				 <td  rowspan="${creditInfo.total}" class="text-align-right-im">&nbsp;￥${(bill.balance)!''}</td>
+				 <td  rowspan="${creditInfo.total}" class="text-align-left-im">&nbsp;${(bill.endDate)!''}</td>
+				 <td  rowspan="${creditInfo.total}" class="text-align-left-im">&nbsp;${(bill.agreeNo)!''}</td>
+				<#assign billFlag=false>	 
+			   </#if>
+				 <td class="text-align-right-im">&nbsp;${(bill.invoiceNo)!''}</td>
+				 <td class="text-align-right-im">&nbsp;￥${(bill.invoiceBalance)!''}</td>
+			   </tr>
+			</#list>
         </#list>
       </tbody>
     </table>
@@ -83,7 +97,7 @@
       上表所列的各笔应收账款中，如你方已预结算，请确认预结算方式的信息并附上凭证复印件，同时承诺无条件对预结算方式记载事项按时支付。预结算信息如下：
     </p>
 
-    <table class="table table-bordered width-100 margin-auto">
+    <table class="table table-bordered width-100 margin-auto font-14">
       <thead>
         <tr>
           <td class="text-align-center-im"><strong>结算凭证类型</strong></td>
@@ -130,15 +144,15 @@
       联系人及联系电话：<span class="text-under-line">${(noticeInfo.phone)!''}</span>
     </p>
 
-    <table class="table width-80 margin-auto margin-top-30 font-14">
+    <table class="table width-100 margin-auto margin-top-30 font-14">
       <tbody>
         <tr>
-          <td width="50%">卖方(公章)：<span class="text-under-line">${(noticeInfo.supplierName)!''}</span></td>
-          <td width="50%">保理公司(公章)：深圳前海特智商业保理有限公司</td>
+          <td width="40%" class="text-align-left-im">卖方(公章)：<span class="text-under-line">${(noticeInfo.supplierName)!''}</span></td>
+          <td width="60%" class="text-align-right-im">保理公司(公章)：深圳前海特智商业保理有限公司</td>
         </tr>
         <tr>
-          <td>日期：	年	月	日</td>
-          <td>日期：	年	月	日</td>
+          <td width="40%" class="text-align-left-im">日期：${(signDate)!''}</td>
+          <td width="60%" class="text-align-right-im">日期：	年	月	日</td>
         </tr>
       </tbody>
     </table>
