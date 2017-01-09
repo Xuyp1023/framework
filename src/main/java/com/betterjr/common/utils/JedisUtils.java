@@ -673,7 +673,7 @@ public class JedisUtils {
         try {
             jedis = getResource();
             if (jedis.exists(getBytesKey(key))) {
-                final byte[] result = jedis.hget(getBytesKey(key),getBytesKey(key));
+                final byte[] result = jedis.hget(getBytesKey(key),getBytesKey(field));
                 value=(T)toObject(result);
                 logger.debug("getObjectMapField {}.{} = {}", key,field, value);
             }
