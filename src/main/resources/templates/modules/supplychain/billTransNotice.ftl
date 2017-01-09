@@ -135,7 +135,7 @@
       5.你方按以上第3条发送通知，应寄送或提交至保理公司。
     </p>
     <p class="line">
-      地址：<span class="text-under-line">${(noticeInfo.factorAddr)!''}</span>
+      地址：<span class="text-under-line">深圳市福田区泰然六路雪松大厦B座8楼</span>
     </p>
     <p class="line">
       电子邮箱：<span class="text-under-line">${(noticeInfo.email)!''}</span>
