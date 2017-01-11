@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.betterjr.common.data.CustPasswordType;
 import com.betterjr.common.data.SimpleDataEntity;
+import com.betterjr.common.exception.BytterTradeException;
 import com.betterjr.common.service.BaseService;
 import com.betterjr.common.utils.BTAssert;
 import com.betterjr.common.utils.Collections3;
@@ -43,7 +44,9 @@ public class CustPassService extends BaseService<CustPassInfoMapper, CustPassInf
      */
     public boolean saveChangePassword(final Long anOperId, final String anPassword, final CustPasswordType anPassType) {
         CustPassInfo passInfo = this.getOperaterPassByCustNo(anOperId, anPassType);
-
+        if(anPassword.length()<6 || anPassword.length()>16){
+            throw new BytterTradeException("密码长度为6-16");
+        }
         final HashPassword result = SystemAuthorizingRealm.encrypt(anPassword);
         if (passInfo == null) {
             passInfo = new CustPassInfo(anPassType, passValidLimit, anOperId, result.salt, result.password);
@@ -127,6 +130,9 @@ public class CustPassService extends BaseService<CustPassInfoMapper, CustPassInf
     public boolean savePassword(final CustPasswordType anPassType, final String anNewPasswd, final String anOkPasswd, final String anPasswd) {
         final CustOperatorInfo user = UserUtils.getOperatorInfo();
         final CustPassInfo passInfo = this.getOperaterPassByCustNo(user.getId(), anPassType);
+        if(anNewPasswd.length()<6 || anNewPasswd.length()>16){
+            throw new BytterTradeException("密码长度为6-16");
+        }
         // 临时锁定
         if (passInfo.validLockType()) {
             throw new DisabledAccountException("操作员密码被锁定，请稍后再试");
@@ -147,5 +153,4 @@ public class CustPassService extends BaseService<CustPassInfoMapper, CustPassInf
 
         return true;
     }
-
 }
