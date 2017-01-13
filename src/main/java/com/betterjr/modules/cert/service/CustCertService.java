@@ -32,6 +32,7 @@ import com.betterjr.common.exception.BytterSecurityException;
 import com.betterjr.common.exception.BytterTradeException;
 import com.betterjr.common.exception.ServiceException;
 import com.betterjr.common.mapper.BeanMapper;
+import com.betterjr.common.security.PasswordCreate;
 import com.betterjr.common.selectkey.SerialGenerator;
 import com.betterjr.common.service.BaseService;
 import com.betterjr.common.utils.BTAssert;
@@ -53,6 +54,8 @@ import com.betterjr.modules.role.service.RoleService;
 @Service
 public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInfo> {
     private final static Pattern COMMA_PATTERN = Pattern.compile(",");
+
+    private final static PasswordCreate passwordCreate = new PasswordCreate();
 
     private final static String[] QUERY_TERM = new String[] { "status", "GTEregDate", "LTEregDate", "GTEcreateDate", "LTEvalidDate", "contName",
     "custName" };
@@ -185,14 +188,17 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
 
 
     protected static String createPassword(final String anComplexValue) {
-        final String tmpStr = BetterStringUtils.createRandomCharAndNum(8);
+
+
+        return passwordCreate.createPassWord(8);
+        /*final String tmpStr = BetterStringUtils.createRandomCharAndNum(8);
         if (BetterStringUtils.isNotBlank(anComplexValue) && (anComplexValue.length() > 6)) {
 
             return tmpStr.concat(anComplexValue.substring(0, 6));
         }
         else {
             return BetterStringUtils.createRandomCharAndNum(12);
-        }
+        }*/
     }
 
     /**
