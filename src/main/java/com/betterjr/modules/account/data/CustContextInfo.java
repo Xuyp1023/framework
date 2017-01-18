@@ -2,7 +2,10 @@ package com.betterjr.modules.account.data;
 
 import java.io.Serializable;
 import java.security.cert.Certificate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpSession;
@@ -22,16 +25,16 @@ import com.betterjr.modules.cert.entity.CustCertInfo;
 
 /**
  * 当前客户的上下文信息,打通前端和后端的信息
- * 
+ *
  * @author zhoucy
  *
  */
 public class CustContextInfo implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(CustContextInfo.class);
-    
+
     public static final String CACHE_CUST_CONTEXT_MAP = "custContextMap";
 
-    public static Map<String, CustContextInfo> contextMap = new ConcurrentHashMap() ;//(Map<String, CustContextInfo>) CacheUtils.get(CACHE_CUST_CONTEXT_MAP);
+    public static Map<String, CustContextInfo> contextMap = (Map<String, CustContextInfo>) CacheUtils.get(CACHE_CUST_CONTEXT_MAP);
     private static final long serialVersionUID = -3157823563301650231L;
     /**
      * 证书信息
@@ -65,44 +68,44 @@ public class CustContextInfo implements Serializable {
         return this.bytterUser;
     }
 
-    public void setBytterUser(boolean anBytterUser) {
+    public void setBytterUser(final boolean anBytterUser) {
         this.bytterUser = anBytterUser;
     }
 
-    private Map<Long, CustInfo> cutInfoMap = new HashMap();
-    private Map<String, SaleTradeAccountInfo> tradeAccoMap = new HashMap();
+    private final Map<Long, CustInfo> cutInfoMap = new HashMap();
+    private final Map<String, SaleTradeAccountInfo> tradeAccoMap = new HashMap();
 
     public boolean isLogined() {
         return logined;
     }
 
     /**
-     * 
+     *
      * 登录，并处理相关登录信息
-     * 
+     *
      * @param 客户信息
      * @return 出参说明，结果条件
      * @throws 异常情况
      */
-    public void login(List<CustInfo> anCustList) {
+    public void login(final List<CustInfo> anCustList) {
         logined = true;
-        for (CustInfo cInfo : anCustList) {
+        for (final CustInfo cInfo : anCustList) {
             this.cutInfoMap.put(cInfo.getCustNo(), cInfo);
         }
     }
 
-    public void addNewCustInfo(CustInfo cInfo) {
+    public void addNewCustInfo(final CustInfo cInfo) {
 
         this.cutInfoMap.put(cInfo.getCustNo(), cInfo);
     }
 
-    public void addNewTradeAccount(SaleTradeAccountInfo anTradeAcco) {
+    public void addNewTradeAccount(final SaleTradeAccountInfo anTradeAcco) {
 
         this.tradeAccoMap.put(anTradeAcco.getTradeAccount(), anTradeAcco);
     }
 
-    public void addTradeAccount(List<SaleTradeAccountInfo> anTradeAccoList) {
-        for (SaleTradeAccountInfo cInfo : anTradeAccoList) {
+    public void addTradeAccount(final List<SaleTradeAccountInfo> anTradeAccoList) {
+        for (final SaleTradeAccountInfo cInfo : anTradeAccoList) {
 
             this.tradeAccoMap.put(cInfo.getTradeAccount(), cInfo);
         }
@@ -110,7 +113,7 @@ public class CustContextInfo implements Serializable {
 
     // 获得操作员所操作的所有客户信息
     public List<Long> findCustList() {
-        List list = new ArrayList();
+        final List list = new ArrayList();
         list.addAll(this.cutInfoMap.keySet());
 
         return list;
@@ -118,18 +121,18 @@ public class CustContextInfo implements Serializable {
 
     // 获得操作员所操作的所有客户信息
     public List<CustInfo> findCustInfoList() {
-        List list = new ArrayList();
+        final List list = new ArrayList();
         list.addAll(this.cutInfoMap.values());
 
         return list;
     }
 
-    public CustInfo findCust(Long anCustNo) {
+    public CustInfo findCust(final Long anCustNo) {
 
         return this.cutInfoMap.get(anCustNo);
     }
 
-    public SaleTradeAccountInfo findTradeAccount(String anTradeAccount) {
+    public SaleTradeAccountInfo findTradeAccount(final String anTradeAccount) {
 
         return this.tradeAccoMap.get(anTradeAccount);
     }
@@ -149,12 +152,12 @@ public class CustContextInfo implements Serializable {
     }
 
     // 客户从后台登录到前台登录的时间间隔，如果超时，则不能在前端登录
-    public boolean isBeforeLoginValid(int anTime) {
+    public boolean isBeforeLoginValid(final int anTime) {
 
         return this.lastLoginTime + (anTime * 10000) > System.currentTimeMillis();
     }
 
-    public void setValid(boolean valid) {
+    public void setValid(final boolean valid) {
         this.valid = valid;
     }
 
@@ -162,7 +165,7 @@ public class CustContextInfo implements Serializable {
         return contactInfo;
     }
 
-    public void setOperatorInfo(CustOperatorInfo contactInfo) {
+    public void setOperatorInfo(final CustOperatorInfo contactInfo) {
         this.valid = true;
         this.contactInfo = contactInfo;
         this.lastLoginTime = System.currentTimeMillis();
@@ -172,7 +175,7 @@ public class CustContextInfo implements Serializable {
         return WorkSessionContext.getSession(beforeSessionID);
     }
 
-    public void setBeforeSession(HttpSession anBeforeSession) {
+    public void setBeforeSession(final HttpSession anBeforeSession) {
         WorkSessionContext.addSession(anBeforeSession);
         this.beforeSessionID = anBeforeSession.getId();
     }
@@ -187,32 +190,32 @@ public class CustContextInfo implements Serializable {
     }
 
     /**
-     * 
+     *
      * 使用对方的公钥验证签名信息
-     * 
+     *
      * @param 原始内容
      * @param1 签名信息
      * @param2 证书公钥序列化内容
      * @return 验证成功返回True, 否则返回False
      * @throws 异常情况
      */
-    public boolean verifySign(String anContent, String anSign) {
-        Certificate workCert = KeyReader.fromCerBase64String(this.certInfo.getCertInfo());
-        boolean bb = SignHelper.verifySign(anContent, anSign, workCert);
+    public boolean verifySign(final String anContent, final String anSign) {
+        final Certificate workCert = KeyReader.fromCerBase64String(this.certInfo.getCertInfo());
+        final boolean bb = SignHelper.verifySign(anContent, anSign, workCert);
         logger.info("verifySign result is " + bb);
-        
+
         return bb;
     }
 
     /**
-     * 
+     *
      * 根据令牌，获取客户上下文信息
-     * 
+     *
      * @param 客户提供的令牌
      * @return 获取的上下文信息，如果没有上下文信息，将创建一个空的上下文信息，状态为无效
      * @throws 异常情况
      */
-    public static CustContextInfo findCustContextInfo(String anToken) {
+    public static CustContextInfo findCustContextInfo(final String anToken) {
         //Map<String, CustContextInfo> contextMap = (Map<String, CustContextInfo>) CacheUtils.get(CACHE_CUST_CONTEXT_MAP);
         CustContextInfo custContext = null;
         if (contextMap != null) {
@@ -234,7 +237,7 @@ public class CustContextInfo implements Serializable {
 
     public void invalid() {
         this.valid = false;
-       // Map<String, CustContextInfo> contextMap = (Map<String, CustContextInfo>) CacheUtils.get(CACHE_CUST_CONTEXT_MAP);
+        // Map<String, CustContextInfo> contextMap = (Map<String, CustContextInfo>) CacheUtils.get(CACHE_CUST_CONTEXT_MAP);
         if (contextMap != null) {
             contextMap.remove(token);
         }
@@ -248,21 +251,21 @@ public class CustContextInfo implements Serializable {
                 session.invalidate();
             }
         }
-        catch (Exception ex) {
+        catch (final Exception ex) {
 
         }
     }
 
     /**
-     * 
+     *
      * 保存上下文信息到缓存
-     * 
+     *
      * @param 需要保存的上下文信息
      * @return 无
      * @throws 异常情况
      */
-    public static void putCustContextInfo(CustContextInfo anCustContext) {
-      //  Map<String, CustContextInfo> contextMap = (Map<String, CustContextInfo>) CacheUtils.get(CACHE_CUST_CONTEXT_MAP);
+    public static void putCustContextInfo(final CustContextInfo anCustContext) {
+        //  Map<String, CustContextInfo> contextMap = (Map<String, CustContextInfo>) CacheUtils.get(CACHE_CUST_CONTEXT_MAP);
         if (contextMap == null) {
             contextMap = new ConcurrentHashMap();
             CacheUtils.put(CACHE_CUST_CONTEXT_MAP, contextMap);
@@ -276,7 +279,7 @@ public class CustContextInfo implements Serializable {
         this.backSessionID = null;
     }
 
-    public CustContextInfo(String anToken, CustCertInfo anCertInfo, HttpSession anBackSess) {
+    public CustContextInfo(final String anToken, final CustCertInfo anCertInfo, final HttpSession anBackSess) {
         this.token = anToken;
         this.certInfo = anCertInfo;
         if (anBackSess != null) {
