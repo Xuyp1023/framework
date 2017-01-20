@@ -10,10 +10,11 @@ import com.betterjr.common.data.UserType;
 import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.common.mapper.BeanMapper;
+import com.betterjr.common.mapper.CustDateJsonSerializer;
 import com.betterjr.common.selectkey.SerialGenerator;
 import com.betterjr.common.utils.BetterDateUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.betterjr.common.data.WorkUserInfo;
 
 @Access(AccessType.FIELD)
@@ -77,6 +78,7 @@ public class CustInfo implements BetterjrEntity, WorkUserInfo {
      */
     @Column(name = "D_VAILDDATE",  columnDefinition="VARCHAR" )
     @MetaData( value="证件有效期", comments = "证件有效期")
+    @JsonSerialize(using = CustDateJsonSerializer.class)
     private String validDate;
 
     /**
@@ -149,9 +151,9 @@ public class CustInfo implements BetterjrEntity, WorkUserInfo {
     /**
      * 创建日期
      */
-    @JsonIgnore
     @Column(name = "D_REG_DATE",  columnDefinition="VARCHAR" )
     @MetaData( value="创建日期", comments = "创建日期")
+    @JsonSerialize(using = CustDateJsonSerializer.class)
     private String regDate;
 
     /**
@@ -205,7 +207,6 @@ public class CustInfo implements BetterjrEntity, WorkUserInfo {
     /**
      * 客户状态；0正常，1冻结，9销户
      */
-    @JsonIgnore
     @Column(name = "C_BUSIN_STATUS",  columnDefinition="CHAR" )
     @MetaData( value="客户状态", comments = "客户状态；0正常，1冻结，9销户")
     private String businStatus;
