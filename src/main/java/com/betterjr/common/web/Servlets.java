@@ -364,5 +364,22 @@ public class Servlets {
         
         return findCertificate(Servlets.getRequest());
     }
+    
+    public static Map<String, Object> convertDate(Map<String, Object> anParams){
+        Iterator<Entry<String, Object>> it = anParams.entrySet().iterator();
+        while (it.hasNext()) {
+            Entry<String, Object> entry = it.next();
+            String paramName=entry.getKey();
+            String value="";
+            if (paramName.toUpperCase().contains("DATE")) {
+                String tmpStr = (String)entry.getValue();
+                if (BetterStringUtils.isNotBlank(tmpStr)) {
+                    value = tmpStr.replace("-", "");
+                }
+                anParams.put(paramName, value);
+            }
+        }
+        return anParams;
+    }
 
 }
