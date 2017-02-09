@@ -123,7 +123,7 @@ public class CustPassService extends BaseService<CustPassInfoMapper, CustPassInf
      * @param anPassType
      */
     private CustPassInfo findPassByIdAndType(final Long anId, final CustPasswordType anPassType) {
-        final Map<String, Object> termMap = QueryTermBuilder.newInstance().put("custNo", anId).put("passType", anPassType).build();
+        final Map<String, Object> termMap = QueryTermBuilder.newInstance().put("custNo", anId).put("passType", anPassType.getPassType()).build();
         return Collections3.getFirst(this.selectByProperty(termMap));
     }
 
