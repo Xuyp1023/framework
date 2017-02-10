@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.betterjr.common.data.CustPasswordType;
 import com.betterjr.common.data.SimpleDataEntity;
+import com.betterjr.common.exception.BytterException;
 import com.betterjr.common.exception.BytterTradeException;
 import com.betterjr.common.service.BaseService;
 import com.betterjr.common.utils.BTAssert;
@@ -90,18 +91,18 @@ public class CustPassService extends BaseService<CustPassInfoMapper, CustPassInf
 
         // 临时锁定
         if (passInfo.validLockType()) {
-            throw new DisabledAccountException("操作员登录密码被锁定，请稍后再试");
+            throw new BytterException("操作员登录密码被锁定，请稍后再试");
         }
 
         // 判断旧密码
         final String passwd = SystemAuthorizingRealm.findEncrypt(anLoginPasswd, passInfo.getPassSalt());
         if (passwd.equals(passInfo.getPasswd()) == false) {
 
-            throw new DisabledAccountException("操作员登录密码不正确");
+            throw new BytterException("操作员登录密码不正确");
         }
         else if (anNewPasswd.equals(anOkPasswd) == false) {
 
-            throw new DisabledAccountException("两次输入的密码不一致");
+            throw new BytterException("两次输入的密码不一致");
         }
 
         final HashPassword result = SystemAuthorizingRealm.encrypt(anOkPasswd);
