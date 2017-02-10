@@ -29,7 +29,7 @@ public class UserSecurityInterceptor implements HandlerInterceptor {
         return this.pcFailUrl;
     }
 
-    public void setPcFailUrl(String anPcFailUrl) {
+    public void setPcFailUrl(final String anPcFailUrl) {
         this.pcFailUrl = anPcFailUrl;
     }
 
@@ -37,7 +37,7 @@ public class UserSecurityInterceptor implements HandlerInterceptor {
         return this.mobileFailUrl;
     }
 
-    public void setMobileFailUrl(String anMobileFailUrl) {
+    public void setMobileFailUrl(final String anMobileFailUrl) {
         this.mobileFailUrl = anMobileFailUrl;
     }
 
@@ -45,12 +45,12 @@ public class UserSecurityInterceptor implements HandlerInterceptor {
         return this.forbidMessage;
     }
 
-    public void setForbidMessage(String anForbidMessage) {
+    public void setForbidMessage(final String anForbidMessage) {
         this.forbidMessage = anForbidMessage;
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest anArg0, HttpServletResponse anArg1, Object anArg2, Exception anArg3) throws Exception {
+    public void afterCompletion(final HttpServletRequest anArg0, final HttpServletResponse anArg1, final Object anArg2, final Exception anArg3) throws Exception {
 
     }
 
@@ -58,16 +58,18 @@ public class UserSecurityInterceptor implements HandlerInterceptor {
         return excludedUrls;
     }
 
-    public void setExcludedUrls(List<String> excludedUrls) {
+    public void setExcludedUrls(final List<String> excludedUrls) {
         this.excludedUrls = excludedUrls;
     }
 
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse anArg1, Object anArg2, ModelAndView modelAndView) throws Exception {
-        long startTime = (Long) request.getAttribute("startTime");
-        request.removeAttribute("startTime");
-        long endTime = System.currentTimeMillis();
-        logger.info("handlingTime :" +(  endTime - startTime));
+    public void postHandle(final HttpServletRequest request, final HttpServletResponse anArg1, final Object anArg2, final ModelAndView modelAndView) throws Exception {
+        final Long startTime = (Long) request.getAttribute("startTime_tradePassword");
+        if (startTime != null) {
+            request.removeAttribute("startTime_tradePassword");
+            final Long endTime = System.currentTimeMillis();
+            logger.info("UserSecurityInterceptor handlingTime :" +(  endTime - startTime));
+        }
     }
 
     /**
@@ -75,31 +77,31 @@ public class UserSecurityInterceptor implements HandlerInterceptor {
      * @param requestUri 申请地址
      * @return
      */
-    private boolean checkExcludeUrl(String requestUri){
+    private boolean checkExcludeUrl(final String requestUri){
         logger.info("requestUri = "+requestUri);
-        for (String url : excludedUrls) {
+        for (final String url : excludedUrls) {
             if (requestUri.endsWith(url)) {
                 return true;
             }
         }
         return false;
     }
-    
+
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object anHandle) throws Exception {
+    public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object anHandle) throws Exception {
         boolean bbq = true;
-        long startTime = System.currentTimeMillis();
-        request.setAttribute("startTime", startTime);
+        final Long startTime = System.currentTimeMillis();
+        request.setAttribute("startTime_tradePassword", startTime);
         if ((anHandle != null) && (anHandle instanceof HandlerMethod)) {
             if (checkExcludeUrl(request.getRequestURI())){
-                
+
                 return true;
             }
-            
+
             //logger.info(anHandle.getClass() + " preHandle anArg2:" + anHandle);
-            HandlerMethod hd = (HandlerMethod) anHandle;
-          //  logger.info("preHandle find DeclaringClass :" + hd.getMethod().getDeclaringClass());
-            String[] resultMsg = new String[1];
+            final HandlerMethod hd = (HandlerMethod) anHandle;
+            //  logger.info("preHandle find DeclaringClass :" + hd.getMethod().getDeclaringClass());
+            final String[] resultMsg = new String[1];
             bbq = UserUtils.checkAccess(hd.getMethodAnnotation(MetaData.class), request.getParameter("password"), resultMsg);
             if (bbq == false) {
                 String errMsg = resultMsg[0];

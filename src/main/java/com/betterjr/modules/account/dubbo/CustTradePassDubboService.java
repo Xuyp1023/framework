@@ -29,7 +29,6 @@ import com.betterjr.modules.sms.dubbo.interfaces.IVerificationCodeService;
 import com.betterjr.modules.sms.entity.VerifyCode;
 import com.betterjr.modules.sms.util.VerifyCodeType;
 import com.betterjr.modules.sys.security.SystemAuthorizingRealm;
-import com.betterjr.modules.sys.security.SystemAuthorizingRealm.HashPassword;
 
 /**
  * @author liuwl
@@ -120,12 +119,12 @@ public class CustTradePassDubboService implements ICustTradePassService {
      */
     @Override
     public boolean checkTradePassword(final CustOperatorInfo anOperator, final String anTradePassword) {
-        final CustPassInfo custPassInfo = custPassService.getOperaterPassByCustNo(anOperator.getId(), CustPasswordType.PERSON_TRADE);
+        final CustPassInfo custPassInfo = custPassService.getOperaterPassByCustNo(anOperator.getId(), CustPasswordType.ORG);
         BTAssert.notNull(custPassInfo, "没有找到相应的交易密码信息！");
 
-        final HashPassword result = SystemAuthorizingRealm.encrypt(anTradePassword);
+        final String tradePassword = SystemAuthorizingRealm.findEncrypt(anTradePassword, custPassInfo.getPassSalt());
 
-        if (StringUtils.equals(result.password, custPassInfo.getPasswd())) {
+        if (StringUtils.equals(tradePassword, custPassInfo.getPasswd())) {
             return true;
         }
         return false;
