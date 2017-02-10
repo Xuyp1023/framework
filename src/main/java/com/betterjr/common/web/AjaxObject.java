@@ -12,6 +12,7 @@ public class AjaxObject {
     private final static int STATUS_CODE_SUCCESS = 200;
     private final static int STATUS_CODE_FAILURE = 300;
     private final static int STATUS_CODE_TIMEOUT = 301;
+    private final static int STATUS_CODE_FRISTLOGIN = 401;
     private final static int STATUS_CODE_FORBIDDEN = 403;
     private final static int STATUS_CODE_BUSIN = 500;
     private static JsonMapper jMapper = JsonMapper.buildOutDefaultMapper();
@@ -22,9 +23,9 @@ public class AjaxObject {
 
     @JsonProperty(index = 0, value = "code")
     private int statusCode = 0;
-    
+
     private String message = "";
-    
+
     @JsonIgnore
     private String navTabId = "";
     @JsonIgnore
@@ -32,13 +33,13 @@ public class AjaxObject {
     @JsonIgnore
     private String rel = "";
     @JsonIgnore
-    
+
     private String callbackType = "";// CALLBACK_TYPE_CLOSE_CURRENT;
     private Object data;
 
     private WorkPageInfo page;
 
-    public void setPage(WorkPageInfo anPage) {
+    public void setPage(final WorkPageInfo anPage) {
         this.page = anPage;
     }
 
@@ -46,27 +47,27 @@ public class AjaxObject {
 
     }
 
-    public AjaxObject(String message) {
+    public AjaxObject(final String message) {
         this.message = message;
     }
 
     /**
      * 构造函数
-     * 
+     *
      * @param statusCode
      */
-    public AjaxObject(int statusCode) {
+    public AjaxObject(final int statusCode) {
         super();
         this.statusCode = statusCode;
     }
 
     /**
      * 构造函数
-     * 
+     *
      * @param statusCode
      * @param message
      */
-    public AjaxObject(int statusCode, String message) {
+    public AjaxObject(final int statusCode, final String message) {
         super();
         this.statusCode = statusCode;
         this.message = message;
@@ -74,11 +75,11 @@ public class AjaxObject {
 
     /**
      * 构造函数
-     * 
+     *
      * @param statusCode
      * @param message
      */
-    public AjaxObject(int statusCode, String message, Object anData, WorkPageInfo anPage) {
+    public AjaxObject(final int statusCode, final String message, final Object anData, final WorkPageInfo anPage) {
         super();
         this.statusCode = statusCode;
         this.message = message;
@@ -88,11 +89,11 @@ public class AjaxObject {
 
     /**
      * 构造函数
-     * 
+     *
      * @param statusCode
      * @param message
      */
-    public AjaxObject(int statusCode, String message, Object anData) {
+    public AjaxObject(final int statusCode, final String message, final Object anData) {
         super();
         this.statusCode = statusCode;
         this.message = message;
@@ -101,12 +102,12 @@ public class AjaxObject {
 
     /**
      * 构造函数
-     * 
+     *
      * @param statusCode
      * @param message
      * @param callbackType
      */
-    public AjaxObject(int statusCode, String message, String callbackType) {
+    public AjaxObject(final int statusCode, final String message, final String callbackType) {
         this.statusCode = statusCode;
         this.message = message;
         this.callbackType = callbackType;
@@ -114,14 +115,14 @@ public class AjaxObject {
 
     /**
      * 构造函数
-     * 
+     *
      * @param statusCode
      * @param message
      * @param forwardUrl
      * @param rel
      * @param callbackType
      */
-    public AjaxObject(int statusCode, String message, String navTabId, String forwardUrl, String rel, String callbackType) {
+    public AjaxObject(final int statusCode, final String message, final String navTabId, final String forwardUrl, final String rel, final String callbackType) {
         this.statusCode = statusCode;
         this.message = message;
         this.navTabId = navTabId;
@@ -140,7 +141,7 @@ public class AjaxObject {
 
     /**
      * 返回 statusCode 的值
-     * 
+     *
      * @return statusCode
      */
     public int getStatusCode() {
@@ -149,17 +150,17 @@ public class AjaxObject {
 
     /**
      * 设置 statusCode 的值
-     * 
+     *
      * @param statusCode
      */
-    public AjaxObject setStatusCode(int statusCode) {
+    public AjaxObject setStatusCode(final int statusCode) {
         this.statusCode = statusCode;
         return this;
     }
 
     /**
      * 返回 message 的值
-     * 
+     *
      * @return message
      */
     public String getMessage() {
@@ -168,17 +169,17 @@ public class AjaxObject {
 
     /**
      * 设置 message 的值
-     * 
+     *
      * @param message
      */
-    public AjaxObject setMessage(String message) {
+    public AjaxObject setMessage(final String message) {
         this.message = message;
         return this;
     }
 
     /**
      * 返回 forwardUrl 的值
-     * 
+     *
      * @return forwardUrl
      */
     public String getForwardUrl() {
@@ -187,17 +188,17 @@ public class AjaxObject {
 
     /**
      * 设置 forwardUrl 的值
-     * 
+     *
      * @param forwardUrl
      */
-    public AjaxObject setForwardUrl(String forwardUrl) {
+    public AjaxObject setForwardUrl(final String forwardUrl) {
         this.forwardUrl = forwardUrl;
         return this;
     }
 
     /**
      * 返回 rel 的值
-     * 
+     *
      * @return rel
      */
     public String getRel() {
@@ -206,17 +207,17 @@ public class AjaxObject {
 
     /**
      * 设置 rel 的值
-     * 
+     *
      * @param rel
      */
-    public AjaxObject setRel(String rel) {
+    public AjaxObject setRel(final String rel) {
         this.rel = rel;
         return this;
     }
 
     /**
      * 返回 callbackType 的值
-     * 
+     *
      * @return callbackType
      */
     public String getCallbackType() {
@@ -225,17 +226,17 @@ public class AjaxObject {
 
     /**
      * 设置 callbackType 的值
-     * 
+     *
      * @param callbackType
      */
-    public AjaxObject setCallbackType(String callbackType) {
+    public AjaxObject setCallbackType(final String callbackType) {
         this.callbackType = callbackType;
         return this;
     }
 
     /**
      * 返回 navTabId 的值
-     * 
+     *
      * @return navTabId
      */
     public String getNavTabId() {
@@ -244,51 +245,51 @@ public class AjaxObject {
 
     /**
      * 设置 navTabId 的值
-     * 
+     *
      * @param navTabId
      */
-    public AjaxObject setNavTabId(String navTabId) {
+    public AjaxObject setNavTabId(final String navTabId) {
         this.navTabId = navTabId;
         return this;
     }/*
-      * 
-      * public static String createJson(Object anObj) {
-      * 
-      * try { return JsonMapper.getInstance().writeValueAsString(anObj); } catch (JsonProcessingException e) { e.printStackTrace(); return ""; } }
-      */
+     *
+     * public static String createJson(Object anObj) {
+     *
+     * try { return JsonMapper.getInstance().writeValueAsString(anObj); } catch (JsonProcessingException e) { e.printStackTrace(); return ""; } }
+     */
 
-    public static AjaxObject newOk(String message) {
+    public static AjaxObject newOk(final String message) {
         return new AjaxObject(STATUS_CODE_SUCCESS, message);
     }
 
-    public static AjaxObject newOk(String message, Object anData) {
+    public static AjaxObject newOk(final String message, final Object anData) {
         return new AjaxObject(STATUS_CODE_SUCCESS, message, anData);
     }
 
-    public static AjaxObject newOkWithPage(String message, Page anData) {
+    public static AjaxObject newOkWithPage(final String message, final Page anData) {
         return new AjaxObject(STATUS_CODE_SUCCESS, message, anData, new WorkPageInfo(anData));
     }
 
-    public static AjaxObject newOk(Object anData) {
+    public static AjaxObject newOk(final Object anData) {
 
         return new AjaxObject(STATUS_CODE_SUCCESS, "ok", anData);
     }
 
-    public static AjaxObject newOk(Object anData, WorkPageInfo anPage) {
+    public static AjaxObject newOk(final Object anData, final WorkPageInfo anPage) {
 
         return new AjaxObject(STATUS_CODE_SUCCESS, "ok", anData, anPage);
     }
 
-    public static AjaxObject newOk(String message, Object anData, WorkPageInfo anPage) {
+    public static AjaxObject newOk(final String message, final Object anData, final WorkPageInfo anPage) {
 
         return new AjaxObject(STATUS_CODE_SUCCESS, message, anData, anPage);
     }
 
-    public static AjaxObject newError(String message) {
+    public static AjaxObject newError(final String message) {
         return new AjaxObject(STATUS_CODE_FAILURE, message);
     }
 
-    public static AjaxObject newError(Exception anEx){
+    public static AjaxObject newError(final Exception anEx){
         String message;
         if (anEx instanceof BytterException) {
             message = anEx.getMessage();
@@ -296,59 +297,62 @@ public class AjaxObject {
         else {
             message = "未知错误！";
         }
-        
+
         return new AjaxObject(STATUS_CODE_FAILURE, message);
     }
 
-    public static AjaxObject newTimeout(String message) {
+    public static AjaxObject newTimeout(final String message) {
         return new AjaxObject(STATUS_CODE_TIMEOUT, message);
     }
 
-    public static AjaxObject newForbidden(String message) {
+    public static AjaxObject newForbidden(final String message) {
         return new AjaxObject(STATUS_CODE_FORBIDDEN, message);
     }
+    public static AjaxObject newFristLogin(final String message) {
+        return new AjaxObject(STATUS_CODE_FRISTLOGIN, message);
+    }
 
-    public static AjaxObject newBusin(String message) {
+    public static AjaxObject newBusin(final String message) {
         return new AjaxObject(STATUS_CODE_BUSIN, message);
     }
-    
-    public static AjaxObject newRefreshNavtab(String navTabId, String message) {
-        AjaxObject ajaxObject = new AjaxObject(message);
+
+    public static AjaxObject newRefreshNavtab(final String navTabId, final String message) {
+        final AjaxObject ajaxObject = new AjaxObject(message);
         ajaxObject.navTabId = navTabId;
         return ajaxObject;
     }
 
-    public static AjaxObject newRefreshRel(String rel, String message) {
-        AjaxObject ajaxObject = new AjaxObject(message);
+    public static AjaxObject newRefreshRel(final String rel, final String message) {
+        final AjaxObject ajaxObject = new AjaxObject(message);
         ajaxObject.rel = rel;
         return ajaxObject;
     }
 
-    public static AjaxObject newForward(String forwardUrl) {
-        AjaxObject ajaxObject = new AjaxObject(CALLBACK_TYPE_FORWARD);
+    public static AjaxObject newForward(final String forwardUrl) {
+        final AjaxObject ajaxObject = new AjaxObject(CALLBACK_TYPE_FORWARD);
         ajaxObject.forwardUrl = forwardUrl;
         return ajaxObject;
     }
 
-    public void createDataInfo(StringBuilder anSB) {
+    public void createDataInfo(final StringBuilder anSB) {
         if (this.data != null) {
             anSB.append(",\"data\":");
             try {
                 anSB.append(JsonMapper.getInstance().writeValueAsString(data));
             }
-            catch (JsonProcessingException e) {
+            catch (final JsonProcessingException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public void createPageInfo(StringBuilder anSB) {
+    public void createPageInfo(final StringBuilder anSB) {
         if (this.page != null) {
             anSB.append(",\"page\":");
             try {
                 anSB.append(JsonMapper.getInstance().writeValueAsString(page));
             }
-            catch (JsonProcessingException e) {
+            catch (final JsonProcessingException e) {
                 e.printStackTrace();
             }
         }
@@ -365,10 +369,10 @@ public class AjaxObject {
      */
     @Override
     public String toString() {
-        StringBuilder buffer = new StringBuilder(200);
+        final StringBuilder buffer = new StringBuilder(200);
         buffer.append("{").append("\"code\":\"" + statusCode + "\",").append("\"message\":\"" + message + "\",")
-                .append("\"navTabId\":\"" + navTabId + "\",").append("\"rel\":\"" + rel + "\",").append("\"callbackType\":\"" + callbackType + "\",")
-                .append("\"forwardUrl\":\"" + forwardUrl + "\"");
+        .append("\"navTabId\":\"" + navTabId + "\",").append("\"rel\":\"" + rel + "\",").append("\"callbackType\":\"" + callbackType + "\",")
+        .append("\"forwardUrl\":\"" + forwardUrl + "\"");
         createPageInfo(buffer);
         createDataInfo(buffer);
         buffer.append("}");
