@@ -119,7 +119,7 @@ public class CustTradePassDubboService implements ICustTradePassService {
      */
     @Override
     public boolean checkTradePassword(final CustOperatorInfo anOperator, final String anTradePassword) {
-        final CustPassInfo custPassInfo = custPassService.getOperaterPassByCustNo(anOperator.getId(), CustPasswordType.ORG);
+        final CustPassInfo custPassInfo = custPassService.getOperaterPassByCustNo(anOperator.getId(), CustPasswordType.ORG_TRADE);
         BTAssert.notNull(custPassInfo, "没有找到相应的交易密码信息！");
 
         final String tradePassword = SystemAuthorizingRealm.findEncrypt(anTradePassword, custPassInfo.getPassSalt());
