@@ -13,11 +13,12 @@ import com.betterjr.common.utils.UserUtils;
 import com.betterjr.common.web.AjaxObject;
 import com.betterjr.modules.account.dubbo.interfaces.ICustInfoService;
 import com.betterjr.modules.account.entity.CustInfo;
+import com.betterjr.modules.account.service.CustAccountService;
 import com.betterjr.modules.account.service.CustAndOperatorRelaService;
 
 /**
  * 机构基本信息
- * 
+ *
  * @author liuwl
  *
  */
@@ -27,25 +28,33 @@ public class CustInfoDubboService implements ICustInfoService {
 
     @Autowired
     private CustAndOperatorRelaService custOperatorRelaService;
-    
+
+    @Autowired
+    private CustAccountService custAccountService;
+
     @Override
     public String webQueryCustInfo() {
-        Collection<CustInfo> custInfos = queryCustInfo();
+        final Collection<CustInfo> custInfos = queryCustInfo();
         return AjaxObject.newOk("查询操作员所有的公司列表成功", custInfos).toJson();
     }
 
     @Override
     public Collection<CustInfo> queryCustInfo() {
-        return UserUtils.findCustInfoList();
+        final Collection<CustInfo> custInfos = custAccountService.findCustInfoByOperator(UserUtils.getOperatorInfo().getId(),
+                UserUtils.getOperatorInfo().getOperOrg());
+        return custInfos;
     }
-    
+
     /***
      * 获取当前登录的客户号
+     *
      * @return
      */
-    public Long findCustNo(){
-        List<Long> custList=custOperatorRelaService.findCustNoList(UserUtils.getOperatorInfo().getId(),UserUtils.getOperatorInfo().getOperOrg());
-        logger.info("findCustNo custList:"+custList);
+    @Override
+    public Long findCustNo() {
+        final List<Long> custList = custOperatorRelaService.findCustNoList(UserUtils.getOperatorInfo().getId(),
+                UserUtils.getOperatorInfo().getOperOrg());
+        logger.info("findCustNo custList:" + custList);
         return Collections3.getFirst(custList);
     }
 
