@@ -62,6 +62,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         SupportedUploadFileType.add("xlsx");
         SupportedUploadFileType.add("zip");
         SupportedUploadFileType.add("rar");
+        SupportedUploadFileType.add("ftl");
     }
     
     public static boolean isSupportedUploadFileType(String type){
