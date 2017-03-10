@@ -139,4 +139,39 @@ public class FreemarkerService extends Configuration {
             return processTemplateByName(templateFileName, dataMap);
         }
     }
+    
+    public StringBuffer processTemplateByFactory(String templateFileName, Map<String, Object> dataMap, String moduleName, InputStream  anSource) {
+        dataMap.put("numberFormater",  new CustDecimalJsonSerializer());
+        dataMap.put("dictUtils",  new DictUtils());
+        String subPath=File.separator + "templates" + File.separator + "modules"+File.separator+moduleName+File.separator;
+        String templateDir = System.getProperty("java.io.tmpdir") +subPath;
+        File targetTemplateFile = new File(templateDir + File.separator + templateFileName + ".ftl");
+        if ((targetTemplateFile.exists() && targetTemplateFile.isFile() && targetTemplateFile.length() > 10) == false) {
+            try {
+                FileUtils.copyInputStreamToFile(anSource, targetTemplateFile);
+            }
+            catch (IOException e) {
+                throw new ServiceException(e.getMessage(), e);
+            }
+        }
+        logger.warn("Processing freemarker template file: {}", targetTemplateFile.getAbsolutePath());
+        long fileVersion = targetTemplateFile.lastModified();
+        Object templateSource = stringTemplateLoader.findTemplateSource(templateFileName);
+        long templateVersion = 0;
+        if (templateSource != null) {
+            templateVersion = stringTemplateLoader.getLastModified(templateSource);
+        }
+        if (fileVersion > templateVersion) {
+            try {
+                String contents = FileUtils.readFileToString(targetTemplateFile);
+                return processTemplate(templateFileName, fileVersion, contents, dataMap);
+            }
+            catch (IOException e) {
+                throw new ServiceException("error.freemarker.template.process", e);
+            }
+        }
+        else {
+            return processTemplateByName(templateFileName, dataMap);
+        }
+    }
 }
