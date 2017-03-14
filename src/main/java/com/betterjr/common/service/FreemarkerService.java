@@ -146,13 +146,11 @@ public class FreemarkerService extends Configuration {
         String subPath=File.separator + "templates" + File.separator + "modules"+File.separator+moduleName+File.separator;
         String templateDir = System.getProperty("java.io.tmpdir") +subPath;
         File targetTemplateFile = new File(templateDir + File.separator + templateFileName + ".ftl");
-        if ((targetTemplateFile.exists() && targetTemplateFile.isFile() && targetTemplateFile.length() > 10) == false) {
-            try {
-                FileUtils.copyInputStreamToFile(anSource, targetTemplateFile);
-            }
-            catch (IOException e) {
-                throw new ServiceException(e.getMessage(), e);
-            }
+        try {
+            FileUtils.copyInputStreamToFile(anSource, targetTemplateFile);
+        }
+        catch (IOException e) {
+            throw new ServiceException(e.getMessage(), e);
         }
         logger.warn("Processing freemarker template file: {}", targetTemplateFile.getAbsolutePath());
         long fileVersion = targetTemplateFile.lastModified();
