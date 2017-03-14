@@ -1,7 +1,8 @@
 package com.betterjr.modules.account.service;
 
-import java.util.ArrayList;
+import java.security.cert.X509Certificate;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -12,17 +13,18 @@ import org.springframework.stereotype.Service;
 
 import com.betterjr.common.exception.BytterSecurityException;
 import com.betterjr.common.security.CustKeyManager;
+import com.betterjr.common.security.KeyReader;
+import com.betterjr.common.security.SignHelper;
 import com.betterjr.common.service.BaseService;
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.Collections3;
-import com.betterjr.common.utils.PropertiesHolder;
-import com.betterjr.common.web.Servlets;
 import com.betterjr.modules.account.dao.CustLoginRecordMapper;
 import com.betterjr.modules.account.data.CustContextInfo;
-import com.betterjr.modules.account.entity.CustInfo;
 import com.betterjr.modules.account.entity.CustLoginRecord;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
- 
+import com.betterjr.modules.cert.entity.CustCertInfo;
+import com.betterjr.modules.sys.utils.TicketUtils;
+
 @Service
 public class CustLoginService extends BaseService<CustLoginRecordMapper, CustLoginRecord> {
     private static final Logger logger = LoggerFactory.getLogger(CustLoginService.class);
@@ -33,125 +35,95 @@ public class CustLoginService extends BaseService<CustLoginRecordMapper, CustLog
     @Autowired
     private CustAccountService accountService;
 
-    protected CustContextInfo mockCreateLogin(String anToken) {
-        String token = Servlets.getSession().getId();
-        CustContextInfo contextInfo = new CustContextInfo(token, null, null);
-        CustContextInfo.putCustContextInfo(contextInfo);
-        // CustOperatorInfo tmpInfo = operService.findCustOperatorByOperCode(
-        // "3a3nGxa3QNGsvmd9VvpJQ7pxewbwhNwc27hyx63eEcxMp8b+Y7jFtA==FxOSPGFvQyrsz0CwcUjvjFQrepIzIzgiX7Je0hUhrAGgULe8udr9Gg==", "000001");
-        // CustOperatorInfo tmpInfo = operService.findCustOperatorByOperCode("aXXAAAFWQWEQWEQWEEQWEXXXXxxxxx", "1234566");
-        // CustOperatorInfo tmpInfo = operService.findCustOperatorByOperCode("aXXAAAFWQWEQWEQWEEQWEXXXXbbbbbb", "978441"); //77
-        // CustOperatorInfo tmpInfo = operService.findCustOperatorByOperCode("aXXAAAFWQWEQWEQWEEQWEXXXXddpppp", "9857");// 91
-        // contextInfo.setOperatorInfo(tmpInfo);
-        // List<CustInfo> custList = findCustInfoByOperator(contextInfo.getOperatorInfo().getId(), null);
-        // contextInfo.login(custList);
+    @Autowired
+    private CustOperatorService custOperatorService;
 
-        // 增加交易账户信息
-        // contextInfo.addTradeAccount(tradeAccountService.findTradeAccountByCustInfo(custList));
-        // todo;登录信息和状态暂时不处理
-        return contextInfo;
-    }
-
-    protected CustContextInfo mockLogin(String anToken) {
-        String token = Servlets.getSession().getId();
-        CustContextInfo contextInfo = new CustContextInfo(token, null, null);
-        CustContextInfo.putCustContextInfo(contextInfo);
-        CustOperatorInfo tmpInfo = new CustOperatorInfo();
-        tmpInfo.setName("李三四");
-        tmpInfo.setOperCode("119901");
-        tmpInfo.setOperOrg("aaaXXXXXXXXXXXXXXXxxxxx");
-        tmpInfo.initStatus();
-        contextInfo.setOperatorInfo(tmpInfo);
-        List<CustInfo> custList = new ArrayList();
-        contextInfo.login(custList);
-
-        // 增加交易账户信息
-        //contextInfo.addTradeAccount(new ArrayList());
-
-        // todo;登录信息和状态暂时不处理
-        return contextInfo;
-    }
-
-    protected CustContextInfo mockLogin1(String anToken) {
-        String token = Servlets.getSession().getId();
-        CustContextInfo contextInfo = new CustContextInfo(token, null, null);
-        CustContextInfo.putCustContextInfo(contextInfo);
-        CustOperatorInfo tmpInfo = new CustOperatorInfo();
-        tmpInfo.setName("欧尼");
-        tmpInfo.setOperCode("9857");
-        tmpInfo.setOperOrg("aXXAAAFWQWEQWEQWEEQWEXXXXddpppp");
-        tmpInfo.initStatus();
-        contextInfo.setOperatorInfo(tmpInfo);
-        List<CustInfo> custList = new ArrayList();
-        contextInfo.login(custList);
-
-        // 增加交易账户信息
-        //contextInfo.addTradeAccount(new ArrayList());
-
-        // todo;登录信息和状态暂时不处理
-        return contextInfo;
-    }
-
-    public CustContextInfo saveFormLogin(CustOperatorInfo anUser) {
-        CustLoginRecord tmpRecord = CustLoginRecord.createByOperator(anUser, "1");
+    public CustContextInfo saveFormLogin(final CustOperatorInfo anUser) {
+        final CustLoginRecord tmpRecord = CustLoginRecord.createByOperator(anUser, "1");
         saveLoginRecord(tmpRecord);
-        return accountService.loginOperate(null, anUser);
+        final CustContextInfo contextInfo = null;
+        return accountService.loginOperate(contextInfo, anUser);
     }
 
     /**
      * 保存登陆信息
+     *
      * @param anRecord
      */
-    public void saveLoginRecord(CustLoginRecord anRecord){
-        
-       this.insert(anRecord); 
+    public void saveLoginRecord(final CustLoginRecord anRecord) {
+        this.insert(anRecord);
     }
-    
-    public CustLoginRecord findLastLoginRecord(String anOpeOrg){
-       List<CustLoginRecord> custLoginList = this.selectPropertyByPage("operOrg", anOpeOrg, 1, 1, false);
-       if (Collections3.isEmpty(custLoginList)){
-           
-           return null;  
-       }
-       else{
-           
-           return Collections3.getFirst(custLoginList);
-       }
+
+    /**
+     * 查询最后一次登陆信息
+     *
+     * @param anOpeOrg
+     * @return
+     */
+    public CustLoginRecord findLastLoginRecord(final String anOpeOrg) {
+        final List<CustLoginRecord> custLoginList = this.selectPropertyByPage("operOrg", anOpeOrg, 1, 1, false);
+        return Collections3.getFirst(custLoginList);
     }
-    
-    public CustContextInfo saveTokenLogin(String anToken) {
-        anToken = BetterStringUtils.deleteWhitespace(anToken);
-        /*
-         * if ("123".equals(anToken)) { return mockLogin(anToken); } if ("1234".equals(anToken)) { // return mockCreateLogin(anToken); return
-         * mockLogin1(anToken); }
-         * 
-         * if ("12345".equals(anToken)) { return mockLogin1(anToken); }
-         */String msg = null;
+
+    /**
+     * 使用ticket登陆
+     *
+     * @param anTicket
+     * @param anCertInfo
+     * @return
+     */
+    public CustContextInfo saveTicketLogin(final String anTicket, final CustCertInfo anCertInfo) {
+        final String ticket = BetterStringUtils.deleteWhitespace(anTicket);
+
+        String msg = null;
         int errCode = 20401;
-        if (StringUtils.isNotBlank(anToken)) {
-            String[] arrStr = anToken.split(",");
+        if (StringUtils.isNotBlank(ticket)) {
+            final String[] arrStr = ticket.split(",");
             if (arrStr.length == 2) {
 
-                String workToken = custKeyManager.decrypt(arrStr[0]);
+                final String workToken = custKeyManager.decrypt(arrStr[0]);
+                final String workTokenSign = arrStr[1];
+                final X509Certificate certificate = (X509Certificate) KeyReader.fromCerBase64String(anCertInfo.getCertInfo());
 
-                logger.info("this is client Send token=" + workToken);
+                if (SignHelper.verifySign(workToken, workTokenSign, certificate)) {
+                    final Map<String, String> param = TicketUtils.getToken(workToken);
 
-                CustContextInfo contextInfo = CustContextInfo.findCustContextInfo(workToken);
-                int loginTimeDiff = PropertiesHolder.getInt("operator.loginTimeDiff", 30);
-                if (contextInfo == null) {
-                    logger.warn("the request contextInfo is null, useToken =" + workToken);
-                }
-                // 验证上下文信息是否有效，登录是否超时，以及提供的证书是否由私钥签发；如果都通过，则去获取客户信息
-                if (contextInfo != null && contextInfo.isValid() && contextInfo.isBeforeLoginValid(loginTimeDiff)
-                        && contextInfo.verifySign(workToken, arrStr[1])) {
-                    CustLoginRecord tmpRecord = CustLoginRecord.createByOperator(contextInfo.getOperatorInfo(), "0");
-                    saveLoginRecord(tmpRecord);
-                    return accountService.loginOperate(contextInfo, contextInfo.getOperatorInfo());
+                    final String token = param.get("token");
+                    final String operCode = param.get("operCode");
+                    final String operName = param.get("operName");
+                    final String corpId = param.get("corpId");
+                    final String operOrg = param.get("operOrg");
+
+                    final CustOperatorInfo operator = custOperatorService.findCustOperatorByOperCode(operOrg, operCode);
+                    if (operator != null) {
+
+                        final CustContextInfo contextInfo = accountService.loginOperateByToken(token, operator);
+
+                        if (contextInfo == null) {
+                            logger.warn("the request contextInfo is null, useToken =" + ticket);
+                        }
+                        // 验证上下文信息是否有效，登录是否超时，以及提供的证书是否由私钥签发；如果都通过，则去获取客户信息
+                        if (contextInfo != null && contextInfo.isValid()) {
+                            final CustLoginRecord tmpRecord = CustLoginRecord.createByOperator(contextInfo.getOperatorInfo(), "0");
+                            saveLoginRecord(tmpRecord);
+                            contextInfo.setOperatorInfo(operator);
+                            return contextInfo;
+                        }
+                        else {
+                            errCode = 20402;
+                            msg = "back login context has error!";
+                        }
+                    }
+                    else {
+                        errCode = 20405;
+                        msg = "back login context has error!";
+                    }
                 }
                 else {
-                    errCode = 20402;
+                    errCode = 20404;
                     msg = "back login context has error!";
                 }
+
             }
             else {
                 errCode = 20403;
@@ -161,8 +133,6 @@ public class CustLoginService extends BaseService<CustLoginRecordMapper, CustLog
         else {
             msg = "token is null";
         }
-        System.out.println(errCode + ", " + msg);
-        Servlets.getSession().invalidate();
         throw new AuthenticationException(new BytterSecurityException(errCode, msg));
     }
 

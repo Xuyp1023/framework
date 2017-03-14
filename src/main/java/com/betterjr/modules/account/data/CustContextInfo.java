@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpSession;
 
@@ -16,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.betterjr.common.security.KeyReader;
 import com.betterjr.common.security.SignHelper;
 import com.betterjr.common.utils.CacheUtils;
+import com.betterjr.common.utils.JedisUtils;
 import com.betterjr.common.web.WorkSessionContext;
 import com.betterjr.modules.account.entity.CustInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
@@ -31,6 +31,8 @@ import com.betterjr.modules.cert.entity.CustCertInfo;
  */
 public class CustContextInfo implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(CustContextInfo.class);
+
+    public static final String custContextPrefix = "cust::context::";
 
     public static final String CACHE_CUST_CONTEXT_MAP = "custContextMap";
 
@@ -217,13 +219,8 @@ public class CustContextInfo implements Serializable {
      */
     public static CustContextInfo findCustContextInfo(final String anToken) {
         //Map<String, CustContextInfo> contextMap = (Map<String, CustContextInfo>) CacheUtils.get(CACHE_CUST_CONTEXT_MAP);
-        CustContextInfo custContext = null;
-        if (contextMap != null) {
-            custContext = contextMap.get(anToken);
-        }
-        else{
-            logger.warn("the contextMap is null");
-        }
+        CustContextInfo custContext = JedisUtils.getObject(custContextPrefix + anToken);
+
         if (custContext == null) {
             logger.warn("the token " + anToken+", context info is null");
             custContext = new CustContextInfo();
@@ -265,12 +262,17 @@ public class CustContextInfo implements Serializable {
      * @throws 异常情况
      */
     public static void putCustContextInfo(final CustContextInfo anCustContext) {
+        putCustContextInfo(anCustContext.getToken(), anCustContext);
+    }
+
+    public static void putCustContextInfo(final String anToken, final CustContextInfo anCustContext) {
         //  Map<String, CustContextInfo> contextMap = (Map<String, CustContextInfo>) CacheUtils.get(CACHE_CUST_CONTEXT_MAP);
-        if (contextMap == null) {
-            contextMap = new ConcurrentHashMap();
-            CacheUtils.put(CACHE_CUST_CONTEXT_MAP, contextMap);
-        }
-        contextMap.put(anCustContext.getToken(), anCustContext);
+        //        if (contextMap == null) {
+        //            contextMap = new ConcurrentHashMap();
+        //            CacheUtils.put(CACHE_CUST_CONTEXT_MAP, contextMap);
+        //        }
+        //        contextMap.put(anCustContext.getToken(), anCustContext);
+        JedisUtils.setObject(custContextPrefix + anToken, anCustContext, 0);
     }
 
     public CustContextInfo() {
