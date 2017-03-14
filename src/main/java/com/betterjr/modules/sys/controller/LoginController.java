@@ -11,7 +11,13 @@ public class LoginController {
     @RequestMapping(value = "login", method = {RequestMethod.GET,RequestMethod.POST})
     public String login(final String username, final String password) {
         System.out.println("controller " + username + ":" + password);
-        return "/static/error.html";
+        return "/static/main.html";
+    }
+
+    @RequestMapping(value = "tokenLogin", method = {RequestMethod.GET,RequestMethod.POST})
+    public String tokenLogin(final String username, final String password) {
+        System.out.println("controller " + username + ":" + password);
+        return "/static/main.html";
     }
 
     @RequestMapping(value = "logout", method = {RequestMethod.GET,RequestMethod.POST})

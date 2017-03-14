@@ -129,16 +129,16 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
         conditionMap.put("businStatus", "0");
         return this.selectByProperty(conditionMap);
     }
-    
+
     /**
-    * 根据条件查询
-    * @return
-    */
-   public List<CustInfo> findValidCustInfo(Map<String,Object> anMap) {
-       anMap.put("identValid", "1");
-       anMap.put("businStatus", "0");
-       return this.selectByProperty(anMap);
-   }
+     * 根据条件查询
+     * @return
+     */
+    public List<CustInfo> findValidCustInfo(final Map<String,Object> anMap) {
+        anMap.put("identValid", "1");
+        anMap.put("businStatus", "0");
+        return this.selectByProperty(anMap);
+    }
 
     /**
      * 查询所有可用客户 分页
@@ -341,6 +341,23 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
         return contextInfo;
     }
 
+    /**
+     * 客户登录成功后，注册相关客户和交易账户信息
+     * @param contextInfo 操作员上下文信息，如果没有填null
+     * @param anOperator 操作员信息
+     * @return
+     */
+    public CustContextInfo loginOperateByToken(final String token, final CustOperatorInfo anOperator) {
+        //            String token = Servlets.getSession().getId();
+        final CustContextInfo contextInfo = new CustContextInfo(token, null, null);
+        CustContextInfo.putCustContextInfo(contextInfo);
+        contextInfo.setOperatorInfo(anOperator);
+
+        final List<CustInfo> custList = findCustInfoByOperator(anOperator.getId(), anOperator.getOperOrg());
+        contextInfo.login(custList);
+        return contextInfo;
+    }
+
     public List<CustInfo> findCustInfoByOperator(final Long anOperNo, final String anOperOrg) {
         final List<Long> custList = custAndOpService.findCustNoList(anOperNo,anOperOrg);
         return this.selectByProperty("custNo", custList);
@@ -387,7 +404,7 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
         final CustInfo custInfo = this.selectByPrimaryKey(anCustNo);
         return custInfo;
     }
-    
+
     /**
      * 查询当前机构下有效的用户
      * @return

@@ -129,17 +129,11 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
                 // 统一使用Form形式的验证！
                 saltStr = "985a44369b063938a6a7";
                 passWD = "8438d772e1eac7d8e57aecaae5fb0b8c2e369283cbe31857d89dc87430160a2b";
-                if (authcToken instanceof BetterjrSsoToken) {
-                    final BetterjrSsoToken ssoToken = (BetterjrSsoToken) authcToken;
-                    final String ticket = ssoToken.getTicket();
-                    contextInfo = userService.saveTokenLogin(ticket);
-                    user = contextInfo.getOperatorInfo();
-                    ssoToken.setUsername(user.getName());
-                }
-                else {
-                    mobileLogin = true;
-                }
+                final BetterjrSsoToken ssoToken = (BetterjrSsoToken) authcToken;
+                final String ticket = ssoToken.getTicket();
 
+                contextInfo = userService.saveTicketLogin(ticket, certInfo);
+                user = contextInfo.getOperatorInfo();
             }
             workData = contextInfo;
 
