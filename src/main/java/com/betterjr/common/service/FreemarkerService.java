@@ -154,22 +154,13 @@ public class FreemarkerService extends Configuration {
         }
         logger.warn("Processing freemarker template file: {}", targetTemplateFile.getAbsolutePath());
         long fileVersion = targetTemplateFile.lastModified();
-        Object templateSource = stringTemplateLoader.findTemplateSource(templateFileName);
-        long templateVersion = 0;
-        if (templateSource != null) {
-            templateVersion = stringTemplateLoader.getLastModified(templateSource);
+        try {
+            String contents = FileUtils.readFileToString(targetTemplateFile);
+            return processTemplate(templateFileName, fileVersion, contents, dataMap);
         }
-        if (fileVersion > templateVersion) {
-            try {
-                String contents = FileUtils.readFileToString(targetTemplateFile);
-                return processTemplate(templateFileName, fileVersion, contents, dataMap);
-            }
-            catch (IOException e) {
-                throw new ServiceException("error.freemarker.template.process", e);
-            }
+        catch (IOException e) {
+            throw new ServiceException("error.freemarker.template.process", e);
         }
-        else {
-            return processTemplateByName(templateFileName, dataMap);
-        }
+        
     }
 }
