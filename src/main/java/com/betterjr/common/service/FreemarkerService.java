@@ -145,7 +145,7 @@ public class FreemarkerService extends Configuration {
         dataMap.put("dictUtils",  new DictUtils());
         String subPath=File.separator + "templates" + File.separator + "modules"+File.separator+moduleName+File.separator;
         String templateDir = System.getProperty("java.io.tmpdir") +subPath;
-        File targetTemplateFile = new File(templateDir + File.separator + templateFileName + ".ftl");
+        File targetTemplateFile = new File(templateDir + File.separator + templateFileName + "_p" + ".ftl");
         try {
             FileUtils.copyInputStreamToFile(anSource, targetTemplateFile);
         }
