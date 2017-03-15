@@ -145,7 +145,7 @@ public class FreemarkerService extends Configuration {
         dataMap.put("dictUtils",  new DictUtils());
         String subPath=File.separator + "templates" + File.separator + "modules"+File.separator+moduleName+File.separator;
         String templateDir = System.getProperty("java.io.tmpdir") +subPath;
-        File targetTemplateFile = new File(templateDir + File.separator + templateFileName + "_p" + ".ftl");
+        File targetTemplateFile = new File(templateDir + File.separator + templateFileName + ".ftl");
         try {
             FileUtils.copyInputStreamToFile(anSource, targetTemplateFile);
         }
@@ -154,12 +154,22 @@ public class FreemarkerService extends Configuration {
         }
         logger.warn("Processing freemarker template file: {}", targetTemplateFile.getAbsolutePath());
         long fileVersion = targetTemplateFile.lastModified();
-        try {
-            String contents = FileUtils.readFileToString(targetTemplateFile);
-            return processTemplate(templateFileName, fileVersion, contents, dataMap);
+        Object templateSource = stringTemplateLoader.findTemplateSource(templateFileName);
+        long templateVersion = 0;
+        if (templateSource != null) {
+            templateVersion = stringTemplateLoader.getLastModified(templateSource);
         }
-        catch (IOException e) {
-            throw new ServiceException("error.freemarker.template.process", e);
+        if (fileVersion > templateVersion) {
+            try {
+                String contents = FileUtils.readFileToString(targetTemplateFile);
+                return processTemplate(templateFileName, fileVersion, contents, dataMap);
+            }
+            catch (IOException e) {
+                throw new ServiceException("error.freemarker.template.process", e);
+            }
+        }
+        else {
+            return processTemplateByName(templateFileName, dataMap);
         }
         
     }
