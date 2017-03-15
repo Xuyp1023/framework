@@ -135,7 +135,7 @@
       5.你方按以上第3条发送通知，应寄送或提交至保理公司。
     </p>
     <p class="line">
-      地址：<span class="text-under-line">深圳市福田区泰然六路雪松大厦B座8楼</span>
+      地址：<span class="text-under-line">${(noticeInfo.factorAddr)!''}</span>
     </p>
     <p class="line">
       电子邮箱：<span class="text-under-line">${(noticeInfo.email)!''}</span>
@@ -148,7 +148,7 @@
       <tbody>
         <tr>
           <td width="40%" class="text-align-left-im">卖方(公章)：<span class="text-under-line">${(noticeInfo.supplierName)!''}</span></td>
-          <td width="60%" class="text-align-right-im">保理公司(公章)：深圳前海特智商业保理有限公司</td>
+          <td width="60%" class="text-align-right-im">保理公司(公章)：${(noticeInfo.factorName)!''}</td>
         </tr>
         <tr>
           <td width="40%" class="text-align-left-im">日期：${(signDate)!''}</td>
