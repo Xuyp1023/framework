@@ -216,11 +216,23 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
     @Transient
     private String custList;
 
+    @Transient
+    private String roleName;
+
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(final String anRoleName) {
+        roleName = anRoleName;
+    }
+
     public String getClerkMan() {
         return this.clerkMan;
     }
 
-    public void setClerkMan(String anClerkMan) {
+    public void setClerkMan(final String anClerkMan) {
         this.clerkMan = anClerkMan;
     }
 
@@ -228,7 +240,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return contIdentType;
     }
 
-    public void setContIdentType(String contIdentType) {
+    public void setContIdentType(final String contIdentType) {
         this.contIdentType = contIdentType;
     }
 
@@ -236,7 +248,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return contIdentNo;
     }
 
-    public void setContIdentNo(String contIdentNo) {
+    public void setContIdentNo(final String contIdentNo) {
         this.contIdentNo = contIdentNo;
     }
 
@@ -244,7 +256,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return contCertValidDate;
     }
 
-    public void setContCertValidDate(String contCertValidDate) {
+    public void setContCertValidDate(final String contCertValidDate) {
         this.contCertValidDate = contCertValidDate;
     }
 
@@ -256,45 +268,50 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return newUser;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name == null ? null : name.trim();
     }
 
+    @Override
     public String getIdentType() {
         return identType;
     }
 
-    public void setIdentType(String identType) {
+    public void setIdentType(final String identType) {
         this.identType = identType == null ? null : identType.trim();
         this.contIdentType = this.identType;
     }
 
+    @Override
     public String getIdentNo() {
         return identNo;
     }
 
-    public void setIdentNo(String identNo) {
+    public void setIdentNo(final String identNo) {
         this.identNo = identNo == null ? null : identNo.trim();
         this.contIdentNo = identNo;
     }
 
+    @Override
     public String getValidDate() {
         return validDate;
     }
 
-    public void setValidDate(String validDate) {
+    public void setValidDate(final String validDate) {
         this.validDate = validDate == null ? null : validDate.trim();
         this.contCertValidDate = validDate;
     }
@@ -303,7 +320,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return sex;
     }
 
-    public void setSex(String sex) {
+    public void setSex(final String sex) {
         this.sex = sex == null ? null : sex.trim();
     }
 
@@ -311,7 +328,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return zipCode;
     }
 
-    public void setZipCode(String zipCode) {
+    public void setZipCode(final String zipCode) {
         this.zipCode = zipCode == null ? null : zipCode.trim();
     }
 
@@ -319,7 +336,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(final String address) {
         this.address = address == null ? null : address.trim();
     }
 
@@ -327,7 +344,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return phone;
     }
 
-    public void setPhone(String phone) {
+    public void setPhone(final String phone) {
         this.phone = phone == null ? null : phone.trim();
     }
 
@@ -335,7 +352,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return faxNo;
     }
 
-    public void setFaxNo(String faxNo) {
+    public void setFaxNo(final String faxNo) {
         this.faxNo = faxNo == null ? null : faxNo.trim();
     }
 
@@ -343,7 +360,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return mobileNo;
     }
 
-    public void setMobileNo(String mobileNo) {
+    public void setMobileNo(final String mobileNo) {
         this.mobileNo = mobileNo == null ? null : mobileNo.trim();
     }
 
@@ -351,7 +368,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(final String email) {
         this.email = email == null ? null : email.trim();
     }
 
@@ -359,7 +376,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return identClass;
     }
 
-    public void setIdentClass(String identClass) {
+    public void setIdentClass(final String identClass) {
         this.identClass = identClass == null ? null : identClass.trim();
     }
 
@@ -367,7 +384,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return transBusin;
     }
 
-    public void setTransBusin(String transBusin) {
+    public void setTransBusin(final String transBusin) {
         this.transBusin = transBusin == null ? null : transBusin.trim();
     }
 
@@ -375,7 +392,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return revokeBusin;
     }
 
-    public void setRevokeBusin(String revokeBusin) {
+    public void setRevokeBusin(final String revokeBusin) {
         this.revokeBusin = revokeBusin == null ? null : revokeBusin.trim();
     }
 
@@ -386,7 +403,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return defOper;
     }
 
-    public void setDefOper(Boolean defOper) {
+    public void setDefOper(final Boolean defOper) {
         this.defOper = defOper;
     }
 
@@ -394,7 +411,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(final String status) {
         this.status = status == null ? null : status.trim();
     }
 
@@ -402,7 +419,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return lastStatus;
     }
 
-    public void setLastStatus(String lastStatus) {
+    public void setLastStatus(final String lastStatus) {
         this.lastStatus = lastStatus == null ? null : lastStatus.trim();
     }
 
@@ -410,7 +427,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return regDate;
     }
 
-    public void setRegDate(String regDate) {
+    public void setRegDate(final String regDate) {
         this.regDate = regDate == null ? null : regDate.trim();
     }
 
@@ -418,7 +435,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return modiDate;
     }
 
-    public void setModiDate(String modiDate) {
+    public void setModiDate(final String modiDate) {
         this.modiDate = modiDate == null ? null : modiDate.trim();
     }
 
@@ -426,7 +443,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return operCode;
     }
 
-    public void setOperCode(String operCode) {
+    public void setOperCode(final String operCode) {
         this.operCode = operCode == null ? null : operCode.trim();
     }
 
@@ -434,7 +451,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return operOrg;
     }
 
-    public void setOperOrg(String operOrg) {
+    public void setOperOrg(final String operOrg) {
         this.operOrg = operOrg == null ? null : operOrg.trim();
     }
 
@@ -442,15 +459,16 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return this.contactorSerial;
     }
 
-    public void setContactorSerial(Long anContactorSerial) {
+    public void setContactorSerial(final Long anContactorSerial) {
         this.contactorSerial = anContactorSerial;
     }
 
+    @Override
     public String getRuleList() {
         return this.ruleList;
     }
 
-    public void setRuleList(String anRuleList) {
+    public void setRuleList(final String anRuleList) {
         this.ruleList = anRuleList;
     }
 
@@ -458,7 +476,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return this.accessType;
     }
 
-    public void setAccessType(String anAccessType) {
+    public void setAccessType(final String anAccessType) {
         this.accessType = anAccessType;
     }
 
@@ -466,13 +484,13 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return this.custList;
     }
 
-    public void setCustList(String anCustList) {
+    public void setCustList(final String anCustList) {
         this.custList = anCustList;
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append(", id=").append(id);
@@ -505,7 +523,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(final Object that) {
         if (this == that) {
             return true;
         }
@@ -515,7 +533,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         if (getClass() != that.getClass()) {
             return false;
         }
-        CustOperatorInfo other = (CustOperatorInfo) that;
+        final CustOperatorInfo other = (CustOperatorInfo) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
                 && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
                 && (this.getIdentType() == null ? other.getIdentType() == null : this.getIdentType().equals(other.getIdentType()))
@@ -539,7 +557,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
                 && (this.getOperCode() == null ? other.getOperCode() == null : this.getOperCode().equals(other.getOperCode()))
                 && (this.getOperOrg() == null ? other.getOperOrg() == null : this.getOperOrg().equals(other.getOperOrg()))
                 && (this.getContactorSerial() == null ? other.getContactorSerial() == null
-                        : this.getContactorSerial().equals(other.getContactorSerial()))
+                : this.getContactorSerial().equals(other.getContactorSerial()))
                 && (this.getRuleList() == null ? other.getRuleList() == null : this.getRuleList().equals(other.getRuleList()));
     }
 
@@ -578,22 +596,22 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
 
     }
 
-    public CustOperatorInfo(CustOperatorInfo anOperator) {
+    public CustOperatorInfo(final CustOperatorInfo anOperator) {
         BeanMapper.copy(anOperator, this);
     }
 
-    public CustOperatorInfo(CustContactInfo anContact, String anOrg) {
+    public CustOperatorInfo(final CustContactInfo anContact, final String anOrg) {
         this.operOrg = anOrg;
         BeanMapper.copy(anContact, this);
     }
 
-    public static void main(String anStr[]) {
+    public static void main(final String anStr[]) {
 
     }
 
-    public CustOperatorInfo(CustOperatorInfoRequest request) {
+    public CustOperatorInfo(final CustOperatorInfoRequest request) {
         BeanMapper.copy(request, this);
-        long id = SerialGenerator.getLongValue(SerialGenerator.OPERATOR_ID);
+        final long id = SerialGenerator.getLongValue(SerialGenerator.OPERATOR_ID);
         this.setIdentNo(request.getContIdentNo());
         this.setIdentType(request.getContIdentType());
         this.setValidDate(request.getContCertValidDate());
@@ -616,11 +634,11 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         return this.name;
     }
 
-    public void setNickName(String nickName) {
+    public void setNickName(final String nickName) {
         this.nickName = nickName;
     }
 
-    public void setNewUser(boolean newUser) {
+    public void setNewUser(final boolean newUser) {
         this.newUser = newUser;
     }
 
