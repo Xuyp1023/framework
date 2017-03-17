@@ -25,6 +25,7 @@ import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfoRequest;
 import com.betterjr.modules.account.service.CustAndOperatorRelaService;
 import com.betterjr.modules.account.service.CustPassService;
+import com.betterjr.modules.role.service.RoleService;
 
 /***
  * 操作员管理
@@ -47,6 +48,8 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
     private CustPassService custPassService;
     @Autowired
     private CustAndOperatorRelaService custAndOpService;
+    @Autowired
+    private RoleService roleService;
 
     /**
      * 新增操作员
@@ -54,7 +57,7 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
      * @param anMap
      * @return
      */
-    public CustOptData addCustOperator(final CustOperatorInfoRequest request,String anCustList) {
+    public CustOptData addCustOperator(final CustOperatorInfoRequest request,final String anCustList) {
         final CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();
         final String operOrg = custOperator.getOperOrg();
         checkParam(request,anCustList,operOrg); // 参数检查
@@ -75,7 +78,7 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
      * @param anMap
      * @return
      */
-    public CustOptData saveCustOperator(final CustOperatorInfoRequest request,String anCustList) {
+    public CustOptData saveCustOperator(final CustOperatorInfoRequest request,final String anCustList) {
         final CustOperatorInfo operator = BeanMapper.map(request, CustOperatorInfo.class);
         if (operator.getId() == null) {
             throw new BytterTradeException(40001, "抱歉，操作员编号不能为空");
@@ -83,16 +86,16 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
         checkSaveParam(operator);
         operator.setIdentNo(operator.getContIdentNo());
         operator.setIdentType(operator.getContIdentType());
-//        if (BetterStringUtils.isBlank(anCustList)) {
-//            logger.error("机构信息不能为空");
-//            throw new BytterTradeException(40001, "抱歉，机构信息为空");
-//        }
+        //        if (BetterStringUtils.isBlank(anCustList)) {
+        //            logger.error("机构信息不能为空");
+        //            throw new BytterTradeException(40001, "抱歉，机构信息为空");
+        //        }
         // 操作员角色信息绑定修改
         operatorRoleRelationService.saveSysOperatorRoleRelation(operator.getId(), operator.getRuleList());
         this.updateByPrimaryKeySelective(operator);
         // 操作员绑定机构信息，先清除之前的关系，再加入新的关系
         if(BetterStringUtils.isBlank(operator.getOperOrg())){
-            CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();// 获取当前登录机构
+            final CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();// 获取当前登录机构
             operator.setOperOrg(custOperator.getOperOrg());
         }
         if (BetterStringUtils.isNotBlank(anCustList)) {
@@ -151,10 +154,12 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
      */
     public CustOperatorInfo findOperatorById(final Long operatorId) {
         final CustOperatorInfo custOperatorInfo = this.selectByPrimaryKey(operatorId);
-        final String ruleList = operatorRoleRelationService.findSysRoleByOperatorId(custOperatorInfo.getId());
-        if (BetterStringUtils.isNotBlank(ruleList)) {
-            custOperatorInfo.setRuleList(ruleList);
+        final String roleList = operatorRoleRelationService.findSysRoleByOperatorId(custOperatorInfo.getId());
+        if (BetterStringUtils.isNotBlank(roleList)) {
+            custOperatorInfo.setRuleList(roleList);
         }
+        final String roleName = roleService.findRoleName(roleList);
+        custOperatorInfo.setRoleName(roleName);
         return custOperatorInfo;
     }
 
@@ -261,25 +266,25 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
         }
         return bool;
     }
-    
+
     /**
      * 根据客户信息，查找机构默认经办人信息
      * @param anOperOrg
      * @return
      */
-    public CustOperatorInfo findCustClerkMan(String anOperOrg,String anClerkMan){
-        Map termMap = QueryTermBuilder.newInstance().put("operOrg", anOperOrg).put("clerkMan", anClerkMan).build();
-        List<CustOperatorInfo> tmpList = this.selectByProperty(termMap);
-        
+    public CustOperatorInfo findCustClerkMan(final String anOperOrg,final String anClerkMan){
+        final Map termMap = QueryTermBuilder.newInstance().put("operOrg", anOperOrg).put("clerkMan", anClerkMan).build();
+        final List<CustOperatorInfo> tmpList = this.selectByProperty(termMap);
+
         return Collections3.getFirst(tmpList);
     }
-    
+
     /***
      * 检查参数约束
      * @param request
      * @param anCustList
      */
-    public void checkParam(final CustOperatorInfoRequest request,String anCustList,String anOperOrg){
+    public void checkParam(final CustOperatorInfoRequest request,final String anCustList,final String anOperOrg){
         final boolean optExists = this.custOptService.checkOperatorExists(request.getContIdentType(), request.getContIdentNo());
         if (optExists) {
             throw new BytterTradeException(40001, "抱歉，该证件号码已存在");
@@ -303,37 +308,37 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
         if(mobileExists){
             throw new BytterTradeException(403, "抱歉，该操作员手机号已存在");
         }
-        
+
         if (BetterStringUtils.isBlank(request.getRuleList())) {
             logger.error("角色不能为空");
             throw new BytterTradeException(40001, "抱歉，角色不能为空");
         }
-        CustOperatorInfo custOperator =findCustClerkMan(anOperOrg,"1");
+        final CustOperatorInfo custOperator =findCustClerkMan(anOperOrg,"1");
         if(custOperator!=null && BetterStringUtils.equalsIgnoreCase(request.getClerkMan(), "1")){
             throw new BytterTradeException(40001, "对外经办人已存在，如需设置当前操作员为对外经办人，请先解除已有的对外经办人-"+custOperator.getName());
         }
-        
-//        if (BetterStringUtils.isBlank(anCustList)) {
-//            logger.error("机构信息不能为空");
-//            throw new BytterTradeException(40001, "抱歉，机构信息为空");
-//        }
+
+        //        if (BetterStringUtils.isBlank(anCustList)) {
+        //            logger.error("机构信息不能为空");
+        //            throw new BytterTradeException(40001, "抱歉，机构信息为空");
+        //        }
     }
-    
+
     public void checkSaveParam(final CustOperatorInfo request){
-        CustOperatorInfo operator=this.selectByPrimaryKey(request.getId());
+        final CustOperatorInfo operator=this.selectByPrimaryKey(request.getId());
         if(!BetterStringUtils.equalsIgnoreCase(request.getContIdentNo(), operator.getContIdentNo())){
-            boolean optExists = this.custOptService.checkOperatorExists(request.getContIdentType(), request.getContIdentNo());
+            final boolean optExists = this.custOptService.checkOperatorExists(request.getContIdentType(), request.getContIdentNo());
             if (optExists) {
                 throw new BytterTradeException(40001, "抱歉，该证件号码已存在");
             }
         }
         if(!BetterStringUtils.equalsIgnoreCase(request.getOperCode(), operator.getOperCode())){
-            boolean operCodeExists = this.custOptService.checkExistsByOperCodeAndOperOrg(request.getOperCode(), operator.getOperOrg());
+            final boolean operCodeExists = this.custOptService.checkExistsByOperCodeAndOperOrg(request.getOperCode(), operator.getOperOrg());
             if (operCodeExists) {
                 throw new BytterTradeException(401, "抱歉，该操作员用户名存在【" + request.getOperCode() + "】");
             }
         }
-        
+
         Map<String, Object> anMap=new HashMap<String, Object>();
         if(!BetterStringUtils.equalsIgnoreCase(request.getEmail(), operator.getEmail())){
             anMap.put("email", request.getEmail());
@@ -342,7 +347,7 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
                 throw new BytterTradeException(402, "抱歉，该操作员邮箱已存在");
             }
         }
-        
+
         if(!BetterStringUtils.equalsIgnoreCase(request.getMobileNo(), operator.getMobileNo())){
             anMap=new HashMap<String, Object>();
             anMap.put("mobileNo", request.getMobileNo());
@@ -352,17 +357,17 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
             }
         }
         if(BetterStringUtils.equalsIgnoreCase(request.getClerkMan(), "1")){
-            CustOperatorInfo custOperator =findCustClerkMan(operator.getOperOrg(),"1");
+            final CustOperatorInfo custOperator =findCustClerkMan(operator.getOperOrg(),"1");
             if(custOperator!=null){
                 if(!BetterStringUtils.equalsIgnoreCase(operator.getId().toString(), custOperator.getId().toString())){
                     throw new BytterTradeException(40001, "对外经办人已存在，如需设置当前操作员为对外经办人，请先解除已有的对外经办人-"+custOperator.getName());
                 }
             }
         }
-        
+
     }
 
-    public List<CustOptData> findCustOperatorByClerk(String anClerk) {
+    public List<CustOptData> findCustOperatorByClerk(final String anClerk) {
         final List result = new ArrayList<>();
         final Map<String, Object> map = new HashMap<String, Object>();
         final CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();
@@ -380,5 +385,5 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
         }
         return result;
     }
-    
+
 }
