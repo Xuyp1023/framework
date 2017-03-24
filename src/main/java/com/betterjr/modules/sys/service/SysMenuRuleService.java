@@ -9,8 +9,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.betterjr.common.data.PlatformBaseRuleType;
 import com.betterjr.common.service.BaseService;
 import com.betterjr.common.utils.Collections3;
+import com.betterjr.common.utils.UserUtils;
 import com.betterjr.modules.sys.dao.SysMenuRuleInfoMapper;
 import com.betterjr.modules.sys.entity.SysMenuRuleInfo;
 
@@ -81,7 +83,7 @@ public class SysMenuRuleService extends BaseService<SysMenuRuleInfoMapper, SysMe
             if(ruleMap.get(ruleInfo.getMenuId())!=null){
                 continue;
             }
-            if (ruleInfo.getStatus().equals("1")) {
+            if (ruleInfo.getStatus().equals("1") && ruleInfo.hasValidMenu(UserUtils.findInnerRules())) {
                 menuList.add(ruleInfo.getMenuId() + "");
                 ruleMap.put(ruleInfo.getMenuId(), ruleInfo);
             }
@@ -100,7 +102,7 @@ public class SysMenuRuleService extends BaseService<SysMenuRuleInfoMapper, SysMe
      */
     public boolean addMenuRole(String roleId,String roleName,String menuId,String menuName){
         SysMenuRuleInfo menuRole=new SysMenuRuleInfo();
-        menuRole.initMenuRole(roleId, roleName, menuId, menuName);
+        menuRole.initMenuRole(roleId, roleName, menuId, menuName,getLoginShiroUserType());
         return this.insert(menuRole)>0;
     }
     
@@ -110,7 +112,10 @@ public class SysMenuRuleService extends BaseService<SysMenuRuleInfoMapper, SysMe
      * @return
      */
     public boolean delMenuRole(Long anRoleId){
-        return this.deleteByProperty("ruleId", anRoleId)>0;
+        Map anMap = new HashMap<String, Object>();
+        anMap.put("ruleId", anRoleId);
+        anMap.put("shiroUserType", getLoginShiroUserType());
+        return this.deleteByExample(anMap)>0;
     }
     
     /**
@@ -130,4 +135,13 @@ public class SysMenuRuleService extends BaseService<SysMenuRuleInfoMapper, SysMe
             return true;
         }
     }
+
+    // 获取当前身份
+    public String getLoginShiroUserType(){
+        List<PlatformBaseRuleType> userInnerRules = UserUtils.findInnerRules();
+        PlatformBaseRuleType platRuleType=Collections3.getFirst(userInnerRules);
+        logger.info("addMenuRole.userInnerRules:"+platRuleType.getTitle()+platRuleType.toString());
+        return platRuleType.toString();
+    }
+    
 }
