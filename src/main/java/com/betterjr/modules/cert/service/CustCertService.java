@@ -689,19 +689,19 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         String roleName;
         switch (anRole) {
         case "CORE_USER":
-            roleName = "核心企业角色";
+            roleName = "我是买方";
             break;
         case "PLATFORM_USER":
             roleName = "平台角色";
             break;
         case "FACTOR_USER":
-            roleName = "资金方角色";
+            roleName = "我是资金方";
             break;
         case "SELLER_USER":
-            roleName = "经销商角色";
+            roleName = "我是买方";
             break;
         case "SUPPLIER_USER":
-            roleName = "供应商角色";
+            roleName = "我是卖方";
             break;
         default:
             roleName = "";

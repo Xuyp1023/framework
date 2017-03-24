@@ -119,7 +119,6 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
                         throw new DisabledAccountException("操作员密码被锁定，请稍后再试");
                     }
                     mobileLogin = token.isMobileLogin();
-                    token.getCustRole();
                     passWD = passInfo.getPasswd();
                     saltStr = passInfo.getPassSalt();
                     user.setAccessType("1");
