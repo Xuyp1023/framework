@@ -10,6 +10,7 @@ public class CaptchaUsernamePasswordToken extends UsernamePasswordToken {
     /** 描述 */
     private static final long serialVersionUID = -3178260335127476542L;
 
+    private final String custRole;
     private final String captcha;
     private HttpSession session;
     private final String ipAddress;
@@ -38,12 +39,14 @@ public class CaptchaUsernamePasswordToken extends UsernamePasswordToken {
         this.identType = "";
         this.ipAddress = "";
         this.captcha = "";
+        this.custRole = null;
         this.mobileLogin = false;
     }
 
-    public CaptchaUsernamePasswordToken(String anIdentType, String username, String password, String anHost, String captcha, boolean anMobileLogin,
-            HttpServletRequest request, HttpServletResponse response) {
+    public CaptchaUsernamePasswordToken(final String anIdentType, final String username, final String password, final String anHost, final String captcha, final String custRole, final boolean anMobileLogin,
+            final HttpServletRequest request, final HttpServletResponse response) {
         super(username, password, false, anHost);
+        this.custRole = custRole;
         this.captcha = captcha;
         this.ipAddress = anHost;
         this.identType = anIdentType;
@@ -64,4 +67,7 @@ public class CaptchaUsernamePasswordToken extends UsernamePasswordToken {
         return response;
     }
 
+    public String getCustRole() {
+        return custRole;
+    }
 }

@@ -72,4 +72,9 @@ public interface ICustCertService {
      */
     public byte[] webDownloadCertificate(final String anToken);
 
+    /**
+     * 获取证书角色列表
+     */
+    public String webQueryCustCertRoleList(String anSerialNo);
+
 }

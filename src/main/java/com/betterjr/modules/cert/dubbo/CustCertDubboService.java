@@ -119,5 +119,10 @@ public class CustCertDubboService implements ICustCertService {
         return custCertService.saveDownloadCert(anToken);
     }
 
+    @Override
+    public String webQueryCustCertRoleList(final String anSerialNo) {
+        return AjaxObject.newOk("获取证书角色成功！", custCertService.queryCustCertRoleList(anSerialNo)).toJson();
+    }
+
 
 }

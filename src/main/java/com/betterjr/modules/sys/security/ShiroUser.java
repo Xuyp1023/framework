@@ -131,7 +131,7 @@ public class ShiroUser implements Serializable {
      * @param createTime
      * @param status
      */
-    public ShiroUser(final UserType anUserType, final Long id, final String loginName, final WorkUserInfo anUser, final CustCertInfo anCertInfo,
+    public ShiroUser(final UserType anUserType, final Long id, final String loginName, final WorkUserInfo anUser, final String anCustRole, final CustCertInfo anCertInfo,
             final boolean anMobileLogin, final Object anData, final List<SimpleDataEntity> anUserPassData) {
         this.mobileLogin = anMobileLogin;
         this.userType = anUserType;
@@ -140,7 +140,12 @@ public class ShiroUser implements Serializable {
         this.user = anUser;
         this.loginTime = System.currentTimeMillis();
         this.data = anData;
-        this.innerRules = anUserType.equals(UserType.NONE_USER) || anCertInfo == null ? new ArrayList<>() : PlatformBaseRuleType.checkList(anCertInfo.getCertRuleList());
+        if (BetterStringUtils.isNotBlank(anCustRole)) {
+            this.innerRules = new ArrayList<>();
+            this.innerRules.add(PlatformBaseRuleType.checking(anCustRole));
+        } else {
+            this.innerRules = anUserType.equals(UserType.NONE_USER) || anCertInfo == null ? new ArrayList<>() : PlatformBaseRuleType.checkList(anCertInfo.getCertRuleList());
+        }
         this.userPassData = anUserPassData;
         this.cretInfo = anCertInfo;
         this.param = new HashMap<>();

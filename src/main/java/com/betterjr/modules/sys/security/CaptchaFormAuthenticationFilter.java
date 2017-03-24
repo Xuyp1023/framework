@@ -50,10 +50,11 @@ public class CaptchaFormAuthenticationFilter extends BaseFormAuthenticationFilte
 
         final String username = getUsername(request);
         final String password = getPassword(request);
+        final String custRole = request.getParameter("custRole");
         final String captcha = getCaptcha(request);
         final String identType = WebUtils.getCleanParam(request, "indetType");
 
-        final CaptchaUsernamePasswordToken token = new CaptchaUsernamePasswordToken(identType, username, password, tmpIp, captcha, isMobileLogin(request),
+        final CaptchaUsernamePasswordToken token = new CaptchaUsernamePasswordToken(identType, username, password, tmpIp, captcha, custRole, isMobileLogin(request),
                 (HttpServletRequest) request, (HttpServletResponse) response);
 
         return token;
