@@ -1,8 +1,12 @@
 package com.betterjr.modules.sys.entity;
 
+import java.util.List;
+
 import com.betterjr.common.annotation.*;
+import com.betterjr.common.data.PlatformBaseRuleType;
 import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.common.selectkey.SerialGenerator;
+import com.betterjr.common.utils.BetterStringUtils;
 
 import javax.persistence.*;
 
@@ -51,6 +55,13 @@ public class SysMenuRuleInfo implements BetterjrEntity {
     @Column(name = "C_STATUS",  columnDefinition="VARCHAR" )
     @MetaData( value="状态", comments = "状态，0 停用 1启用")
     private String status;
+    
+    /**
+     * 身份标识
+     */
+    @Column(name = "c_shirouser_type",  columnDefinition="VARCHAR" )
+    @MetaData( value="身份标识", comments = "身份标识")
+    private String shiroUserType;
 
     private static final long serialVersionUID = 1449457003176L;
 
@@ -102,6 +113,14 @@ public class SysMenuRuleInfo implements BetterjrEntity {
         this.status = status == null ? null : status.trim();
     }
 
+    public String getShiroUserType() {
+        return this.shiroUserType;
+    }
+
+    public void setShiroUserType(String anShiroUserType) {
+        this.shiroUserType = anShiroUserType;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -114,6 +133,7 @@ public class SysMenuRuleInfo implements BetterjrEntity {
         sb.append(", menuId=").append(menuId);
         sb.append(", menuName=").append(menuName);
         sb.append(", status=").append(status);
+        sb.append(", shiroUserType=").append(shiroUserType);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
@@ -152,12 +172,29 @@ public class SysMenuRuleInfo implements BetterjrEntity {
         return result;
     }
     
-    public void initMenuRole(String roleId,String roleName,String menuId,String menuName){
+    public void initMenuRole(String roleId,String roleName,String menuId,String menuName,String anShiroUserType){
         this.id=SerialGenerator.getIntValue("SysMenuRole.id");
         this.ruleId=roleId;
         this.ruleName=roleName;
         this.menuId=Integer.parseInt(menuId);
         this.menuName=menuName;
         this.status="1";
+        this.shiroUserType=anShiroUserType;
+    }
+    
+    public boolean hasValidMenu(List<PlatformBaseRuleType> anRules){
+        if (BetterStringUtils.isBlank(this.shiroUserType)){
+            return true;
+        }
+        PlatformBaseRuleType tmpInnerRule;
+        for(String tmpStr : BetterStringUtils.split(shiroUserType, ",|;")){
+            tmpInnerRule = PlatformBaseRuleType.checking(tmpStr);
+            if (anRules.contains(tmpInnerRule)){
+                
+                return true;
+            }
+        }
+        
+        return false;
     }
 }
