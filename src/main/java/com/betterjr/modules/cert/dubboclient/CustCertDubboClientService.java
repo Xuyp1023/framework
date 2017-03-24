@@ -25,6 +25,7 @@ public class CustCertDubboClientService {
     @Reference(interfaceClass = ICustCertService.class)
     private ICustCertService custCertService;
 
+
     public CustCertInfo checkValidity(final X509Certificate anX509) {
         return custCertService.checkValidity(anX509);
     }
@@ -32,13 +33,17 @@ public class CustCertDubboClientService {
     public CustCertInfo checkValidityWithBase64(final String anX509Str) {
         return custCertService.checkValidityWithBase64(anX509Str);
     }
-    
+
     public CustCertInfo findFirstCertInfoByOperOrg(final String anOperOrg) {
         return custCertService.findFirstCertInfoByOperOrg(anOperOrg);
     }
 
     public String findCustCertificate(final String anSerialNo) {
         return custCertService.webFindCustCertificate(anSerialNo);
+    }
+
+    public String queryCustCertRoleList(final String anSerialNo) {
+        return custCertService.webQueryCustCertRoleList(anSerialNo);
     }
 
     public String queryCustCertificate(final Map<String, Object> anParam, final int anFlag, final int anPageNum, final int anPageSize) {
@@ -106,5 +111,6 @@ public class CustCertDubboClientService {
             IOUtils.closeQuietly(os);
         }
     }
+
 
 }

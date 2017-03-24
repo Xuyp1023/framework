@@ -28,6 +28,7 @@ import javax.naming.ldap.Rdn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.betterjr.common.data.SimpleDataEntity;
 import com.betterjr.common.exception.BytterSecurityException;
 import com.betterjr.common.exception.BytterTradeException;
 import com.betterjr.common.exception.ServiceException;
@@ -670,5 +671,42 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         this.updateByPrimaryKeySelective(certInfo);
     }
 
+    /**
+     * @param anSerialNo
+     * @return
+     */
+    public List<SimpleDataEntity> queryCustCertRoleList(final String anSerialNo) {
+        final CustCertInfo certInfo = this.findBySerialNo(anSerialNo);
+
+        BTAssert.notNull(certInfo, "没有找到相应的客户证书！");
+
+        final List<CustCertRule> roleList = certRuleService.queryCertRuleListBySerialNo(anSerialNo);
+
+        return roleList.stream().map(certRole -> new SimpleDataEntity(roleName(certRole.getRule()), certRole.getRule())).collect(Collectors.toList());
+    }
+
+    public String roleName(final String anRole) {
+        String roleName;
+        switch (anRole) {
+        case "CORE_USER":
+            roleName = "核心企业角色";
+            break;
+        case "PLATFORM_USER":
+            roleName = "平台角色";
+            break;
+        case "FACTOR_USER":
+            roleName = "资金方角色";
+            break;
+        case "SELLER_USER":
+            roleName = "经销商角色";
+            break;
+        case "SUPPLIER_USER":
+            roleName = "供应商角色";
+            break;
+        default:
+            roleName = "";
+        }
+        return roleName;
+    }
 
 }

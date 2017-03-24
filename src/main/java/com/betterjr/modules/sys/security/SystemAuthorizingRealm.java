@@ -88,6 +88,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
         boolean mobileLogin = false;
         log.warn("this work for doGetAuthenticationInfo");
         List<SimpleDataEntity> userPassData = null;
+        String cusrRole = null;
 
         CustCertInfo certInfo = null;
         try {
@@ -118,9 +119,11 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
                         throw new DisabledAccountException("操作员密码被锁定，请稍后再试");
                     }
                     mobileLogin = token.isMobileLogin();
+                    token.getCustRole();
                     passWD = passInfo.getPasswd();
                     saltStr = passInfo.getPassSalt();
                     user.setAccessType("1");
+                    cusrRole = token.getCustRole();
                     contextInfo = userService.saveFormLogin(user);
                 }
             }
@@ -151,7 +154,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
                     ut = UserType.OPERATOR_ADMIN;
                 }
 
-                final ShiroUser shiroUser = new ShiroUser(ut, user.getId(), user.getName(), user, certInfo, mobileLogin, workData, userPassData);
+                final ShiroUser shiroUser = new ShiroUser(ut, user.getId(), user.getName(), user, cusrRole, certInfo, mobileLogin, workData, userPassData);
                 log.info("this login user Info is :" + shiroUser);
                 final byte[] salt = Encodes.decodeHex(saltStr);
 
