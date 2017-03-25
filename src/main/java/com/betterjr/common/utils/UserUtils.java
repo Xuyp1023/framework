@@ -130,6 +130,13 @@ public class UserUtils {
         return null;
     }
 
+    public static PlatformBaseRuleType getUserRole() {
+        final ShiroUser principal = getPrincipal();
+        if (principal != null) {
+            return principal.getInnerRules().iterator().next();
+        }
+        return null;
+    }
     /**
      * 获取机构名称
      * @return
