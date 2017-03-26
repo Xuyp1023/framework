@@ -88,7 +88,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
         boolean mobileLogin = false;
         log.warn("this work for doGetAuthenticationInfo");
         List<SimpleDataEntity> userPassData = null;
-        String cusrRole = null;
+        String custRole = null;
 
         CustCertInfo certInfo = null;
         try {
@@ -122,7 +122,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
                     passWD = passInfo.getPasswd();
                     saltStr = passInfo.getPassSalt();
                     user.setAccessType("1");
-                    cusrRole = token.getCustRole();
+                    custRole = token.getCustRole();
                     contextInfo = userService.saveFormLogin(user);
                 }
             }
@@ -135,6 +135,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
                 final String ticket = ssoToken.getTicket();
 
                 contextInfo = userService.saveTicketLogin(ticket, certInfo);
+                custRole = ssoToken.getCustRole();
                 user = contextInfo.getOperatorInfo();
             }
             workData = contextInfo;
@@ -153,7 +154,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
                     ut = UserType.OPERATOR_ADMIN;
                 }
 
-                final ShiroUser shiroUser = new ShiroUser(ut, user.getId(), user.getName(), user, cusrRole, certInfo, mobileLogin, workData, userPassData);
+                final ShiroUser shiroUser = new ShiroUser(ut, user.getId(), user.getName(), user, custRole, certInfo, mobileLogin, workData, userPassData);
                 log.info("this login user Info is :" + shiroUser);
                 final byte[] salt = Encodes.decodeHex(saltStr);
 

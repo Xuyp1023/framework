@@ -21,7 +21,7 @@ public class TokenAuthenticationFilter extends BaseFormAuthenticationFilter {
     private static Logger logger = LoggerFactory.getLogger(TokenAuthenticationFilter.class);
 
     private static final String TICKET_PARAMETER = "ticket";
-    private static final String OPERCODE_PARAMETER = "operCode";
+    private static final String OPERROLE_PARAMETER = "custRole";
     private static final String CORPID_PARAMETER = "corpId";
 
     private String failureUrl;
@@ -30,8 +30,8 @@ public class TokenAuthenticationFilter extends BaseFormAuthenticationFilter {
     protected AuthenticationToken createToken(final ServletRequest request, final ServletResponse response) {
         final HttpServletRequest httpRequest = (HttpServletRequest) request;
         final String ticket = SignHelper.clearBase64InStr(httpRequest.getParameter(TICKET_PARAMETER));
-        final String operCode = SignHelper.clearBase64InStr(httpRequest.getParameter(OPERCODE_PARAMETER));
-        final String corpId = SignHelper.clearBase64InStr(httpRequest.getParameter(CORPID_PARAMETER));
+        final String corpId = httpRequest.getParameter(CORPID_PARAMETER);
+        final String custRole = httpRequest.getParameter(OPERROLE_PARAMETER);
 
         String tmpIp = null;
         if (request instanceof HttpServletRequest) {
@@ -44,7 +44,7 @@ public class TokenAuthenticationFilter extends BaseFormAuthenticationFilter {
         final String username = SignHelper.randomBase64(20);
         final String password = "1X2Y3W4o5m6";
 
-        final BetterjrSsoToken token = new BetterjrSsoToken(ticket, username, password, tmpIp);
+        final BetterjrSsoToken token = new BetterjrSsoToken(ticket, corpId, custRole, username, password, tmpIp);
 
         return token;
     }
