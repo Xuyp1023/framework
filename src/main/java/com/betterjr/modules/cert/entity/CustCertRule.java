@@ -71,7 +71,7 @@ public class CustCertRule implements BetterjrEntity {
         return this.rule;
     }
 
-    public void setRuleList(final String anRule) {
+    public void setRule(final String anRule) {
         this.rule = anRule;
     }
 
