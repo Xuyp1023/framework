@@ -48,21 +48,22 @@ public class LoginController {
             }
         }
         catch (ServletException | IOException | CertificateEncodingException e) {
-            e.printStackTrace();
+            // TODO e.printStackTrace();
+            logger.error("获取机构角色列表错误！", e);
         }
 
-        return "";
+        return AjaxObject.newError("获取机构角色列表错误！").toJson();
     }
 
     @RequestMapping(value = "login", method = {RequestMethod.GET,RequestMethod.POST})
     public String login(final String username, final String password) {
-        System.out.println("controller " + username + ":" + password);
+        // TODO System.out.println("controller " + username + ":" + password);
         return "/static/main.html";
     }
 
     @RequestMapping(value = "tokenLogin", method = {RequestMethod.GET,RequestMethod.POST})
     public String tokenLogin(final String username, final String password) {
-        System.out.println("controller " + username + ":" + password);
+        // TODO System.out.println("controller " + username + ":" + password);
         return "/static/main.html";
     }
 
