@@ -8,8 +8,6 @@
 package com.betterjr.modules.sys.security;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -20,8 +18,6 @@ import org.apache.shiro.web.filter.authc.UserFilter;
 import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.betterjr.common.mapper.JsonMapper;
 
 /**
  * @author liuwl
@@ -41,12 +37,10 @@ public class BetterUserFilter extends UserFilter {
             if ("XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"))) {// 是ajax请求
                 final HttpServletResponse response = WebUtils.toHttp(anResponse);
 
-                final Map<String, Object> reslut = new HashMap<>();
-                reslut.put("code", 401);
-                reslut.put("message", "无访问权限");
-                response.setContentType("application/json");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("text/html;charset=UTF-8");
                 try {
-                    response.getWriter().write(JsonMapper.toJsonString(reslut));
+                    response.getWriter().write("401 UNAUTHORIZED");
                 }
                 catch (final IOException e) {
                     logger.info("AccessDenied result write error.", e);
