@@ -28,11 +28,11 @@ public class PatternSequenceGenerator extends SequenceGenerator {
 
 
     @Override
-    public Object getValue(final String anSeqId, final String anOperOrg, final Long anCustNo, final String anPattern) throws BytterException {
+    public Object getValue(final String anSeqId, final String anOperOrg, final Long anCustNo, final String anPattern, final String anCycle) throws BytterException {
         String result = anPattern;
         //translate the sequence no. with left padding 0
         if (StringUtils.contains(anPattern, SEQ6_STRING)) {
-            String seqNum = String.valueOf(super.getValue(anSeqId, anOperOrg, anCustNo, anPattern));
+            String seqNum = String.valueOf(super.getValue(anSeqId, anOperOrg, anCustNo, anPattern, anCycle));
             final int seqLen = NumberUtils.toInt(StringUtils.substringBetween(anPattern,
                     SEQ6_STRING, BRACKET_SUFFIX), 0);
             if (seqLen > 0) {

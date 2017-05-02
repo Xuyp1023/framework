@@ -22,7 +22,7 @@ public class SequenceGenerator implements Generator {
     }
 
     @Override
-    public Object getValue(final String anSeqId, final String anOperOrg, final Long anCustNo, final String anPattern) throws BytterException {
+    public Object getValue(final String anSeqId, final String anOperOrg, final Long anCustNo, final String anPattern, final String anCycle) throws BytterException {
         BTAssert.notNull(sequenceService, "序列化生产服务未找到！");
         String domainId = "DEFAULT";
         Long custNo = 0L;
@@ -32,7 +32,7 @@ public class SequenceGenerator implements Generator {
         if (anCustNo != null) {
             custNo = anCustNo;
         }
-        return sequenceService.saveGetSequence(anSeqId, domainId, custNo);
+        return sequenceService.saveGetSequence(anSeqId, domainId, custNo, anCycle);
     }
 
     @Override

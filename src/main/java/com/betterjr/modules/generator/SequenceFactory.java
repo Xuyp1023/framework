@@ -22,16 +22,20 @@ public final class SequenceFactory {
         generator.setSequenceService(SpringContextHolder.getBean(SequenceService.class));
     }
 
-    public static String generate(final String anSeqId, final String anOperOrg, final Long anCustNo, final String anPattern) {
-        return generator.getValue(anSeqId, anOperOrg, anCustNo, anPattern).toString();
+    public static String generate(final String anSeqId, final String anOperOrg, final Long anCustNo, final String anPattern, final String anCycle) {
+        return generator.getValue(anSeqId, anOperOrg, anCustNo, anPattern, anCycle).toString();
     }
 
-    public static String generate(final String anSeqId, final String anOperOrg, final String anPattern) {
-        return generator.getValue(anSeqId, anOperOrg, null, anPattern).toString();
+    public static String generate(final String anSeqId, final String anOperOrg, final String anPattern, final String anCycle) {
+        return generator.getValue(anSeqId, anOperOrg, null, anPattern, anCycle).toString();
+    }
+
+    public static String generate(final String anSeqId, final String anPattern, final String anCycle) {
+        return generator.getValue(anSeqId, null, null, anPattern, anCycle).toString();
     }
 
     public static String generate(final String anSeqId, final String anPattern) {
-        return generator.getValue(anSeqId, null, null, anPattern).toString();
+        return generator.getValue(anSeqId, null, null, anPattern, null).toString();
     }
 
 }
