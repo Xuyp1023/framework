@@ -12,7 +12,7 @@ import java.util.Map;
 import com.betterjr.modules.generator.service.SequenceService;
 
 public interface Generator {
-    public Object getValue(String anSeqId, String anOperOrg, Long anCustNo, String anPattern);
+    public Object getValue(String anSeqId, String anOperOrg, Long anCustNo, String anPattern, String anCycle);
 
     public void setSequenceService(SequenceService sequenceService);
 

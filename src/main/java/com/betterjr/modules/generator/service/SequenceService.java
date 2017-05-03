@@ -38,7 +38,7 @@ public class SequenceService extends BaseService<SequenceRecordMapper, SequenceR
     private static final long DEFAULT_INCREMENT = 1L;
     private static final long DEFAULT_MAX = 99999999999999L;
 
-    public long saveGetSequence(final String anSeqId, final String anOperOrg, final Long anCustNo) {
+    public long saveGetSequence(final String anSeqId, final String anOperOrg, final Long anCustNo, final String anCycle) {
         long currentSeqNo = 0;
         final String operOrg = StringUtils.isBlank(anOperOrg) ? "DEFAULT" : anOperOrg;
         final long custNo = anCustNo == null ? 0L : anCustNo.longValue();
@@ -47,7 +47,7 @@ public class SequenceService extends BaseService<SequenceRecordMapper, SequenceR
 
             if (sequenceRecord == null) {
                 try {
-                    sequenceRecord = saveRetrieveDefaultSeqDef(anSeqId, operOrg, custNo);
+                    sequenceRecord = saveRetrieveDefaultSeqDef(anSeqId, operOrg, custNo, anCycle);
                 }
                 catch (final Exception e) {
                     sequenceRecord = this.mapper.getAndLockSeqDef(anSeqId, anOperOrg, anCustNo);
@@ -82,7 +82,7 @@ public class SequenceService extends BaseService<SequenceRecordMapper, SequenceR
         return currentSeqNo;
     }
 
-    private synchronized SequenceRecord saveRetrieveDefaultSeqDef(final String anSeqId, final String anOperOrg, final long anCustNo) {
+    private synchronized SequenceRecord saveRetrieveDefaultSeqDef(final String anSeqId, final String anOperOrg, final long anCustNo, final String anCycle) {
         try {
             final SequenceRecord sequenceRecord = new SequenceRecord();
 
@@ -95,7 +95,7 @@ public class SequenceService extends BaseService<SequenceRecordMapper, SequenceR
             sequenceRecord.setOperOrg(anOperOrg);
             sequenceRecord.setCustNo(anCustNo);
 
-            sequenceRecord.setCycle("Y");
+            sequenceRecord.setCycle(anCycle == null ? CYCLE_YEAR : anCycle);
             sequenceRecord.setCycleStartDate(BetterDateUtils.getNumDate());
 
             final int result = this.mapper.insert(sequenceRecord);
