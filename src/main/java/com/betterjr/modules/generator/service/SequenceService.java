@@ -21,6 +21,7 @@ import com.betterjr.common.exception.BytterException;
 import com.betterjr.common.service.BaseService;
 import com.betterjr.common.utils.BTAssert;
 import com.betterjr.common.utils.BetterDateUtils;
+import com.betterjr.mapper.pagehelper.PageHelper;
 import com.betterjr.modules.generator.dao.SequenceRecordMapper;
 import com.betterjr.modules.generator.entity.SequenceRecord;
 
@@ -43,6 +44,7 @@ public class SequenceService extends BaseService<SequenceRecordMapper, SequenceR
         final String operOrg = StringUtils.isBlank(anOperOrg) ? "DEFAULT" : anOperOrg;
         final long custNo = anCustNo == null ? 0L : anCustNo.longValue();
         try {
+            PageHelper.restPage();// 清除分页信息
             SequenceRecord sequenceRecord = this.mapper.getAndLockSeqDef(anSeqId, operOrg, custNo);
 
             if (sequenceRecord == null) {
