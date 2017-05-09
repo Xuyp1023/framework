@@ -338,6 +338,25 @@ public class Collections3 {
 
         return termMap;
     }
+    
+    public static Map filterMapEmptyObject(Map<String, Object> anMap) {
+        Map<String, Object> termMap = new HashMap();
+        if (isEmpty(anMap) == false) {
+            for (String tmpKey : anMap.keySet()) {
+                Object obj = anMap.get(tmpKey);
+                if (obj != null) {
+                    if (obj instanceof String) {
+                        if (BetterStringUtils.isBlank((String) obj)) {
+                            continue;
+                        }
+                    }
+                    termMap.put(tmpKey, obj);
+                }
+            }
+        }
+        
+        return termMap;
+    }
 
     /**
      * 增加模糊参数的处理
