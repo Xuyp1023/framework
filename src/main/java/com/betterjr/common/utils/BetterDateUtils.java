@@ -19,7 +19,7 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
     private final static long NS = 1000;
 
     private static String[] parsePatterns = { "yyyyMMdd", "yyyyMMdd HHmmss", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy/MM/dd HH:mm:ss",
-            "yyyy/MM/dd HH:mm", "yyyy.MM.dd HH:mm:ss", "yyyy-MM", "yyyy/MM/dd", "yyyy-MM-dd", "yyyy/MM", "yyyy.MM.dd", "yyyy.MM.dd HH:mm", "yyyy.MM" };
+            "yyyy/MM/dd HH:mm", "yyyy.MM.dd HH:mm:ss", "yyyy-MM", "yyyy/MM/dd", "yyyy-MM-dd", "yyyy/MM", "yyyy.MM.dd", "yyyy.MM.dd HH:mm", "yyyy.MM","yyyyMM" };
 
     private static String[] patterDislay = { "yyyy年MM月dd日", "yyyy年MM月dd日 HH时mm分", "yyyy年MM月dd日 HH时mm分ss秒", "HH时mm分ss秒" };
 
@@ -187,6 +187,10 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
 
     public static String getNumDateTime() {
         return formatDate(new Date(), "yyyyMMdd HHmmss");
+    }
+    
+    public static String getNumMonth() {
+        return formatDate(new Date(), "yyyyMM");
     }
 
     /**
@@ -536,10 +540,16 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
      */
     public static void main(String[] args) throws ParseException {
 //        System.out.println(pastDateStr(-60));
-        System.out.println(formatDispTime("102123"));
+//        System.out.println(formatDispTime("102123"));
         // System.out.println(formatDate(parseDate("2010/3/6")));
         // System.out.println(getDate("yyyy年MM月dd日 E"));
-        // long time = new Date().getTime()-parseDate("2012-11-19").getTime();
-        // System.out.println(time/(24*60*60*1000));
+//         long time = new Date().getTime()-parseDate("2017-05-01").getTime();
+//         System.out.println(time/(24*60*60*1000));
+//        System.out.println(formatDispDate("20170506"));
+//        System.out.println(formatDispTime("111212"));
+        System.out.println(getNumMonth());
+        
+        long time = BetterDateUtils.parseDate("201607").getTime()-BetterDateUtils.parseDate("201705").getTime();
+        System.out.println(time);
     }
 }
