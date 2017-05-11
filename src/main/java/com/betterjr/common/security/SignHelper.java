@@ -1,6 +1,12 @@
 package com.betterjr.common.security;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
@@ -19,37 +25,38 @@ import java.security.spec.DSAPublicKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.RSAPublicKeySpec;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.*;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.xml.security.Init;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.transforms.Transforms;
-import org.apache.xml.security.utils.XMLUtils;
-import org.apache.xpath.XPathAPI;
-import org.apache.xml.security.*;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.ElementProxy;
+import org.apache.xml.security.utils.XMLUtils;
+import org.apache.xpath.XPathAPI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import com.betterjr.common.data.DataEncoding;
 import com.betterjr.common.exception.BytterException;
 import com.betterjr.common.exception.BytterSecurityException;
 import com.betterjr.common.utils.Encodes;
 
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-
-import java.util.*;
-
 /**
  * 使用证书签名和加密类
- * 
+ *
  * @author zhoucy
  *
  */
@@ -64,7 +71,7 @@ public class SignHelper {
         try {
             ElementProxy.setDefaultPrefix(Constants.SignatureSpecNS, "ds");
         }
-        catch (XMLSecurityException e) {
+        catch (final XMLSecurityException e) {
             System.err.println("org.apache.xml.security.utils.Constants初始化出错！");
             throw new RuntimeException(e);
         }
@@ -75,7 +82,7 @@ public class SignHelper {
 
     /**
      * 使用AES加密或解密无编码的原始字节数组, 返回无编码的字节数组结果.
-     * 
+     *
      * @param input
      *            原始字节数组
      * @param key
@@ -84,36 +91,36 @@ public class SignHelper {
      *            Cipher.ENCRYPT_MODE 或 Cipher.DECRYPT_MODE
      */
 
-    public static String aesEncrypt(String anStr) {
+    public static String aesEncrypt(final String anStr) {
         if (StringUtils.isNotBlank(anStr)) {
             try {
                 return Encodes.encodeHex(aes(anStr.getBytes("UTF-8"), Cipher.ENCRYPT_MODE));
             }
-            catch (UnsupportedEncodingException e) {
+            catch (final UnsupportedEncodingException e) {
 
             }
         }
         return null;
     }
 
-    public static boolean isAesEncrypt(String anStr) {
+    public static boolean isAesEncrypt(final String anStr) {
         try {
-            String tmpStr = aesDecrypt(anStr);
+            final String tmpStr = aesDecrypt(anStr);
 
             return StringUtils.isNotBlank(tmpStr);
         }
-        catch (Exception ex) {
+        catch (final Exception ex) {
             return false;
         }
     }
 
-    public static String aesDecrypt(String anStr) {
+    public static String aesDecrypt(final String anStr) {
         if (StringUtils.isNotBlank(anStr)) {
 
             try {
                 return new String(aes(Encodes.decodeHex(anStr), Cipher.DECRYPT_MODE), "UTF-8");
             }
-            catch (UnsupportedEncodingException e) {
+            catch (final UnsupportedEncodingException e) {
 
             }
 
@@ -121,29 +128,29 @@ public class SignHelper {
         return null;
     }
 
-    public static byte[] aes(byte[] input, int mode) {
+    public static byte[] aes(final byte[] input, final int mode) {
         try {
-            byte[] key = new byte[] { -97, 81, -34, 9, 70, -16, 116, 25, 0, 3, -23, 113, 98, 79, 29, 117 };
+            final byte[] key = new byte[] { -97, 81, -34, 9, 70, -16, 116, 25, 0, 3, -23, 113, 98, 79, 29, 117 };
 
-            SecretKey secretKey = new SecretKeySpec(key, "AES");
-            Cipher cipher = Cipher.getInstance("AES");
+            final SecretKey secretKey = new SecretKeySpec(key, "AES");
+            final Cipher cipher = Cipher.getInstance("AES");
             cipher.init(mode, secretKey);
             return cipher.doFinal(input);
         }
-        catch (GeneralSecurityException e) {
+        catch (final GeneralSecurityException e) {
             throw new BytterException(20206, "decodeHex has error", e);
         }
     }
 
-    public static String readFromFile(String anFileName) {
-        byte[] bb = new byte[1024];
+    public static String readFromFile(final String anFileName) {
+        final byte[] bb = new byte[1024];
         InputStream in = null;
         try {
             in = new FileInputStream(anFileName);
-            int count = in.read(bb);
+            final int count = in.read(bb);
             return new String(bb, 0, count, "UTF-8");
         }
-        catch (IOException ex) {
+        catch (final IOException ex) {
             ex.printStackTrace();
 
             return "";
@@ -153,43 +160,43 @@ public class SignHelper {
         }
     }
 
-    public static String randomBase64(int length) {
-        byte[] randomBytes = new byte[length];
+    public static String randomBase64(final int length) {
+        final byte[] randomBytes = new byte[length];
         random.nextBytes(randomBytes);
 
         return Base64.encodeBase64String(randomBytes);
     }
 
-    public static String signData(String doc, PrivateKey privateKey, String anCharSet) {
-        
-        return signData(doc, privateKey, SIGN_ALGORITHMS, anCharSet);    
+    public static String signData(final String doc, final PrivateKey privateKey, final String anCharSet) {
+
+        return signData(doc, privateKey, SIGN_ALGORITHMS, anCharSet);
     }
 
-    public static String signData(String doc, PrivateKey privateKey) {
-        
-        return signData(doc, privateKey, SIGN_ALGORITHMS, "UTF-8");    
+    public static String signData(final String doc, final PrivateKey privateKey) {
+
+        return signData(doc, privateKey, SIGN_ALGORITHMS, "UTF-8");
     }
-    
-    public static String signData(String doc, PrivateKey privateKey, String anSignAlgorithms, String anCharSet) {
+
+    public static String signData(final String doc, final PrivateKey privateKey, final String anSignAlgorithms, final String anCharSet) {
         try {
-            Signature signature = Signature.getInstance(anSignAlgorithms);
+            final Signature signature = Signature.getInstance(anSignAlgorithms);
             signature.initSign(privateKey);
             signature.update(doc.getBytes(anCharSet));
-            byte[] signed = signature.sign();
+            final byte[] signed = signature.sign();
 
             return Base64.encodeBase64String(signed);
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             e.printStackTrace();
         }
 
         return null;
     }
 
-    public static String clearBase64InStr(String anStr) {
+    public static String clearBase64InStr(final String anStr) {
         if (StringUtils.isNotBlank(anStr)) {
-            StringBuilder sb = new StringBuilder(anStr.length());
-            for (char cc : anStr.toCharArray()) {
+            final StringBuilder sb = new StringBuilder(anStr.length());
+            for (final char cc : anStr.toCharArray()) {
                 if (cc == '-') {
                     sb.append('+');
                 }
@@ -205,10 +212,10 @@ public class SignHelper {
         return "";
     }
 
-    public static String clearBase64OutStr(String anStr) {
+    public static String clearBase64OutStr(final String anStr) {
         if (StringUtils.isNotBlank(anStr)) {
-            StringBuilder sb = new StringBuilder(anStr.length());
-            for (char cc : anStr.toCharArray()) {
+            final StringBuilder sb = new StringBuilder(anStr.length());
+            for (final char cc : anStr.toCharArray()) {
                 if (cc == '+') {
                     sb.append('-');
                 }
@@ -223,56 +230,56 @@ public class SignHelper {
         }
         return "";
     }
-    
-    public static boolean verifySign(String anContent, String anSignData, Certificate anPubKey){
-    
+
+    public static boolean verifySign(final String anContent, final String anSignData, final Certificate anPubKey){
+
         return verifySign(anContent, anSignData, anPubKey, "UTF-8");
     }
-    
-    public static boolean verifySign(String anContent, String anSignData, Certificate anPubKey, String anCharSet) {
+
+    public static boolean verifySign(final String anContent, final String anSignData, final Certificate anPubKey, final String anCharSet) {
 
         return verifySign(anContent, anSignData, anPubKey.getPublicKey(), anCharSet);
     }
 
-    public static boolean verifySign(String anContent, String anSignData, PublicKey anPubKey, String anCharSet) {
+    public static boolean verifySign(final String anContent, final String anSignData, final PublicKey anPubKey, final String anCharSet) {
 
         return verifySign(anContent, anSignData, anPubKey, SIGN_ALGORITHMS, anCharSet);
     }
 
     /**
      * 用SHA算法计算摘要
-     * 
+     *
      * @param contents
      *            字符串
      * @return
      * @throws Exception
      */
-    public static String digest(byte[] contents, String anAlgorithms) {
+    public static String digest(final byte[] contents, final String anAlgorithms) {
         MessageDigest messageDigest;
         try {
             messageDigest = MessageDigest.getInstance(anAlgorithms);
 
-            byte[] digestbyte = messageDigest.digest(contents);
+            final byte[] digestbyte = messageDigest.digest(contents);
             return new String(Hex.encodeHex(digestbyte));
         }
-        catch (NoSuchAlgorithmException e) {
+        catch (final NoSuchAlgorithmException e) {
             throw new BytterSecurityException(13123, " digest  NoSuchAlgorithmException", e);
         }
     }
-    public static String signFile(File anFile, PrivateKey anPrivateKey) {
+    public static String signFile(final File anFile, final PrivateKey anPrivateKey) {
         return signFile(anFile, anPrivateKey, SIGN_ALGORITHMS, DataEncoding.BASE64);
     }
-    public static String signFile(File anFile, PrivateKey anPrivateKey, String anAlgorithms, DataEncoding anEncoding) {
+    public static String signFile(final File anFile, final PrivateKey anPrivateKey, final String anAlgorithms, final DataEncoding anEncoding) {
 
         return signAndDigestFile(anFile, anAlgorithms, anEncoding, true, anPrivateKey);
     }
 
-    public static String digestFile(File anFile, String anAlgorithms, DataEncoding anEncoding) {
+    public static String digestFile(final File anFile, final String anAlgorithms, final DataEncoding anEncoding) {
 
         return signAndDigestFile(anFile, anAlgorithms, anEncoding, false, null);
     }
 
-    private static String signAndDigestFile(File anFile, String anAlgorithms, DataEncoding anEncoding, boolean anSign, PrivateKey anPrivateKey) {
+    private static String signAndDigestFile(final File anFile, final String anAlgorithms, final DataEncoding anEncoding, final boolean anSign, final PrivateKey anPrivateKey) {
         InputStream in = null;
 
         logger.info("digestFile =" + anFile + ", use Algorithms = " + anAlgorithms);
@@ -282,7 +289,7 @@ public class SignHelper {
                 int readSize = 0;
                 byte[] buffer = new byte[4096];
                 if (anSign) {
-                    Signature signature = Signature.getInstance(anAlgorithms);
+                    final Signature signature = Signature.getInstance(anAlgorithms);
                     signature.initSign(anPrivateKey);
                     while ((readSize = in.read(buffer)) != -1) {
                         signature.update(buffer, 0, readSize);
@@ -290,7 +297,7 @@ public class SignHelper {
                     buffer = signature.sign();
                 }
                 else {
-                    MessageDigest messageDigest = MessageDigest.getInstance(anAlgorithms);
+                    final MessageDigest messageDigest = MessageDigest.getInstance(anAlgorithms);
                     while ((readSize = in.read(buffer)) != -1) {
                         messageDigest.update(buffer, 0, readSize);
                     }
@@ -299,19 +306,19 @@ public class SignHelper {
                 IOUtils.closeQuietly(in);
                 return anEncoding.encodeData(buffer);
             }
-            catch (IOException e) {
+            catch (final IOException e) {
                 logger.warn("digest IOException ， anFileName = " + anFile);
                 throw new BytterSecurityException(13123, "digest NoSuchAlgorithmException", e);
             }
-            catch (NoSuchAlgorithmException e) {
+            catch (final NoSuchAlgorithmException e) {
                 logger.warn("digest NoSuchAlgorithmException ， Algorithms = " + anAlgorithms);
                 throw new BytterSecurityException(13123, "digest NoSuchAlgorithmException", e);
             }
-            catch (InvalidKeyException e) {
+            catch (final InvalidKeyException e) {
                 logger.warn("digest InvalidKeyException ， Algorithms = " + anAlgorithms);
                 throw new BytterSecurityException(13123, "sign InvalidKeyException", e);
             }
-            catch (SignatureException e) {
+            catch (final SignatureException e) {
                 logger.warn("SignatureException   ， Algorithms = " + anAlgorithms);
                 throw new BytterSecurityException(13123, "SignatureException  ", e);
             }
@@ -325,43 +332,95 @@ public class SignHelper {
         }
     }
 
-    public static String digestBase64(byte[] contents, String anAlgorithms) {
+    public static String digestBase64(final byte[] contents, final String anAlgorithms) {
         MessageDigest messageDigest;
         try {
             messageDigest = MessageDigest.getInstance(anAlgorithms);
 
-            byte[] digestbyte = messageDigest.digest(contents);
+            final byte[] digestbyte = messageDigest.digest(contents);
             return Base64.encodeBase64URLSafeString(digestbyte);
         }
-        catch (NoSuchAlgorithmException e) {
+        catch (final NoSuchAlgorithmException e) {
             throw new BytterSecurityException(13123, " digest  NoSuchAlgorithmException", e);
         }
     }
 
-    public static boolean verifySign(String anContent, String anSignData, PublicKey anPubKey, String anSignAlgorithms, String anCharSet) {
+    public static boolean verifySign(final String anContent, final String anSignData, final PublicKey anPubKey, final String anSignAlgorithms, final String anCharSet) {
         try {
             return verifySign(anContent.getBytes(anCharSet), anSignData, anPubKey, anSignAlgorithms);
         }
-        catch (UnsupportedEncodingException e) {
+        catch (final UnsupportedEncodingException e) {
             return false;
         }
     }
 
-    public static boolean verifySignFile(File anFile, String anSignData, PublicKey anPubKey) {
+    public static boolean verifySignStream(final InputStream in, final String anSignData, final PublicKey anPubKey) {
+        return verifySignAndDigestStream(in, anSignData, SIGN_ALGORITHMS, DataEncoding.BASE64, true, anPubKey);
+    }
+
+    public static boolean verifySignAndDigestStream(
+            final InputStream in , final String anSignData, final String anAlgorithms, final DataEncoding anEncoding, final boolean anSign,
+            final PublicKey anPubKey) {
+        boolean result = false;
+        try {
+            int readSize = 0;
+            byte[] buffer = new byte[4096];
+            final byte[] signData = anEncoding.decodeData(anSignData);
+            if (anSign) {
+                final Signature signature = Signature.getInstance(anAlgorithms);
+                signature.initVerify(anPubKey);
+                while ((readSize = in.read(buffer)) != -1) {
+                    signature.update(buffer, 0, readSize);
+                }
+                result = signature.verify(signData);
+            }
+            else {
+                final MessageDigest messageDigest = MessageDigest.getInstance(anAlgorithms);
+                while ((readSize = in.read(buffer)) != -1) {
+                    messageDigest.update(buffer, 0, readSize);
+                }
+                buffer = messageDigest.digest();
+                result = buffer.equals(signData);
+            }
+            IOUtils.closeQuietly(in);
+        }
+        catch (final IOException e) {
+            logger.warn("digest IOException ， anFileName = " );
+            // throw new BytterSecurityException(13123, "digest NoSuchAlgorithmException", e);
+        }
+        catch (final NoSuchAlgorithmException e) {
+            logger.warn("digest NoSuchAlgorithmException ， Algorithms = " + anAlgorithms);
+            // throw new BytterSecurityException(13123, "digest NoSuchAlgorithmException", e);
+        }
+        catch (final InvalidKeyException e) {
+            logger.warn("digest InvalidKeyException ， Algorithms = " + anAlgorithms);
+            // throw new BytterSecurityException(13123, "sign InvalidKeyException", e);
+        }
+        catch (final SignatureException e) {
+            logger.warn("SignatureException   ， Algorithms = " + anAlgorithms);
+            // throw new BytterSecurityException(13123, "SignatureException  ", e);
+        }
+        finally {
+            IOUtils.closeQuietly(in);
+        }
+        return result;
+    }
+
+    public static boolean verifySignFile(final File anFile, final String anSignData, final PublicKey anPubKey) {
         return verifySignAndDigestFile(anFile, anSignData, SIGN_ALGORITHMS, DataEncoding.BASE64, true, anPubKey);
     }
-    public static boolean verifySignFile(File anFile, String anSignData, DataEncoding anEncoding, String anAlgorithms, PublicKey anPubKey) {
+    public static boolean verifySignFile(final File anFile, final String anSignData, final DataEncoding anEncoding, final String anAlgorithms, final PublicKey anPubKey) {
 
         return verifySignAndDigestFile(anFile, anSignData, anAlgorithms, anEncoding, true, anPubKey);
     }
 
-    public boolean verifyDigestFile(File anFile, String anSignData, DataEncoding anEncoding, String anAlgorithms) {
+    public boolean verifyDigestFile(final File anFile, final String anSignData, final DataEncoding anEncoding, final String anAlgorithms) {
 
         return verifySignAndDigestFile(anFile, anSignData, anAlgorithms, anEncoding, false, null);
     }
 
-    public static boolean verifySignAndDigestFile(File anFile, String anSignData, String anAlgorithms, DataEncoding anEncoding, boolean anSign,
-            PublicKey anPubKey) {
+    public static boolean verifySignAndDigestFile(final File anFile, final String anSignData, final String anAlgorithms, final DataEncoding anEncoding, final boolean anSign,
+            final PublicKey anPubKey) {
 
         InputStream in = null;
 
@@ -372,9 +431,9 @@ public class SignHelper {
                 in = new BufferedInputStream(new FileInputStream(anFile));
                 int readSize = 0;
                 byte[] buffer = new byte[4096];
-                byte[] signData = anEncoding.decodeData(anSignData);
+                final byte[] signData = anEncoding.decodeData(anSignData);
                 if (anSign) {
-                    Signature signature = Signature.getInstance(anAlgorithms);
+                    final Signature signature = Signature.getInstance(anAlgorithms);
                     signature.initVerify(anPubKey);
                     while ((readSize = in.read(buffer)) != -1) {
                         signature.update(buffer, 0, readSize);
@@ -382,7 +441,7 @@ public class SignHelper {
                     result = signature.verify(signData);
                 }
                 else {
-                    MessageDigest messageDigest = MessageDigest.getInstance(anAlgorithms);
+                    final MessageDigest messageDigest = MessageDigest.getInstance(anAlgorithms);
                     while ((readSize = in.read(buffer)) != -1) {
                         messageDigest.update(buffer, 0, readSize);
                     }
@@ -391,19 +450,19 @@ public class SignHelper {
                 }
                 IOUtils.closeQuietly(in);
             }
-            catch (IOException e) {
+            catch (final IOException e) {
                 logger.warn("digest IOException ， anFileName = " + anFile);
                 // throw new BytterSecurityException(13123, "digest NoSuchAlgorithmException", e);
             }
-            catch (NoSuchAlgorithmException e) {
+            catch (final NoSuchAlgorithmException e) {
                 logger.warn("digest NoSuchAlgorithmException ， Algorithms = " + anAlgorithms);
                 // throw new BytterSecurityException(13123, "digest NoSuchAlgorithmException", e);
             }
-            catch (InvalidKeyException e) {
+            catch (final InvalidKeyException e) {
                 logger.warn("digest InvalidKeyException ， Algorithms = " + anAlgorithms);
                 // throw new BytterSecurityException(13123, "sign InvalidKeyException", e);
             }
-            catch (SignatureException e) {
+            catch (final SignatureException e) {
                 logger.warn("SignatureException   ， Algorithms = " + anAlgorithms);
                 // throw new BytterSecurityException(13123, "SignatureException  ", e);
             }
@@ -418,8 +477,8 @@ public class SignHelper {
         return result;
     }
 
-    public static boolean verifySign(byte[] anContent, String anSignData, PublicKey anPubKey, String anSignAlgorithms) {
-        byte[] decoded = Base64.decodeBase64(anSignData);
+    public static boolean verifySign(final byte[] anContent, final String anSignData, final PublicKey anPubKey, final String anSignAlgorithms) {
+        final byte[] decoded = Base64.decodeBase64(anSignData);
 
         Signature signature;
         try {
@@ -428,19 +487,19 @@ public class SignHelper {
             signature.update(anContent);
             return signature.verify(decoded);
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             e.printStackTrace();
         }
         return false;
     }
 
-    public static boolean verifyXmlSign(String signXml, PublicKey pubKey) {
+    public static boolean verifyXmlSign(final String signXml, final PublicKey pubKey) {
         Element signElement;
         XMLSignature signature;
         try {
             System.out.println(signXml);
-            Document doc = DocumentUtil.getDocFromString(signXml);
-            Element nscontext = XMLUtils.createDSctx(doc, "ds", "http://www.w3.org/2000/09/xmldsig#");
+            final Document doc = DocumentUtil.getDocFromString(signXml);
+            final Element nscontext = XMLUtils.createDSctx(doc, "ds", "http://www.w3.org/2000/09/xmldsig#");
             signElement = (Element) XPathAPI.selectSingleNode(doc, "//ds:Signature[1]", nscontext);
             if (signElement == null) {
                 return false;
@@ -456,19 +515,19 @@ public class SignHelper {
             signature = new XMLSignature(signElement, doc.getDocumentURI());
             return signature.checkSignatureValue(pubKey);
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             e.printStackTrace();
             return false;
         }
 
     }
 
-    public static String signXml(Document doc, PrivateKey privateKey, String msgType, String anEncoding) {
+    public static String signXml(final Document doc, final PrivateKey privateKey, final String msgType, final String anEncoding) {
         try {
 
-            XMLSignature sig = new XMLSignature(doc, doc.getDocumentURI(), "http://www.w3.org/2000/09/xmldsig#rsa-sha1");
+            final XMLSignature sig = new XMLSignature(doc, doc.getDocumentURI(), "http://www.w3.org/2000/09/xmldsig#rsa-sha1");
             // sig.getSignedInfo().addResourceResolver(new OfflineResolver());
-            Element messageNode = (Element) doc.getElementsByTagName("Message").item(0);
+            final Element messageNode = (Element) doc.getElementsByTagName("Message").item(0);
             // Element dataNode = (Element) messageNode.getElementsByTagName(msgType).item(0);
             // dataNode.setIdAttributeNS(null, "id", true);
 
@@ -476,24 +535,24 @@ public class SignHelper {
             // Attr idAttr = dataNode.getAttributeNode("id");
             // dataNode.setIdAttributeNode(idAttr, true);
             messageNode.appendChild(sig.getElement());
-            Transforms transforms = new Transforms(doc);
+            final Transforms transforms = new Transforms(doc);
             transforms.addTransform("http://www.w3.org/2000/09/xmldsig#enveloped-signature");
             sig.addDocument("#" + msgType, transforms, "http://www.w3.org/2000/09/xmldsig#sha1");
             sig.sign(privateKey);
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            final ByteArrayOutputStream os = new ByteArrayOutputStream();
             XMLUtils.outputDOM(doc, os);
             return os.toString(anEncoding);
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public static int findKeySize(Key anPublicKey) {
-        String algorithm = anPublicKey.getAlgorithm();
+    public static int findKeySize(final Key anPublicKey) {
+        final String algorithm = anPublicKey.getAlgorithm();
         KeyFactory keyFact;
-        Integer mySize = keyMap.get(anPublicKey);
+        final Integer mySize = keyMap.get(anPublicKey);
         if (mySize != null) {
             return mySize.intValue();
         }
@@ -502,26 +561,26 @@ public class SignHelper {
             BigInteger prime = null;
             if ("RSA".equals(algorithm)) {
                 if (anPublicKey instanceof PublicKey) {
-                    RSAPublicKeySpec keySpec = keyFact.getKeySpec(anPublicKey, RSAPublicKeySpec.class);
+                    final RSAPublicKeySpec keySpec = keyFact.getKeySpec(anPublicKey, RSAPublicKeySpec.class);
                     prime = keySpec.getModulus();
                 }
                 else if (anPublicKey instanceof PrivateKey) {
-                    RSAPrivateKeySpec keySpec = keyFact.getKeySpec(anPublicKey, RSAPrivateKeySpec.class);
+                    final RSAPrivateKeySpec keySpec = keyFact.getKeySpec(anPublicKey, RSAPrivateKeySpec.class);
                     prime = keySpec.getModulus();
                 }
             }
             else if ("DSA".equals(algorithm)) {
                 if (anPublicKey instanceof PublicKey) {
-                    DSAPublicKeySpec keySpec = keyFact.getKeySpec(anPublicKey, DSAPublicKeySpec.class);
+                    final DSAPublicKeySpec keySpec = keyFact.getKeySpec(anPublicKey, DSAPublicKeySpec.class);
                     prime = keySpec.getP();
                 }
                 else if (anPublicKey instanceof PrivateKey) {
-                    DSAPrivateKeySpec keySpec = keyFact.getKeySpec(anPublicKey, DSAPrivateKeySpec.class);
+                    final DSAPrivateKeySpec keySpec = keyFact.getKeySpec(anPublicKey, DSAPrivateKeySpec.class);
                     prime = keySpec.getP();
                 }
             }
             if (prime != null) {
-                int len = prime.toString(2).length();
+                final int len = prime.toString(2).length();
                 keyMap.put(anPublicKey, new Integer(len));
 
                 return len;
@@ -539,28 +598,28 @@ public class SignHelper {
     /**
      * 分段解密<br>
      * 用私钥解密
-     * 
+     *
      * @param data
      *            数据
      * @param key
      * @return
      * @throws Exception
      */
-    public static String decrypt(String anData, PrivateKey privateKey) {
-        
+    public static String decrypt(final String anData, final PrivateKey privateKey) {
+
         return decrypt(anData, privateKey, "UTF-8");
     }
-    
-    public static String decrypt(String anData, PrivateKey privateKey, String anCharset ) {
+
+    public static String decrypt(final String anData, final PrivateKey privateKey, final String anCharset ) {
         try {
-            int keyBitSize = findKeySize(privateKey);
+            final int keyBitSize = findKeySize(privateKey);
             final int MAX_DECRYPT_BLOCK = (keyBitSize >> 3);
-            Cipher cipher = Cipher.getInstance("RSA");
+            final Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
 
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            byte[] data = Base64.decodeBase64(anData);
-            int inputLen = data.length;
+            final ByteArrayOutputStream out = new ByteArrayOutputStream();
+            final byte[] data = Base64.decodeBase64(anData);
+            final int inputLen = data.length;
             int offSet = 0;
             byte[] cache;
             int i = 0;
@@ -576,11 +635,11 @@ public class SignHelper {
                 i++;
                 offSet = i * MAX_DECRYPT_BLOCK;
             }
-            byte[] decryptedData = out.toByteArray();
+            final byte[] decryptedData = out.toByteArray();
 
             return new String(decryptedData, anCharset);
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             e.printStackTrace();
             throw new BytterSecurityException(20203, "SignHelper decrypt has error", e);
         }
@@ -590,28 +649,28 @@ public class SignHelper {
     /**
      * 分段加密<br>
      * 用公钥加密
-     * 
+     *
      * @param data
      * @param key
      * @return
      * @throws Exception
      */
-    public static String encrypt(String anData, PublicKey pubKey) {
-        
-       return encrypt(anData, pubKey, "UTF-8");       
+    public static String encrypt(final String anData, final PublicKey pubKey) {
+
+        return encrypt(anData, pubKey, "UTF-8");
     }
-    
-    public static String encrypt(String anData, PublicKey pubKey, String anCharset) {
+
+    public static String encrypt(final String anData, final PublicKey pubKey, final String anCharset) {
         try {
             // 对数据加密
-            int keyBitSize = findKeySize(pubKey);
-            Cipher cipher = Cipher.getInstance("RSA");
+            final int keyBitSize = findKeySize(pubKey);
+            final Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, pubKey);
             // 长度是位数除掉11位
             final int MAX_ENCRYPT_BLOCK = (keyBitSize >> 3) - 11;
-            byte[] data = anData.getBytes(anCharset);
-            int inputLen = data.length;
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            final byte[] data = anData.getBytes(anCharset);
+            final int inputLen = data.length;
+            final ByteArrayOutputStream out = new ByteArrayOutputStream();
             int offSet = 0;
             byte[] cache;
             int i = 0;
@@ -628,21 +687,21 @@ public class SignHelper {
                 offSet = i * MAX_ENCRYPT_BLOCK;
             }
             out.flush();
-            byte[] encryptedData = out.toByteArray();
+            final byte[] encryptedData = out.toByteArray();
             out.close();
             return Base64.encodeBase64String(encryptedData);
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             e.printStackTrace();
             throw new BytterSecurityException(20203, "SignHelper encrypt has error", e);
         }
     }
 
-    public static void main(String args[]) throws Exception {
-        String fileName = "D:\\Documents\\数字证书\\huaqiang.pfx";
-        String passWord = "huaqiang";
-        String matchKey = "D:\\libs\\test.cer";
-        String tt = aesEncrypt("0");
+    public static void main(final String args[]) throws Exception {
+        final String fileName = "D:\\Documents\\数字证书\\huaqiang.pfx";
+        final String passWord = "huaqiang";
+        final String matchKey = "D:\\libs\\test.cer";
+        final String tt = aesEncrypt("0");
         System.out.println(tt);
         System.out.println(aesDecrypt(tt));
 
