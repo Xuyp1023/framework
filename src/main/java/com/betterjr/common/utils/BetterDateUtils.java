@@ -1,7 +1,6 @@
 package com.betterjr.common.utils;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -21,7 +20,7 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
     private static String[] parsePatterns = { "yyyyMMdd", "yyyyMMdd HHmmss", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy/MM/dd HH:mm:ss",
             "yyyy/MM/dd HH:mm", "yyyy.MM.dd HH:mm:ss", "yyyy-MM", "yyyy/MM/dd", "yyyy-MM-dd", "yyyy/MM", "yyyy.MM.dd", "yyyy.MM.dd HH:mm", "yyyy.MM","yyyyMM" };
 
-    private static String[] patterDislay = { "yyyy年MM月dd日", "yyyy年MM月dd日 HH时mm分", "yyyy年MM月dd日 HH时mm分ss秒", "HH时mm分ss秒" };
+    private static String[] patterDislay = { "yyyy年MM月dd日", "yyyy年MM月dd日 HH时mm分", "yyyy年MM月dd日 HH时mm分ss秒", "HH时mm分ss秒","yyyy年MM月" };
 
     public static String DATE_DEFFMT = "yyyy-MM-dd";
 
@@ -62,6 +61,26 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
                     dd = parseDate(anDate, parsePatterns);
                     opp = patterDislay[0];
                 }
+                dd = parseDate(anDate, pp);
+                return formatDate(dd, opp);
+            }
+            catch (ParseException e) {
+                return anDate;
+            }
+        }
+        else {
+            return anDate;
+        }
+    }
+    
+    public static String formatMonthDispay(String anDate) {
+        if (BetterStringUtils.isNotBlank(anDate)) {
+            String pp = null;
+            String opp = null;
+            Date dd = null;
+            try {
+                pp = "yyyyMM";
+                opp = patterDislay[4];
                 dd = parseDate(anDate, pp);
                 return formatDate(dd, opp);
             }
@@ -545,11 +564,11 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
         // System.out.println(getDate("yyyy年MM月dd日 E"));
 //         long time = new Date().getTime()-parseDate("2017-05-01").getTime();
 //         System.out.println(time/(24*60*60*1000));
-//        System.out.println(formatDispDate("20170506"));
-//        System.out.println(formatDispTime("111212"));
-        System.out.println(getNumMonth());
+        System.out.println(formatMonthDispay("201705"));
+        System.out.println(formatDispTime("111212"));
+//        System.out.println(getNumMonth());
         
-        long time = BetterDateUtils.parseDate("201607").getTime()-BetterDateUtils.parseDate("201705").getTime();
-        System.out.println(time);
+//        long time = BetterDateUtils.parseDate("201607").getTime()-BetterDateUtils.parseDate("201705").getTime();
+//        System.out.println(time);
     }
 }
