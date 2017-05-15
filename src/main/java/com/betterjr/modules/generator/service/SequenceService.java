@@ -15,6 +15,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.betterjr.common.exception.BytterException;
@@ -31,6 +33,9 @@ import com.betterjr.modules.generator.entity.SequenceRecord;
  */
 @Service
 public class SequenceService extends BaseService<SequenceRecordMapper, SequenceRecord> {
+
+    private static final Logger logger = LoggerFactory.getLogger(SequenceService.class);
+
     private static final String CYCLE_DAY = "D";
     private static final String CYCLE_WEEK = "W";
     private static final String CYCLE_MONTH = "M";
@@ -45,6 +50,7 @@ public class SequenceService extends BaseService<SequenceRecordMapper, SequenceR
         final long custNo = anCustNo == null ? 0L : anCustNo.longValue();
         try {
             PageHelper.restPage();// 清除分页信息
+            logger.debug("Start SeqId:" + anSeqId + "  operOrg:" + operOrg + " custNo:" + custNo);
             SequenceRecord sequenceRecord = this.mapper.getAndLockSeqDef(anSeqId, operOrg, custNo);
 
             if (sequenceRecord == null) {
@@ -52,13 +58,14 @@ public class SequenceService extends BaseService<SequenceRecordMapper, SequenceR
                     sequenceRecord = saveRetrieveDefaultSeqDef(anSeqId, operOrg, custNo, anCycle);
                 }
                 catch (final Exception e) {
+                    logger.error("Exception SeqId:" + anSeqId + "  operOrg:" + operOrg + " custNo:" + custNo, e);
                     sequenceRecord = this.mapper.getAndLockSeqDef(anSeqId, anOperOrg, anCustNo);
                 }
                 if (sequenceRecord == null) {
                     throw new BytterException("Failed to find the sequence definition");
                 }
             }
-
+            logger.debug("End SeqId:" + anSeqId + "  operOrg:" + operOrg + " custNo:" + custNo + " " + sequenceRecord);
             currentSeqNo = sequenceRecord.getNextValue();
 
             final boolean isReachTheNextCycle = isReachTheNextCycle(sequenceRecord.getCycle(), sequenceRecord.getCycleStartDate());
@@ -74,7 +81,6 @@ public class SequenceService extends BaseService<SequenceRecordMapper, SequenceR
 
             final int result = this.updateByPrimaryKey(sequenceRecord);
             BTAssert.isTrue(result == 1, "update sequenceRecord error.");
-
         }
         catch (final Exception e) {
             throw new BytterException("error occured when getting sequence", e);
