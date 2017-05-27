@@ -8,6 +8,8 @@ import com.betterjr.modules.document.data.AccountAduitData;
 import com.betterjr.modules.document.data.FileStoreType;
 import com.betterjr.modules.document.entity.CustFileAduit;
 import com.betterjr.modules.document.entity.CustFileItem;
+import com.betterjr.modules.document.entity.CustResolveFile;
+
 
 public interface ICustFileService {
 
@@ -180,5 +182,21 @@ public interface ICustFileService {
      * @return
      */
     public List<CustFileItem> findCustFileAduit(Long anCustNo,Long anRelateCustNo);
+
+
+    public String webfindResolveFile(Long anId);
+
+
+    public boolean sendResolveMessage(CustResolveFile anResolveFile);
+
+
+    public CustResolveFile webSaveAddResolveFile(CustResolveFile anResolveFile);
+
+
+    public CustFileItem findOneAndButchId(Long anId);
+    
+    public void saveModifyResolveFile(Map<String, Object> anResolveFileMap);
+    
+    public void saveModifyResolveFile(CustResolveFile anResolveFile) ;
      
 }
