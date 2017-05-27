@@ -1,5 +1,6 @@
 package com.betterjr.modules.operator.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,24 @@ public class SysOperatorRoleRelationService extends BaseService<SysOperatorRoleR
            }
        }   
        return sb.toString();
+    }
+    
+    /**
+     * 查询角色列表
+     * @param anOperatorId
+     * @return
+     */
+    public List<Role> findRoleByOperId(Long anOperatorId){
+        List<Role> roleList=new ArrayList<Role>();
+        Map<String, Object> map=new HashMap<String, Object>();
+        map.put("operId", anOperatorId);
+        List<SysOperatorRoleRelation> relationList=this.selectByProperty(map);
+        for(int i=0;i<relationList.size();i++){
+            SysOperatorRoleRelation roleRelation=relationList.get(i);
+            Role role=roleService.selectByPrimaryKey(roleRelation.getRoleId());
+            roleList.add(role);
+        }   
+        return roleList;
     }
     
     /***

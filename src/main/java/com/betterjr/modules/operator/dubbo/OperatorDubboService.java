@@ -53,6 +53,10 @@ public class OperatorDubboService implements IOperatorService {
         return AjaxObject.newOkWithPage("操作员分页查询", operatorRequestService.queryCustOperator(anMap, anPageNum, anPageSize)).toJson();
     }
     
+    public String webQueryCustOperatorByPage(Map<String, String> anMap){
+        return AjaxObject.newOkWithPage("查询复核审批员信息", operatorRequestService.queryCustOperatorByPage(anMap)).toJson();
+    }
+    
 
     /****
      * 获取左侧菜单信息

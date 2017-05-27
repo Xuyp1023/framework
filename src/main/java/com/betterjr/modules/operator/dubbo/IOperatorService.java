@@ -112,5 +112,7 @@ public interface IOperatorService {
      * 根据入参查询对应操作机构操作员
      */
     public String webFindCustOperatorByClerk(String anClerk);
+    
+    public String webQueryCustOperatorByPage(Map<String, String> anMap);
 
 }
