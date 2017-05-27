@@ -89,4 +89,7 @@ public class OperatorDubboClientService implements IOperatorService {
     public String webFindCustOperatorByClerk(String anClerk) {
         return operatorService.webFindCustOperatorByClerk(anClerk);
     }
+    public String webQueryCustOperatorByPage(Map<String, String> anMap){
+        return operatorService.webQueryCustOperatorByPage(anMap);
+    }
 }

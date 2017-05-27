@@ -25,6 +25,7 @@ import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfoRequest;
 import com.betterjr.modules.account.service.CustAndOperatorRelaService;
 import com.betterjr.modules.account.service.CustPassService;
+import com.betterjr.modules.role.entity.Role;
 import com.betterjr.modules.role.service.RoleService;
 
 /***
@@ -145,6 +146,55 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
         }
         return Page.listToPage(result, pageNum, pageSize,page.getPages(),page.getStartRow(),page.getTotal());
     }
+    
+    /***
+     * 查询复核审批员信息
+     * @param anMap
+     * @return
+     */
+    public Page<CustOptData> queryCustOperatorByPage(Map<String, String> anMap) {
+        int pageNum = anMap.get("pageNum") == null || "".equals(anMap.get("pageNum")) ? 1 : Integer.valueOf(anMap.get("pageNum"));
+        int pageSize = anMap.get("pageSize") == null || "".equals(anMap.get("pageSize")) ? 20 : Integer.valueOf(anMap.get("pageSize"));
+        return this.findRequest(anMap, pageNum, pageSize);
+    }
+
+    private Page<CustOptData> findRequest(Map<String, String> anParam, int pageNum, int pageSize) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        String tmpValue;
+        for (String tmpKey : queryConds) {
+            tmpValue = anParam.get(tmpKey);
+            if (BetterStringUtils.isNotBlank(tmpValue)) {
+                map.put(tmpKey, tmpValue);
+            }
+        }
+        if (BetterStringUtils.isNotBlank(anParam.get("ruleList"))) {
+            map.remove("ruleList");
+        }
+        CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();
+        String operOrg = custOperator.getOperOrg();
+        map.put("operOrg", operOrg);
+        Page page = this.selectPropertyByPage(CustOperatorInfo.class, map, pageNum, pageSize, false);
+        List list = page.getResult();
+        List result = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            String ruleList = anParam.get("ruleList");
+            CustOperatorInfo tmpOperatorInfo = (CustOperatorInfo) list.get(i);
+            // 根据操作员编号查询对应的角色信息
+            List<Role> roleList=operatorRoleRelationService.findRoleByOperId(tmpOperatorInfo.getId());
+            for(Role role:roleList){
+                if (BetterStringUtils.isNotBlank(role.getRoleType()) && BetterStringUtils.isNotBlank(ruleList) ) {
+                    if (role.getRoleType().contains(ruleList)) {
+                        result.add(list.get(i));
+                    }
+                }
+                else {
+                    result.add(list.get(i));
+                }
+            }
+        }
+        return Page.listToPage(result);
+    }
+
 
     /***
      * 查询操作员信息
