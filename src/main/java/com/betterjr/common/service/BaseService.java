@@ -219,6 +219,10 @@ public abstract class BaseService<D extends Mapper<T>, T> {
             else if (tmpL.size() == 1) {
                 criteria.andEqualTo(propName, tmpL.get(0));
             }
+            else if (propName.startsWith("NE")) {
+                propName = propName.substring(2);
+                criteria.andNotIn(propName, tmpL);
+            }
             else {
                 criteria.andIn(propName, tmpL);
             }
