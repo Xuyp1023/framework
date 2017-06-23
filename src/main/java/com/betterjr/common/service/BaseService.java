@@ -216,12 +216,12 @@ public abstract class BaseService<D extends Mapper<T>, T> {
 
                 // 不处理
             }
-            else if (tmpL.size() == 1) {
-                criteria.andEqualTo(propName, tmpL.get(0));
-            }
             else if (propName.startsWith("NE")) {
                 propName = propName.substring(2);
                 criteria.andNotIn(propName, tmpL);
+            }
+            else if (tmpL.size() == 1) {
+                criteria.andEqualTo(propName, tmpL.get(0));
             }
             else {
                 criteria.andIn(propName, tmpL);
