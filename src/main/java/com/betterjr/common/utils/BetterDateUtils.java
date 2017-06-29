@@ -1,6 +1,7 @@
 package com.betterjr.common.utils;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -553,6 +554,58 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
         return anWorkPath;
     }
     
+    private static Date getDay(Date date,int anLength) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_MONTH, anLength);
+        date = calendar.getTime();
+        return date;
+    }
+    
+    //得到后一天
+    public  static Date getNextDay(Date date){
+        
+        return getDay(date, 1);
+        
+    }
+    
+    //得到前一天
+    public static Date getForwardDay(Date date){
+        
+        return getDay(date, -1);
+    }
+    
+    
+    public static String getForwardDay(){
+        
+        try{
+            
+            SimpleDateFormat format=new SimpleDateFormat("yyyyMMdd");
+            Date date=format.parse(getNumDate());
+            return format.format(getForwardDay(date));
+            
+        }catch(Exception e){
+            
+            return getNumDate();
+        }
+        
+    }
+    
+    public static String getNextDay(){
+        
+        try{
+            
+            SimpleDateFormat format=new SimpleDateFormat("yyyyMMdd");
+            Date date=format.parse(getNumDate());
+            return format.format(getNextDay(date));
+            
+        }catch(Exception e){
+            
+            return getNumDate();
+        }
+        
+    }
+    
     /**
      * @param args
      * @throws ParseException
@@ -564,9 +617,20 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
         // System.out.println(getDate("yyyy年MM月dd日 E"));
 //         long time = new Date().getTime()-parseDate("2017-05-01").getTime();
 //         System.out.println(time/(24*60*60*1000));
-        System.out.println(formatMonthDispay("201705"));
-        System.out.println(formatDispTime("111212"));
+       // System.out.println(formatMonthDispay("201705"));
+        //System.out.println(formatDispTime("111212"));
 //        System.out.println(getNumMonth());
+        
+        SimpleDateFormat format=new SimpleDateFormat("yyyyMMdd");
+        Date date=format.parse(getNumDate());
+        System.out.println(getNumDate());
+        System.out.println(getForwardDay());
+        System.out.println(getNextDay());
+        System.out.println("forward........."+format.format(getForwardDay(date)));
+        
+        
+        //Date date2=new Date(2017, 6, 30);
+        System.out.println("nexData........."+format.format(getNextDay(format.parse(getNumDate()))));
         
 //        long time = BetterDateUtils.parseDate("201607").getTime()-BetterDateUtils.parseDate("201705").getTime();
 //        System.out.println(time);
