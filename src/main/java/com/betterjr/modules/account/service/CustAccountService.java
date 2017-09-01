@@ -394,6 +394,26 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
         }
         return custInfo.getCustName();
     }
+    
+    /**
+     * 根据企业名称查询企业信息
+     * @param anCustName
+     * @return
+     */
+    public CustInfo queryCustByCustName(final String anCustName){
+        
+        CustInfo custInfo =new CustInfo();
+        custInfo.setCustName(anCustName);
+        custInfo.setBusinStatus("0");
+        CustInfo info = this.selectOne(custInfo);
+        if(info !=null && info.getCustNo()!=null){
+            
+            return info;
+        }else{
+            return null;
+        }
+        
+    }
 
     /**
      * 根据客户编号,查询客户
