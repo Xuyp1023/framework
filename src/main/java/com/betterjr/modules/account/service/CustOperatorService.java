@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import com.betterjr.common.data.CustPasswordType;
 import com.betterjr.common.service.BaseService;
 import com.betterjr.common.utils.BetterStringUtils;
+import com.betterjr.common.utils.Collections3;
+import com.betterjr.common.utils.QueryTermBuilder;
 import com.betterjr.common.utils.UserUtils;
 import com.betterjr.modules.account.dao.CustOperatorInfoMapper;
 import com.betterjr.modules.account.data.CustContextInfo;
@@ -31,6 +33,7 @@ public class CustOperatorService extends BaseService<CustOperatorInfoMapper, Cus
     @Autowired
     private CustAndOperatorRelaService operatorRelaService;
 
+    
     public CustOperatorService(){
     }
 
@@ -159,5 +162,26 @@ public class CustOperatorService extends BaseService<CustOperatorInfoMapper, Cus
 
     public boolean saveModifyTradePassword(final String anNewPassword, final String anOkPassword, final String anOldPassword){
         return custPassService.savePassword(CustPasswordType.ORG_TRADE, anNewPassword, anOkPassword, anOldPassword);
+    }
+    
+    /**
+     * 查询默认机构的下操作员名称
+     * @param operOrg
+     * @return
+     */
+    public CustOperatorInfo findDefaultOperator(String operOrg){
+        
+        Map build = QueryTermBuilder
+        .newInstance()
+        .put("status", "1")
+        .put("defOper", "1")
+        .put("operOrg", operOrg)
+        .build();
+        List<CustOperatorInfo> opers = this.selectByProperty(build);
+        if(Collections3.isEmpty(opers)){
+            return null;
+        }
+        return Collections3.getFirst(opers);
+        
     }
 }
