@@ -3,6 +3,7 @@ package com.betterjr.modules.document.service;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
@@ -47,13 +48,13 @@ public class DataStoreService {
      *            文档业务类型
      * @return
      */
-    public String saveFileData(File anFile, String anFileInfoType) {
+    public String saveFileData(final File anFile, final String anFileInfoType) {
         InputStream inData = null;
         try {
             inData = new FileInputStream(anFile);
             return saveStreamData(inData, anFileInfoType);
         }
-        catch (FileNotFoundException e) {
+        catch (final FileNotFoundException e) {
 
             return "";
         }
@@ -71,10 +72,10 @@ public class DataStoreService {
      *            文档业务类型
      * @return
      */
-    public String saveStreamData(InputStream anStream, String anFileInfoType) {
-        FileStoreType storeType = this.fileGroupService.findFileStoreType(anFileInfoType);
-        FileManager fileManager = FileManagerFactory.create(storeType, fileGroupService);
-        String filePath = this.fileGroupService.findCreateFilePath(anFileInfoType);
+    public String saveStreamData(final InputStream anStream, final String anFileInfoType) {
+        final FileStoreType storeType = this.fileGroupService.findFileStoreType(anFileInfoType);
+        final FileManager fileManager = FileManagerFactory.create(storeType, fileGroupService);
+        final String filePath = this.fileGroupService.findCreateFilePath(anFileInfoType);
         if (fileManager.save(filePath, anStream)) {
 
             return filePath;
@@ -96,23 +97,23 @@ public class DataStoreService {
      *            文件名称
      * @return
      */
-    public CustFileItem saveFileToStoreWithBatchNo(File anFile, String anFileInfoType, String anFileName) {
+    public CustFileItem saveFileToStoreWithBatchNo(final File anFile, final String anFileInfoType, final String anFileName) {
 
         return subSaveFileToStore(anFile, anFileInfoType, anFileName, true);
     }
 
-    public CustFileItem saveFileToStore(File anFile, String anFileInfoType, String anFileName) {
+    public CustFileItem saveFileToStore(final File anFile, final String anFileInfoType, final String anFileName) {
 
         return subSaveFileToStore(anFile, anFileInfoType, anFileName, false);
     }
 
-    public CustFileItem subSaveFileToStore(File anFile, String anFileInfoType, String anFileName, boolean anBatchNo) {
+    public CustFileItem subSaveFileToStore(final File anFile, final String anFileInfoType, final String anFileName, final boolean anBatchNo) {
         InputStream inData = null;
         try {
             inData = new FileInputStream(anFile);
             return subSaveStreamToStore(inData, anFileInfoType, anFileName, anBatchNo);
         }
-        catch (FileNotFoundException e) {
+        catch (final FileNotFoundException e) {
             return null;
         }
         finally {
@@ -131,37 +132,38 @@ public class DataStoreService {
      *            文件名称
      * @return 文件信息
      */
-    public CustFileItem saveStreamToStoreWithBatchNo(InputStream anStream, String anFileInfoType, String anFileName) {
+    public CustFileItem saveStreamToStoreWithBatchNo(final InputStream anStream, final String anFileInfoType, final String anFileName) {
 
         return subSaveStreamToStore(anStream, anFileInfoType, anFileName, true);
     }
 
-    public CustFileItem saveStreamToStore(InputStream anStream, String anFileInfoType, String anFileName) {
+    public CustFileItem saveStreamToStore(final InputStream anStream, final String anFileInfoType, final String anFileName) {
 
         return subSaveStreamToStore(anStream, anFileInfoType, anFileName, false);
     }
 
-    private CustFileItem subSaveStreamToStore(InputStream anStream, String anFileInfoType, String anFileName, boolean anWithBatchNo) {
+    private CustFileItem subSaveStreamToStore(final InputStream anStream, final String anFileInfoType, final String anFileName,
+            final boolean anWithBatchNo) {
         try {
-            FileStoreType storeType = this.fileGroupService.findFileStoreType(anFileInfoType);
-           String tmpExt = FileUtils.extractFileExt(anFileName);
-            CheckDataResult checkResult = this.fileGroupService.findFileTypePermit(anFileInfoType, tmpExt);
-            if (checkResult.isOk() == false){
-                throw new BytterTradeException(123456, "保存的文件类型是【"+ tmpExt +"】, 系统允许的文件类型是【"+checkResult.getMessage()+"】， 请检查！");
+            final FileStoreType storeType = this.fileGroupService.findFileStoreType(anFileInfoType);
+            final String tmpExt = FileUtils.extractFileExt(anFileName);
+            final CheckDataResult checkResult = this.fileGroupService.findFileTypePermit(anFileInfoType, tmpExt);
+            if (checkResult.isOk() == false) {
+                throw new BytterTradeException(123456, "保存的文件类型是【" + tmpExt + "】, 系统允许的文件类型是【" + checkResult.getMessage() + "】， 请检查！");
             }
-            FileManager fileManager = FileManagerFactory.create(storeType, fileGroupService);
-            String tmpFilePath = this.fileGroupService.findCreateFilePath(anFileInfoType);
-            logger.info("save stream info is storeType:" + storeType +", tmpFilePath=" + tmpFilePath);
+            final FileManager fileManager = FileManagerFactory.create(storeType, fileGroupService);
+            final String tmpFilePath = this.fileGroupService.findCreateFilePath(anFileInfoType);
+            logger.info("save stream info is storeType:" + storeType + ", tmpFilePath=" + tmpFilePath);
             if (fileManager.save(tmpFilePath, anStream)) {
-                logger.info("data store is storeType:" + storeType +", tmpFilePath=" + tmpFilePath);
-                long dataSize = fileManager.findSize(tmpFilePath);
+                logger.info("data store is storeType:" + storeType + ", tmpFilePath=" + tmpFilePath);
+                final long dataSize = fileManager.findSize(tmpFilePath);
                 return fileItemService.saveAndUpdateFileItem(tmpFilePath, dataSize, anFileInfoType, anFileName, storeType, anWithBatchNo);
             }
         }
-        catch (BytterTradeException ex) {
+        catch (final BytterTradeException ex) {
             throw ex;
         }
-        catch (Exception ex) {
+        catch (final Exception ex) {
             logger.error("保存文件出现异常！", ex);
         }
         return null;
@@ -178,8 +180,8 @@ public class DataStoreService {
      *            文件名称
      * @return 直接返回WEB端使用的JSON格式内容
      */
-    public String webSaveStreamToStore(InputStream anStream, String anFileInfoType, String anFileName) {
-        CustFileItem tmpFileItem = saveStreamToStore(anStream, anFileInfoType, anFileName);
+    public String webSaveStreamToStore(final InputStream anStream, final String anFileInfoType, final String anFileName) {
+        final CustFileItem tmpFileItem = saveStreamToStore(anStream, anFileInfoType, anFileName);
         if (tmpFileItem != null) {
 
             return AjaxObject.newOk("上传文件成功", tmpFileItem).toJson();
@@ -190,14 +192,15 @@ public class DataStoreService {
 
     /**
      * 跟据BatchNo，加载文档数据流
+     * 
      * @param batchNo
      */
-	public InputStream loadFromStoreByBatchNo(Long anBatchNo) {
-		CustFileItem fileItem = this.fileItemService.findOneByBatchNo(anBatchNo);
-		BTAssert.notNull(fileItem, "没有找到fileItem");
-		return loadFromStore(fileItem);
-	}
-    
+    public InputStream loadFromStoreByBatchNo(final Long anBatchNo) {
+        final CustFileItem fileItem = this.fileItemService.findOneByBatchNo(anBatchNo);
+        BTAssert.notNull(fileItem, "没有找到fileItem");
+        return loadFromStore(fileItem);
+    }
+
     /**
      * 根据文档ID信息，加载文档数据流
      * 
@@ -205,8 +208,8 @@ public class DataStoreService {
      *            文档ID
      * @return
      */
-    public InputStream loadFromStore(Long anFileId) {
-        CustFileItem fileItem = this.fileItemService.findOne(anFileId);
+    public InputStream loadFromStore(final Long anFileId) {
+        final CustFileItem fileItem = this.fileItemService.findOne(anFileId);
         return loadFromStore(fileItem);
     }
 
@@ -217,7 +220,7 @@ public class DataStoreService {
      *            文档信息
      * @return
      */
-    public InputStream loadFromStore(CustFileItem anFileItem) {
+    public InputStream loadFromStore(final CustFileItem anFileItem) {
         if (anFileItem != null) {
             return loadFromStore(anFileItem.getFilePath(), FileStoreType.checking(anFileItem.getStoreType()));
         }
@@ -233,8 +236,8 @@ public class DataStoreService {
      *            存储类型
      * @return
      */
-    public InputStream loadFromStore(String anFilePath, FileStoreType anStoreType) {
-        FileManager fileManager = FileManagerFactory.create(anStoreType, fileGroupService);
+    public InputStream loadFromStore(final String anFilePath, final FileStoreType anStoreType) {
+        final FileManager fileManager = FileManagerFactory.create(anStoreType, fileGroupService);
         return fileManager.load(anFilePath);
     }
 
@@ -245,7 +248,7 @@ public class DataStoreService {
      *            文档信息
      * @return
      */
-    public boolean exists(CustFileItem anItem) {
+    public boolean exists(final CustFileItem anItem) {
         if (anItem == null) {
             return false;
         }
@@ -261,9 +264,9 @@ public class DataStoreService {
      *            文档类型
      * @return
      */
-    public boolean exists(String anFilePath, String anStoreType) {
-        FileStoreType storeType = FileStoreType.checking(anStoreType);
-        FileManager fileManager = FileManagerFactory.create(storeType, fileGroupService);
+    public boolean exists(final String anFilePath, final String anStoreType) {
+        final FileStoreType storeType = FileStoreType.checking(anStoreType);
+        final FileManager fileManager = FileManagerFactory.create(storeType, fileGroupService);
         return fileManager.exists(anFilePath);
     }
 
@@ -276,12 +279,49 @@ public class DataStoreService {
      *            文档类型
      * @return
      */
-    public long findSize(String anFilePath, String anStoreType) {
-        FileStoreType storeType = FileStoreType.checking(anStoreType);
-        FileManager fileManager = FileManagerFactory.create(storeType, fileGroupService);
+    public long findSize(final String anFilePath, final String anStoreType) {
+        final FileStoreType storeType = FileStoreType.checking(anStoreType);
+        final FileManager fileManager = FileManagerFactory.create(storeType, fileGroupService);
 
         return fileManager.findSize(anFilePath);
     }
 
+    /**
+     * 加载数据字节流
+     * 
+     * @param anFileId
+     * @return
+     */
+    public byte[] loadDataFromStore(final Long anFileId) {
 
+        return subLoadData(anFileId, true);
+    }
+
+    private byte[] subLoadData(final Long anFileId, final boolean anUserFileId) {
+        InputStream inStream = null;
+        byte[] bbs = null;
+        if (anUserFileId) {
+            inStream = loadFromStore(anFileId);
+        }
+        else {
+            inStream = loadFromStoreByBatchNo(anFileId);
+        }
+        if (inStream != null) {
+            try {
+                bbs = IOUtils.toByteArray(inStream);
+            }
+            catch (final IOException ex) {
+            }
+            finally {
+                IOUtils.closeQuietly(inStream);
+            }
+        }
+
+        return bbs;
+    }
+
+    public byte[] loadDataFromStoreByBatchNo(final Long anBatchNo) {
+
+        return subLoadData(anBatchNo, false);
+    }
 }
