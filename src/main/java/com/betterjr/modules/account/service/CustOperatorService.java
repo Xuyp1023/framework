@@ -174,7 +174,7 @@ public class CustOperatorService extends BaseService<CustOperatorInfoMapper, Cus
         Map build = QueryTermBuilder
         .newInstance()
         .put("status", "1")
-        .put("defOper", "1")
+        .put("clerkMan", "1")
         .put("operOrg", operOrg)
         .build();
         List<CustOperatorInfo> opers = this.selectByProperty(build);
