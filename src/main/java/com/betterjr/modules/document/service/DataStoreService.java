@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.betterjr.common.data.CheckDataResult;
+import com.betterjr.common.exception.BytterException;
 import com.betterjr.common.exception.BytterTradeException;
 import com.betterjr.common.utils.BTAssert;
 import com.betterjr.common.utils.FileUtils;
@@ -21,6 +23,7 @@ import com.betterjr.modules.document.IAgencyAuthFileGroupService;
 import com.betterjr.modules.document.ICustFileService;
 import com.betterjr.modules.document.data.FileStoreType;
 import com.betterjr.modules.document.entity.CustFileItem;
+import com.betterjr.modules.document.utils.CustFileUtils;
 import com.betterjr.modules.document.utils.FileManager;
 import com.betterjr.modules.document.utils.FileManagerFactory;
 
@@ -323,5 +326,59 @@ public class DataStoreService {
     public byte[] loadDataFromStoreByBatchNo(final Long anBatchNo) {
 
         return subLoadData(anBatchNo, false);
+    }
+
+    /**
+     * PDF转图片，标准大小；即A4纸大小的图片列表;920个像素
+     * 
+     * @param anPdfData
+     * @return
+     */
+    public Long savePdf2ImageStand(final InputStream anPdfData) {
+
+        return pdf2Image(anPdfData, 1.52f, 0);
+    }
+
+    /**
+     * PDF转图片，缩微图大小120个像素
+     * 
+     * @param anPdfData
+     * @return
+     */
+    public Long savePdf2ImageSmall(final InputStream anPdfData) {
+
+        return pdf2Image(anPdfData, 0.2f, 0);
+    }
+
+    private Long pdf2Image(final InputStream anPdfData, final float anScale, final float anRotation) {
+        final List<File> tmpList = CustFileUtils.pdfChangeToImage(anPdfData, anScale, anRotation);
+        InputStream tmpIn = null;
+        final StringBuilder sb = new StringBuilder();
+        try {
+            int index = 0;
+            for (final File file : tmpList) {
+                tmpIn = new FileInputStream(file);
+                final CustFileItem tmpItem = saveStreamToStore(tmpIn, "otherFile", "image".concat(Integer.toString(index)).concat(".jpeg"));
+                IOUtils.closeQuietly(tmpIn);
+                if (index > 0) {
+                    sb.append(",");
+                }
+                sb.append(Long.toString(tmpItem.getId()));
+                index = index + 1;
+            }
+
+            return this.fileItemService.updateCustFileItemInfo(sb.toString(), null);
+        }
+        catch (final IOException ex) {
+            IOUtils.closeQuietly(tmpIn);
+            throw BytterException.unchecked(ex);
+        }
+        finally {
+            for (final File ff : tmpList) {
+                if (ff.delete() == false) {
+                    logger.warn("delete temp file :" + ff.getPath() + ", has error");
+                }
+            }
+        }
     }
 }

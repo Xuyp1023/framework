@@ -1,33 +1,31 @@
 package com.betterjr.modules.document.utils;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
+import org.icepdf.core.util.GraphicsRenderingHints;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.betterjr.common.config.ParamNames;
 import com.betterjr.common.data.KeyAndValueObject;
-import com.betterjr.common.exception.BettjerIOException;
+import com.betterjr.common.exception.BytterDeclareException;
 import com.betterjr.common.exception.BytterTradeException;
 import com.betterjr.common.mapper.BeanMapper;
 import com.betterjr.common.selectkey.SerialGenerator;
-import com.betterjr.common.service.FreemarkerService;
-import com.betterjr.common.service.SpringContextHolder;
-import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.FileUtils;
-import com.betterjr.common.utils.MimeTypesHelper;
 import com.betterjr.modules.document.data.DownloadFileInfo;
 import com.betterjr.modules.document.data.FileStoreType;
 import com.betterjr.modules.document.entity.CustFileItem;
-import com.betterjr.modules.sys.service.SysConfigService;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.PageSize;
@@ -42,8 +40,6 @@ import com.itextpdf.tool.xml.pipeline.css.CssResolverPipeline;
 import com.itextpdf.tool.xml.pipeline.end.PdfWriterPipeline;
 import com.itextpdf.tool.xml.pipeline.html.HtmlPipeline;
 import com.itextpdf.tool.xml.pipeline.html.HtmlPipelineContext;
-
-import java.util.*;
 
 public abstract class CustFileUtils {
     private static final Logger logger = LoggerFactory.getLogger(CustFileUtils.class);
@@ -61,16 +57,16 @@ public abstract class CustFileUtils {
      *            签名的文件路径
      * @return
      */
- 
-    public static CustFileItem createSignDocFileItem(String anFilePath, long anSize, String anWorkType, String anFileName) {
-        CustFileItem fileItem = createDefFileItem(anFilePath, anSize, anWorkType, anFileName);
+
+    public static CustFileItem createSignDocFileItem(final String anFilePath, final long anSize, final String anWorkType, final String anFileName) {
+        final CustFileItem fileItem = createDefFileItem(anFilePath, anSize, anWorkType, anFileName);
         fileItem.setBatchNo(findBatchNo());
 
         return fileItem;
     }
 
-    private static CustFileItem createDefFileItem(String anFilePath, long anSize, String anWorkType, String anFileName) {
-        CustFileItem fileItem = new CustFileItem();
+    private static CustFileItem createDefFileItem(final String anFilePath, final long anSize, final String anWorkType, final String anFileName) {
+        final CustFileItem fileItem = new CustFileItem();
         fileItem.setId(SerialGenerator.getLongValue("CustFileItem.id"));
         fileItem.setFileLength(anSize);
         fileItem.setFilePath(anFilePath);
@@ -81,9 +77,10 @@ public abstract class CustFileUtils {
 
         return fileItem;
     }
-    
-    public static CustFileItem createDefFileItemForStore(String filePath,Long fileLength, String anWorkType, String anFileName) {
-        CustFileItem fileItem = new CustFileItem();
+
+    public static CustFileItem createDefFileItemForStore(final String filePath, final Long fileLength, final String anWorkType,
+            final String anFileName) {
+        final CustFileItem fileItem = new CustFileItem();
         fileItem.setId(SerialGenerator.getLongValue("CustFileItem.id"));
         fileItem.setFileLength(fileLength);
         fileItem.setFilePath(filePath);
@@ -108,13 +105,14 @@ public abstract class CustFileUtils {
      *            文件类型
      * @return
      */
-    public static CustFileItem createUploadFileItem(String anFilePath, long anSize, String anWorkType, String anFileName) {
-        CustFileItem fileItem = createDefFileItem(anFilePath, anSize, anWorkType, anFileName);
+    public static CustFileItem createUploadFileItem(final String anFilePath, final long anSize, final String anWorkType, final String anFileName) {
+        final CustFileItem fileItem = createDefFileItem(anFilePath, anSize, anWorkType, anFileName);
 
         return fileItem;
     }
 
     private static final FileStoreType fileStoreType = FileStoreType.OSS_STORE;
+
     public static Long findBatchNo() {
 
         return SerialGenerator.getLongValue("CustFileInfo.id");
@@ -143,16 +141,17 @@ public abstract class CustFileUtils {
             IOUtils.closeQuietly(outStream);
         }
     }
- 
+
     /**
      * 输出PDF文件
+     * 
      * @param anSb
      * @param anOut
      */
     public static void exportPDF(final StringBuffer anSb, final OutputStream anOut) {
         final Document document = new Document(PageSize.A4, 0, 0, 0, 0);
         document.setMargins(0, 0, 0, 0);
-        PdfWriter pdfwriter = null; 
+        PdfWriter pdfwriter = null;
         try {
             pdfwriter = PdfWriter.getInstance(document, anOut);
             pdfwriter.setViewerPreferences(PdfWriter.HideToolbar);
@@ -179,17 +178,60 @@ public abstract class CustFileUtils {
             pdfwriter.close();
         }
     }
- 
-    
-    public static DownloadFileInfo sendToDownloadFileService(CustFileItem anFileItem, Long anCustNo, String anPartnerCode, String anBusingType){
-        DownloadFileInfo fileInfo = BeanMapper.map(anFileItem, DownloadFileInfo.class);
+
+    public static DownloadFileInfo sendToDownloadFileService(final CustFileItem anFileItem, final Long anCustNo, final String anPartnerCode,
+            final String anBusingType) {
+        final DownloadFileInfo fileInfo = BeanMapper.map(anFileItem, DownloadFileInfo.class);
         fileInfo.setBusinType(anBusingType);
-        fileInfo.setCustNo(anCustNo); 
+        fileInfo.setCustNo(anCustNo);
         fileInfo.setPartnerCode(anPartnerCode);
-        String tmpToken = SerialGenerator.uuid().concat(Long.toHexString(System.currentTimeMillis())).concat(SerialGenerator.randomBase62(20));
+        final String tmpToken = SerialGenerator.uuid().concat(Long.toHexString(System.currentTimeMillis())).concat(SerialGenerator.randomBase62(20));
         fileInfo.setAccessToken(tmpToken);
         DownloadFileService.addDownloadFile(fileInfo);
         return fileInfo;
     }
-    
+
+    /**
+     * 将PDF文件转换为图片列表
+     * 
+     * @param anPdfData
+     *            PDF文件流
+     * @param anScale
+     *            缩放比例
+     * @param anRotation
+     *            旋转角度
+     * @return
+     */
+    public static List<File> pdfChangeToImage(final InputStream anPdfData, final float anScale, final float anRotation) {
+        final org.icepdf.core.pobjects.Document document = new org.icepdf.core.pobjects.Document();
+        final List<File> resultList = new ArrayList();
+        try {
+            document.setInputStream(anPdfData, File.createTempFile("pdf2ImageSource", "pdf").getPath());
+            // final float scale = 1.52f;// 缩放比例（大图）
+            // float scale = 0.2f;// 缩放比例（小图）
+            // final float rotation = 0f;// 旋转角度
+            final Long startTime = System.currentTimeMillis();
+            for (int i = 0; i < document.getNumberOfPages(); i++) {
+                final BufferedImage image = (BufferedImage) document.getPageImage(i, GraphicsRenderingHints.PRINT,
+                        org.icepdf.core.pobjects.Page.BOUNDARY_CROPBOX, anRotation, anScale);
+                final File file = File.createTempFile("pdf2Image", ".jpeg");
+                ImageIO.write(image, "jpeg", file);
+                image.flush();
+                resultList.add(file);
+            }
+            System.out.println("this spend time :" + (System.currentTimeMillis() - startTime));
+            return resultList;
+        }
+        catch (final IOException e1) {
+            for (final File ff : resultList) {
+                if (ff.exists()) {
+                    ff.delete();
+                }
+            }
+            throw new BytterDeclareException("pdf2Image has error");
+        }
+        finally {
+            document.dispose();
+        }
+    }
 }
