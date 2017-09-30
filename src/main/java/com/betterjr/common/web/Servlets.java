@@ -30,8 +30,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.betterjr.common.config.Global;
 import com.betterjr.common.security.KeyReader;
 import com.betterjr.common.security.SecurityConstants;
-import com.betterjr.common.utils.Encodes;
 import com.betterjr.common.utils.BetterStringUtils;
+import com.betterjr.common.utils.Encodes;
+import com.betterjr.common.utils.UserUtils;
 import com.betterjr.modules.sys.security.ShiroUser;
 import com.google.common.net.HttpHeaders;
 
@@ -55,7 +56,7 @@ public class Servlets {
     /**
      * 设置客户端缓存过期时间 的Header.
      */
-    public static void setExpiresHeader(HttpServletResponse response, long expiresSeconds) {
+    public static void setExpiresHeader(final HttpServletResponse response, final long expiresSeconds) {
         // Http 1.0 header, set a fix expires date.
         response.setDateHeader(HttpHeaders.EXPIRES, System.currentTimeMillis() + expiresSeconds * 1000);
         // Http 1.1 header, set a time after now.
@@ -65,7 +66,7 @@ public class Servlets {
     /**
      * 设置禁止客户端缓存的Header.
      */
-    public static void setNoCacheHeader(HttpServletResponse response) {
+    public static void setNoCacheHeader(final HttpServletResponse response) {
         // Http 1.0 header
         response.setDateHeader(HttpHeaders.EXPIRES, 1L);
         response.addHeader(HttpHeaders.PRAGMA, "no-cache");
@@ -76,14 +77,14 @@ public class Servlets {
     /**
      * 设置LastModified Header.
      */
-    public static void setLastModifiedHeader(HttpServletResponse response, long lastModifiedDate) {
+    public static void setLastModifiedHeader(final HttpServletResponse response, final long lastModifiedDate) {
         response.setDateHeader(HttpHeaders.LAST_MODIFIED, lastModifiedDate);
     }
 
     /**
      * 设置Etag Header.
      */
-    public static void setEtag(HttpServletResponse response, String etag) {
+    public static void setEtag(final HttpServletResponse response, final String etag) {
         response.setHeader(HttpHeaders.ETAG, etag);
     }
 
@@ -95,8 +96,8 @@ public class Servlets {
      * @param lastModified
      *            内容的最后修改时间.
      */
-    public static boolean checkIfModifiedSince(HttpServletRequest request, HttpServletResponse response, long lastModified) {
-        long ifModifiedSince = request.getDateHeader(HttpHeaders.IF_MODIFIED_SINCE);
+    public static boolean checkIfModifiedSince(final HttpServletRequest request, final HttpServletResponse response, final long lastModified) {
+        final long ifModifiedSince = request.getDateHeader(HttpHeaders.IF_MODIFIED_SINCE);
         if ((ifModifiedSince != -1) && (lastModified < ifModifiedSince + 1000)) {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
             return false;
@@ -112,15 +113,15 @@ public class Servlets {
      * @param etag
      *            内容的ETag.
      */
-    public static boolean checkIfNoneMatchEtag(HttpServletRequest request, HttpServletResponse response, String etag) {
-        String headerValue = request.getHeader(HttpHeaders.IF_NONE_MATCH);
+    public static boolean checkIfNoneMatchEtag(final HttpServletRequest request, final HttpServletResponse response, final String etag) {
+        final String headerValue = request.getHeader(HttpHeaders.IF_NONE_MATCH);
         if (headerValue != null) {
             boolean conditionSatisfied = false;
             if (!"*".equals(headerValue)) {
-                StringTokenizer commaTokenizer = new StringTokenizer(headerValue, ",");
+                final StringTokenizer commaTokenizer = new StringTokenizer(headerValue, ",");
 
                 while (!conditionSatisfied && commaTokenizer.hasMoreTokens()) {
-                    String currentToken = commaTokenizer.nextToken();
+                    final String currentToken = commaTokenizer.nextToken();
                     if (currentToken.trim().equals(etag)) {
                         conditionSatisfied = true;
                     }
@@ -145,13 +146,13 @@ public class Servlets {
      * @param fileName
      *            下载后的文件名.
      */
-    public static void setFileDownloadHeader(HttpServletResponse response, String fileName) {
+    public static void setFileDownloadHeader(final HttpServletResponse response, final String fileName) {
         try {
             // 中文文件名支持
-            String encodedfileName = new String(fileName.getBytes(), "ISO8859-1");
+            final String encodedfileName = new String(fileName.getBytes(), "ISO8859-1");
             response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedfileName + "\"");
         }
-        catch (UnsupportedEncodingException e) {
+        catch (final UnsupportedEncodingException e) {
             e.getMessage();
         }
     }
@@ -162,18 +163,18 @@ public class Servlets {
      * 返回的结果的Parameter名已去除前缀.
      */
     @SuppressWarnings("rawtypes")
-    public static Map<String, Object> getParametersStartingWith(ServletRequest request, String prefix) {
+    public static Map<String, Object> getParametersStartingWith(final ServletRequest request, final String prefix) {
         Validate.notNull(request, "Request must not be null");
-        Enumeration paramNames = request.getParameterNames();
-        Map<String, Object> params = new TreeMap<String, Object>();
+        final Enumeration paramNames = request.getParameterNames();
+        final Map<String, Object> params = new TreeMap<String, Object>();
         String pre = prefix;
         if (pre == null) {
             pre = "";
         }
         while (paramNames != null && paramNames.hasMoreElements()) {
-            String paramName = (String) paramNames.nextElement();
+            final String paramName = (String) paramNames.nextElement();
             if ("".equals(pre) || paramName.startsWith(pre)) {
-                String unprefixed = paramName.substring(pre.length());
+                final String unprefixed = paramName.substring(pre.length());
                 String[] values = request.getParameterValues(paramName);
                 if (values == null || values.length == 0) {
                     values = new String[] {};
@@ -184,7 +185,7 @@ public class Servlets {
                 }
                 else {
                     if (paramName.toUpperCase().contains("DATE")) {
-                        String tmpStr = values[0];
+                        final String tmpStr = values[0];
                         if (BetterStringUtils.isNotBlank(tmpStr)) {
                             values[0] = tmpStr.replace("-", "");
                         }
@@ -196,30 +197,31 @@ public class Servlets {
         return params;
     }
 
-    public static Map<String, String> getParameters(ServletRequest anRequest){
+    public static Map<String, String> getParameters(final ServletRequest anRequest) {
         Validate.notNull(anRequest, "Request must not be null");
-        Enumeration paramNames = anRequest.getParameterNames();
-        Map<String, String> params = new TreeMap<String, String>();
+        final Enumeration paramNames = anRequest.getParameterNames();
+        final Map<String, String> params = new TreeMap<String, String>();
         while (paramNames != null && paramNames.hasMoreElements()) {
-            String paramName = (String) paramNames.nextElement();
+            final String paramName = (String) paramNames.nextElement();
             params.put(paramName, anRequest.getParameter(paramName));
         }
         return params;
     }
+
     /**
      * 组合Parameters生成Query String的Parameter部分,并在paramter name上加上prefix.
      * 
      */
-    public static String encodeParameterStringWithPrefix(Map<String, Object> params, String prefix) {
-        StringBuilder queryStringBuilder = new StringBuilder();
+    public static String encodeParameterStringWithPrefix(final Map<String, Object> params, final String prefix) {
+        final StringBuilder queryStringBuilder = new StringBuilder();
 
         String pre = prefix;
         if (pre == null) {
             pre = "";
         }
-        Iterator<Entry<String, Object>> it = params.entrySet().iterator();
+        final Iterator<Entry<String, Object>> it = params.entrySet().iterator();
         while (it.hasNext()) {
-            Entry<String, Object> entry = it.next();
+            final Entry<String, Object> entry = it.next();
             queryStringBuilder.append(pre).append(entry.getKey()).append("=").append(entry.getValue());
             if (it.hasNext()) {
                 queryStringBuilder.append("&");
@@ -231,8 +233,8 @@ public class Servlets {
     /**
      * 客户端对Http Basic验证的 Header进行编码.
      */
-    public static String encodeHttpBasic(String userName, String password) {
-        String encode = userName + ":" + password;
+    public static String encodeHttpBasic(final String userName, final String password) {
+        final String encode = userName + ":" + password;
         return "Basic " + Encodes.encodeBase64(encode.getBytes());
     }
 
@@ -241,13 +243,13 @@ public class Servlets {
      * 
      * @param request
      */
-    public static boolean isAjaxRequest(HttpServletRequest request) {
+    public static boolean isAjaxRequest(final HttpServletRequest request) {
 
-        String accept = request.getHeader("accept");
-        String xRequestedWith = request.getHeader("X-Requested-With");
-        
-        Subject subject = SecurityUtils.getSubject();
-        ShiroUser principal = (ShiroUser) subject.getPrincipal();
+        final String accept = request.getHeader("accept");
+        final String xRequestedWith = request.getHeader("X-Requested-With");
+
+        final Subject subject = SecurityUtils.getSubject();
+        final ShiroUser principal = (ShiroUser) subject.getPrincipal();
 
         // 如果是异步请求或是手机端，则直接返回信息
         return ((accept != null && accept.indexOf("application/json") != -1
@@ -263,7 +265,7 @@ public class Servlets {
         try {
             return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             return null;
         }
     }
@@ -279,13 +281,13 @@ public class Servlets {
 
     }
 
-    public static Object getSessionValue(String anKey) {
-         HttpSession session = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession();
+    public static Object getSessionValue(final String anKey) {
+        final HttpSession session = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession();
         return session.getAttribute(anKey);
     }
 
-    public static void putSessionValue(String anKey, Object anValue) {
-        HttpSession session = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession();
+    public static void putSessionValue(final String anKey, final Object anValue) {
+        final HttpSession session = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession();
         session.setAttribute(anKey, anValue);
     }
 
@@ -294,13 +296,13 @@ public class Servlets {
      * 
      * @throws Exception
      */
-    public static boolean isStaticFile(String uri) {
+    public static boolean isStaticFile(final String uri) {
         if (staticFiles == null) {
             try {
                 throw new Exception("检测到“app.properties”中没有配置“web.staticFile”属性。配置示例：\n#静态文件后缀\n"
                         + "web.staticFile=.css,.js,.png,.jpg,.gif,.jpeg,.bmp,.ico,.swf,.psd,.htc,.crx,.xpi,.exe,.ipa,.apk");
             }
-            catch (Exception e) {
+            catch (final Exception e) {
                 e.printStackTrace();
             }
         }
@@ -321,15 +323,22 @@ public class Servlets {
      * 获得用户远程地址
      */
     public static String getRemoteAddr() {
-        return getRemoteAddr(Servlets.getRequest());
+        final String tmpIP = UserUtils.getRequestIp();
+        if (tmpIP == null) {
+            return getRemoteAddr(Servlets.getRequest());
+        }
+        else {
+            return tmpIP;
+        }
+
     }
 
-    public static String getRemoteAddr(HttpServletRequest request) {
+    public static String getRemoteAddr(final HttpServletRequest request) {
         if (request == null) {
             return "127.0.0.1";
         }
         String ip;
-        for (String tmpStr : new String[] { "X-Real-IP", "Proxy-Client-IP", "WL-Proxy-Client-IP" }) {
+        for (final String tmpStr : new String[] { "X-Real-IP", "Proxy-Client-IP", "WL-Proxy-Client-IP" }) {
             ip = request.getHeader(tmpStr);
             if (BetterStringUtils.isNotBlank(ip)) {
                 return ip;
@@ -338,17 +347,16 @@ public class Servlets {
         return request.getRemoteAddr();
     }
 
-    
     /**
      * 获取数字证书
      */
-    public static X509Certificate findCertificate(HttpServletRequest anRequest) throws ServletException, IOException {
-        X509Certificate[] certs = (X509Certificate[]) anRequest.getAttribute(SecurityConstants.CERT_ATTR_CER);
+    public static X509Certificate findCertificate(final HttpServletRequest anRequest) throws ServletException, IOException {
+        final X509Certificate[] certs = (X509Certificate[]) anRequest.getAttribute(SecurityConstants.CERT_ATTR_CER);
         X509Certificate tmpCerts = null;
         if (certs == null) {
-            String tmpStr = anRequest.getHeader("X-SSL-Client-Cert");
+            final String tmpStr = anRequest.getHeader("X-SSL-Client-Cert");
             if (BetterStringUtils.isNotBlank(tmpStr)) {
-                //log.info("the request Cert is :" + tmpStr);
+                // log.info("the request Cert is :" + tmpStr);
                 tmpCerts = (X509Certificate) KeyReader.fromCerBase64String(
                         tmpStr.replaceFirst("-----BEGIN CERTIFICATE-----", "").replaceFirst("-----END CERTIFICATE-----", "").replaceAll("\t", ""));
             }
@@ -359,20 +367,20 @@ public class Servlets {
 
         return tmpCerts;
     }
-    
-    public static X509Certificate findCertificate( ) throws ServletException, IOException {
-        
+
+    public static X509Certificate findCertificate() throws ServletException, IOException {
+
         return findCertificate(Servlets.getRequest());
     }
-    
-    public static Map<String, Object> convertDate(Map<String, Object> anParams){
-        Iterator<Entry<String, Object>> it = anParams.entrySet().iterator();
+
+    public static Map<String, Object> convertDate(final Map<String, Object> anParams) {
+        final Iterator<Entry<String, Object>> it = anParams.entrySet().iterator();
         while (it.hasNext()) {
-            Entry<String, Object> entry = it.next();
-            String paramName=entry.getKey();
-            String value="";
+            final Entry<String, Object> entry = it.next();
+            final String paramName = entry.getKey();
+            String value = "";
             if (paramName.toUpperCase().contains("DATE")) {
-                String tmpStr = (String)entry.getValue();
+                final String tmpStr = (String) entry.getValue();
                 if (BetterStringUtils.isNotBlank(tmpStr)) {
                     value = tmpStr.replace("-", "");
                 }

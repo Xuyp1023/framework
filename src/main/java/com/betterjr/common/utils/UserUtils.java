@@ -42,6 +42,7 @@ public class UserUtils {
 
     private static final String SesessionIdKey = UserUtils.class.getName() + "_sessionId";
     private static final String SesessionKey = UserUtils.class.getName() + "_session";
+    private static final String REQUEST_ADDRESS_KEY = UserUtils.class.getName() + "_requestAddressKey";
     private static ThreadLocal<Map<String, Object>> sessionLocal = new ThreadLocal<Map<String, Object>>();
 
     protected static void storeThreadVar(final String key, final Object value) {
@@ -66,12 +67,22 @@ public class UserUtils {
         return map.get(key);
     }
 
+    public static String getRequestIp() {
+
+        return (String) getThreadVar(REQUEST_ADDRESS_KEY);
+    }
+
+    public static void storeRequestIp(final String anRequstIp) {
+
+        storeThreadVar(REQUEST_ADDRESS_KEY, anRequstIp);
+    }
+
     public static void storeSessionId(final String anId) {
         clearThreadLocal();
         storeThreadVar(SesessionIdKey, anId);
     }
 
-    public static void clearThreadLocal(){
+    public static void clearThreadLocal() {
         sessionLocal.remove();
     }
 
@@ -120,6 +131,7 @@ public class UserUtils {
 
     /**
      * 获取当前证书信息
+     * 
      * @return
      */
     public static CustCertInfo getCertInfo() {
@@ -137,8 +149,10 @@ public class UserUtils {
         }
         return null;
     }
+
     /**
      * 获取机构名称
+     * 
      * @return
      */
     public static String getOrgName() {
@@ -151,6 +165,7 @@ public class UserUtils {
 
     /**
      * 获取OperOrg
+     * 
      * @return
      */
     public static String getOperOrg() {
@@ -163,6 +178,7 @@ public class UserUtils {
 
     /**
      * 找当前用户的权限列表
+     * 
      * @return
      */
     public static List<String> findRuleList() {
@@ -176,6 +192,7 @@ public class UserUtils {
 
     /**
      * 取用户名
+     * 
      * @return
      */
     public static String getUserName() {
@@ -312,7 +329,8 @@ public class UserUtils {
                     return se;
                 }
             }
-        } catch (final Exception e) {
+        }
+        catch (final Exception e) {
             logger.error("获取session出错：", e);
         }
         return null;
@@ -438,7 +456,7 @@ public class UserUtils {
         getSession().removeAttribute(key);
     }
 
-    private static boolean checkWebAccessList(final WebAccessType[] anArray , final String[] anReturn , final WebAccessType... anWatArr) {
+    private static boolean checkWebAccessList(final WebAccessType[] anArray, final String[] anReturn, final WebAccessType... anWatArr) {
         for (final WebAccessType outWt : anWatArr) {
             for (final WebAccessType tmpWt : anArray) {
                 if (tmpWt == outWt) {
@@ -450,16 +468,17 @@ public class UserUtils {
         return false;
     }
 
-    public static boolean isMobileLogin(){
+    public static boolean isMobileLogin() {
         final ShiroUser su = getPrincipal();
         if (su == null) {
 
             return false;
         }
-        else{
+        else {
             return su.isMobileLogin();
         }
     }
+
     /**
      * 检查是否有访问权限；如果没有定义表示全部可以访问，如果定义了手机访问，只能是手机访问；如果定义了PC访问，只能是PC访问
      *
@@ -493,7 +512,7 @@ public class UserUtils {
                 return checkWebAccessList(watArray, valueReturn, WebAccessType.ORG_MOBILE, WebAccessType.PERSON_MOBILE);
             }
             else {
-                if (checkWebAccessList(watArray, valueReturn, WebAccessType.ORG_PC_PASS, WebAccessType.PERSON_PC_PASS)){
+                if (checkWebAccessList(watArray, valueReturn, WebAccessType.ORG_PC_PASS, WebAccessType.PERSON_PC_PASS)) {
 
                     anResultMsg[0] = "交易密码错误！";
                     return su.checkPass(valueReturn[0], anPass);
@@ -504,17 +523,17 @@ public class UserUtils {
         }
     }
 
-
-    public static void StoreTempDataForTest(final ShiroUser user){
+    public static void StoreTempDataForTest(final ShiroUser user) {
         final Session session = new SimpleSession();
         final SimplePrincipalCollection col = new SimplePrincipalCollection();
-        session.setAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY,col);
+        session.setAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY, col);
         col.add(user, "test");
-        storeThreadVar(SesessionKey,session);
+        storeThreadVar(SesessionKey, session);
     }
 
     /**
      * 检查操作是否包含此custNo
+     * 
      * @param anCustNo
      * @return
      */
