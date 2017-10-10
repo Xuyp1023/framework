@@ -749,6 +749,12 @@ public abstract class BaseService<D extends Mapper<T>, T> {
 
         return (Page) this.selectByClassProperty(anClass, anMap);
     }
+    
+    public Page selectPropertyByPage(final Class anClass, final Map<String, Object> anMap, final int anPageNum, final int anPageSize, final boolean anFirst ,final String anOrderBy) {
+        PageHelper.startPage(anPageNum, anPageSize, anFirst);
+
+        return (Page) this.selectByClassProperty(anClass, anMap ,anOrderBy);
+    }
 
     /**
      * 根据Example条件分頁查询数据
