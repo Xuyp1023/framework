@@ -18,7 +18,6 @@ import com.betterjr.common.utils.BetterDateUtils;
 import com.betterjr.common.utils.IdcardUtils;
 import com.betterjr.modules.account.data.CustContactInfo;;
 
-
 @Access(AccessType.FIELD)
 @Entity
 @Table(name = "T_CUST_OPERATOR")
@@ -197,7 +196,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
      */
     @Column(name = "C_CLERK", columnDefinition = "VARCHAR")
     @MetaData(value = "人员办理业务类型", comments = "人员办理业务类型；0：普通操作员，1对外经办人, 2:账户业务办理人员，3:交易业务办理人员")
-    private String  clerkMan = "0";
+    private String clerkMan = "0";
 
     private String contIdentType;
 
@@ -219,6 +218,12 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
     @Transient
     private String roleName;
 
+    /**
+     * 上传的批次号，对应fileinfo中的ID
+     */
+    @Column(name = "N_BATCHNO", columnDefinition = "INTEGER")
+    @MetaData(value = "上传的批次号", comments = "上传的批次号，对应fileinfo中的ID")
+    private Long batchNo;
 
     public String getRoleName() {
         return roleName;
@@ -397,7 +402,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
     }
 
     public Boolean getDefOper() {
-        if (defOper == null){
+        if (defOper == null) {
             return Boolean.FALSE;
         }
         return defOper;
@@ -488,6 +493,14 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         this.custList = anCustList;
     }
 
+    public Long getBatchNo() {
+        return this.batchNo;
+    }
+
+    public void setBatchNo(final Long anBatchNo) {
+        this.batchNo = anBatchNo;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
@@ -518,6 +531,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         sb.append(", contactorSerial=").append(contactorSerial);
         sb.append(", ruleList=").append(ruleList);
         sb.append(", custList=").append(custList);
+        sb.append(", batchNo=").append(batchNo);
         sb.append("]");
         return sb.toString();
     }
@@ -557,8 +571,9 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
                 && (this.getOperCode() == null ? other.getOperCode() == null : this.getOperCode().equals(other.getOperCode()))
                 && (this.getOperOrg() == null ? other.getOperOrg() == null : this.getOperOrg().equals(other.getOperOrg()))
                 && (this.getContactorSerial() == null ? other.getContactorSerial() == null
-                : this.getContactorSerial().equals(other.getContactorSerial()))
-                && (this.getRuleList() == null ? other.getRuleList() == null : this.getRuleList().equals(other.getRuleList()));
+                        : this.getContactorSerial().equals(other.getContactorSerial()))
+                && (this.getRuleList() == null ? other.getRuleList() == null : this.getRuleList().equals(other.getRuleList()))
+                && (this.getBatchNo() == null ? other.getBatchNo() == null : this.getBatchNo().equals(other.getBatchNo()));
     }
 
     @Override
@@ -589,6 +604,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         result = prime * result + ((getOperOrg() == null) ? 0 : getOperOrg().hashCode());
         result = prime * result + ((getContactorSerial() == null) ? 0 : getContactorSerial().hashCode());
         result = prime * result + ((getRuleList() == null) ? 0 : getRuleList().hashCode());
+        result = prime * result + ((getBatchNo() == null) ? 0 : getBatchNo().hashCode());
         return result;
     }
 

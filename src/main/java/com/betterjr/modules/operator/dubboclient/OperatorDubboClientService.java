@@ -11,31 +11,31 @@ import com.betterjr.modules.operator.dubbo.IOperatorService;
 @Service
 public class OperatorDubboClientService implements IOperatorService {
 
-    @Reference(interfaceClass=IOperatorService.class)
+    @Reference(interfaceClass = IOperatorService.class)
     private IOperatorService operatorService;
-    
+
     @Override
-    public String webAddCustOperator(Map<String, Object> anMap,String anCustList) {
-        return operatorService.webAddCustOperator(anMap,anCustList);
+    public String webAddCustOperator(final Map<String, Object> anMap, final String anCustList) {
+        return operatorService.webAddCustOperator(anMap, anCustList);
     }
 
     @Override
-    public String webUpdateCustOperator(Map<String, Object> anMap,String anCustList) {
-        return operatorService.webUpdateCustOperator(anMap,anCustList);
+    public String webUpdateCustOperator(final Map<String, Object> anMap, final String anCustList) {
+        return operatorService.webUpdateCustOperator(anMap, anCustList);
     }
 
     @Override
-    public String webQueryCustOperator(Map<String, String> anMap, int anPageNum, int anPageSize) {
-        return operatorService.webQueryCustOperator(anMap,anPageNum,anPageSize);
+    public String webQueryCustOperator(final Map<String, String> anMap, final int anPageNum, final int anPageSize) {
+        return operatorService.webQueryCustOperator(anMap, anPageNum, anPageSize);
     }
 
     @Override
-    public String webFindSysMenuByMenuId(Integer anMenuId) {
+    public String webFindSysMenuByMenuId(final Integer anMenuId) {
         return operatorService.webFindSysMenuByMenuId(anMenuId);
     }
 
     @Override
-    public String webFindSysMenuByMenuRole(String anRoleId) {
+    public String webFindSysMenuByMenuRole(final String anRoleId) {
         return operatorService.webFindSysMenuByMenuRole(anRoleId);
     }
 
@@ -45,12 +45,12 @@ public class OperatorDubboClientService implements IOperatorService {
     }
 
     @Override
-    public String webAddMenuRole(String anRoleId, String anRoleName, String anMenuIdArr) {
-        return operatorService.webAddMenuRole(anRoleId,anRoleName,anMenuIdArr);
+    public String webAddMenuRole(final String anRoleId, final String anRoleName, final String anMenuIdArr) {
+        return operatorService.webAddMenuRole(anRoleId, anRoleName, anMenuIdArr);
     }
 
     @Override
-    public String webFindOperatorById(Long anOperatorId) {
+    public String webFindOperatorById(final Long anOperatorId) {
         return operatorService.webFindOperatorById(anOperatorId);
     }
 
@@ -60,36 +60,47 @@ public class OperatorDubboClientService implements IOperatorService {
     }
 
     @Override
-    public String webUpdatePassword(String anNewPasswd, String anOkPasswd, String anPasswd) {
-        return operatorService.webUpdatePassword(anNewPasswd,anOkPasswd,anPasswd);
+    public String webUpdatePassword(final String anNewPasswd, final String anOkPasswd, final String anPasswd) {
+        return operatorService.webUpdatePassword(anNewPasswd, anOkPasswd, anPasswd);
     }
 
     @Override
-    public String webChangeUserPassword(Long anId, String anPassword, String anOkPasswd) {
-        return  operatorService.webChangeUserPassword(anId,anPassword,anOkPasswd);
+    public String webChangeUserPassword(final Long anId, final String anPassword, final String anOkPasswd) {
+        return operatorService.webChangeUserPassword(anId, anPassword, anOkPasswd);
     }
-    
-    @Override
-    public CustOperatorInfo findCustClerkMan(String anOperOrg,String anClerkMan){
 
-        return operatorService.findCustClerkMan(anOperOrg,anClerkMan);
+    @Override
+    public CustOperatorInfo findCustClerkMan(final String anOperOrg, final String anClerkMan) {
+
+        return operatorService.findCustClerkMan(anOperOrg, anClerkMan);
     }
-    
+
     /***
      * 查询机构绑定的客户信息
+     * 
      * @return
      */
-    public String webFindOperatorCustInfo(){
+    @Override
+    public String webFindOperatorCustInfo() {
         return operatorService.webFindOperatorCustInfo();
     }
 
     /**
      * 根据入参查询对应操作机构操作员
      */
-    public String webFindCustOperatorByClerk(String anClerk) {
+    @Override
+    public String webFindCustOperatorByClerk(final String anClerk) {
         return operatorService.webFindCustOperatorByClerk(anClerk);
     }
-    public String webQueryCustOperatorByPage(Map<String, String> anMap){
+
+    @Override
+    public String webQueryCustOperatorByPage(final Map<String, String> anMap) {
         return operatorService.webQueryCustOperatorByPage(anMap);
+    }
+
+    @Override
+    public String webUpdateOperatorWithImageFile(final Map<String, Object> anMap, final String anCustList, final String anFileList) {
+
+        return operatorService.webUpdateOperatorWithImageFile(anMap, anCustList, anFileList);
     }
 }
