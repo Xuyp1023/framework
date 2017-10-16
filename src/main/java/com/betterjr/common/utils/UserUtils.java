@@ -173,6 +173,9 @@ public class UserUtils {
         if (certInfo != null) {
             return certInfo.getOperOrg();
         }
+        if(getOperatorInfo() != null){
+            return getOperatorInfo().getOperOrg();
+        }
         return null;
     }
 
