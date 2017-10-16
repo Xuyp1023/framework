@@ -24,83 +24,83 @@ import net.oauth.jsontoken.Clock;
 import net.oauth.jsontoken.JsonToken;
 import net.oauth.jsontoken.crypto.Signer;
 
-
 /**
  * A signed Json Assertion
  */
 public class SignedJsonAssertionToken extends JsonToken {
-  
-  public static final String JWT = "jwt";
-  
-  public static final String GRANT_TYPE = "grant_type";
-  public static final String GRANT_TYPE_VALUE = "http://oauth.net/grant_type/jwt/1.0/bearer";
-  
-  // addition JSON token payload fields for signed json assertion
-  public static final String SUBJECT = "subject";
-  public static final String SCOPE = "scope";
-  public static final String NONCE = "nonce";
-  
-  public SignedJsonAssertionToken(Signer signer, Clock clock) {
-    super(signer, clock);
-  }
 
-  public SignedJsonAssertionToken(Signer signer) {
-    super(signer);
-  }
-  
-  public SignedJsonAssertionToken(JsonToken token) {
-    super(token.getPayload());
-  }
+    public static final String JWT = "jwt";
 
-  public String getSubject() {
-    return getParamAsString(SUBJECT);
-  }
+    public static final String GRANT_TYPE = "grant_type";
+    public static final String GRANT_TYPE_VALUE = "http://oauth.net/grant_type/jwt/1.0/bearer";
 
-  public void setSubject(String m) {
-    setParam(SUBJECT, m);
-  }
-  
-  public String getScope() {
-    return getParamAsString(SCOPE);
-  }
-  
-  public void setScope(String scope) {
-    setParam(SCOPE, scope);
-  }
+    // addition JSON token payload fields for signed json assertion
+    public static final String SUBJECT = "subject";
+    public static final String SCOPE = "scope";
+    public static final String NONCE = "nonce";
 
-  public String getNonce() {
-    return getParamAsString(NONCE);
-  }
-
-  public void setNonce(String n) {
-    setParam(NONCE, n);
-  }
-  
-  public String getJsonAssertionPostBody() throws SignatureException {
-    StringBuffer buffer = new StringBuffer();
-    buffer.append(GRANT_TYPE).append("=").append(GRANT_TYPE_VALUE);
-    buffer.append("&");
-    try {
-      buffer.append(JWT).append("=").append(serializeAndSign());
-      return URLEncoder.encode(buffer.toString(), "UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      throw new SignatureException("unsupported encoding");
+    public SignedJsonAssertionToken(Signer signer, Clock clock) {
+        super(signer, clock);
     }
-  }
 
-  @Override
-  public String serializeAndSign() throws SignatureException {
-    return super.serializeAndSign();
-  }
-  
-  @Override
-  protected String computeSignatureBaseString() {
-    if (getIssuedAt() == null) {
-      setIssuedAt(clock.now());
+    public SignedJsonAssertionToken(Signer signer) {
+        super(signer);
     }
-    if (getExpiration() == null) {
-      setExpiration(getIssuedAt().plusSeconds(DEFAULT_LIFETIME_IN_MINS * 60));
+
+    public SignedJsonAssertionToken(JsonToken token) {
+        super(token.getPayload());
     }
-    return super.computeSignatureBaseString();
-  }
+
+    public String getSubject() {
+        return getParamAsString(SUBJECT);
+    }
+
+    public void setSubject(String m) {
+        setParam(SUBJECT, m);
+    }
+
+    public String getScope() {
+        return getParamAsString(SCOPE);
+    }
+
+    public void setScope(String scope) {
+        setParam(SCOPE, scope);
+    }
+
+    public String getNonce() {
+        return getParamAsString(NONCE);
+    }
+
+    public void setNonce(String n) {
+        setParam(NONCE, n);
+    }
+
+    public String getJsonAssertionPostBody() throws SignatureException {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(GRANT_TYPE).append("=").append(GRANT_TYPE_VALUE);
+        buffer.append("&");
+        try {
+            buffer.append(JWT).append("=").append(serializeAndSign());
+            return URLEncoder.encode(buffer.toString(), "UTF-8");
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new SignatureException("unsupported encoding");
+        }
+    }
+
+    @Override
+    public String serializeAndSign() throws SignatureException {
+        return super.serializeAndSign();
+    }
+
+    @Override
+    protected String computeSignatureBaseString() {
+        if (getIssuedAt() == null) {
+            setIssuedAt(clock.now());
+        }
+        if (getExpiration() == null) {
+            setExpiration(getIssuedAt().plusSeconds(DEFAULT_LIFETIME_IN_MINS * 60));
+        }
+        return super.computeSignatureBaseString();
+    }
 }

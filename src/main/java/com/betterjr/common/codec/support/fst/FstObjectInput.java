@@ -57,7 +57,7 @@ public class FstObjectInput implements BtObjectInput {
         if (len < 0) {
             return null;
         } else if (len == 0) {
-            return new byte[]{};
+            return new byte[] {};
         } else {
             final byte[] b = new byte[len];
             input.readFully(b);
@@ -74,7 +74,6 @@ public class FstObjectInput implements BtObjectInput {
     public Object readObject() throws IOException, ClassNotFoundException {
         return input.readObject();
     }
-
 
     @Override
     @SuppressWarnings("unchecked")

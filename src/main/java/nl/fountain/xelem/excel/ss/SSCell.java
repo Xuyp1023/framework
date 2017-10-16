@@ -22,15 +22,15 @@ package nl.fountain.xelem.excel.ss;
 import java.lang.reflect.Method;
 import java.util.Date;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.Attributes;
+
 import nl.fountain.xelem.GIO;
 import nl.fountain.xelem.XLUtil;
 import nl.fountain.xelem.excel.AbstractXLElement;
 import nl.fountain.xelem.excel.Cell;
 import nl.fountain.xelem.excel.Comment;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.Attributes;
 
 /**
  * An implementation of the XLElement Cell.
@@ -76,7 +76,7 @@ import org.xml.sax.Attributes;
  * @see nl.fountain.xelem.excel.Row#addCell()
  */
 public class SSCell extends AbstractXLElement implements Cell {
-    
+
     private int idx;
     private boolean hasdata;
     private String styleID;
@@ -87,7 +87,7 @@ public class SSCell extends AbstractXLElement implements Cell {
     private int mergeacross;
     private int mergedown;
     private Comment comment;
-    
+
     /**
      * Creates a new SSCell with an initial datatype of "String" and an
      * empty ("") value.
@@ -98,7 +98,7 @@ public class SSCell extends AbstractXLElement implements Cell {
         datatype = DATATYPE_STRING;
         data$ = "";
     }
-    
+
     /**
      * Sets the ss:StyleID on this cell. If no styleID is set on a cell,
      * the ss:StyleID-attribute is not deployed in the resulting xml and
@@ -114,83 +114,100 @@ public class SSCell extends AbstractXLElement implements Cell {
      * 
      * @see XLWorkbook#getWarnings()
      */
+    @Override
     public void setStyleID(String id) {
         styleID = id;
     }
-    
+
+    @Override
     public String getStyleID() {
         return styleID;
     }
-    
+
+    @Override
     public void setFormula(String formula) {
-        //this.formula = XLUtil.escapeHTML(formula);
+        // this.formula = XLUtil.escapeHTML(formula);
         this.formula = formula;
     }
 
+    @Override
     public String getFormula() {
         return formula;
     }
-    
+
+    @Override
     public void setHRef(String href) {
         this.href = href;
     }
 
+    @Override
     public String getHRef() {
         return href;
     }
-    
+
+    @Override
     public Comment addComment() {
         comment = new SSComment();
         return comment;
     }
-    
+
+    @Override
     public Comment addComment(Comment comment) {
         this.comment = comment;
         return comment;
     }
-    
+
+    @Override
     public Comment addComment(String text) {
         comment = new SSComment();
         comment.setData(text);
         return comment;
     }
-    
+
+    @Override
     public boolean hasComment() {
         return comment != null;
     }
-    
+
+    @Override
     public Comment getComment() {
         return comment;
     }
-    
+
+    @Override
     public void setMergeAcross(int m) {
         mergeacross = m;
     }
-    
+
     private void setMergeAcross(String s) {
         mergeacross = Integer.parseInt(s);
     }
-    
+
+    @Override
     public int getMergeAcross() {
         return mergeacross;
     }
-    
+
+    @Override
     public void setMergeDown(int m) {
         mergedown = m;
     }
-    
+
     private void setMergeDown(String s) {
         mergedown = Integer.parseInt(s);
     }
-    
+
+    @Override
     public int getMergeDown() {
         return mergedown;
     }
 
-    public String getXLDataType() { 
+    @Override
+    public String getXLDataType() {
         return datatype;
     }
 
+    @Override
     public void setData(Number data) {
         if (data == null) {
             setError(ERRORVALUE_NA);
@@ -198,7 +215,8 @@ public class SSCell extends AbstractXLElement implements Cell {
         }
         setData(data.doubleValue());
     }
-    
+
+    @Override
     public void setData(Integer data) {
         if (data == null) {
             setError(ERRORVALUE_NA);
@@ -207,7 +225,8 @@ public class SSCell extends AbstractXLElement implements Cell {
         datatype = DATATYPE_NUMBER;
         setData$(data.toString());
     }
-    
+
+    @Override
     public void setData(Double data) {
         if (data == null) {
             setError(ERRORVALUE_NA);
@@ -220,7 +239,8 @@ public class SSCell extends AbstractXLElement implements Cell {
         }
         setData$(data.toString());
     }
-    
+
+    @Override
     public void setData(Long data) {
         if (data == null) {
             setError(ERRORVALUE_NA);
@@ -229,7 +249,8 @@ public class SSCell extends AbstractXLElement implements Cell {
         datatype = DATATYPE_NUMBER;
         setData$(data.toString());
     }
-    
+
+    @Override
     public void setData(Float data) {
         if (data == null) {
             setError(ERRORVALUE_NA);
@@ -243,6 +264,7 @@ public class SSCell extends AbstractXLElement implements Cell {
         setData$(data.toString());
     }
 
+    @Override
     public void setData(Date data) {
         if (data == null) {
             setError(ERRORVALUE_NA);
@@ -252,6 +274,7 @@ public class SSCell extends AbstractXLElement implements Cell {
         setData$(XLUtil.format(data));
     }
 
+    @Override
     public void setData(Boolean data) {
         if (data == null) {
             setError(ERRORVALUE_NA);
@@ -260,6 +283,7 @@ public class SSCell extends AbstractXLElement implements Cell {
         setData(data.booleanValue());
     }
 
+    @Override
     public void setData(String data) {
         if (data == null) {
             setError(ERRORVALUE_NA);
@@ -268,50 +292,59 @@ public class SSCell extends AbstractXLElement implements Cell {
         datatype = DATATYPE_STRING;
         setData$(data);
     }
-    
+
+    @Override
     public void setData(Object data) {
         if (data == null) {
             setError(ERRORVALUE_NA);
             return;
         }
-        Class[] types = new Class[] {data.getClass()};
+        Class[] types = new Class[] { data.getClass() };
         Method method = null;
         try {
             method = this.getClass().getMethod("setData", types);
-            method.invoke(this, new Object[]{data});
-        } catch (NoSuchMethodException e) {
+            method.invoke(this, new Object[] { data });
+        }
+        catch (NoSuchMethodException e) {
             setData(data.toString());
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    @Override
     public void setError(String error_value) {
         datatype = DATATYPE_ERROR;
         setData$(error_value);
         setFormula("=" + error_value);
     }
-    
+
+    @Override
     public void setData(byte data) {
         datatype = DATATYPE_NUMBER;
         setData$(String.valueOf(data));
     }
-    
+
+    @Override
     public void setData(short data) {
         datatype = DATATYPE_NUMBER;
         setData$(String.valueOf(data));
     }
 
+    @Override
     public void setData(int data) {
         datatype = DATATYPE_NUMBER;
         setData$(String.valueOf(data));
     }
 
+    @Override
     public void setData(long data) {
         datatype = DATATYPE_NUMBER;
         setData$(String.valueOf(data));
     }
-    
+
+    @Override
     public void setData(float data) {
         if (Float.isInfinite(data) || Float.isNaN(data)) {
             datatype = DATATYPE_STRING;
@@ -321,19 +354,22 @@ public class SSCell extends AbstractXLElement implements Cell {
         setData$(String.valueOf(data));
     }
 
+    @Override
     public void setData(double data) {
         if (Double.isInfinite(data) || Double.isNaN(data)) {
             datatype = DATATYPE_STRING;
         } else {
             datatype = DATATYPE_NUMBER;
         }
-        setData$(String.valueOf(data));       
+        setData$(String.valueOf(data));
     }
-    
+
+    @Override
     public void setData(char data) {
         setData(String.valueOf(data));
     }
-    
+
+    @Override
     public void setData(boolean data) {
         datatype = DATATYPE_BOOLEAN;
         if (data) {
@@ -342,25 +378,29 @@ public class SSCell extends AbstractXLElement implements Cell {
             setData$("0");
         }
     }
-    
+
     private void setData$(String s) {
         data$ = s;
         hasdata = true;
-        //System.out.println(data$);
+        // System.out.println(data$);
     }
-    
+
+    @Override
     public boolean hasData() {
         return hasdata;
     }
-    
+
+    @Override
     public boolean hasError() {
         return DATATYPE_ERROR.equals(getXLDataType());
     }
 
+    @Override
     public String getData$() {
         return data$;
     }
-    
+
+    @Override
     public Object getData() {
         if (DATATYPE_NUMBER.equals(datatype)) {
             return new Double(data$);
@@ -371,109 +411,118 @@ public class SSCell extends AbstractXLElement implements Cell {
         }
         return data$;
     }
-    
+
+    @Override
     public int intValue() {
         try {
             return new Double(data$).intValue();
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return 0;
         }
     }
-    
+
+    @Override
     public double doubleValue() {
         try {
             return new Double(data$).doubleValue();
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return 0.0D;
         }
     }
-    
+
+    @Override
     public boolean booleanValue() {
         return "1".equals(data$);
     }
 
+    @Override
     public String getTagName() {
         return "Cell";
     }
-    
+
+    @Override
     public String getNameSpace() {
         return XMLNS_SS;
     }
-    
+
+    @Override
     public String getPrefix() {
         return PREFIX_SS;
     }
 
+    @Override
     public Element assemble(Element parent, GIO gio) {
         Document doc = parent.getOwnerDocument();
         Element ce = assemble(doc, gio);
-        
-        if (idx != 0) ce.setAttributeNodeNS(
-                createAttributeNS(doc, "Index", idx));
+
+        if (idx != 0) ce.setAttributeNodeNS(createAttributeNS(doc, "Index", idx));
         if (getStyleID() != null) {
             ce.setAttributeNodeNS(createAttributeNS(doc, "StyleID", getStyleID()));
             gio.addStyleID(getStyleID());
         }
-        if (formula != null) ce.setAttributeNodeNS(
-                createAttributeNS(doc, "Formula", formula));
-        if (href != null) ce.setAttributeNodeNS(
-                createAttributeNS(doc, "HRef", href));
-        if (mergeacross > 0) ce.setAttributeNodeNS(
-                createAttributeNS(doc, "MergeAcross", mergeacross));
-        if (mergedown > 0) ce.setAttributeNodeNS(
-                createAttributeNS(doc, "MergeDown", mergedown));
-        
+        if (formula != null) ce.setAttributeNodeNS(createAttributeNS(doc, "Formula", formula));
+        if (href != null) ce.setAttributeNodeNS(createAttributeNS(doc, "HRef", href));
+        if (mergeacross > 0) ce.setAttributeNodeNS(createAttributeNS(doc, "MergeAcross", mergeacross));
+        if (mergedown > 0) ce.setAttributeNodeNS(createAttributeNS(doc, "MergeDown", mergedown));
+
         parent.appendChild(ce);
-        
+
         if (!"".equals(getData$())) {
             Element data = getDataElement(doc);
             ce.appendChild(data);
         }
-        
+
         if (comment != null) {
             comment.assemble(ce, gio);
         }
-        
+
         return ce;
     }
-    
+
+    @Override
     public void setAttributes(Attributes attrs) {
         for (int i = 0; i < attrs.getLength(); i++) {
             invokeMethod(attrs.getLocalName(i), attrs.getValue(i));
         }
     }
-    
+
+    @Override
     public void setChildElement(String localName, String content) {
         if ("Data".equals(localName)) {
             setData$(content);
         }
     }
-    
-	private void invokeMethod(String name, Object value) {
+
+    private void invokeMethod(String name, Object value) {
         Class[] types = new Class[] { value.getClass() };
         Method method = null;
         try {
             method = this.getClass().getDeclaredMethod("set" + name, types);
             method.invoke(this, new Object[] { value });
-        } catch (NoSuchMethodException e) {
+        }
+        catch (NoSuchMethodException e) {
             // no big deal
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
+
+    @Override
     public Element getDataElement(Document doc) {
         Element data = doc.createElement("Data");
-        data.setAttributeNodeNS(
-                createAttributeNS(doc, "Type", getXLDataType()));
+        data.setAttributeNodeNS(createAttributeNS(doc, "Type", getXLDataType()));
         data.appendChild(doc.createTextNode(getData$()));
         return data;
     }
-    
+
     /**
      * @deprecated	as of xelem.2.0 use {@link #setType(String)}
      * @param type	one of Cell's DATATYPE_XXX values
      */
+    @Deprecated
     protected void setXLDataType(String type) {
         setType(type);
     }
@@ -484,21 +533,20 @@ public class SSCell extends AbstractXLElement implements Cell {
      * @param type	Must be one of Cell's DATATYPE_XXX values.
      */
     protected void setType(String type) {
-        if (DATATYPE_BOOLEAN.equals(type)
-                || DATATYPE_DATE_TIME.equals(type)
-                || DATATYPE_ERROR.equals(type)
-                || DATATYPE_NUMBER.equals(type)
-                || DATATYPE_STRING.equals(type)) {
+        if (DATATYPE_BOOLEAN.equals(type) || DATATYPE_DATE_TIME.equals(type) || DATATYPE_ERROR.equals(type)
+                || DATATYPE_NUMBER.equals(type) || DATATYPE_STRING.equals(type)) {
             datatype = type;
         } else {
             throw new IllegalArgumentException(type + " is not a valid datatype.");
         }
     }
-    
+
+    @Override
     public void setIndex(int index) {
         idx = index;
     }
-    
+
+    @Override
     public int getIndex() {
         return idx;
     }

@@ -5,5 +5,4 @@ import com.betterjr.mapper.common.Mapper;
 import com.betterjr.modules.operator.entity.SysOperatorRoleRelation;
 
 @BetterjrMapper
-public interface SysOperatorRoleRelationMapper extends Mapper<SysOperatorRoleRelation> {
-}
+public interface SysOperatorRoleRelationMapper extends Mapper<SysOperatorRoleRelation> {}

@@ -236,112 +236,98 @@ public class CustFileAduitTemp implements BetterjrEntity {
             if (other.aduitCustNo != null) {
                 return false;
             }
-        }
-        else if (!this.aduitCustNo.equals(other.aduitCustNo)) {
+        } else if (!this.aduitCustNo.equals(other.aduitCustNo)) {
             return false;
         }
         if (this.aduitorNo == null) {
             if (other.aduitorNo != null) {
                 return false;
             }
-        }
-        else if (!this.aduitorNo.equals(other.aduitorNo)) {
+        } else if (!this.aduitorNo.equals(other.aduitorNo)) {
             return false;
         }
         if (this.auditStatus == null) {
             if (other.auditStatus != null) {
                 return false;
             }
-        }
-        else if (!this.auditStatus.equals(other.auditStatus)) {
+        } else if (!this.auditStatus.equals(other.auditStatus)) {
             return false;
         }
         if (this.authorTime == null) {
             if (other.authorTime != null) {
                 return false;
             }
-        }
-        else if (!this.authorTime.equals(other.authorTime)) {
+        } else if (!this.authorTime.equals(other.authorTime)) {
             return false;
         }
         if (this.batchNo == null) {
             if (other.batchNo != null) {
                 return false;
             }
-        }
-        else if (!this.batchNo.equals(other.batchNo)) {
+        } else if (!this.batchNo.equals(other.batchNo)) {
             return false;
         }
         if (this.custNo == null) {
             if (other.custNo != null) {
                 return false;
             }
-        }
-        else if (!this.custNo.equals(other.custNo)) {
+        } else if (!this.custNo.equals(other.custNo)) {
             return false;
         }
         if (this.description == null) {
             if (other.description != null) {
                 return false;
             }
-        }
-        else if (!this.description.equals(other.description)) {
+        } else if (!this.description.equals(other.description)) {
             return false;
         }
         if (this.fileCount == null) {
             if (other.fileCount != null) {
                 return false;
             }
-        }
-        else if (!this.fileCount.equals(other.fileCount)) {
+        } else if (!this.fileCount.equals(other.fileCount)) {
             return false;
         }
         if (this.id == null) {
             if (other.id != null) {
                 return false;
             }
-        }
-        else if (!this.id.equals(other.id)) {
+        } else if (!this.id.equals(other.id)) {
             return false;
         }
         if (this.modiDate == null) {
             if (other.modiDate != null) {
                 return false;
             }
-        }
-        else if (!this.modiDate.equals(other.modiDate)) {
+        } else if (!this.modiDate.equals(other.modiDate)) {
             return false;
         }
         if (this.operNo == null) {
             if (other.operNo != null) {
                 return false;
             }
-        }
-        else if (!this.operNo.equals(other.operNo)) {
+        } else if (!this.operNo.equals(other.operNo)) {
             return false;
         }
         if (this.regDate == null) {
             if (other.regDate != null) {
                 return false;
             }
-        }
-        else if (!this.regDate.equals(other.regDate)) {
+        } else if (!this.regDate.equals(other.regDate)) {
             return false;
         }
         if (this.regTime == null) {
             if (other.regTime != null) {
                 return false;
             }
-        }
-        else if (!this.regTime.equals(other.regTime)) {
+        } else if (!this.regTime.equals(other.regTime)) {
             return false;
         }
         if (this.workType == null) {
             if (other.workType != null) {
                 return false;
             }
-        }
-        else if (!this.workType.equals(other.workType)) {
+        } else if (!this.workType.equals(other.workType)) {
             return false;
         }
         return true;

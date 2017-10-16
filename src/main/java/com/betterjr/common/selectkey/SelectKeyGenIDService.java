@@ -37,7 +37,7 @@ public class SelectKeyGenIDService extends Thread {
     private static final String DefaultIdRedisKeyPrefix = "betterjr.id.";
     private static final long IdGap = 10;
 
-    public static final String DEF_DAY_PREX="LIMIT_";
+    public static final String DEF_DAY_PREX = "LIMIT_";
 
     @Autowired
     private SqlSessionFactoryBean sqlSessionFactory;
@@ -106,8 +106,7 @@ public class SelectKeyGenIDService extends Thread {
                 // 存在就检查更新，不存在就加入
                 if (oldSnoInfo != null) {
                     oldSnoInfo.updateLastNo(snoInfo.getLastNo());
-                }
-                else {
+                } else {
                     dataMap.put(snoInfo.getOperType(), snoInfo);
                 }
             }
@@ -245,13 +244,12 @@ public class SelectKeyGenIDService extends Thread {
         return newid;
     }
 
-
     public String findAppNoWithDay(final String anWorkType) {
-        final String tmpWorkType =  DEF_DAY_PREX.concat(anWorkType);
+        final String tmpWorkType = DEF_DAY_PREX.concat(anWorkType);
         final SnoGeneralInfo snoInfo = dataMap.get(tmpWorkType);
         if (snoInfo != null) {
-            synchronized (snoInfo){
-                if (abq.size() < 1000){
+            synchronized (snoInfo) {
+                if (abq.size() < 1000) {
                     try {
                         abq.put(obj);
                     }
@@ -261,7 +259,8 @@ public class SelectKeyGenIDService extends Thread {
                 }
                 final long tmpValue = incrby(snoInfo);
 
-                return snoInfo.findMachValue().concat( BetterStringUtils.leftPad(Long.toString(tmpValue), snoInfo.getDataLen(),"0"));
+                return snoInfo.findMachValue()
+                        .concat(StringUtils.leftPad(Long.toString(tmpValue), snoInfo.getDataLen(), "0"));
             }
         }
         logger.warn("not find anWorkType = " + tmpWorkType);

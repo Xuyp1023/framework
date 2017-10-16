@@ -35,27 +35,27 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import nl.fountain.xelem.excel.Workbook;
-
 import org.w3c.dom.Document;
+
+import nl.fountain.xelem.excel.Workbook;
 
 /**
  * A conveniance class for serializing Workbooks.
  * 
  */
 public class XSerializer {
-    
+
     private Transformer xformer;
     private String encoding;
-    
+
     public static final String US_ASCII = "US-ASCII";
-    
+
     public XSerializer() {}
-    
+
     public XSerializer(String encoding) {
         this.encoding = encoding;
     }
-    
+
     /**
      * 
      */
@@ -64,13 +64,13 @@ public class XSerializer {
         serialize(wb, out);
         return out.toString();
     }
-    
+
     public String serializeToString(Document doc) throws XelemException {
         StringWriter out = new StringWriter();
         serialize(doc, out);
         return out.toString();
     }
-    
+
     /**
      * Serializes the Workbook to the file specified with the Workbook's
      * {@link nl.fountain.xelem.excel.Workbook#getFileName() getFileName}-method.
@@ -80,69 +80,72 @@ public class XSerializer {
         File out = new File(wb.getFileName());
         serialize(wb, out);
     }
-    
+
     public void serialize(Workbook wb, File out) throws XelemException {
         Result result = new StreamResult(out);
-        transform(wb, result); 
+        transform(wb, result);
     }
-    
+
     public void serialize(Document doc, File out) throws XelemException {
         Result result = new StreamResult(out);
-        transform(doc, result); 
+        transform(doc, result);
     }
-    
+
     public void serialize(Workbook wb, OutputStream out) throws XelemException {
         Result result = new StreamResult(out);
         transform(wb, result);
     }
-    
+
     public void serialize(Document doc, OutputStream out) throws XelemException {
         Result result = new StreamResult(out);
         transform(doc, result);
     }
-    
+
     public void serialize(Workbook wb, Writer out) throws XelemException {
         Result result = new StreamResult(out);
         transform(wb, result);
     }
-    
+
     public void serialize(Document doc, Writer out) throws XelemException {
         Result result = new StreamResult(out);
         transform(doc, result);
     }
-    
+
     private void transform(Workbook wb, Result result) throws XelemException {
         try {
             Document doc = wb.createDocument();
             transform(doc, result);
-        } catch (ParserConfigurationException e) {
+        }
+        catch (ParserConfigurationException e) {
             throw new XelemException(e.fillInStackTrace());
         }
     }
-    
+
     private void transform(Document doc, Result result) throws XelemException {
         try {
-            Transformer xformer = getTransformer();          
+            Transformer xformer = getTransformer();
             Source source = new DOMSource(doc);
             xformer.transform(source, result);
-        } catch (TransformerException e) {
+        }
+        catch (TransformerException e) {
             throw new XelemException(e.fillInStackTrace());
         }
     }
 
     private Transformer getTransformer() throws XelemException {
         if (xformer == null) {
-	        TransformerFactory tFactory = TransformerFactory.newInstance();
-	        try {
-	            xformer = tFactory.newTransformer();
-	        } catch (TransformerConfigurationException e) {
-	            throw new XelemException(e.fillInStackTrace());
-	        }
-	        xformer.setOutputProperty(OutputKeys.METHOD, "xml");
-	        xformer.setOutputProperty(OutputKeys.INDENT, "yes");
-	        if (encoding != null) {
-	            xformer.setOutputProperty(OutputKeys.ENCODING, encoding);
-	        }
+            TransformerFactory tFactory = TransformerFactory.newInstance();
+            try {
+                xformer = tFactory.newTransformer();
+            }
+            catch (TransformerConfigurationException e) {
+                throw new XelemException(e.fillInStackTrace());
+            }
+            xformer.setOutputProperty(OutputKeys.METHOD, "xml");
+            xformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            if (encoding != null) {
+                xformer.setOutputProperty(OutputKeys.ENCODING, encoding);
+            }
         }
         return xformer;
     }

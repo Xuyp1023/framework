@@ -1,15 +1,17 @@
 package com.betterjr.mapper.orderbyhelper.sqlsource;
 
+import java.util.Map;
+
 import org.apache.ibatis.builder.SqlSourceBuilder;
 import org.apache.ibatis.builder.StaticSqlSource;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
-import org.apache.ibatis.scripting.xmltags.*;
+import org.apache.ibatis.scripting.xmltags.DynamicContext;
+import org.apache.ibatis.scripting.xmltags.DynamicSqlSource;
+import org.apache.ibatis.scripting.xmltags.SqlNode;
 import org.apache.ibatis.session.Configuration;
-
-import java.util.Map;
 
 /**
  * 描述信息
@@ -30,6 +32,7 @@ public class OrderByDynamicSqlSource implements SqlSource, OrderBySqlSource {
         this.original = sqlSource;
     }
 
+    @Override
     public BoundSql getBoundSql(Object parameterObject) {
         DynamicContext context = new DynamicContext(configuration, parameterObject);
         rootSqlNode.apply(context);
@@ -44,6 +47,7 @@ public class OrderByDynamicSqlSource implements SqlSource, OrderBySqlSource {
         return boundSql;
     }
 
+    @Override
     public SqlSource getOriginal() {
         return original;
     }

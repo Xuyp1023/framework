@@ -35,10 +35,7 @@ import com.betterjr.mapper.common.base.select.SelectOneMapper;
  * @param <T> 不能为空
  * @author liuzh
  */
-public interface BaseSelectMapper<T> extends
-        SelectOneMapper<T>,
-        SelectMapper<T>,
-        SelectCountMapper<T>,
-        SelectByPrimaryKeyMapper<T> {
+public interface BaseSelectMapper<T>
+        extends SelectOneMapper<T>, SelectMapper<T>, SelectCountMapper<T>, SelectByPrimaryKeyMapper<T> {
 
 }

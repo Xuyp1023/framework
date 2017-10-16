@@ -79,7 +79,8 @@ public class UploadFileUtils {
         return path + MONTH_FORMAT.format(new Date()) + UUID.randomUUID().toString().replaceAll("-", "") + "." + ext;
     }
 
-    protected static final Pattern ILLEGAL_CURRENT_FOLDER_PATTERN = Pattern.compile("^[^/]|[^/]$|/\\.{1,2}|\\\\|\\||:|\\?|\\*|\"|<|>|\\p{Cntrl}");
+    protected static final Pattern ILLEGAL_CURRENT_FOLDER_PATTERN = Pattern
+            .compile("^[^/]|[^/]$|/\\.{1,2}|\\\\|\\||:|\\?|\\*|\"|<|>|\\p{Cntrl}");
 
     public static String sanitizeFileName(final String filename) {
 
@@ -129,7 +130,8 @@ public class UploadFileUtils {
         String baseName = FilenameUtils.getBaseName(tmpFile.getName());
         do {
             tmpFile = new File(parentDir, baseName + "(" + count++ + ")." + extension);
-        } while (tmpFile.exists());
+        }
+        while (tmpFile.exists());
         return tmpFile;
     }
 
@@ -182,29 +184,23 @@ public class UploadFileUtils {
             // TODO
             System.out.println("请求不包含multipart/form-data流");
             errorInfo = "请求不包含multipart/form-data流";
-        }
-        else if (maxSize < contentLength) {
+        } else if (maxSize < contentLength) {
             // TODO
             System.out.println("上传文件大小超出文件最大大小");
             errorInfo = "上传文件大小超出文件最大大小[" + maxSize + "]";
-        }
-        else if (!ServletFileUpload.isMultipartContent(request)) {
+        } else if (!ServletFileUpload.isMultipartContent(request)) {
             // TODO
             errorInfo = "请选择文件";
-        }
-        else if (!uploadDir.isDirectory()) {// 检查目录
+        } else if (!uploadDir.isDirectory()) {// 检查目录
             // TODO
             errorInfo = "上传目录[" + savePath + "]不存在";
-        }
-        else if (!uploadDir.canWrite()) {
+        } else if (!uploadDir.canWrite()) {
             // TODO
             errorInfo = "上传目录[" + savePath + "]没有写权限";
-        }
-        else if (!extMap.containsKey(dirName)) {
+        } else if (!extMap.containsKey(dirName)) {
             // TODO
             errorInfo = "目录名不正确";
-        }
-        else {
+        } else {
             // .../basePath/dirName/
             // 创建文件夹
             savePath += dirName + "/";
@@ -291,8 +287,7 @@ public class UploadFileUtils {
                         String name = item.getFieldName();
                         String value = item.getString();
                         fields.put(name, value);
-                    }
-                    else { // 文件域表单元素
+                    } else { // 文件域表单元素
                         list.add(item);
                     }
                 }
@@ -318,17 +313,14 @@ public class UploadFileUtils {
         if (item.getSize() > maxSize) { // 检查文件大小
             // TODO
             error = "上传文件大小超过限制";
-        }
-        else if (!Arrays.<String> asList(extMap.get(dirName).split(",")).contains(fileExt)) {// 检查扩展名
+        } else if (!Arrays.<String> asList(extMap.get(dirName).split(",")).contains(fileExt)) {// 检查扩展名
             error = "上传文件扩展名是不允许的扩展名。\n只允许" + extMap.get(dirName) + "格式。";
-        }
-        else {
+        } else {
             String newFileName;
             if ("".equals(fileName.trim())) {
                 SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
                 newFileName = df.format(new Date()) + "_" + new Random().nextInt(1000) + "." + fileExt;
-            }
-            else {
+            } else {
                 newFileName = fileName + "." + fileExt;
             }
             // .../basePath/dirName/yyyyMMdd/yyyyMMddHHmmss_xxx.xxx

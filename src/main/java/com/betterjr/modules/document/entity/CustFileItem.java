@@ -1,7 +1,5 @@
 package com.betterjr.modules.document.entity;
 
-import java.io.File;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -9,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.entity.BetterjrEntity;
@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Access(AccessType.FIELD)
 @Entity
 @Table(name = "T_CUST_FILEITEM")
-public class CustFileItem implements BetterjrEntity,java.io.Serializable {
+public class CustFileItem implements BetterjrEntity, java.io.Serializable {
     /**
      * 编号
      */
@@ -95,7 +95,6 @@ public class CustFileItem implements BetterjrEntity,java.io.Serializable {
     @MetaData(value = "文件信息类型", comments = "文件信息类")
     private String fileInfoType;
 
-
     /**
      * 创建人(操作员)ID号
      */
@@ -162,7 +161,7 @@ public class CustFileItem implements BetterjrEntity,java.io.Serializable {
 
     @Transient
     private CustFileInfo fileInfo;
-    
+
     /***
      * 文件类型名称
      */
@@ -173,8 +172,7 @@ public class CustFileItem implements BetterjrEntity,java.io.Serializable {
      */
     @Transient
     private String businStatus;
-    
- 
+
     public String getFileDescription() {
         return this.fileDescription;
     }
@@ -336,7 +334,7 @@ public class CustFileItem implements BetterjrEntity,java.io.Serializable {
     public void setOperOrg(final String anOperOrg) {
         operOrg = anOperOrg;
     }
- 
+
     public String getBusinStatus() {
         return this.businStatus;
     }
@@ -386,22 +384,37 @@ public class CustFileItem implements BetterjrEntity,java.io.Serializable {
         }
         final CustFileItem other = (CustFileItem) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-                && (this.getBatchNo() == null ? other.getBatchNo() == null : this.getBatchNo().equals(other.getBatchNo()))
-                && (this.getFileName() == null ? other.getFileName() == null : this.getFileName().equals(other.getFileName()))
-                && (this.getFileType() == null ? other.getFileType() == null : this.getFileType().equals(other.getFileType()))
+                && (this.getBatchNo() == null ? other.getBatchNo() == null
+                        : this.getBatchNo().equals(other.getBatchNo()))
+                && (this.getFileName() == null ? other.getFileName() == null
+                        : this.getFileName().equals(other.getFileName()))
+                && (this.getFileType() == null ? other.getFileType() == null
+                        : this.getFileType().equals(other.getFileType()))
                 && (this.getFileNo() == null ? other.getFileNo() == null : this.getFileNo().equals(other.getFileNo()))
-                && (this.getFilePath() == null ? other.getFilePath() == null : this.getFilePath().equals(other.getFilePath()))
-                && (this.getFileLength() == null ? other.getFileLength() == null : this.getFileLength().equals(other.getFileLength()))
-                && (this.getRegOperId() == null ? other.getRegOperId() == null : this.getRegOperId().equals(other.getRegOperId()))
-                && (this.getRegOperName() == null ? other.getRegOperName() == null : this.getRegOperName().equals(other.getRegOperName()))
-                && (this.getRegDate() == null ? other.getRegDate() == null : this.getRegDate().equals(other.getRegDate()))
-                && (this.getRegTime() == null ? other.getRegTime() == null : this.getRegTime().equals(other.getRegTime()))
-                && (this.getModiOperId() == null ? other.getModiOperId() == null : this.getModiOperId().equals(other.getModiOperId()))
-                && (this.getModiOperName() == null ? other.getModiOperName() == null : this.getModiOperName().equals(other.getModiOperName()))
-                && (this.getModiDate() == null ? other.getModiDate() == null : this.getModiDate().equals(other.getModiDate()))
-                && (this.getModiTime() == null ? other.getModiTime() == null : this.getModiTime().equals(other.getModiTime()))
-                && (this.getOperOrg() == null ? other.getOperOrg() == null : this.getOperOrg().equals(other.getOperOrg()))
-                && (this.getFileInfoType() == null ? other.getFileInfoType() == null : this.getFileInfoType().equals(other.getFileInfoType()));
+                && (this.getFilePath() == null ? other.getFilePath() == null
+                        : this.getFilePath().equals(other.getFilePath()))
+                && (this.getFileLength() == null ? other.getFileLength() == null
+                        : this.getFileLength().equals(other.getFileLength()))
+                && (this.getRegOperId() == null ? other.getRegOperId() == null
+                        : this.getRegOperId().equals(other.getRegOperId()))
+                && (this.getRegOperName() == null ? other.getRegOperName() == null
+                        : this.getRegOperName().equals(other.getRegOperName()))
+                && (this.getRegDate() == null ? other.getRegDate() == null
+                        : this.getRegDate().equals(other.getRegDate()))
+                && (this.getRegTime() == null ? other.getRegTime() == null
+                        : this.getRegTime().equals(other.getRegTime()))
+                && (this.getModiOperId() == null ? other.getModiOperId() == null
+                        : this.getModiOperId().equals(other.getModiOperId()))
+                && (this.getModiOperName() == null ? other.getModiOperName() == null
+                        : this.getModiOperName().equals(other.getModiOperName()))
+                && (this.getModiDate() == null ? other.getModiDate() == null
+                        : this.getModiDate().equals(other.getModiDate()))
+                && (this.getModiTime() == null ? other.getModiTime() == null
+                        : this.getModiTime().equals(other.getModiTime()))
+                && (this.getOperOrg() == null ? other.getOperOrg() == null
+                        : this.getOperOrg().equals(other.getOperOrg()))
+                && (this.getFileInfoType() == null ? other.getFileInfoType() == null
+                        : this.getFileInfoType().equals(other.getFileInfoType()));
     }
 
     @Override
@@ -434,10 +447,10 @@ public class CustFileItem implements BetterjrEntity,java.io.Serializable {
     }
 
     public boolean isInner(String anType) {
-        if (BetterStringUtils.isBlank(anType)) {
+        if (StringUtils.isBlank(anType)) {
             anType = this.fileType;
         }
-        if (BetterStringUtils.isNotBlank(anType)) {
+        if (StringUtils.isNotBlank(anType)) {
             final String[] arrStr = new String[] { "image", "text", "html", "plain" };
             for (final String tmpStr : arrStr) {
                 if (anType.indexOf(tmpStr) > -1) {
@@ -471,8 +484,8 @@ public class CustFileItem implements BetterjrEntity,java.io.Serializable {
         this.operOrg = anOperator.getOperOrg();
     }
 
-    public void initModifyValue(CustOperatorInfo anOperator){
-         this.modiDate = BetterDateUtils.getNumDate();
+    public void initModifyValue(CustOperatorInfo anOperator) {
+        this.modiDate = BetterDateUtils.getNumDate();
         this.modiTime = BetterDateUtils.getNumTime();
         this.modiOperId = anOperator.getId();
         this.modiOperName = anOperator.getName();

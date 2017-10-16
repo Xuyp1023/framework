@@ -4,6 +4,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.alibaba.dubbo.config.annotation.Service;
 import com.betterjr.common.utils.BTAssert;
 import com.betterjr.common.utils.BetterStringUtils;
@@ -35,10 +37,13 @@ public class X509CertDubboService implements IX509CertService {
     }
 
     @Override
-    public String webQueryCertificateInfo(final Map<String, Object> anParam, final int anFlag, final int anPageNum, final int anPageSize) {
+    public String webQueryCertificateInfo(final Map<String, Object> anParam, final int anFlag, final int anPageNum,
+            final int anPageSize) {
         final Map<String, Object> param = RuleServiceDubboFilterInvoker.getInputObj();
-        return AjaxObject.newOkWithPage("查询证书列表成功", betterX509CertService.queryX509CertInfo(param, anPageNum, anPageSize, anFlag)).toJson();
+        return AjaxObject.newOkWithPage("查询证书列表成功",
+                betterX509CertService.queryX509CertInfo(param, anPageNum, anPageSize, anFlag)).toJson();
     }
+
     @Override
     public String webQueryUnusedCertificateInfo() {
         return AjaxObject.newOk("查询证书列表成功", betterX509CertService.queryUnusedX509CertInfo()).toJson();
@@ -49,7 +54,7 @@ public class X509CertDubboService implements IX509CertService {
         final BetterX509CertInfo certInfo = RuleServiceDubboFilterInvoker.getInputObj();
 
         BTAssert.notNull(certInfo, "数字证书添加入参不允许为空！");
-        certInfo.setCertType("3");  // 所有均为最终用户证书
+        certInfo.setCertType("3"); // 所有均为最终用户证书
         return AjaxObject.newOk("添加证书成功", betterX509CertService.saveX509CertFromWeb(certInfo)).toJson();
     }
 
@@ -62,7 +67,7 @@ public class X509CertDubboService implements IX509CertService {
         final BetterX509CertInfo tempCertInfo = betterX509CertService.findX509CertInfo(anId);
         BTAssert.notNull(tempCertInfo, "没有找到相应的数字证书记录");
 
-        BTAssert.isTrue(BetterStringUtils.equals("0", tempCertInfo.getCertStatus()), "已使用证书不允许修改！");
+        BTAssert.isTrue(StringUtils.equals("0", tempCertInfo.getCertStatus()), "已使用证书不允许修改！");
 
         tempCertInfo.modifyValue(certInfo);
         return AjaxObject.newOk("修改证书成功", betterX509CertService.saveX509CertFromWeb(tempCertInfo)).toJson();

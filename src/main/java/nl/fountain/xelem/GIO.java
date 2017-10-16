@@ -36,11 +36,11 @@ import java.util.TreeSet;
  * 
  */
 public class GIO {
-    
+
     private Set<String> styleIDSet;
     private int selectedSheetsCount;
     private boolean printComments;
-    
+
     /**
      * Adds the styleID to the set of styleID's of this GIO.
      * 
@@ -49,7 +49,7 @@ public class GIO {
     public void addStyleID(String styleID) {
         getStyleIDSet().add(styleID);
     }
-    
+
     /**
      * Gets the set of styleID's previously added with
      * {@link #addStyleID(String)}.
@@ -62,14 +62,14 @@ public class GIO {
         }
         return styleIDSet;
     }
-    
+
     /**
      * Increases the number of selected sheets by one.
      */
     public void increaseSelectedSheets() {
         selectedSheetsCount++;
     }
-    
+
     /**
      * Gets the number of selected sheets.
      * 
@@ -78,7 +78,7 @@ public class GIO {
     public int getSelectedSheetsCount() {
         return selectedSheetsCount;
     }
-    
+
     /**
      * Sets whether the workbook's 
      * {@link nl.fountain.xelem.excel.Workbook#createDocument() createDocument}
@@ -91,7 +91,7 @@ public class GIO {
     public void setPrintComments(boolean print) {
         printComments = print;
     }
-    
+
     /**
      * Specifies whether the workbook's
      * {@link nl.fountain.xelem.excel.Workbook#createDocument() createDocument}

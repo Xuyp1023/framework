@@ -9,18 +9,18 @@ public class SelectKeyAutoIDGen implements ISelectKeyGenFace {
 
     @Autowired
     private SelectKeyGenIDService selectKeyGenIDService = null;
-/*
+
+    /*
     public SekectKeyGenIDService getAutoIDService() {
         return selectKeyGenIDService;
     }
-
+    
     public void setAutoIDService(SekectKeyGenIDService anAutoIDService) {
     	selectKeyGenIDService = anAutoIDService;
     }*/
-    public void init(){
-    	SelectKeyGenService.regKeyGen(this);
+    public void init() {
+        SelectKeyGenService.regKeyGen(this);
     }
-    
 
     @Override
     public String getName() {

@@ -27,6 +27,7 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,11 +50,11 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
     public static long ONE_KB = 1024;
     public static long ONE_MB = ONE_KB * 1024;
     public static long ONE_GB = ONE_MB * 1024;
-    public static long ONE_TB = ONE_GB * (long) 1024;
-    public static long ONE_PB = ONE_TB * (long) 1024;
-    
-    public static Set<String> SupportedUploadFileType=new HashSet<String>();
-    static{
+    public static long ONE_TB = ONE_GB * 1024;
+    public static long ONE_PB = ONE_TB * 1024;
+
+    public static Set<String> SupportedUploadFileType = new HashSet<String>();
+    static {
         SupportedUploadFileType.add("jpg");
         SupportedUploadFileType.add("jpeg");
         SupportedUploadFileType.add("png");
@@ -66,14 +67,14 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
         SupportedUploadFileType.add("zip");
         SupportedUploadFileType.add("rar");
     }
-    
-    public static boolean isSupportedUploadFileType(String type){
-        if(BetterStringUtils.isBlank(type)){
+
+    public static boolean isSupportedUploadFileType(String type) {
+        if (StringUtils.isBlank(type)) {
             return false;
         }
         return SupportedUploadFileType.contains(type.trim().toLowerCase());
     }
-    
+
     public static String getHumanReadableFileSize(Long fileSize) {
         if (fileSize == null) return null;
         return getHumanReadableFileSize(fileSize.longValue());
@@ -164,13 +165,11 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
                     log.debug("删除目标文件 " + descFileName + " 失败!");
                     return false;
                 }
-            }
-            else {
+            } else {
                 log.debug("复制文件失败，目标文件 " + descFileName + " 已存在!");
                 return false;
             }
-        }
-        else {
+        } else {
             if (!descFile.getParentFile().exists()) {
                 // 如果目标文件所在的目录不存在，则创建目录
                 log.debug("目标文件所在的目录不存在，创建目录!");
@@ -277,13 +276,11 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
                     log.debug("删除目录 " + descDirNames + " 失败!");
                     return false;
                 }
-            }
-            else {
+            } else {
                 log.debug("目标目录复制失败，目标目录 " + descDirNames + " 已存在!");
                 return false;
             }
-        }
-        else {
+        } else {
             // 创建目标目录
             log.debug("目标目录不存在，准备创建!");
             if (!descDir.mkdirs()) {
@@ -337,12 +334,10 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
         if (!file.exists()) {
             log.debug(fileName + " 文件不存在!");
             return true;
-        }
-        else {
+        } else {
             if (file.isFile()) {
                 return LocalFileUtils.deleteFile(fileName);
-            }
-            else {
+            } else {
                 return LocalFileUtils.deleteDirectory(fileName);
             }
         }
@@ -362,13 +357,11 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
             if (file.delete()) {
                 log.debug("删除文件 " + fileName + " 成功!");
                 return true;
-            }
-            else {
+            } else {
                 log.debug("删除文件 " + fileName + " 失败!");
                 return false;
             }
-        }
-        else {
+        } else {
             log.debug(fileName + " 文件不存在!");
             return true;
         }
@@ -422,8 +415,7 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
         if (dirFile.delete()) {
             log.debug("删除目录 " + dirName + " 成功!");
             return true;
-        }
-        else {
+        } else {
             log.debug("删除目录 " + dirName + " 失败!");
             return false;
         }
@@ -460,8 +452,7 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
             if (file.createNewFile()) {
                 log.debug(descFileName + " 文件创建成功!");
                 return true;
-            }
-            else {
+            } else {
                 log.debug(descFileName + " 文件创建失败!");
                 return false;
             }
@@ -495,8 +486,7 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
         if (descDir.mkdirs()) {
             log.debug("目录 " + descDirNames + " 创建成功!");
             return true;
-        }
-        else {
+        } else {
             log.debug("目录 " + descDirNames + " 创建失败!");
             return false;
         }
@@ -511,7 +501,7 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
      */
     public static void writeToFile(String fileName, String content, boolean append) {
         try {
-            FileUtils.write(new File(fileName), content, "utf-8", append);
+            org.apache.commons.io.FileUtils.write(new File(fileName), content, "utf-8", append);
             log.debug("文件 " + fileName + " 写入成功!");
         }
         catch (IOException e) {
@@ -527,7 +517,7 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
      */
     public static void writeToFile(String fileName, String content, String encoding, boolean append) {
         try {
-            FileUtils.write(new File(fileName), content, encoding, append);
+            org.apache.commons.io.FileUtils.write(new File(fileName), content, encoding, append);
             log.debug("文件 " + fileName + " 写入成功!");
         }
         catch (IOException e) {
@@ -562,13 +552,11 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
             ZipOutputStream zouts = new ZipOutputStream(new FileOutputStream(descFile));
             if ("*".equals(fileName) || "".equals(fileName)) {
                 LocalFileUtils.zipDirectoryToZipFile(dirPath, fileDir, zouts);
-            }
-            else {
+            } else {
                 File file = new File(fileDir, fileName);
                 if (file.isFile()) {
                     LocalFileUtils.zipFilesToZipFile(dirPath, file, zouts);
-                }
-                else {
+                } else {
                     LocalFileUtils.zipDirectoryToZipFile(dirPath, file, zouts);
                 }
             }
@@ -617,8 +605,7 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
                     // 如果entry是一个目录，则创建目录
                     new File(descFileDir).mkdirs();
                     continue;
-                }
-                else {
+                } else {
                     // 如果entry是一个文件，则创建父目录
                     new File(descFileDir).getParentFile().mkdirs();
                 }
@@ -667,8 +654,7 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
                 if (files[i].isFile()) {
                     // 如果是文件，则调用文件压缩方法
                     LocalFileUtils.zipFilesToZipFile(dirPath, files[i], zouts);
-                }
-                else {
+                } else {
                     // 如果是目录，则递归调用
                     LocalFileUtils.zipDirectoryToZipFile(dirPath, files[i], zouts);
                 }
@@ -748,12 +734,12 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
      * @return
      */
     public static String path(String path) {
-        String p = BetterStringUtils.replace(path, "\\", "/");
-        p = BetterStringUtils.join(BetterStringUtils.split(p, "/"), "/");
-        if (!BetterStringUtils.startsWithAny(p, "/") && BetterStringUtils.startsWithAny(path, "\\", "/")) {
+        String p = StringUtils.replace(path, "\\", "/");
+        p = StringUtils.join(StringUtils.split(p, "/"), "/");
+        if (!StringUtils.startsWithAny(p, "/") && StringUtils.startsWithAny(path, "\\", "/")) {
             p += "/";
         }
-        if (!BetterStringUtils.endsWithAny(p, "/") && BetterStringUtils.endsWithAny(path, "\\", "/")) {
+        if (!StringUtils.endsWithAny(p, "/") && StringUtils.endsWithAny(path, "\\", "/")) {
             p = p + "/";
         }
         return p;
@@ -773,8 +759,7 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
         File destFile;
         if (anFile.getName().endsWith(".gz")) {
             destFile = new File(anDirPath + anFile.getName().substring(0, anFile.getName().length() - 3));
-        }
-        else {
+        } else {
             destFile = new File(anDirPath + anFile.getName());
         }
         GZIPInputStream gzin = null;
@@ -813,8 +798,7 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
         int pos = anFile.lastIndexOf(".");
         if (pos > 0) {
             return anFile.substring(0, pos);
-        }
-        else {
+        } else {
             return anFile;
         }
     }
@@ -824,8 +808,7 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
         String tmpPath = anFile.getAbsolutePath();
         if (tmpPath.length() > abPath.length()) {
             return tmpPath.substring(abPath.length());
-        }
-        else {
+        } else {
             return tmpPath;
         }
     }
@@ -853,44 +836,41 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         String format = formatter.format(new Date());
         String workPath = null;
-        if (BetterStringUtils.isBlank(anParentPath)) {
+        if (StringUtils.isBlank(anParentPath)) {
             workPath = basePath + "/" + format;
-        }
-        else {
+        } else {
             workPath = basePath + "/" + anParentPath + "/" + format;
         }
         File file = new File(workPath);
 
         // 如果文件夹不存在则创建
-        if (file.exists() ) {
-            
-            //如果是文件，则将文件做重命名
-            if ( file.isFile()){
-                file.renameTo(new File(workPath+".rename"));
+        if (file.exists()) {
+
+            // 如果是文件，则将文件做重命名
+            if (file.isFile()) {
+                file.renameTo(new File(workPath + ".rename"));
                 file.mkdirs();
             }
-        }
-        else{
-            //不存在，就创将目录
-            file.mkdirs(); 
+        } else {
+            // 不存在，就创将目录
+            file.mkdirs();
         }
         // 得到上传的文件的文件名
         String fileName = SerialGenerator.uuid();
-        String fileAbsoPath  = workPath + "/" + fileName;
-        
-        //保存在系统中的相对路径
+        String fileAbsoPath = workPath + "/" + fileName;
+
+        // 保存在系统中的相对路径
         String saveUrl = null;
-        if (BetterStringUtils.isNotBlank(anParentPath)){
-            saveUrl ="/" + anParentPath; 
-        }
-        else{
-            saveUrl ="";
+        if (StringUtils.isNotBlank(anParentPath)) {
+            saveUrl = "/" + anParentPath;
+        } else {
+            saveUrl = "";
         }
         saveUrl = saveUrl + "/" + format + "/" + fileName;
 
         return new KeyAndValueObject(saveUrl, new File(fileAbsoPath));
     }
-    
+
     /**
      * 根据指定的父文件路径，创建文件路径
      * 
@@ -898,44 +878,41 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
      *            指定的父文件路径
      * @return
      */
-    public static KeyAndValueObject findFilePathWithParent(String anParentPath,String basePath) {
+    public static KeyAndValueObject findFilePathWithParent(String anParentPath, String basePath) {
         // 得到上传服务器的路径
-//        String basePath = (String) SysConfigService.getObject(ParamNames.OPENACCO_FILE_DOWNLOAD_PATH);
+        // String basePath = (String) SysConfigService.getObject(ParamNames.OPENACCO_FILE_DOWNLOAD_PATH);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         String format = formatter.format(new Date());
         String workPath = null;
-        if (BetterStringUtils.isBlank(anParentPath)) {
+        if (StringUtils.isBlank(anParentPath)) {
             workPath = basePath + "/" + format;
-        }
-        else {
+        } else {
             workPath = basePath + "/" + anParentPath + "/" + format;
         }
         File file = new File(workPath);
 
         // 如果文件夹不存在则创建
-        if (file.exists() ) {
-            
-            //如果是文件，则将文件做重命名
-            if ( file.isFile()){
-                file.renameTo(new File(workPath+".rename"));
+        if (file.exists()) {
+
+            // 如果是文件，则将文件做重命名
+            if (file.isFile()) {
+                file.renameTo(new File(workPath + ".rename"));
                 file.mkdirs();
             }
-        }
-        else{
-            //不存在，就创将目录
-            file.mkdirs(); 
+        } else {
+            // 不存在，就创将目录
+            file.mkdirs();
         }
         // 得到上传的文件的文件名
         String fileName = UUIDUtils.uuid();
-        String fileAbsoPath  = workPath + "/" + fileName;
-        
-        //保存在系统中的相对路径
+        String fileAbsoPath = workPath + "/" + fileName;
+
+        // 保存在系统中的相对路径
         String saveUrl = null;
-        if (BetterStringUtils.isNotBlank(anParentPath)){
-            saveUrl ="/" + anParentPath; 
-        }
-        else{
-            saveUrl ="";
+        if (StringUtils.isNotBlank(anParentPath)) {
+            saveUrl = "/" + anParentPath;
+        } else {
+            saveUrl = "";
         }
         saveUrl = saveUrl + "/" + format + "/" + fileName;
 
@@ -947,15 +924,15 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
      * @param anFileName
      * @return
      */
-    public static String extractFileExt(String anFileName){
-        if (BetterStringUtils.isNotBlank(anFileName)){
-           if (anFileName.contains(".")){
-               return anFileName.substring(anFileName.lastIndexOf(".") + 1);
-           }
+    public static String extractFileExt(String anFileName) {
+        if (StringUtils.isNotBlank(anFileName)) {
+            if (anFileName.contains(".")) {
+                return anFileName.substring(anFileName.lastIndexOf(".") + 1);
+            }
         }
         return "bin";
     }
-    
+
     public static File getRealFile(String anBasePath) {
         String tmpStr = fileRealPath(anBasePath);
         if (tmpStr != null) {
@@ -969,34 +946,36 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
     }
 
     public static String fileRealPath(String anBasePath) {
-        if (BetterStringUtils.isNotBlank(anBasePath)) {
+        if (StringUtils.isNotBlank(anBasePath)) {
             return anBasePath.replaceAll("\\.\\.", "");
-        }
-        else {
+        } else {
             return null;
         }
     }
-    
+
     /**
      * Returns the byte [] content of the specified file.
      *
      * @param file
      * @return the byte content of the file
      */
-    public static byte [] readContent(File file) {
-        byte [] buffer = new byte[(int) file.length()];
+    public static byte[] readContent(File file) {
+        byte[] buffer = new byte[(int) file.length()];
         BufferedInputStream is = null;
         try {
             is = new BufferedInputStream(new FileInputStream(file));
-            is.read(buffer,  0,  buffer.length);
-        } catch (Throwable t) {
+            is.read(buffer, 0, buffer.length);
+        }
+        catch (Throwable t) {
             System.err.println("Failed to read byte content of " + file.getAbsolutePath());
             t.printStackTrace();
-        } finally {
+        }
+        finally {
             if (is != null) {
                 try {
                     is.close();
-                } catch (IOException ioe) {
+                }
+                catch (IOException ioe) {
                     System.err.println("Failed to close file " + file.getAbsolutePath());
                     ioe.printStackTrace();
                 }
@@ -1004,6 +983,7 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
         }
         return buffer;
     }
+
     /**
      * Returns the string content of the specified file.
      *
@@ -1025,14 +1005,17 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
                     sb.append(lineEnding);
                 }
             }
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             System.err.println("Failed to read content of " + file.getAbsolutePath());
             t.printStackTrace();
-        } finally {
-            if (reader != null){
+        }
+        finally {
+            if (reader != null) {
                 try {
                     reader.close();
-                } catch (IOException ioe) {
+                }
+                catch (IOException ioe) {
                     System.err.println("Failed to close file " + file.getAbsolutePath());
                     ioe.printStackTrace();
                 }
@@ -1040,7 +1023,8 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
             if (is != null) {
                 try {
                     is.close();
-                } catch (IOException ioe) {
+                }
+                catch (IOException ioe) {
                     System.err.println("Failed to close file " + file.getAbsolutePath());
                     ioe.printStackTrace();
                 }
@@ -1048,7 +1032,5 @@ public class LocalFileUtils extends org.apache.commons.io.FileUtils {
         }
         return sb.toString();
     }
-
-
 
 }

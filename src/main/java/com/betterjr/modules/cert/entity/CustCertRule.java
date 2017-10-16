@@ -75,7 +75,6 @@ public class CustCertRule implements BetterjrEntity {
         this.rule = anRule;
     }
 
-
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
@@ -100,9 +99,11 @@ public class CustCertRule implements BetterjrEntity {
             return false;
         }
         final CustCertRule other = (CustCertRule) that;
-        return (this.getSerialNo() == null ? other.getSerialNo() == null : this.getSerialNo().equals(other.getSerialNo()))
+        return (this.getSerialNo() == null ? other.getSerialNo() == null
+                : this.getSerialNo().equals(other.getSerialNo()))
                 && (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-                && (this.getCustName() == null ? other.getCustName() == null : this.getCustName().equals(other.getCustName()))
+                && (this.getCustName() == null ? other.getCustName() == null
+                        : this.getCustName().equals(other.getCustName()))
                 && (this.getRule() == null ? other.getRule() == null : this.getRule().equals(other.getRule()));
     }
 

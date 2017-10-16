@@ -18,9 +18,9 @@ public interface IAgencyAuthFileGroupService {
      * @return
      */
     public List<AgencyAuthorFileGroup> findAuthorFileGroup(String anAgencyNo, String anBusinFlag);
-    
+
     public List<AgencyAuthorFileGroup> findAuthorFileGroup(String[] anAgencyNoList, String anBusinFlag);
-    
+
     /**
      * 根据合作伙伴编码和业务类型，获得授权使用的业务文件类型，组合为直接使用的数据
      * @param anAgencyNo 合作伙伴编码
@@ -30,11 +30,10 @@ public interface IAgencyAuthFileGroupService {
     public List<String> composeList(String anAgencyNo, String anBusinFlag);
 
     public Map<String, AuthorFileGroup> findAllFileGroup();
-    
+
     public List<AuthorFileGroup> findFileGroupList(String anBusinFlag);
-    
+
     public List<AuthorFileGroup> findCustFileGroupList();
-    
 
     /**
      * 查找文件存储类型
@@ -44,12 +43,13 @@ public interface IAgencyAuthFileGroupService {
      * @return
      */
     public FileStoreType findFileStoreType(String anFileInfoType);
+
     /**
      * 查找Aliyun OSS 配置信息
      * @return
      */
     public OSSConfigInfo findOSSConfigInfo();
-    
+
     /**
      *查找文件创建路径 
      * @param anAgencyNo 合作机构代码
@@ -57,14 +57,14 @@ public interface IAgencyAuthFileGroupService {
      * @return
      */
     public String findCreateFilePath(String anFileInfoType);
-    
+
     /**
      * 查找文件绝对路径信息
      * @param anFilePath 文件路径信息
      * @return
      */
     public String findAbsFilePath(String anFilePath);
-    
+
     /**
      * 查找模板文件路径
      * 
@@ -75,7 +75,7 @@ public interface IAgencyAuthFileGroupService {
      * @return
      */
     public String findTempFilePath(String anAgencyNo, String anFileInfoType);
-    
+
     /**
      * 查找demo样张的文件路径
      * 
@@ -83,7 +83,7 @@ public interface IAgencyAuthFileGroupService {
      * @return
      */
     public String findDemoFilePath(String anAgencyNo, String anFileInfoType);
-    
+
     /***
      * 根据不同条件查询返回文件类型对象
      * @param anMap 条件
@@ -101,19 +101,19 @@ public interface IAgencyAuthFileGroupService {
      * @return
      */
     public CheckDataResult findFileTypePermit(String anFileInfoType, String anFileType);
-    
+
     /**
      * 
      * @param anFileInfoType
      * @return
      */
     public String webFindFileTypePermitInfo(String anFileInfoType);
-    
+
     /***
      * 查询文件类型对象
      * @param anFileInfoType
      * @return
      */
     public AuthorFileGroup findAuthFileGroup(String anFileInfoType);
-    
+
 }

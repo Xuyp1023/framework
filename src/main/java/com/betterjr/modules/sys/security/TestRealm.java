@@ -12,28 +12,29 @@ import org.apache.shiro.subject.PrincipalCollection;
 
 import com.betterjr.common.data.UserType;
 
-public class TestRealm extends AuthorizingRealm{
+public class TestRealm extends AuthorizingRealm {
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(final PrincipalCollection principals) {
         // TODO Auto-generated method stub
         System.out.println("testrealm=权限认证");
-        final AuthorizationInfo info=new SimpleAuthorizationInfo();
+        final AuthorizationInfo info = new SimpleAuthorizationInfo();
         return info;
     }
 
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(final AuthenticationToken token) throws AuthenticationException {
+    protected AuthenticationInfo doGetAuthenticationInfo(final AuthenticationToken token)
+            throws AuthenticationException {
         // TODO Auto-generated method stub
-        final UsernamePasswordToken upToken = (UsernamePasswordToken)token;
+        final UsernamePasswordToken upToken = (UsernamePasswordToken) token;
         final String username = upToken.getUsername();
-        final char[] passwd=upToken.getPassword();
+        final char[] passwd = upToken.getPassword();
 
         final UserType ut = UserType.OPERATOR_USER;
-        final ShiroUser user=new ShiroUser(ut,Long.valueOf(0l),username,null,null, null, false,token,null);
+        final ShiroUser user = new ShiroUser(ut, Long.valueOf(0l), username, null, null, null, false, token, null);
 
-        final SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user, passwd,"TestRealm");
-        System.out.println("testrealm="+info.toString());
+        final SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user, passwd, "TestRealm");
+        System.out.println("testrealm=" + info.toString());
         return info;
     }
 

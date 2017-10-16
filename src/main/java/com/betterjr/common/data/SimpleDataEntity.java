@@ -15,8 +15,8 @@ public class SimpleDataEntity implements Serializable {
     private final String value;
 
     @JsonIgnore
-    private   String three;
-    
+    private String three;
+
     @JsonIgnore
     private List<String> data;
 
@@ -28,6 +28,7 @@ public class SimpleDataEntity implements Serializable {
         this.value = null;
         this.three = null;
     }
+
     public SimpleDataEntity(String anName, String anValue) {
         this.name = anName;
         this.value = anValue;
@@ -40,13 +41,11 @@ public class SimpleDataEntity implements Serializable {
         if (arrStr.length == 1) {
             this.value = this.name;
             this.three = null;
-        }
-        else {
+        } else {
             this.value = arrStr[1];
             if (arrStr.length == 2) {
                 this.three = null;
-            }
-            else {
+            } else {
                 this.three = arrStr[2];
             }
         }
@@ -82,7 +81,7 @@ public class SimpleDataEntity implements Serializable {
 
     public List<String> findSplitValueData() {
         List<String> list = new LinkedList<>();
-        if (data == null){
+        if (data == null) {
             return list;
         }
         list.addAll(data);
@@ -104,6 +103,7 @@ public class SimpleDataEntity implements Serializable {
         return this.name.equals(value);
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
@@ -140,7 +140,7 @@ public class SimpleDataEntity implements Serializable {
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((getValue() == null) ? 0 : getValue().hashCode());
         result = prime * result + ((getThree() == null) ? 0 : getThree().hashCode());
-        
+
         return result;
     }
 }

@@ -1,5 +1,7 @@
 package com.betterjr.modules.rule.entity;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.betterjr.common.mapper.BeanMapper;
 import com.betterjr.common.utils.BetterDateUtils;
 import com.betterjr.common.utils.BetterStringUtils;
@@ -14,10 +16,12 @@ public class WorkRuleInfo extends RuleInfo {
 
     private Integer priority;
 
+    @Override
     public Integer getPriority() {
         return priority;
     }
 
+    @Override
     public void setPriority(Integer anPriority) {
         priority = anPriority;
     }
@@ -46,13 +50,12 @@ public class WorkRuleInfo extends RuleInfo {
         String[] arrStr = new String[] { this.getEffectDate(), this.getValidDate() };
         for (int i = 0; i < arrStr.length; i++) {
             String tmpStr = arrStr[i];
-            if (BetterStringUtils.isNotBlank(tmpStr)) {
+            if (StringUtils.isNotBlank(tmpStr)) {
                 if (tmpDate.compareTo(tmpStr) > 0) {
                     if (i == 0) {
                         return false;
                     }
-                }
-                else if (tmpDate.compareTo(tmpStr) > 0) {
+                } else if (tmpDate.compareTo(tmpStr) > 0) {
                     if (i == 1) {
                         return false;
                     }
@@ -67,11 +70,9 @@ public class WorkRuleInfo extends RuleInfo {
     public int compareTo(final RuleFace rule) {
         if (this.priority < rule.getPriority()) {
             return -1;
-        }
-        else if (this.priority > rule.getPriority()) {
+        } else if (this.priority > rule.getPriority()) {
             return 1;
-        }
-        else {
+        } else {
             return this.getRuleNo().compareTo(rule.getRuleNo());
         }
     }

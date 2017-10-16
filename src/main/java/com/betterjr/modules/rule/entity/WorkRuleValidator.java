@@ -1,5 +1,7 @@
 package com.betterjr.modules.rule.entity;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.betterjr.common.mapper.BeanMapper;
 import com.betterjr.common.utils.BetterStringUtils;
 
@@ -40,19 +42,18 @@ public class WorkRuleValidator extends RuleValidator {
         this.priority = anBusinV.getValidPrior();
         this.status = anBusinV.getStatus();
 
-        if (BetterStringUtils.isNotBlank(anBusinV.getFieldName())) {
+        if (StringUtils.isNotBlank(anBusinV.getFieldName())) {
             this.setFieldName(anBusinV.getFieldName());
         }
 
-        if (BetterStringUtils.isNotBlank(anBusinV.getShowName())) {
+        if (StringUtils.isNotBlank(anBusinV.getShowName())) {
             this.setShowName(anBusinV.getShowName());
         }
-        
-        if (BetterStringUtils.isNotBlank(anBusinV.getMustItem())) {
+
+        if (StringUtils.isNotBlank(anBusinV.getMustItem())) {
             if ("0".equals(anBusinV.getMustItem())) {
                 this.setMustItem(false);
-            }
-            else {
+            } else {
                 this.setMustItem(true);
             }
         }

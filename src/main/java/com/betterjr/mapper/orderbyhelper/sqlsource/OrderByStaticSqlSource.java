@@ -1,5 +1,7 @@
 package com.betterjr.mapper.orderbyhelper.sqlsource;
 
+import java.util.List;
+
 import org.apache.ibatis.builder.StaticSqlSource;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.ParameterMapping;
@@ -10,8 +12,6 @@ import org.apache.ibatis.session.Configuration;
 
 import com.betterjr.mapper.orderbyhelper.OrderByHelper;
 import com.betterjr.mapper.orderbyhelper.OrderByParser;
-
-import java.util.List;
 
 /**
  * 描述信息
@@ -33,6 +33,7 @@ public class OrderByStaticSqlSource implements SqlSource, OrderBySqlSource {
         this.original = sqlSource;
     }
 
+    @Override
     public BoundSql getBoundSql(Object parameterObject) {
         String orderBy = OrderByHelper.getOrderBy();
         String tempSql = sql;
@@ -42,6 +43,7 @@ public class OrderByStaticSqlSource implements SqlSource, OrderBySqlSource {
         return new BoundSql(configuration, tempSql, parameterMappings, parameterObject);
     }
 
+    @Override
     public SqlSource getOriginal() {
         return original;
     }

@@ -33,6 +33,7 @@ import com.ql.util.express.parse.NodeTypeManager;
 public class ExpressRunner {
 
     private static final Log log = LogFactory.getLog(ExpressRunner.class);
+
     public static Log getLog() {
         return log;
     }
@@ -110,14 +111,14 @@ public class ExpressRunner {
      * @param aExpressResourceLoader
      *            表达式的资源装载器
      */
-    public ExpressRunner(boolean aIsPrecise, boolean aIstrace, IExpressResourceLoader aExpressResourceLoader, NodeTypeManager aManager) {
+    public ExpressRunner(boolean aIsPrecise, boolean aIstrace, IExpressResourceLoader aExpressResourceLoader,
+            NodeTypeManager aManager) {
         this.isTrace = aIstrace;
         this.isPrecise = aIsPrecise;
         this.expressResourceLoader = aExpressResourceLoader;
         if (aManager == null) {
             manager = new NodeTypeManager();
-        }
-        else {
+        } else {
             manager = aManager;
         }
         this.operatorManager = new OperatorFactory(this.isPrecise);
@@ -234,9 +235,10 @@ public class ExpressRunner {
      *            如果函数执行的结果是false，需要输出的错误信息
      * @throws Exception
      */
-    public void addFunctionOfClassMethod(String name, String aClassName, String aFunctionName, Class<?>[] aParameterClassTypes, String errorInfo)
-            throws Exception {
-        this.addFunction(name, new OperatorSelfDefineClassFunction(name, aClassName, aFunctionName, aParameterClassTypes, null, null, errorInfo));
+    public void addFunctionOfClassMethod(String name, String aClassName, String aFunctionName,
+            Class<?>[] aParameterClassTypes, String errorInfo) throws Exception {
+        this.addFunction(name, new OperatorSelfDefineClassFunction(name, aClassName, aFunctionName,
+                aParameterClassTypes, null, null, errorInfo));
 
     }
 
@@ -259,31 +261,12 @@ public class ExpressRunner {
      *            如果函数执行的结果是false，需要输出的错误信息
      * @throws Exception
      */
-    public void addFunctionOfClassMethod(String name, String aClassName, String aFunctionName, Class<?>[] aParameterClassTypes,
-            String[] aParameterDesc, String[] aParameterAnnotation, String errorInfo) throws Exception {
-        this.addFunction(name, new OperatorSelfDefineClassFunction(name, aClassName, aFunctionName, aParameterClassTypes, aParameterDesc,
-                aParameterAnnotation, errorInfo));
-
-    }
-
-    /**
-     * 添加一个类的函数定义，例如：Math.abs(double) 映射为表达式中的 "取绝对值(-5.0)"
-     * 
-     * @param name
-     *            函数名称
-     * @param aClassName
-     *            类名称
-     * @param aFunctionName
-     *            类中的方法名称
-     * @param aParameterTypes
-     *            方法的参数类型名称
-     * @param errorInfo
-     *            如果函数执行的结果是false，需要输出的错误信息
-     * @throws Exception
-     */
-    public void addFunctionOfClassMethod(String name, String aClassName, String aFunctionName, String[] aParameterTypes, String errorInfo)
+    public void addFunctionOfClassMethod(String name, String aClassName, String aFunctionName,
+            Class<?>[] aParameterClassTypes, String[] aParameterDesc, String[] aParameterAnnotation, String errorInfo)
             throws Exception {
-        this.addFunction(name, new OperatorSelfDefineClassFunction(name, aClassName, aFunctionName, aParameterTypes, null, null, errorInfo));
+        this.addFunction(name, new OperatorSelfDefineClassFunction(name, aClassName, aFunctionName,
+                aParameterClassTypes, aParameterDesc, aParameterAnnotation, errorInfo));
+
     }
 
     /**
@@ -297,35 +280,56 @@ public class ExpressRunner {
      *            类中的方法名称
      * @param aParameterTypes
      *            方法的参数类型名称
-     * @param aParameterDesc
-     *            方法的参数说明
-     * @param aParameterAnnotation
-     *            方法的参数注解
      * @param errorInfo
      *            如果函数执行的结果是false，需要输出的错误信息
      * @throws Exception
      */
-    public void addFunctionOfClassMethod(String name, String aClassName, String aFunctionName, String[] aParameterTypes, String[] aParameterDesc,
-            String[] aParameterAnnotation, String errorInfo) throws Exception {
-        this.addFunction(name, new OperatorSelfDefineClassFunction(name, aClassName, aFunctionName, aParameterTypes, aParameterDesc,
-                aParameterAnnotation, errorInfo));
-
-    }
-
-    /**
-     * 用于将一个用户自己定义的对象(例如Spring对象)方法转换为一个表达式计算的函数
-     * 
-     * @param name
-     * @param aServiceObject
-     * @param aFunctionName
-     * @param aParameterClassTypes
-     * @param errorInfo
-     * @throws Exception
-     */
-    public void addFunctionOfServiceMethod(String name, Object aServiceObject, String aFunctionName, Class<?>[] aParameterClassTypes,
+    public void addFunctionOfClassMethod(String name, String aClassName, String aFunctionName, String[] aParameterTypes,
             String errorInfo) throws Exception {
-        this.addFunction(name,
-                new OperatorSelfDefineServiceFunction(name, aServiceObject, aFunctionName, aParameterClassTypes, null, null, errorInfo));
+        this.addFunction(name, new OperatorSelfDefineClassFunction(name, aClassName, aFunctionName, aParameterTypes,
+                null, null, errorInfo));
+    }
+
+    /**
+     * 添加一个类的函数定义，例如：Math.abs(double) 映射为表达式中的 "取绝对值(-5.0)"
+     * 
+     * @param name
+     *            函数名称
+     * @param aClassName
+     *            类名称
+     * @param aFunctionName
+     *            类中的方法名称
+     * @param aParameterTypes
+     *            方法的参数类型名称
+     * @param aParameterDesc
+     *            方法的参数说明
+     * @param aParameterAnnotation
+     *            方法的参数注解
+     * @param errorInfo
+     *            如果函数执行的结果是false，需要输出的错误信息
+     * @throws Exception
+     */
+    public void addFunctionOfClassMethod(String name, String aClassName, String aFunctionName, String[] aParameterTypes,
+            String[] aParameterDesc, String[] aParameterAnnotation, String errorInfo) throws Exception {
+        this.addFunction(name, new OperatorSelfDefineClassFunction(name, aClassName, aFunctionName, aParameterTypes,
+                aParameterDesc, aParameterAnnotation, errorInfo));
+
+    }
+
+    /**
+     * 用于将一个用户自己定义的对象(例如Spring对象)方法转换为一个表达式计算的函数
+     * 
+     * @param name
+     * @param aServiceObject
+     * @param aFunctionName
+     * @param aParameterClassTypes
+     * @param errorInfo
+     * @throws Exception
+     */
+    public void addFunctionOfServiceMethod(String name, Object aServiceObject, String aFunctionName,
+            Class<?>[] aParameterClassTypes, String errorInfo) throws Exception {
+        this.addFunction(name, new OperatorSelfDefineServiceFunction(name, aServiceObject, aFunctionName,
+                aParameterClassTypes, null, null, errorInfo));
 
     }
 
@@ -343,10 +347,11 @@ public class ExpressRunner {
      * @param errorInfo
      * @throws Exception
      */
-    public void addFunctionOfServiceMethod(String name, Object aServiceObject, String aFunctionName, Class<?>[] aParameterClassTypes,
-            String[] aParameterDesc, String[] aParameterAnnotation, String errorInfo) throws Exception {
-        this.addFunction(name, new OperatorSelfDefineServiceFunction(name, aServiceObject, aFunctionName, aParameterClassTypes, aParameterDesc,
-                aParameterAnnotation, errorInfo));
+    public void addFunctionOfServiceMethod(String name, Object aServiceObject, String aFunctionName,
+            Class<?>[] aParameterClassTypes, String[] aParameterDesc, String[] aParameterAnnotation, String errorInfo)
+            throws Exception {
+        this.addFunction(name, new OperatorSelfDefineServiceFunction(name, aServiceObject, aFunctionName,
+                aParameterClassTypes, aParameterDesc, aParameterAnnotation, errorInfo));
 
     }
 
@@ -360,16 +365,18 @@ public class ExpressRunner {
      * @param errorInfo
      * @throws Exception
      */
-    public void addFunctionOfServiceMethod(String name, Object aServiceObject, String aFunctionName, String[] aParameterTypes, String errorInfo)
-            throws Exception {
-        this.addFunction(name, new OperatorSelfDefineServiceFunction(name, aServiceObject, aFunctionName, aParameterTypes, null, null, errorInfo));
+    public void addFunctionOfServiceMethod(String name, Object aServiceObject, String aFunctionName,
+            String[] aParameterTypes, String errorInfo) throws Exception {
+        this.addFunction(name, new OperatorSelfDefineServiceFunction(name, aServiceObject, aFunctionName,
+                aParameterTypes, null, null, errorInfo));
 
     }
 
-    public void addFunctionOfServiceMethod(String name, Object aServiceObject, String aFunctionName, String[] aParameterTypes,
-            String[] aParameterDesc, String[] aParameterAnnotation, String errorInfo) throws Exception {
-        this.addFunction(name, new OperatorSelfDefineServiceFunction(name, aServiceObject, aFunctionName, aParameterTypes, aParameterDesc,
-                aParameterAnnotation, errorInfo));
+    public void addFunctionOfServiceMethod(String name, Object aServiceObject, String aFunctionName,
+            String[] aParameterTypes, String[] aParameterDesc, String[] aParameterAnnotation, String errorInfo)
+            throws Exception {
+        this.addFunction(name, new OperatorSelfDefineServiceFunction(name, aServiceObject, aFunctionName,
+                aParameterTypes, aParameterDesc, aParameterAnnotation, errorInfo));
 
     }
 
@@ -428,8 +435,7 @@ public class ExpressRunner {
         if (isExist == false || errorInfo == null) {
             // 不需要新增操作符号，只需要建立一个关键子即可
             this.manager.addOperatorWithRealNodeType(keyWordName, realNodeType.getName());
-        }
-        else {
+        } else {
             this.manager.addOperatorWithLevelOfReference(keyWordName, realNodeType.getName());
             this.operatorManager.addOperatorWithAlias(keyWordName, realNodeType.getName(), errorInfo);
         }
@@ -467,8 +473,8 @@ public class ExpressRunner {
      * @return
      * @throws Exception
      */
-    public Object executeByExpressName(String name, IExpressContext<String, Object> context, List<String> errorList, boolean isTrace,
-            boolean isCatchException, Log aLog) throws Exception {
+    public Object executeByExpressName(String name, IExpressContext<String, Object> context, List<String> errorList,
+            boolean isTrace, boolean isCatchException, Log aLog) throws Exception {
         return this.executeByExpressName(new String[] { name }, context, errorList, isTrace, isCatchException, aLog);
     }
 
@@ -484,8 +490,8 @@ public class ExpressRunner {
      * @return
      * @throws Exception
      */
-    public Object executeByExpressName(String[] setsNames, IExpressContext<String, Object> context, List<String> errorList, boolean isTrace,
-            boolean isCatchException, Log aLog) throws Exception {
+    public Object executeByExpressName(String[] setsNames, IExpressContext<String, Object> context,
+            List<String> errorList, boolean isTrace, boolean isCatchException, Log aLog) throws Exception {
         InstructionSet[] instructionSets = new InstructionSet[setsNames.length];
         for (int i = 0; i < setsNames.length; i++) {
             instructionSets[i] = this.loader.getInstructionSet(setsNames[i]);
@@ -505,9 +511,10 @@ public class ExpressRunner {
      * @return
      * @throws Exception
      */
-    public Object execute(InstructionSet[] instructionSets, IExpressContext<String, Object> context, List<String> errorList, boolean isTrace,
-            boolean isCatchException, Log aLog) throws Exception {
-        return InstructionSetRunner.executeOuter(this, instructionSets, this.loader, context, errorList, isTrace, isCatchException, aLog, false);
+    public Object execute(InstructionSet[] instructionSets, IExpressContext<String, Object> context,
+            List<String> errorList, boolean isTrace, boolean isCatchException, Log aLog) throws Exception {
+        return InstructionSetRunner.executeOuter(this, instructionSets, this.loader, context, errorList, isTrace,
+                isCatchException, aLog, false);
     }
 
     /**
@@ -526,8 +533,8 @@ public class ExpressRunner {
      * @return
      * @throws Exception
      */
-    public Object execute(String expressString, IExpressContext<String, Object> context, List<String> errorList, boolean isCache, boolean isTrace)
-            throws Exception {
+    public Object execute(String expressString, IExpressContext<String, Object> context, List<String> errorList,
+            boolean isCache, boolean isTrace) throws Exception {
         return this.execute(expressString, context, errorList, isCache, isTrace, null);
     }
 
@@ -549,8 +556,8 @@ public class ExpressRunner {
      * @return
      * @throws Exception
      */
-    public Object execute(String expressString, IExpressContext<String, Object> context, List<String> errorList, boolean isCache, boolean isTrace,
-            Log aLog) throws Exception {
+    public Object execute(String expressString, IExpressContext<String, Object> context, List<String> errorList,
+            boolean isCache, boolean isTrace, Log aLog) throws Exception {
         InstructionSet parseResult = null;
         if (isCache == true) {
             parseResult = expressInstructionSetCache.get(expressString);
@@ -563,8 +570,7 @@ public class ExpressRunner {
                     }
                 }
             }
-        }
-        else {
+        } else {
             parseResult = this.parseInstructionSet(expressString);
         }
         return this.execute(new InstructionSet[] { parseResult }, context, errorList, isTrace, false, aLog);
@@ -637,8 +643,8 @@ public class ExpressRunner {
         }
     }
 
-    public boolean createInstructionSetPrivate(InstructionSet result, Stack<ForRelBreakContinue> forStack, ExpressNode node, boolean isRoot)
-            throws Exception {
+    public boolean createInstructionSetPrivate(InstructionSet result, Stack<ForRelBreakContinue> forStack,
+            ExpressNode node, boolean isRoot) throws Exception {
         InstructionFactory factory = InstructionFactory.getInstructionFactory(node.getInstructionFactory());
         boolean hasLocalVar = factory.createInstruction(this, result, forStack, node, isRoot);
         return hasLocalVar;

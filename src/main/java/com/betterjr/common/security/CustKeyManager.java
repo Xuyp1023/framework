@@ -2,15 +2,15 @@ package com.betterjr.common.security;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.cert.Certificate;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.betterjr.common.utils.BetterStringUtils;
-
-import java.security.cert.Certificate;
 
 /**
  * 
@@ -34,8 +34,8 @@ public class CustKeyManager {
      */
     private Certificate matchKey;
 
-    private String workCharSet ="UTF-8";
-    
+    private String workCharSet = "UTF-8";
+
     public void setMatchKey(Certificate anMatchKey) {
         this.matchKey = anMatchKey;
     }
@@ -45,7 +45,7 @@ public class CustKeyManager {
     private Map<String, Certificate> certMap = new ConcurrentHashMap<String, Certificate>();
 
     public CustKeyManager(String anPrivKey, String anMatchKey) {
-        if (BetterStringUtils.isNotBlank(anMatchKey)) {
+        if (StringUtils.isNotBlank(anMatchKey)) {
             this.simpleMatchKey = KeyReader.readPublicKey(anMatchKey);
         }
         this.privKey = KeyReader.readPrivateKey(anPrivKey);
@@ -57,7 +57,7 @@ public class CustKeyManager {
             this.privKey = ent.getKey();
             this.pubKey = ent.getValue();
         }
-        if (BetterStringUtils.isNotBlank(anMatchKey)) {
+        if (StringUtils.isNotBlank(anMatchKey)) {
             this.matchKey = KeyReader.fromCerStoredClassPath(anMatchKey);
         }
     }
@@ -85,7 +85,7 @@ public class CustKeyManager {
      * @throws 异常情况
      */
     public void addCertificate(String anToken, String anMatchKey) {
-        if (BetterStringUtils.isNotBlank(anMatchKey) && BetterStringUtils.isNotBlank(anToken)) {
+        if (StringUtils.isNotBlank(anMatchKey) && StringUtils.isNotBlank(anToken)) {
             Certificate tmpC = KeyReader.fromCerStoredFile(anMatchKey);
             this.certMap.put(anToken, tmpC);
         }
@@ -129,7 +129,7 @@ public class CustKeyManager {
      * @throws 异常情况
      */
     public boolean verifySign(String anContent, String anSign, String anToken) {
-        if (BetterStringUtils.isNotBlank(anToken)) {
+        if (StringUtils.isNotBlank(anToken)) {
             Certificate tmpC = this.certMap.get(anToken);
             if (tmpC != null) {
                 return SignHelper.verifySign(anContent, anSign, tmpC, this.workCharSet);
@@ -167,7 +167,7 @@ public class CustKeyManager {
     }
 
     public String encrypt(String anData, String anToken) {
-        if (BetterStringUtils.isNotBlank(anToken)) {
+        if (StringUtils.isNotBlank(anToken)) {
             Certificate tmpC = this.certMap.get(anToken);
             if (tmpC != null) {
                 return SignHelper.encrypt(anData, tmpC.getPublicKey(), workCharSet);
@@ -216,8 +216,7 @@ public class CustKeyManager {
         if (this.simpleMatchKey == null) {
 
             return matchKey.getPublicKey();
-        }
-        else {
+        } else {
             return this.simpleMatchKey;
         }
     }
@@ -229,6 +228,5 @@ public class CustKeyManager {
     public void setWorkCharSet(String anWorkCharSet) {
         this.workCharSet = anWorkCharSet;
     }
-    
-    
+
 }

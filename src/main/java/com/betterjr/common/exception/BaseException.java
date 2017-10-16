@@ -20,6 +20,7 @@ public class BaseException extends RuntimeException {
         super(msg);
     }
 
+    @Override
     public Throwable getCause() {
         return (this.cause == this ? null : this.cause);
 
@@ -38,34 +39,34 @@ public class BaseException extends RuntimeException {
         cause = ex;
     }
 
+    @Override
     public String getMessage() {
         if (getCause() == null) {
-//            return "Error Code :".concat(this.errorCode).concat("; ").concat(super.getMessage());
+            // return "Error Code :".concat(this.errorCode).concat("; ").concat(super.getMessage());
             return super.getMessage();
-        }
-        else {
-            return "Error Code :".concat(this.errorCode).concat("; ")
-                    .concat(super.getMessage() + "; nested exception is " + getCause().getClass().getName() + ": " + getCause().getMessage());
+        } else {
+            return "Error Code :".concat(this.errorCode).concat("; ").concat(super.getMessage()
+                    + "; nested exception is " + getCause().getClass().getName() + ": " + getCause().getMessage());
         }
     }
 
+    @Override
     public void printStackTrace(PrintStream ps) {
         ps.println("Error Code :" + this.errorCode);
         if (getCause() == null) {
             super.printStackTrace(ps);
-        }
-        else {
+        } else {
             ps.println(this);
             getCause().printStackTrace(ps);
         }
     }
 
+    @Override
     public void printStackTrace(PrintWriter pw) {
         pw.println("Error Code :" + this.errorCode);
         if (getCause() == null) {
             super.printStackTrace(pw);
-        }
-        else {
+        } else {
             pw.println(this);
             getCause().printStackTrace(pw);
         }
@@ -82,8 +83,7 @@ public class BaseException extends RuntimeException {
             }
             if (ex instanceof BaseException) {
                 ex = ((BaseException) ex).getCause();
-            }
-            else {
+            } else {
                 ex = null;
             }
         }

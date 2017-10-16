@@ -99,7 +99,8 @@ public class OperatorDubboClientService implements IOperatorService {
     }
 
     @Override
-    public String webUpdateOperatorWithImageFile(final Map<String, Object> anMap, final String anCustList, final String anFileList) {
+    public String webUpdateOperatorWithImageFile(final Map<String, Object> anMap, final String anCustList,
+            final String anFileList) {
 
         return operatorService.webUpdateOperatorWithImageFile(anMap, anCustList, anFileList);
     }

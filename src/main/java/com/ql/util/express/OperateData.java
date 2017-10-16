@@ -46,8 +46,7 @@ public class OperateData implements java.io.Serializable {
 
         Object obj = this.getObject(parent);
         if (obj == null) return null;
-        else
-            return obj.getClass();
+        else return obj.getClass();
     }
 
     public final Object getObject(InstructionSetContext context) throws Exception {
@@ -72,25 +71,24 @@ public class OperateData implements java.io.Serializable {
         String result = "new " + OperateData.class.getName() + "(";
         if (String.class.equals(this.type)) {
             result = result + "\"" + this.dataObject + "\"";
-        }
-        else if (this.type.isPrimitive()) {
+        } else if (this.type.isPrimitive()) {
             result = result + this.dataObject.getClass().getName() + ".valueOf(\"" + this.dataObject + "\")";
-        }
-        else {
-            result = result + "new " + this.dataObject.getClass().getName() + "(\"" + this.dataObject.toString() + "\")";
+        } else {
+            result = result + "new " + this.dataObject.getClass().getName() + "(\"" + this.dataObject.toString()
+                    + "\")";
         }
         result = result + "," + type.getName() + ".class";
         result = result + ")";
         return result;
     }
 
+    @Override
     public String toString() {
         if (this.dataObject == null) return this.type + ":null";
         else {
             if (this.dataObject instanceof Class) {
                 return ExpressUtil.getClassName((Class<?>) this.dataObject);
-            }
-            else {
+            } else {
                 return this.dataObject.toString();
             }
         }
@@ -99,8 +97,7 @@ public class OperateData implements java.io.Serializable {
     public void toResource(StringBuilder builder, int level) {
         if (this.dataObject != null) {
             builder.append(this.dataObject.toString());
-        }
-        else {
+        } else {
             builder.append("null");
         }
     }

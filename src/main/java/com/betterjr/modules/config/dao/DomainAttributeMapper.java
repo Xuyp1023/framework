@@ -5,5 +5,4 @@ import com.betterjr.mapper.common.Mapper;
 import com.betterjr.modules.config.entity.DomainAttribute;
 
 @BetterjrMapper
-public interface DomainAttributeMapper extends Mapper<DomainAttribute> {
-}
+public interface DomainAttributeMapper extends Mapper<DomainAttribute> {}

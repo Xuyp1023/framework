@@ -15,7 +15,6 @@
  */
 package com.opencsv;
 
-
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
 
 /**
@@ -44,26 +43,23 @@ public class CSVParserBuilder {
     /**
      * Default constructor.
      */
-    public CSVParserBuilder() {
+    public CSVParserBuilder() {}
+
+    public static CSVParserBuilder create() {
+
+        return new CSVParserBuilder();
     }
 
-    public static CSVParserBuilder create(){
-        
-       return new CSVParserBuilder(); 
-    }
-    
     /**
      * Sets the delimiter to use for separating entries.
      *
      * @param separator the delimiter to use for separating entries
      * @return The CSVParserBuilder
      */
-    public CSVParserBuilder withSeparator(
-            final char separator) {
+    public CSVParserBuilder withSeparator(final char separator) {
         this.separator = separator;
         return this;
     }
-
 
     /**
      * Sets the character to use for quoted elements.
@@ -71,12 +67,10 @@ public class CSVParserBuilder {
      * @param quoteChar the character to use for quoted element.
      * @return The CSVParserBuilder
      */
-    public CSVParserBuilder withQuoteChar(
-            final char quoteChar) {
+    public CSVParserBuilder withQuoteChar(final char quoteChar) {
         this.quoteChar = quoteChar;
         return this;
     }
-
 
     /**
      * Sets the character to use for escaping a separator or quote.
@@ -84,12 +78,10 @@ public class CSVParserBuilder {
      * @param escapeChar the character to use for escaping a separator or quote.
      * @return The CSVParserBuilder
      */
-    public CSVParserBuilder withEscapeChar(
-            final char escapeChar) {
+    public CSVParserBuilder withEscapeChar(final char escapeChar) {
         this.escapeChar = escapeChar;
         return this;
     }
-
 
     /**
      * Sets the strict quotes setting - if true, characters
@@ -98,8 +90,7 @@ public class CSVParserBuilder {
      * @param strictQuotes if true, characters outside the quotes are ignored
      * @return The CSVParserBuilder
      */
-    public CSVParserBuilder withStrictQuotes(
-            final boolean strictQuotes) {
+    public CSVParserBuilder withStrictQuotes(final boolean strictQuotes) {
         this.strictQuotes = strictQuotes;
         return this;
     }
@@ -111,8 +102,7 @@ public class CSVParserBuilder {
      * @param ignoreLeadingWhiteSpace if true, white space in front of a quote in a field is ignored
      * @return The CSVParserBuilder
      */
-    public CSVParserBuilder withIgnoreLeadingWhiteSpace(
-            final boolean ignoreLeadingWhiteSpace) {
+    public CSVParserBuilder withIgnoreLeadingWhiteSpace(final boolean ignoreLeadingWhiteSpace) {
         this.ignoreLeadingWhiteSpace = ignoreLeadingWhiteSpace;
         return this;
     }
@@ -123,8 +113,7 @@ public class CSVParserBuilder {
      * @param ignoreQuotations if true, quotations are ignored
      * @return The CSVParserBuilder
      */
-    public CSVParserBuilder withIgnoreQuotations(
-            final boolean ignoreQuotations) {
+    public CSVParserBuilder withIgnoreQuotations(final boolean ignoreQuotations) {
         this.ignoreQuotations = ignoreQuotations;
         return this;
     }
@@ -134,13 +123,7 @@ public class CSVParserBuilder {
      * @return a new CSVParser with defined settings.
      */
     public CSVParser build() {
-        return new CSVParser(
-                separator,
-                quoteChar,
-                escapeChar,
-                strictQuotes,
-                ignoreLeadingWhiteSpace,
-                ignoreQuotations,
+        return new CSVParser(separator, quoteChar, escapeChar, strictQuotes, ignoreLeadingWhiteSpace, ignoreQuotations,
                 nullFieldIndicator);
     }
 

@@ -19,40 +19,45 @@
  */
 package nl.fountain.xelem.excel;
 
-
 /**
  * Represents the ExcelWorkbook element.
  */
 public interface ExcelWorkbook extends XLElement {
-    
+
     void setWindowHeight(int height);
+
     int getWindowHeight();
-    
+
     void setWindowWidth(int width);
+
     int getWindowWidth();
-    
+
     void setWindowTopX(int x);
+
     int getWindowTopX();
-    
+
     void setWindowTopY(int y);
+
     int getWindowTopY();
-    
+
     /**
      * Set the active sheet. 0-based.
      * @param nr the index of the active sheet.
      */
     void setActiveSheet(int nr);
-    
+
     /**
      * Gets the active sheet. 0 based.
      * @return an int >= 0
      */
     int getActiveSheet();
-    
+
     void setProtectStructure(boolean protect);
+
     boolean getProtectStructure();
-    
+
     void setProtectWindows(boolean protect);
+
     boolean getProtectWindows();
-    
+
 }

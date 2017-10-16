@@ -73,8 +73,7 @@ class ResultSetWrapper {
         if (columnHandlers == null) {
             columnHandlers = new HashMap<Class<?>, TypeHandler<?>>();
             typeHandlerMap.put(columnName, columnHandlers);
-        }
-        else {
+        } else {
             handler = columnHandlers.get(propertyType);
         }
         if (handler == null) {
@@ -87,11 +86,9 @@ class ResultSetWrapper {
                 final Class<?> javaType = resolveClass(classNames.get(index));
                 if (javaType != null && jdbcType != null) {
                     handler = typeHandlerRegistry.getTypeHandler(javaType, jdbcType);
-                }
-                else if (javaType != null) {
+                } else if (javaType != null) {
                     handler = typeHandlerRegistry.getTypeHandler(javaType);
-                }
-                else if (jdbcType != null) {
+                } else if (jdbcType != null) {
                     handler = typeHandlerRegistry.getTypeHandler(jdbcType);
                 }
             }
@@ -122,8 +119,7 @@ class ResultSetWrapper {
             final String upperColumnName = columnName.toUpperCase(Locale.ENGLISH);
             if (mappedColumns.contains(upperColumnName)) {
                 mappedColumnNames.add(upperColumnName);
-            }
-            else {
+            } else {
                 unmappedColumnNames.add(columnName);
             }
         }

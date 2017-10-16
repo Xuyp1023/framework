@@ -1,5 +1,15 @@
 package com.opencsv.bean;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.beans.PropertyEditor;
+import java.beans.PropertyEditorManager;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * Copyright 2015 Bytecode Pty Ltd.
  * <p/>
@@ -17,16 +27,6 @@ package com.opencsv.bean;
  */
 
 import com.opencsv.CSVReader;
-
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.beans.PropertyEditor;
-import java.beans.PropertyEditorManager;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Converts CSV strings to objects.  Unlike CsvToBean it returns a single record at a time.
@@ -89,7 +89,8 @@ public class IterableCSVToBean<T> extends AbstractCSVToBean implements Iterable<
      * @throws IntrospectionException -  thrown if there is an failure in Introspection.
      * @throws InvocationTargetException  -  thrown if there is an failure in Introspection.
      */
-    public T nextLine() throws IllegalAccessException, InstantiationException, IOException, IntrospectionException, InvocationTargetException {
+    public T nextLine() throws IllegalAccessException, InstantiationException, IOException, IntrospectionException,
+            InvocationTargetException {
         if (!hasHeader) {
             strategy.captureHeader(csvReader);
             hasHeader = true;
@@ -98,7 +99,8 @@ public class IterableCSVToBean<T> extends AbstractCSVToBean implements Iterable<
         String[] line;
         do {
             line = csvReader.readNext();
-        } while (line != null && (filter != null && !filter.allowLine(line)));
+        }
+        while (line != null && (filter != null && !filter.allowLine(line)));
         if (line != null) {
             bean = strategy.createBean();
             for (int col = 0; col < line.length; col++) {
@@ -121,7 +123,9 @@ public class IterableCSVToBean<T> extends AbstractCSVToBean implements Iterable<
      * @throws InstantiationException - thrown when getting the PropertyEditor for the class.
      * @throws IllegalAccessException - thrown when getting the PropertyEditor for the class.
      */
-    protected PropertyEditor getPropertyEditor(PropertyDescriptor desc) throws InstantiationException, IllegalAccessException {
+    @Override
+    protected PropertyEditor getPropertyEditor(PropertyDescriptor desc)
+            throws InstantiationException, IllegalAccessException {
         Class<?> cls = desc.getPropertyEditorClass();
         if (null != cls) {
             return (PropertyEditor) cls.newInstance();
@@ -167,15 +171,20 @@ public class IterableCSVToBean<T> extends AbstractCSVToBean implements Iterable<
 
                 try {
                     nextBean = bean.nextLine();
-                } catch (IllegalAccessException e) {
+                }
+                catch (IllegalAccessException e) {
                     e.printStackTrace();
-                } catch (InstantiationException e) {
+                }
+                catch (InstantiationException e) {
                     e.printStackTrace();
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     e.printStackTrace();
-                } catch (IntrospectionException e) {
+                }
+                catch (IntrospectionException e) {
                     e.printStackTrace();
-                } catch (InvocationTargetException e) {
+                }
+                catch (InvocationTargetException e) {
                     e.printStackTrace();
                 }
 

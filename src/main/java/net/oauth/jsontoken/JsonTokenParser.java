@@ -16,20 +16,22 @@
  */
 package net.oauth.jsontoken;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import net.oauth.jsontoken.crypto.AsciiStringVerifier;
-import net.oauth.jsontoken.crypto.SignatureAlgorithm;
-import net.oauth.jsontoken.crypto.Verifier;
-import net.oauth.jsontoken.discovery.VerifierProviders;
-import org.apache.commons.codec.binary.Base64;
-import java.time.Instant;
-
 import java.security.SignatureException;
+import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import org.apache.commons.codec.binary.Base64;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import net.oauth.jsontoken.crypto.AsciiStringVerifier;
+import net.oauth.jsontoken.crypto.SignatureAlgorithm;
+import net.oauth.jsontoken.crypto.Verifier;
+import net.oauth.jsontoken.discovery.VerifierProviders;
 
 /**
  * Created by steve on 12/09/14.
@@ -79,8 +81,10 @@ public class JsonTokenParser {
         String jwtHeaderSegment = pieces[0];
         String jwtPayloadSegment = pieces[1];
         byte[] signature = Base64.decodeBase64(pieces[2]);
-        Map<String, Object> header = mapper.readValue(JsonTokenUtil.fromBase64ToJsonString(jwtHeaderSegment),new TypeReference<LinkedHashMap<String,Object>>(){});
-        Map<String, Object> payload = mapper.readValue(JsonTokenUtil.fromBase64ToJsonString(jwtPayloadSegment),new TypeReference<LinkedHashMap<String,Object>>(){});
+        Map<String, Object> header = mapper.readValue(JsonTokenUtil.fromBase64ToJsonString(jwtHeaderSegment),
+                new TypeReference<LinkedHashMap<String, Object>>() {});
+        Map<String, Object> payload = mapper.readValue(JsonTokenUtil.fromBase64ToJsonString(jwtPayloadSegment),
+                new TypeReference<LinkedHashMap<String, Object>>() {});
         JsonToken jsonToken = new JsonToken(header, payload, clock, tokenString);
         return jsonToken;
     }
@@ -121,9 +125,8 @@ public class JsonTokenParser {
      * @throws IllegalStateException when exp or iat are invalid
      */
     public void verify(JsonToken jsonToken, List<Verifier> verifiers) throws SignatureException {
-        if (! signatureIsValid(jsonToken.getTokenString(), verifiers)) {
-            throw new SignatureException("Invalid signature for token: " +
-                    jsonToken.getTokenString());
+        if (!signatureIsValid(jsonToken.getTokenString(), verifiers)) {
+            throw new SignatureException("Invalid signature for token: " + jsonToken.getTokenString());
         }
 
         Instant issuedAt = jsonToken.getIssuedAt();
@@ -138,10 +141,9 @@ public class JsonTokenParser {
         }
 
         if (issuedAt != null && expiration != null) {
-            if (issuedAt.isAfter(expiration)
-                    || ! clock.isCurrentTimeInInterval(issuedAt, expiration)) {
-                throw new IllegalStateException(String.format("Invalid iat and/or exp. iat: %s exp: %s "
-                        + "now: %s", jsonToken.getIssuedAt(), jsonToken.getExpiration(), clock.now()));
+            if (issuedAt.isAfter(expiration) || !clock.isCurrentTimeInInterval(issuedAt, expiration)) {
+                throw new IllegalStateException(String.format("Invalid iat and/or exp. iat: %s exp: %s " + "now: %s",
+                        jsonToken.getIssuedAt(), jsonToken.getExpiration(), clock.now()));
             }
         }
 
@@ -171,7 +173,8 @@ public class JsonTokenParser {
                 asciiVerifier.verifySignature(baseString, signature);
                 sigVerified = true;
                 break;
-            } catch (SignatureException e) {
+            }
+            catch (SignatureException e) {
                 continue;
             }
         }
@@ -218,10 +221,10 @@ public class JsonTokenParser {
     private List<Verifier> provideVerifiers(JsonToken jsonToken) throws SignatureException {
         JsonTokenUtil.checkNotNull(verifierProviders);
         Map<String, Object> header = jsonToken.getHeader();
-        String keyId = (String)header.get(JsonToken.KEY_ID_HEADER);
+        String keyId = (String) header.get(JsonToken.KEY_ID_HEADER);
         SignatureAlgorithm sigAlg = jsonToken.getSignatureAlgorithm();
-        List<Verifier> verifiers = verifierProviders.getVerifierProvider(sigAlg)
-                .findVerifier(jsonToken.getIssuer(), keyId);
+        List<Verifier> verifiers = verifierProviders.getVerifierProvider(sigAlg).findVerifier(jsonToken.getIssuer(),
+                keyId);
         if (verifiers == null) {
             throw new IllegalStateException("No valid verifier for issuer: " + jsonToken.getIssuer());
         }
@@ -235,8 +238,8 @@ public class JsonTokenParser {
     private String[] splitTokenString(String tokenString) {
         String[] pieces = tokenString.split(Pattern.quote(JsonTokenUtil.DELIMITER));
         if (pieces.length != 3) {
-            throw new IllegalStateException("Expected JWT to have 3 segments separated by '" +
-                    JsonTokenUtil.DELIMITER + "', but it has " + pieces.length + " segments");
+            throw new IllegalStateException("Expected JWT to have 3 segments separated by '" + JsonTokenUtil.DELIMITER
+                    + "', but it has " + pieces.length + " segments");
         }
         return pieces;
     }

@@ -27,10 +27,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import nl.fountain.xelem.Area;
-import nl.fountain.xelem.excel.Workbook;
-import nl.fountain.xelem.excel.XLElement;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
@@ -38,6 +34,10 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
+
+import nl.fountain.xelem.Area;
+import nl.fountain.xelem.excel.Workbook;
+import nl.fountain.xelem.excel.XLElement;
 
 /**
  * Basic class for reading xml-spreadsheets of type spreadsheetML. 
@@ -56,14 +56,14 @@ import org.xml.sax.helpers.DefaultHandler;
  * @since xelem.2.0
  */
 public class ExcelReader {
-    
+
     private SAXParser parser;
     XMLReader reader;
-    
+
     Director director;
     private Handler handler;
     private Map<String, String> uris;
-    
+
     /**
      * Constructs a new ExcelReader.
      * Obtains a {@link javax.xml.parsers.SAXParser} from an instance of
@@ -80,7 +80,7 @@ public class ExcelReader {
         parser = spf.newSAXParser();
         director = new Director();
     }
-    
+
     /**
      * Constructs a new ExcelReader. Uses the given parser. The parser
      * should be namespace aware.
@@ -90,13 +90,12 @@ public class ExcelReader {
      */
     public ExcelReader(SAXParser parser) throws ParserConfigurationException {
         if (!parser.isNamespaceAware()) {
-            throw new ParserConfigurationException(
-                "cannot read with a parser that is unaware of namespaces.");
+            throw new ParserConfigurationException("cannot read with a parser that is unaware of namespaces.");
         }
         this.parser = parser;
         director = new Director();
     }
-    
+
     /**
      * Returns the SAXParser that is used by this ExcelReader. (Just to see
      * what we've got under the hood.)
@@ -110,7 +109,7 @@ public class ExcelReader {
     public SAXParser getSaxParser() {
         return parser;
     }
-    
+
     /**
      * Sets the area that is to be read. 
      * Reading will be restricted to the specified area until another
@@ -122,7 +121,7 @@ public class ExcelReader {
     public void setReadArea(Area area) {
         director.setBuildArea(area);
     }
-    
+
     /**
      * Clears the read area. Reading will not be rerstricted after a call
      * to this method.
@@ -131,7 +130,7 @@ public class ExcelReader {
     public void clearReadArea() {
         director.setBuildArea(null);
     }
-    
+
     /**
      * Gets the area that restricts reading on this ExcelReader. May be null if
      * no read area was set or if the read area was cleared.
@@ -145,7 +144,7 @@ public class ExcelReader {
             return null;
         }
     }
-    
+
     /**
      * Specifies whether reading is restricted on this ExcelReader.
      * 
@@ -153,7 +152,7 @@ public class ExcelReader {
     public boolean hasReadArea() {
         return director.hasBuildArea();
     }
-    
+
     /**
      * Gets a list of registered listeners on this ExcelReader.
      * 
@@ -162,7 +161,7 @@ public class ExcelReader {
     public List<ExcelReaderListener> getListeners() {
         return director.getListeners();
     }
-    
+
     /**
      * Registers the given listener on this ExcelReader.
      * 
@@ -172,7 +171,7 @@ public class ExcelReader {
     public void addExcelReaderListener(ExcelReaderListener listener) {
         director.addExcelReaderListener(listener);
     }
-    
+
     /**
      * Removes the passed listener on this ExcelReader.
      * 
@@ -183,7 +182,7 @@ public class ExcelReader {
     public boolean removeExcelReaderListener(ExcelReaderListener listener) {
         return director.removeExcelReaderListener(listener);
     }
-    
+
     /**
      * Remove all listeners on this ExcelReader
      *
@@ -191,7 +190,7 @@ public class ExcelReader {
     public void clearExcelReaderListeners() {
         director.clearExcelReaderListeners();
     }
-    
+
     /**
      * Delivers the contents of the specified file as a fully populated Workbook.
      * If a read area was set on this ExcelReader its worksheets
@@ -210,7 +209,7 @@ public class ExcelReader {
         InputSource in = new InputSource(fileName);
         return getWorkbook(in);
     }
-    
+
     /**
      * Delivers the contents of the given InputSource as a fully populated Workbook.
      * If a read area was set on this ExcelReader its worksheets
@@ -232,7 +231,7 @@ public class ExcelReader {
         removeExcelReaderListener(wbl);
         return wbl.getWorkbook();
     }
-    
+
     /**
      * Reads the file with the given name and dispatches events to registered
      * {@link ExcelReaderListener ExcelReaderListeners}. If a read area was set
@@ -254,7 +253,7 @@ public class ExcelReader {
         InputSource in = new InputSource(fileName);
         read(in);
     }
-    
+
     /**
      * Reads the stream of the given InputSource and dispatches events to registered
      * {@link ExcelReaderListener ExcelReaderListeners}. If a read area was set
@@ -293,76 +292,82 @@ public class ExcelReader {
         }
         return uris;
     }
-    
+
     private Handler getHandler() {
         if (handler == null) {
             handler = new Handler();
         }
         return handler;
     }
-      
-    
+
     //////////////////////////////////////////////////////////////////////////////
-    
+
     private class Handler extends DefaultHandler {
-        
+
         private Locator locator;
-        
+
+        @Override
         public void setDocumentLocator(Locator locator) {
             this.locator = locator;
         }
-        
+
+        @Override
         public void processingInstruction(String target, String data) throws SAXException {
-        	for (ExcelReaderListener listener : director.getListeners()) {
+            for (ExcelReaderListener listener : director.getListeners()) {
                 listener.processingInstruction(target, data);
             }
         }
-        
+
+        @Override
         public void startPrefixMapping(String prefix, String uri) throws SAXException {
             getPrefixMap().put(prefix, uri);
         }
-        
-        public void startElement(String uri, String localName, String qName,
-                Attributes attributes) throws SAXException {
+
+        @Override
+        public void startElement(String uri, String localName, String qName, Attributes attributes)
+                throws SAXException {
             if (XLElement.XMLNS_SS.equals(uri) && "Workbook".equals(localName)) {
                 String systemId = getSystemId();
-                Builder builder = director.getXLWorkbookBuilder(); 
+                Builder builder = director.getXLWorkbookBuilder();
                 for (ExcelReaderListener listener : director.getListeners()) {
                     listener.startWorkbook(systemId);
-                }               
-                builder.build(reader, this);               
-            }       
+                }
+                builder.build(reader, this);
+            }
         }
-        
-        public void startDocument() throws SAXException {        
-        	for (ExcelReaderListener listener : director.getListeners()) {
+
+        @Override
+        public void startDocument() throws SAXException {
+            for (ExcelReaderListener listener : director.getListeners()) {
                 listener.startDocument();
             }
         }
-        
+
+        @Override
         public void endDocument() throws SAXException {
-        	for (ExcelReaderListener listener : director.getListeners()) {
+            for (ExcelReaderListener listener : director.getListeners()) {
                 listener.endDocument(getPrefixMap());
             }
         }
-        
+
+        @Override
         public void fatalError(SAXParseException e) throws SAXException {
-            //System.out.println("fatal error detected: " + e.getMessage());
+            // System.out.println("fatal error detected: " + e.getMessage());
             throw e;
         }
-        
+
+        @Override
         public void error(SAXParseException e) throws SAXException {
-            //System.out.println("error detected: " + e.getMessage());
+            // System.out.println("error detected: " + e.getMessage());
             throw e;
         }
-        
+
+        @Override
         public void warning(SAXParseException e) throws SAXException {
-            //System.out.println("warning detected: " + e.getMessage());
+            // System.out.println("warning detected: " + e.getMessage());
             throw e;
         }
-        
-        
-        
+
         private String getSystemId() {
             String systemId = null;
             if (locator != null) {
@@ -373,11 +378,7 @@ public class ExcelReader {
             }
             return systemId;
         }
-        
-
-        
 
     }
-    
 
 }

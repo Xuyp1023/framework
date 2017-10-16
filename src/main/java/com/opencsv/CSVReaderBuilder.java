@@ -15,9 +15,9 @@
  */
 package com.opencsv;
 
-import com.opencsv.enums.CSVReaderNullFieldIndicator;
-
 import java.io.Reader;
+
+import com.opencsv.enums.CSVReaderNullFieldIndicator;
 
 /**
  * Builder for creating a CSVReader. This should be the preferred method of creating a Reader as there are so many possible values to be set it is
@@ -123,7 +123,8 @@ public class CSVReaderBuilder {
      * @return the CSVReader based on the set criteria.
      */
     public CSVReader build() {
-        final CSVParser parser = (csvParser != null ? csvParser : parserBuilder.withFieldAsNull(nullFieldIndicator).build());
+        final CSVParser parser = (csvParser != null ? csvParser
+                : parserBuilder.withFieldAsNull(nullFieldIndicator).build());
         return new CSVReader(reader, skipLines, parser, keepCR, verifyReader);
     }
 

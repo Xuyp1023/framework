@@ -24,16 +24,22 @@
 
 package com.betterjr.mapper.generator;
 
+import java.util.Properties;
+
 import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
-import org.mybatis.generator.api.dom.java.*;
+import org.mybatis.generator.api.dom.java.CompilationUnit;
+import org.mybatis.generator.api.dom.java.Field;
+import org.mybatis.generator.api.dom.java.InnerClass;
+import org.mybatis.generator.api.dom.java.InnerEnum;
+import org.mybatis.generator.api.dom.java.JavaElement;
+import org.mybatis.generator.api.dom.java.Method;
+import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.mybatis.generator.config.MergeConstants;
 import org.mybatis.generator.internal.util.StringUtility;
-
-import java.util.Properties;
 
 public class MapperCommentGenerator2 implements CommentGenerator {
 
@@ -41,6 +47,7 @@ public class MapperCommentGenerator2 implements CommentGenerator {
         super();
     }
 
+    @Override
     public void addJavaFileComment(CompilationUnit compilationUnit) {
         return;
     }
@@ -50,6 +57,7 @@ public class MapperCommentGenerator2 implements CommentGenerator {
      *
      * @param xmlElement
      */
+    @Override
     public void addComment(XmlElement xmlElement) {
         xmlElement.addElement(new TextElement("<!--"));
         StringBuilder sb = new StringBuilder();
@@ -59,10 +67,12 @@ public class MapperCommentGenerator2 implements CommentGenerator {
         xmlElement.addElement(new TextElement("-->"));
     }
 
+    @Override
     public void addRootComment(XmlElement rootElement) {
         return;
     }
 
+    @Override
     public void addConfigurationProperties(Properties properties) {}
 
     /**
@@ -87,8 +97,10 @@ public class MapperCommentGenerator2 implements CommentGenerator {
      * @param innerClass
      * @param introspectedTable
      */
+    @Override
     public void addClassComment(InnerClass innerClass, IntrospectedTable introspectedTable) {}
 
+    @Override
     public void addEnumComment(InnerEnum innerEnum, IntrospectedTable introspectedTable) {}
 
     /**
@@ -98,7 +110,9 @@ public class MapperCommentGenerator2 implements CommentGenerator {
      * @param introspectedTable
      * @param introspectedColumn
      */
-    public void addFieldComment(Field field, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn) {
+    @Override
+    public void addFieldComment(Field field, IntrospectedTable introspectedTable,
+            IntrospectedColumn introspectedColumn) {
         if (StringUtility.stringHasValue(introspectedColumn.getRemarks())) {
             field.addJavaDocLine("/**");
             StringBuilder sb = new StringBuilder();
@@ -107,9 +121,9 @@ public class MapperCommentGenerator2 implements CommentGenerator {
             field.addJavaDocLine(sb.toString());
             field.addJavaDocLine(" */");
         }
-        //添加注解
+        // 添加注解
         if (field.isTransient()) {
-            //@Column
+            // @Column
             field.addAnnotation("@Transient");
         }
         for (IntrospectedColumn column : introspectedTable.getPrimaryKeyColumns()) {
@@ -119,13 +133,13 @@ public class MapperCommentGenerator2 implements CommentGenerator {
             }
         }
         String column = introspectedColumn.getActualColumnName();
-        if (StringUtility.stringContainsSpace(column) || introspectedTable.getTableConfiguration().isAllColumnDelimitingEnabled()) {
-            column = introspectedColumn.getContext().getBeginningDelimiter()
-                        + column
-                        + introspectedColumn.getContext().getEndingDelimiter();
+        if (StringUtility.stringContainsSpace(column)
+                || introspectedTable.getTableConfiguration().isAllColumnDelimitingEnabled()) {
+            column = introspectedColumn.getContext().getBeginningDelimiter() + column
+                    + introspectedColumn.getContext().getEndingDelimiter();
         }
         if (!column.equals(introspectedColumn.getJavaProperty())) {
-            //@Column
+            // @Column
             field.addAnnotation("@Column(name = \"" + column + "\")");
             field.addAnnotation("@MetaData(comments = \"" + introspectedColumn.getRemarks() + "\")");
         }
@@ -136,7 +150,8 @@ public class MapperCommentGenerator2 implements CommentGenerator {
                 field.addAnnotation("@GeneratedValue(strategy = GenerationType.IDENTITY)");
             }
         } else if (introspectedColumn.isSequenceColumn()) {
-            field.addAnnotation("@SequenceGenerator(name=\"\",sequenceName=\"" + introspectedTable.getTableConfiguration().getGeneratedKey().getRuntimeSqlStatement() + "\")");
+            field.addAnnotation("@SequenceGenerator(name=\"\",sequenceName=\""
+                    + introspectedTable.getTableConfiguration().getGeneratedKey().getRuntimeSqlStatement() + "\")");
         }
     }
 
@@ -146,12 +161,14 @@ public class MapperCommentGenerator2 implements CommentGenerator {
      * @param field
      * @param introspectedTable
      */
+    @Override
     public void addFieldComment(Field field, IntrospectedTable introspectedTable) {}
 
     /**
      * @param method
      * @param introspectedTable
      */
+    @Override
     public void addGeneralMethodComment(Method method, IntrospectedTable introspectedTable) {}
 
     /**
@@ -161,7 +178,9 @@ public class MapperCommentGenerator2 implements CommentGenerator {
      * @param introspectedTable
      * @param introspectedColumn
      */
-    public void addGetterComment(Method method, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn) {
+    @Override
+    public void addGetterComment(Method method, IntrospectedTable introspectedTable,
+            IntrospectedColumn introspectedColumn) {
         StringBuilder sb = new StringBuilder();
         method.addJavaDocLine("/**");
         if (StringUtility.stringHasValue(introspectedColumn.getRemarks())) {
@@ -188,7 +207,9 @@ public class MapperCommentGenerator2 implements CommentGenerator {
      * @param introspectedTable
      * @param introspectedColumn
      */
-    public void addSetterComment(Method method, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn) {
+    @Override
+    public void addSetterComment(Method method, IntrospectedTable introspectedTable,
+            IntrospectedColumn introspectedColumn) {
         StringBuilder sb = new StringBuilder();
         method.addJavaDocLine("/**");
         if (StringUtility.stringHasValue(introspectedColumn.getRemarks())) {
@@ -216,5 +237,7 @@ public class MapperCommentGenerator2 implements CommentGenerator {
      * @param introspectedTable
      * @param markAsDoNotDelete
      */
-    public void addClassComment(InnerClass innerClass, IntrospectedTable introspectedTable, boolean markAsDoNotDelete) {}
+    @Override
+    public void addClassComment(InnerClass innerClass, IntrospectedTable introspectedTable,
+            boolean markAsDoNotDelete) {}
 }

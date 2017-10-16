@@ -17,6 +17,7 @@
 package net.oauth.jsontoken.crypto;
 
 import java.security.SignatureException;
+
 import org.apache.commons.codec.binary.StringUtils;
 
 /**
@@ -25,21 +26,21 @@ import org.apache.commons.codec.binary.StringUtils;
  */
 public class AsciiStringSigner {
 
-  private final Signer signer;
+    private final Signer signer;
 
-  /**
-   * Public constructor.
-   * @param signer {@link Signer} that can sign byte arrays.
-   */
-  public AsciiStringSigner(Signer signer) {
-    this.signer = signer;
-  }
+    /**
+     * Public constructor.
+     * @param signer {@link Signer} that can sign byte arrays.
+     */
+    public AsciiStringSigner(Signer signer) {
+        this.signer = signer;
+    }
 
-  /**
-   * Signs the given ASCII string.
-   * @throws SignatureException when the signature cannot be generated.
-   */
-  public byte[] sign(String source) throws SignatureException {
-    return signer.sign(StringUtils.getBytesUsAscii(source));
-  }
+    /**
+     * Signs the given ASCII string.
+     * @throws SignatureException when the signature cannot be generated.
+     */
+    public byte[] sign(String source) throws SignatureException {
+        return signer.sign(StringUtils.getBytesUsAscii(source));
+    }
 }

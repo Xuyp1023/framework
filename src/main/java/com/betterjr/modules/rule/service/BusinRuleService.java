@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopProxyUtils;
@@ -96,7 +97,8 @@ public class BusinRuleService extends BaseService<RuleBusinessMapper, RuleBusine
     }
 
     // 通过注解，构造功能信息
-    private RuleFunction buildRuleFunc(final String anClass, final AnnotRuleFunc anRuleFunc, final Method anM, final String ruleServiceValue) {
+    private RuleFunction buildRuleFunc(final String anClass, final AnnotRuleFunc anRuleFunc, final Method anM,
+            final String ruleServiceValue) {
         final StringBuilder sb = new StringBuilder();
         final StringBuilder sb1 = new StringBuilder();
         sb1.append(anClass).append(".").append(anM.getName()).append("(");
@@ -137,9 +139,8 @@ public class BusinRuleService extends BaseService<RuleBusinessMapper, RuleBusine
                 }
             }
             if (request instanceof Map) {
-                request =(T) map;
-            }
-            else {
+                request = (T) map;
+            } else {
                 BeanMapper.copy(map, request);
             }
         }
@@ -156,8 +157,8 @@ public class BusinRuleService extends BaseService<RuleBusinessMapper, RuleBusine
      * @return 出参说明，结果条件
      * @throws 异常情况
      */
-    public List<RuleFunction> annotBuild(final Map<String, Object> ruleClasses, final Map<String, RuleBusiness> tmpBusinMap,
-            final Map<String, RuleFace> anRuleMap) {
+    public List<RuleFunction> annotBuild(final Map<String, Object> ruleClasses,
+            final Map<String, RuleBusiness> tmpBusinMap, final Map<String, RuleFace> anRuleMap) {
         final List<RuleFunction> funcMap = new LinkedList();
         RuleFunction ruleFunc;
         BaseRuleFace rf = null;
@@ -166,7 +167,7 @@ public class BusinRuleService extends BaseService<RuleBusinessMapper, RuleBusine
         for (final Object rule : ruleClasses.values()) {
             // final Class<? extends Object> ruleClass = rule.getClass();
             Class<? extends Object> ruleClass = AopProxyUtils.ultimateTargetClass(rule);
-            ruleClass=BetterClassUtils.findInterfaceMatchAnnotation(ruleClass, AnnotRuleService.class);
+            ruleClass = BetterClassUtils.findInterfaceMatchAnnotation(ruleClass, AnnotRuleService.class);
             final AnnotRuleService annot = ruleClass.getAnnotation(AnnotRuleService.class);
             if (annot.type() == RuleServiceType.RULE) {
                 if (rule instanceof BasicRule) {
@@ -174,7 +175,7 @@ public class BusinRuleService extends BaseService<RuleBusinessMapper, RuleBusine
                 } else if (rule instanceof RuleObjectFace) {
                     rf = RuleProxy.asRule(rule);
                     String tmpStr = annot.value();
-                    if (BetterStringUtils.isNotBlank(tmpStr) == false) {
+                    if (StringUtils.isNotBlank(tmpStr) == false) {
                         tmpStr = ruleClass.getSimpleName();
                         tmpStr = tmpStr.toLowerCase().substring(0, 1).concat(tmpStr.substring(1));
                     }
@@ -194,7 +195,7 @@ public class BusinRuleService extends BaseService<RuleBusinessMapper, RuleBusine
         for (final Object rule : ruleClasses.values()) {
             // final Class<? extends Object> ruleClass = rule.getClass();
             Class<? extends Object> ruleClass = AopProxyUtils.ultimateTargetClass(rule);
-            ruleClass=BetterClassUtils.findInterfaceMatchAnnotation(ruleClass, AnnotRuleService.class);
+            ruleClass = BetterClassUtils.findInterfaceMatchAnnotation(ruleClass, AnnotRuleService.class);
             final AnnotRuleService annot = ruleClass.getAnnotation(AnnotRuleService.class);
             for (final Method mm : ruleClass.getMethods()) {
                 for (final Annotation subAnnot : mm.getAnnotations()) {
@@ -273,15 +274,15 @@ public class BusinRuleService extends BaseService<RuleBusinessMapper, RuleBusine
         return anClass.concat(".").concat(anMethod);
     }
 
-    public RuleCheckResult execute(final RuleBusiness ruleBusin, final ExpressRunner runner, final QLExpressContext context)
-            throws Exception {
+    public RuleCheckResult execute(final RuleBusiness ruleBusin, final ExpressRunner runner,
+            final QLExpressContext context) throws Exception {
         RuleCheckResult result = new RuleCheckResult();
         if (ruleBusin != null) {
             result = this.validatorService.evaluate(context, result, ruleBusin);
             result = executeRules(result, runner, ruleBusin.getRules(), context);
             if (result.workContinue(ruleBusin.getExecContent())) {
-                final Object resultObj = runner.execute(ruleBusin.getExecContent(), context, result.getErrorList(), true,
-                        false);
+                final Object resultObj = runner.execute(ruleBusin.getExecContent(), context, result.getErrorList(),
+                        true, false);
                 result.addRuleResult(ruleBusin.getBusinName(), resultObj);
             }
         }
@@ -299,8 +300,8 @@ public class BusinRuleService extends BaseService<RuleBusinessMapper, RuleBusine
      * @return 出参说明，结果条件
      * @throws 异常情况
      */
-    private RuleCheckResult executeRules(final RuleCheckResult result, final ExpressRunner runner, final List<RuleFace> rules,
-            final QLExpressContext ruleContext) {
+    private RuleCheckResult executeRules(final RuleCheckResult result, final ExpressRunner runner,
+            final List<RuleFace> rules, final QLExpressContext ruleContext) {
         try {
             boolean hasOk = false;
             for (final Object obj : rules) {
@@ -325,7 +326,8 @@ public class BusinRuleService extends BaseService<RuleBusinessMapper, RuleBusine
                 }
 
             }
-        } catch (final Exception ex) {
+        }
+        catch (final Exception ex) {
             throw new BettjerRuleException(49999, "Rule Execute Has error!", ex);
         }
         return result;
@@ -338,11 +340,11 @@ public class BusinRuleService extends BaseService<RuleBusinessMapper, RuleBusine
             rule = (WorkRuleInfo) subObj;
             // 检查规则的有效性
             if (rule.checkValid()) {
-                final Boolean result = (Boolean) runner.execute(rule.getMatchCond(), ruleContext, anResult.getErrorList(),
-                        true, false);
+                final Boolean result = (Boolean) runner.execute(rule.getMatchCond(), ruleContext,
+                        anResult.getErrorList(), true, false);
                 if (result != null && result.booleanValue()) {
-                    final Object resultObj = runner.execute(rule.getExecContent(), ruleContext, anResult.getErrorList(), true,
-                            false);
+                    final Object resultObj = runner.execute(rule.getExecContent(), ruleContext, anResult.getErrorList(),
+                            true, false);
                     anResult.addRuleResult(rule.getRuleNo(), resultObj);
                 } else {
                     return false;
@@ -372,7 +374,7 @@ public class BusinRuleService extends BaseService<RuleBusinessMapper, RuleBusine
      * @return
      */
     public static String initStatement(final String statement) {
-        if (BetterStringUtils.isNotBlank(statement)) {
+        if (StringUtils.isNotBlank(statement)) {
             return statement.replace("（", "(").replace("）", ")").replace("；", ";").replace("，", ",").replace("“", "\"")
                     .replace("”", "\"").replace("‘", "'");
         } else {
@@ -409,7 +411,7 @@ public class BusinRuleService extends BaseService<RuleBusinessMapper, RuleBusine
 
             tmpGroupName = ruleInfo.getGroupName();
             // 检查并行判断的规则是否存在
-            if (BetterStringUtils.isNotBlank(tmpGroupName)) {
+            if (StringUtils.isNotBlank(tmpGroupName)) {
                 if (tmpGroup.containsKey(tmpGroupName)) {
                     obj = tmpGroup.get(tmpGroupName);
                     tmpList = (List) obj;
@@ -430,7 +432,7 @@ public class BusinRuleService extends BaseService<RuleBusinessMapper, RuleBusine
         // 解决并行的问题
         for (final RuleFace tmpRule : workRuleList) {
             tmpGroupName = tmpRule.getGroupName();
-            if (BetterStringUtils.isNotBlank(tmpGroupName)) {
+            if (StringUtils.isNotBlank(tmpGroupName)) {
                 tmpList = tmpGroup.get(tmpGroupName);
             } else {
                 tmpList = null;

@@ -24,7 +24,6 @@ import java.util.Date;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-
 /**
  * Represents the Cell element. The XLElement Cell is not aware of it's parent,
  * nor of it's index-position in a row or worksheet. This makes it possible
@@ -62,73 +61,72 @@ import org.w3c.dom.Element;
  * "String" and the cell will display "NaN" when the spreadsheet is opened.
  */
 public interface Cell extends XLElement {
-    
+
     /**
      * The Excel datatype for number values: {@value}.
      */
     public static final String DATATYPE_NUMBER = "Number";
-    
+
     /**
      * The Excel datatype for date and time values: {@value}.
      */
     public static final String DATATYPE_DATE_TIME = "DateTime";
-    
+
     /**
      * The Excel datatype for boolean values: {@value}.
      */
     public static final String DATATYPE_BOOLEAN = "Boolean";
-    
+
     /**
      * The Excel datatype for string values: {@value}.
      */
     public static final String DATATYPE_STRING = "String";
-    
+
     /**
      * The Excel datatype for error values: {@value}.
      */
     public static final String DATATYPE_ERROR = "Error";
-    
+
     /**
      * The Excel error value indicating division by zero: {@value}.
      */
     public static final String ERRORVALUE_DIV_BY_0 = "#DIV/0";
-    
+
     /**
      * The Excel error value indicating text in a formula is not being 
      * recognized: {@value}.
      */
     public static final String ERRORVALUE_NAME = "#NAME?";
-    
+
     /**
      * The Excel error value indicating 
      * intersection of two cell ranges is empty {@value}. 
      */
     public static final String ERRORVALUE_NULL = "#NULL!";
-    
+
     /**
      * The Excel error value indicating problems with a number in a
      * formula or function: {@value}.
      */
     public static final String ERRORVALUE_NUM = "#NUM!";
-    
+
     /**
      * The Excel error value indicating a value is not available: {@value}.
      */
     public static final String ERRORVALUE_NA = "#N/A";
-    
+
     /**
      * The Excel error value indicating that a cell reference is not valid:
      * {@value}.
      */
     public static final String ERRORVALUE_REF = "#REF!";
-    
+
     /**
      * The Excel error value indicating the wrong type of argument or operand
      * is being used: {@value}.
      */
     public static final String ERRORVALUE_VALUE = "#VALUE!";
-       
-    
+
     /**
      * Sets the ss:StyleID on this cell. If no styleID is set on a cell,
      * the ss:StyleID-attribute is not deployed in the resulting xml and
@@ -137,7 +135,7 @@ public interface Cell extends XLElement {
      * @param 	styleID	the id of the style to employ on this cell.
      */
     void setStyleID(String styleID);
-    
+
     /**
      * Gets the ss:StyleID which was set on this cell.
      * 
@@ -145,7 +143,7 @@ public interface Cell extends XLElement {
      * 			<code>null</code> if no styleID was previously set.
      */
     String getStyleID();
-    
+
     /**
      * Sets the ss:Formula-attribute on this cell. When opening a XML spreadsheet
      * the formula-result goes before any data-value that was set on the cell.
@@ -157,7 +155,7 @@ public interface Cell extends XLElement {
      * @param 	formula	The formula for this cell.
      */
     void setFormula(String formula);
-    
+
     /**
      * Gets the formula that was set on this cell.
      * 
@@ -165,7 +163,7 @@ public interface Cell extends XLElement {
      * 			<code>null</code> if the cell has no formula.
      */
     String getFormula();
-    
+
     /**
      * Sets the ss:HRef-attribute on this cell. Any special html-characters
      * will be escaped in the reulting xml.
@@ -173,7 +171,7 @@ public interface Cell extends XLElement {
      * @param href	the ss:HRef-attribute on this cell.
      */
     void setHRef(String href);
-    
+
     /**
      * Gets the ss:HRef-attribute value that was set on this cell.
      * 
@@ -181,7 +179,7 @@ public interface Cell extends XLElement {
      * 			<code>null</code> if this cell has no HRef.
      */
     String getHRef();
-    
+
     /**
      * Adds a comment to this cell. Initially the comment has no text
      * (no data and no author) and is not showing. If this cell allready
@@ -191,7 +189,7 @@ public interface Cell extends XLElement {
      * @since xelem.2.0
      */
     Comment addComment();
-    
+
     /**
      * Adds the given comment to this cell. If this cell allready had a comment,
      * replaces this comment.
@@ -201,7 +199,7 @@ public interface Cell extends XLElement {
      * @since xelem.2.0
      */
     Comment addComment(Comment comment);
-    
+
     /**
      * Adds a comment to this cell and sets the data-attribute of the comment
      * to the given text. Initially the comment will have no author 
@@ -213,7 +211,7 @@ public interface Cell extends XLElement {
      * @since xelem.2.0
      */
     Comment addComment(String text);
-    
+
     /**
      * Specifies whether this cell has a comment.
      * 
@@ -221,7 +219,7 @@ public interface Cell extends XLElement {
      * @since xelem.2.0
      */
     boolean hasComment();
-    
+
     /**
      * Gets the comment of this cell.
      * 
@@ -229,7 +227,7 @@ public interface Cell extends XLElement {
      * @since xelem.2.0
      */
     Comment getComment();
-    
+
     /**
      * Merges this cell with adjacent cells on the same row. 
      * <P>
@@ -250,7 +248,7 @@ public interface Cell extends XLElement {
      * @param 	m	The number of cells to include in the merge.
      */
     void setMergeAcross(int m);
-    
+
     /**
      * Gets the number of cells over which this cell has been merged horizontally.
      * A return value of <code>0</code> indicates no horizontal merge 
@@ -260,7 +258,7 @@ public interface Cell extends XLElement {
      * @since xelem.2.0
      */
     int getMergeAcross();
-    
+
     /**
      * Merges this cell with adjacent cells on the same column. 
      * <P>
@@ -279,7 +277,7 @@ public interface Cell extends XLElement {
      * @param 	m	The number of cells to include in the merge.
      */
     void setMergeDown(int m);
-    
+
     /**
      * Gets the number of cells over which this cell has been merged vertically.
      * A return value of <code>0</code> indicates no vertical merge 
@@ -289,7 +287,7 @@ public interface Cell extends XLElement {
      * @since xelem.2.0
      */
     int getMergeDown();
-    
+
     /**
      * Sets the given Number as the data of this cell. The attribute
      * ss:Type of the Data-element will be set to "Number". 
@@ -299,7 +297,7 @@ public interface Cell extends XLElement {
      * @see <a href="#nullvalues">Null values</a>
      */
     void setData(Number data);
-    
+
     /**
      * Sets the given Integer as the data of this cell. The attribute
      * ss:Type of the Data-element will be set to "Number". 
@@ -309,7 +307,7 @@ public interface Cell extends XLElement {
      * @see <a href="#nullvalues">Null values</a>
      */
     void setData(Integer data);
-    
+
     /**
      * Sets the given Double as the data of this cell. The attribute
      * ss:Type of the Data-element will be set to "Number". 
@@ -321,7 +319,7 @@ public interface Cell extends XLElement {
      * @see <a href="#nanvalues">NaN values</a>
      */
     void setData(Double data);
-    
+
     /**
      * Sets the given Long as the data of this cell. The attribute
      * ss:Type of the Data-element will be set to "Number". 
@@ -331,7 +329,7 @@ public interface Cell extends XLElement {
      * @see <a href="#nullvalues">Null values</a>
      */
     void setData(Long data);
-    
+
     /**
      * Sets the given Float as the data of this cell. The attribute
      * ss:Type of the Data-element will be set to "Number". 
@@ -343,7 +341,7 @@ public interface Cell extends XLElement {
      * @see <a href="#nanvalues">NaN values</a>
      */
     void setData(Float data);
-    
+
     /**
      * Sets the given Date as the data of this cell. The attribute
      * ss:Type of the Data-element will be set to "DateTime". 
@@ -353,7 +351,7 @@ public interface Cell extends XLElement {
      * @see <a href="#nullvalues">Null values</a>
      */
     void setData(Date data);
-    
+
     /**
      * Sets the given Boolean as the data of this cell. The attribute
      * ss:Type of the Data-element will be set to "Boolean". 
@@ -363,7 +361,7 @@ public interface Cell extends XLElement {
      * @see <a href="#nullvalues">Null values</a>
      */
     void setData(Boolean data);
-    
+
     /**
      * Sets the given String as the data of this cell. The attribute
      * ss:Type of the Data-element will be set to "String". 
@@ -373,7 +371,7 @@ public interface Cell extends XLElement {
      * @see <a href="#nullvalues">Null values</a>
      */
     void setData(String data);
-    
+
     /**
      * Sets the given object as the data of this cell. This method reflects
      * upon the class of the given object and will delegate to a corresponding
@@ -387,7 +385,7 @@ public interface Cell extends XLElement {
      * @see <a href="#nullvalues">Null values</a>  
      */
     void setData(Object data);
-    
+
     /**
      * Sets the given error value as the data of this cell. The attribute
      * ss:Type of the Data-element will be set to "Error". The formula
@@ -396,7 +394,7 @@ public interface Cell extends XLElement {
      * @param error_value	Must be one of Cell's ERRORVALUE_XXX values.
      */
     void setError(String error_value);
-    
+
     /**
      * Sets the given byte as the data of this cell. The attribute
      * ss:Type of the Data-element will be set to "Number". 
@@ -404,7 +402,7 @@ public interface Cell extends XLElement {
      * @param 	data The data to be displayed in this cell. 
      */
     void setData(byte data);
-    
+
     /**
      * Sets the given short as the data of this cell. The attribute
      * ss:Type of the Data-element will be set to "Number". 
@@ -412,7 +410,7 @@ public interface Cell extends XLElement {
      * @param 	data The data to be displayed in this cell. 
      */
     void setData(short data);
-    
+
     /**
      * Sets the given int as the data of this cell. The attribute
      * ss:Type of the Data-element will be set to "Number". 
@@ -420,7 +418,7 @@ public interface Cell extends XLElement {
      * @param 	data The data to be displayed in this cell. 
      */
     void setData(int data);
-    
+
     /**
      * Sets the given long as the data of this cell. The attribute
      * ss:Type of the Data-element will be set to "Number". 
@@ -428,7 +426,7 @@ public interface Cell extends XLElement {
      * @param 	data The data to be displayed in this cell. 
      */
     void setData(long data);
-    
+
     /**
      * Sets the given float as the data of this cell. The attribute
      * ss:Type of the Data-element will be set to "Number". 
@@ -439,7 +437,7 @@ public interface Cell extends XLElement {
      * @see <a href="#nanvalues">NaN values</a>
      */
     void setData(float data);
-    
+
     /**
      * Sets the given double as the data of this cell. The attribute
      * ss:Type of the Data-element will be set to "Number". 
@@ -450,7 +448,7 @@ public interface Cell extends XLElement {
      * @see <a href="#nanvalues">NaN values</a>
      */
     void setData(double data);
-    
+
     /**
      * Sets the data of this cell to the value
      * {@link java.lang.String#valueOf(char)}. The attribute
@@ -459,8 +457,8 @@ public interface Cell extends XLElement {
      * @param 	data The data to be displayed in this cell. 
      * 
      */
-    void setData(char data); 
-    
+    void setData(char data);
+
     /**
      * Sets the given boolean as the data of this cell. The attribute
      * ss:Type of the Data-element will be set to "Boolean". 
@@ -468,21 +466,21 @@ public interface Cell extends XLElement {
      * @param 	data The data to be displayed in this cell. 
      */
     void setData(boolean data);
-    
+
     /**
      * Gets the NodeValue of the Data-tag as a String.
      * 
      * @return The NodeValue of the Data-tag as a String.
      */
     String getData$();
-    
+
     /**
      * Gets the value of the ss:Type-attribute of the Data-element.
      * 
      * @return The value of the ss:Type-attribute of the Data-element.
      */
     String getXLDataType();
-    
+
     /**
      * Specifies whether this cell has data.
      * 
@@ -491,7 +489,7 @@ public interface Cell extends XLElement {
      * @since xelem.2.0
      */
     boolean hasData();
-    
+
     /**
      * Specifies whether this cell has an error.
      * 
@@ -499,7 +497,7 @@ public interface Cell extends XLElement {
      * 	data element equals DATATYPE_ERROR, <code>false</code> otherwise
      */
     boolean hasError();
-    
+
     /**
      * Gets the value of the data element of this cell as an object.
      * The type of the returned object is determined by the value of the
@@ -519,7 +517,7 @@ public interface Cell extends XLElement {
      * @since xelem.2.0
      */
     Object getData();
-    
+
     /**
      * Convenience method for reading the value of the data element 
      * of this cell as an <code>int</code>. Returns <code>0</code>
@@ -529,7 +527,7 @@ public interface Cell extends XLElement {
      * @since xelem.2.0
      */
     int intValue();
-    
+
     /**
      * Convenience method for reading the value of the data element 
      * of this cell as a <code>double</code>. Returns <code>0.0</code>
@@ -539,7 +537,7 @@ public interface Cell extends XLElement {
      * @since xelem.2.0
      */
     double doubleValue();
-    
+
     /**
      * Convenience method for reading the value of the data element 
      * of this cell as a <code>boolean</code>. Returns <code>false</code>
@@ -549,7 +547,7 @@ public interface Cell extends XLElement {
      * @since xelem.2.0
      */
     boolean booleanValue();
-    
+
     /**
      * Gets the Data-element of this cell as an
      * {@link org.w3c.dom.Element org.w3c.dom.Element}.
@@ -557,7 +555,7 @@ public interface Cell extends XLElement {
      * @return the Data-element
      */
     Element getDataElement(Document doc);
-    
+
     /**
      * Sets the value of the ss:Index-attribute of this Cell-element. 
      * Any value set may be overruled  
@@ -574,7 +572,7 @@ public interface Cell extends XLElement {
      * @param index the index of this cell
      */
     void setIndex(int index);
-    
+
     /**
      * Gets the value of the ss:Index-attribute of this Cell-element.
      * The returned value only makes sence if this cell was read with the

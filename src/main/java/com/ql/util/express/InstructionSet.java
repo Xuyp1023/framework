@@ -82,11 +82,12 @@ public class InstructionSet implements Serializable {
             if (instruction instanceof InstructionOperator) {
                 String opName = ((InstructionOperator) instruction).getOperator().getName();
                 if (opName.equalsIgnoreCase("def") || opName.equalsIgnoreCase("exportDef")) {
-                    String varLocalName = (String) ((InstructionConstData) instructionList[i - 1]).getOperateData().getObject(null);
+                    String varLocalName = (String) ((InstructionConstData) instructionList[i - 1]).getOperateData()
+                            .getObject(null);
                     result.remove(varLocalName);
-                }
-                else if (opName.equalsIgnoreCase("alias") || opName.equalsIgnoreCase("exportAlias")) {
-                    String varLocalName = (String) ((InstructionConstData) instructionList[i - 2]).getOperateData().getObject(null);
+                } else if (opName.equalsIgnoreCase("alias") || opName.equalsIgnoreCase("exportAlias")) {
+                    String varLocalName = (String) ((InstructionConstData) instructionList[i - 2]).getOperateData()
+                            .getObject(null);
                     result.remove(varLocalName);
                 }
             }
@@ -133,8 +134,8 @@ public class InstructionSet implements Serializable {
      * @return
      * @throws Exception
      */
-    public CallResult excute(RunEnvironment environmen, InstructionSetContext context, List<String> errorList, boolean isLast,
-            boolean isReturnLastData, Log aLog) throws Exception {
+    public CallResult excute(RunEnvironment environmen, InstructionSetContext context, List<String> errorList,
+            boolean isLast, boolean isReturnLastData, Log aLog) throws Exception {
         // 将函数export到上下文中
         for (FunctionInstructionSet item : this.functionDefine.values()) {
             context.addSymbol(item.name, item.instructionSet);
@@ -145,17 +146,14 @@ public class InstructionSet implements Serializable {
                 OperateData tmpObject = environmen.pop();
                 if (tmpObject == null) {
                     environmen.quitExpress(null);
-                }
-                else {
+                } else {
                     if (isReturnLastData == true) {
                         if (tmpObject.getType(context) != null && tmpObject.getType(context).equals(void.class)) {
                             environmen.quitExpress(null);
-                        }
-                        else {
+                        } else {
                             environmen.quitExpress(tmpObject.getObject(context));
                         }
-                    }
-                    else {
+                    } else {
                         environmen.quitExpress(tmpObject);
                     }
                 }
@@ -168,7 +166,8 @@ public class InstructionSet implements Serializable {
         return result;
     }
 
-    public void executeInnerOrigiInstruction(RunEnvironment environmen, List<String> errorList, Log aLog) throws Exception {
+    public void executeInnerOrigiInstruction(RunEnvironment environmen, List<String> errorList, Log aLog)
+            throws Exception {
         Instruction instruction;
         while (environmen.getProgramPoint() < this.instructionList.length) {
             if (environmen.isExit() == true) {
@@ -266,6 +265,7 @@ public class InstructionSet implements Serializable {
         }
     }
 
+    @Override
     public String toString() {
         return "\n" + toString(0);
     }

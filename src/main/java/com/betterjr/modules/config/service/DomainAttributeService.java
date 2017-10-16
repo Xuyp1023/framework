@@ -13,6 +13,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.betterjr.common.mapper.JsonMapper;
@@ -51,7 +52,8 @@ public class DomainAttributeService extends BaseService<DomainAttributeMapper, D
         return saveString(anOperOrg, null, anCode, anValue);
     }
 
-    public DomainAttribute saveString(final String anOperOrg, final Long anCustNo, final String anCode, final String anValue) {
+    public DomainAttribute saveString(final String anOperOrg, final Long anCustNo, final String anCode,
+            final String anValue) {
         return saveCommon(anOperOrg, anCustNo, anCode, anValue, ConfigType.STRING);
     }
 
@@ -63,7 +65,8 @@ public class DomainAttributeService extends BaseService<DomainAttributeMapper, D
         return saveNumber(anOperOrg, null, anCode, anValue);
     }
 
-    public DomainAttribute saveNumber(final String anOperOrg, final Long anCustNo, final String anCode, final Long anValue) {
+    public DomainAttribute saveNumber(final String anOperOrg, final Long anCustNo, final String anCode,
+            final Long anValue) {
         return saveCommon(anOperOrg, anCustNo, anCode, anValue, ConfigType.NUMBER);
     }
 
@@ -75,7 +78,8 @@ public class DomainAttributeService extends BaseService<DomainAttributeMapper, D
         return saveMoney(anOperOrg, null, anCode, anValue);
     }
 
-    public DomainAttribute saveMoney(final String anOperOrg, final Long anCustNo, final String anCode, final BigDecimal anValue) {
+    public DomainAttribute saveMoney(final String anOperOrg, final Long anCustNo, final String anCode,
+            final BigDecimal anValue) {
         return saveCommon(anOperOrg, anCustNo, anCode, anValue, ConfigType.MONEY);
     }
 
@@ -87,17 +91,17 @@ public class DomainAttributeService extends BaseService<DomainAttributeMapper, D
         return saveObject(anOperOrg, null, anCode, anValue);
     }
 
-    public DomainAttribute saveObject(final String anOperOrg, final Long anCustNo, final String anCode, final Object anValue) {
+    public DomainAttribute saveObject(final String anOperOrg, final Long anCustNo, final String anCode,
+            final Object anValue) {
         return saveCommon(anOperOrg, anCustNo, anCode, anValue, ConfigType.OBJECT);
     }
 
-
-    public DomainAttribute saveCommon(final String anOperOrg, final Long anCustNo, final String anCode, final Object anValue,
-            final ConfigType anType) {
-        BTAssert.isTrue(BetterStringUtils.isNotBlank(anCode), "参数代码不允许为空！");
+    public DomainAttribute saveCommon(final String anOperOrg, final Long anCustNo, final String anCode,
+            final Object anValue, final ConfigType anType) {
+        BTAssert.isTrue(StringUtils.isNotBlank(anCode), "参数代码不允许为空！");
 
         String operOrg = "DEFAULT";
-        if (BetterStringUtils.isNotBlank(anOperOrg)) {
+        if (StringUtils.isNotBlank(anOperOrg)) {
             operOrg = anOperOrg;
         }
         Long custNo = 0L;
@@ -106,11 +110,11 @@ public class DomainAttributeService extends BaseService<DomainAttributeMapper, D
         }
 
         CustInfo custInfo = null;
-        if (BetterStringUtils.equals("DEFAULT", operOrg) && !custNo.equals(0L)) {
+        if (StringUtils.equals("DEFAULT", operOrg) && !custNo.equals(0L)) {
             custInfo = custAccountService.findCustInfo(custNo);
             BTAssert.notNull(custInfo, "没有找到指定公司！");
 
-            BTAssert.isTrue(BetterStringUtils.equals(operOrg, custInfo.getOperOrg()), "操作机构不匹配！");
+            BTAssert.isTrue(StringUtils.equals(operOrg, custInfo.getOperOrg()), "操作机构不匹配！");
         }
 
         final Map<String, Object> conditionMap = new HashMap<String, Object>();
@@ -128,8 +132,7 @@ public class DomainAttributeService extends BaseService<DomainAttributeMapper, D
 
             final int result = this.updateByPrimaryKeySelective(domainAttribute);
             BTAssert.isTrue(result == 1, "操作失败！");
-        }
-        else { // insert
+        } else { // insert
             domainAttribute = new DomainAttribute();
             domainAttribute.setOperOrg(operOrg);
             domainAttribute.setCustNo(custNo);
@@ -168,7 +171,7 @@ public class DomainAttributeService extends BaseService<DomainAttributeMapper, D
         if (domainAttribute == null) {
             return null;
         }
-        BTAssert.isTrue(BetterStringUtils.equals("00", domainAttribute.getDataType()), "数据类型不匹配！");
+        BTAssert.isTrue(StringUtils.equals("00", domainAttribute.getDataType()), "数据类型不匹配！");
         return domainAttribute.getStringValue();
     }
 
@@ -185,7 +188,7 @@ public class DomainAttributeService extends BaseService<DomainAttributeMapper, D
         if (domainAttribute == null) {
             return null;
         }
-        BTAssert.isTrue(BetterStringUtils.equals("01", domainAttribute.getDataType()), "数据类型不匹配！");
+        BTAssert.isTrue(StringUtils.equals("01", domainAttribute.getDataType()), "数据类型不匹配！");
         return domainAttribute.getNumberValue();
     }
 
@@ -202,7 +205,7 @@ public class DomainAttributeService extends BaseService<DomainAttributeMapper, D
         if (domainAttribute == null) {
             return null;
         }
-        BTAssert.isTrue(BetterStringUtils.equals("02", domainAttribute.getDataType()), "数据类型不匹配！");
+        BTAssert.isTrue(StringUtils.equals("02", domainAttribute.getDataType()), "数据类型不匹配！");
         return domainAttribute.getMoneyValue();
     }
 
@@ -219,17 +222,17 @@ public class DomainAttributeService extends BaseService<DomainAttributeMapper, D
         if (domainAttribute == null) {
             return null;
         }
-        BTAssert.isTrue(BetterStringUtils.equals("03", domainAttribute.getDataType()), "数据类型不匹配！");
+        BTAssert.isTrue(StringUtils.equals("03", domainAttribute.getDataType()), "数据类型不匹配！");
         String objectString = domainAttribute.getObjectValue();
         Object object = JsonMapper.parserJson(objectString);
         return object;
     }
 
     public DomainAttribute findCommon(final String anOperOrg, final Long anCustNo, final String anCode) {
-        BTAssert.isTrue(BetterStringUtils.isNotBlank(anCode), "参数代码不允许为空！");
+        BTAssert.isTrue(StringUtils.isNotBlank(anCode), "参数代码不允许为空！");
 
         String operOrg = "DEFAULT";
-        if (BetterStringUtils.isNotBlank(anOperOrg)) {
+        if (StringUtils.isNotBlank(anOperOrg)) {
             operOrg = anOperOrg;
         }
         Long custNo = 0L;
@@ -238,11 +241,11 @@ public class DomainAttributeService extends BaseService<DomainAttributeMapper, D
         }
 
         CustInfo custInfo = null;
-        if (BetterStringUtils.equals("DEFAULT", operOrg) && !custNo.equals(0L)) {
+        if (StringUtils.equals("DEFAULT", operOrg) && !custNo.equals(0L)) {
             custInfo = custAccountService.findCustInfo(custNo);
             BTAssert.notNull(custInfo, "没有找到指定公司！");
 
-            BTAssert.isTrue(BetterStringUtils.equals(operOrg, custInfo.getOperOrg()), "操作机构不匹配！");
+            BTAssert.isTrue(StringUtils.equals(operOrg, custInfo.getOperOrg()), "操作机构不匹配！");
         }
 
         final Map<String, Object> conditionMap = new HashMap<String, Object>();
@@ -267,15 +270,15 @@ public class DomainAttributeService extends BaseService<DomainAttributeMapper, D
             anDomainAttribute.setDataType("00");
             break;
         case NUMBER:
-            anDomainAttribute.setNumberValue(anValue == null ? null : (Long)anValue);
+            anDomainAttribute.setNumberValue(anValue == null ? null : (Long) anValue);
             anDomainAttribute.setDataType("01");
             break;
         case MONEY:
-            anDomainAttribute.setMoneyValue(anValue == null ? null : (BigDecimal)anValue);
+            anDomainAttribute.setMoneyValue(anValue == null ? null : (BigDecimal) anValue);
             anDomainAttribute.setDataType("02");
             break;
         case OBJECT:
-            anDomainAttribute.setObjectValue(anValue == null ? null: JsonMapper.toJsonString(anValue));
+            anDomainAttribute.setObjectValue(anValue == null ? null : JsonMapper.toJsonString(anValue));
             anDomainAttribute.setDataType("03");
             break;
         }

@@ -34,9 +34,6 @@ package com.betterjr.mapper.common;
  * @param <T> 不能为空
  * @author liuzh
  */
-public interface Mapper<T> extends
-        BaseMapper<T>,
-        ExampleMapper<T>,
-        RowBoundsMapper<T> {
+public interface Mapper<T> extends BaseMapper<T>, ExampleMapper<T>, RowBoundsMapper<T> {
 
 }

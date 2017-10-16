@@ -15,6 +15,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.betterjr.common.exception.BytterException;
 import com.betterjr.common.exception.BytterSecurityException;
@@ -29,7 +30,8 @@ public class BetterX509CertFileStore extends BetterX509CertStore {
 
     }
 
-    public BetterX509CertFileStore(BetterX509CertStore anParent, String anStoreFile, String anPassword, String anCertAlias) {
+    public BetterX509CertFileStore(BetterX509CertStore anParent, String anStoreFile, String anPassword,
+            String anCertAlias) {
         super(anParent, anPassword, anCertAlias);
         this.storeFile = anStoreFile;
         this.checkCertFile(anStoreFile);
@@ -41,7 +43,7 @@ public class BetterX509CertFileStore extends BetterX509CertStore {
     }
 
     protected void checkCertFile(String anFile) {
-        if (BetterStringUtils.isNotBlank(anFile)) {
+        if (StringUtils.isNotBlank(anFile)) {
             String tmpFile = anFile.toLowerCase();
             InputStream inputStream = BetterX509Utils.findInputStream(anFile);
             if (inputStream == null) {
@@ -55,8 +57,7 @@ public class BetterX509CertFileStore extends BetterX509CertStore {
                 catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-            else if (tmpFile.endsWith(".pfx") || tmpFile.endsWith(".p12")) {
+            } else if (tmpFile.endsWith(".pfx") || tmpFile.endsWith(".p12")) {
                 KeyStore tmpKeyStore = openKeyStore(false);
 
                 Certificate[] arrList;
@@ -101,6 +102,7 @@ public class BetterX509CertFileStore extends BetterX509CertStore {
      * @param storePassword
      * @return KeyStore，存储数字证书的仓库
      */
+    @Override
     public KeyStore openKeyStore(boolean anCreate) {
         if (anCreate == false) {
             if (this.store != null) {
@@ -108,21 +110,19 @@ public class BetterX509CertFileStore extends BetterX509CertStore {
             }
         }
         InputStream fis = null;
-        if (BetterStringUtils.isBlank(this.storeFile) || BetterStringUtils.isBlank(this.getPassword())) {
+        if (StringUtils.isBlank(this.storeFile) || StringUtils.isBlank(this.getPassword())) {
 
             return null;
         }
         try {
             if (this.storeFile.endsWith(".p12") || this.storeFile.endsWith(".pfx")) {
                 store = KeyStore.getInstance("PKCS12", BetterX509Utils.BC);
-            }
-            else {
+            } else {
                 store = KeyStore.getInstance("JKS");
             }
             if (anCreate) {
                 store.load(null);
-            }
-            else {
+            } else {
                 fis = BetterX509Utils.findInputStream(this.storeFile);
                 store.load(fis, this.findPassword());
             }
@@ -153,6 +153,7 @@ public class BetterX509CertFileStore extends BetterX509CertStore {
      * @param 数字证书仓库
      * @param 数字证书仓库存取密码
      */
+    @Override
     public void saveKeyStore(KeyStore anStore) {
 
         File tmpStoreFile = new File(this.storeFile);
@@ -161,7 +162,8 @@ public class BetterX509CertFileStore extends BetterX509CertStore {
         if (folder.exists() == false) {
             folder.mkdirs();
         }
-        File tmpFile = new File(folder, Long.toHexString(System.currentTimeMillis()) + BetterStringUtils.createRandomCharAndNum(10) + ".tmp");
+        File tmpFile = new File(folder,
+                Long.toHexString(System.currentTimeMillis()) + BetterStringUtils.createRandomCharAndNum(10) + ".tmp");
         OutputStream fos = null;
         try {
             fos = new FileOutputStream(tmpFile);
@@ -175,8 +177,7 @@ public class BetterX509CertFileStore extends BetterX509CertStore {
             String message = e.getMessage().toLowerCase();
             if (message.contains("illegal key size")) {
                 throw new RuntimeException("非法的秘钥长度，请考虑使用无限制的JCE的安全强度策略");
-            }
-            else {
+            } else {
                 throw new BytterSecurityException("不能保存数字证书仓库到文件： " + this.storeFile, e);
             }
         }

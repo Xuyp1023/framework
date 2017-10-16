@@ -33,12 +33,11 @@ import nl.fountain.xelem.excel.NamedRange;
  * An implementation of the XLElement NamedRange.
  */
 public class SSNamedRange extends AbstractXLElement implements NamedRange {
-    
+
     private String name;
     private String refersTo;
     private boolean hidden;
 
-    
     /**
      * Creates a new SSNamedRange.
      * 
@@ -48,75 +47,84 @@ public class SSNamedRange extends AbstractXLElement implements NamedRange {
         this.name = name;
         this.refersTo = refersTo;
     }
-    
+
+    @Override
     public String getName() {
         return name;
     }
-    
+
     private void setRefersTo(String s) {
         refersTo = s;
     }
-    
+
+    @Override
     public String getRefersTo() {
         return refersTo;
     }
 
+    @Override
     public void setHidden(boolean hide) {
         hidden = hide;
     }
-    
+
     private void setHidden(String s) {
         hidden = s.equals("1");
     }
-    
+
+    @Override
     public boolean isHidden() {
         return hidden;
     }
 
     // @see nl.fountain.xelem.excel.XLElement#getTagName()
+    @Override
     public String getTagName() {
         return "NamedRange";
     }
 
     // @see nl.fountain.xelem.excel.XLElement#getNameSpace()
+    @Override
     public String getNameSpace() {
         return XMLNS_SS;
     }
 
     // @see nl.fountain.xelem.excel.XLElement#getPrefix()
+    @Override
     public String getPrefix() {
         return PREFIX_SS;
     }
 
+    @Override
     public Element assemble(Element parent, GIO gio) {
         Document doc = parent.getOwnerDocument();
         Element nre = assemble(doc, gio);
-        
+
         nre.setAttributeNodeNS(createAttributeNS(doc, "Name", name));
-        if (refersTo != null) nre.setAttributeNodeNS(
-                createAttributeNS(doc, "RefersTo", refersTo));
-        if (hidden) nre.setAttributeNodeNS(
-                createAttributeNS(doc, "Hidden", "1"));
-        
+        if (refersTo != null) nre.setAttributeNodeNS(createAttributeNS(doc, "RefersTo", refersTo));
+        if (hidden) nre.setAttributeNodeNS(createAttributeNS(doc, "Hidden", "1"));
+
         parent.appendChild(nre);
         return nre;
     }
-    
+
+    @Override
     public void setAttributes(Attributes attrs) {
         for (int i = 0; i < attrs.getLength(); i++) {
             invokeMethod(attrs.getLocalName(i), attrs.getValue(i));
         }
     }
-    
-	private void invokeMethod(String name, Object value) {
+
+    private void invokeMethod(String name, Object value) {
         Class[] types = new Class[] { value.getClass() };
         Method method = null;
         try {
             method = this.getClass().getDeclaredMethod("set" + name, types);
             method.invoke(this, new Object[] { value });
-        } catch (NoSuchMethodException e) {
+        }
+        catch (NoSuchMethodException e) {
             // no big deal
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -16,16 +16,15 @@
  */
 package net.oauth.jsontoken.discovery;
 
+import java.security.PublicKey;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.DeserializationConfig;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.oauth.jsontoken.crypto.MagicRsaPublicKey;
-
-import java.security.PublicKey;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Implementation of the {@link ServerInfo} interface that assumes the
@@ -34,38 +33,39 @@ import java.util.Map;
  * methods of the {@link ServerInfo} interface.
  */
 public class JsonServerInfo implements ServerInfo {
-  static ObjectMapper mapper = new ObjectMapper();
+    static ObjectMapper mapper = new ObjectMapper();
 
-  @JsonProperty("verification_keys")
-  private final Map<String, String> verificationKeys = new LinkedHashMap<String, String>();
+    @JsonProperty("verification_keys")
+    private final Map<String, String> verificationKeys = new LinkedHashMap<String, String>();
 
-  /**
-   * Parses a JSON-formatted server info document and returns it as a
-   * {@link JsonServerInfo} object.
-   * @param json the contents of the JSON-formatted server info document.
-   */
-  public static JsonServerInfo getDocument(String json) {
-      JsonServerInfo jsi = null;
-      try {
-          mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-          jsi = mapper.readValue(json, JsonServerInfo.class);
-      } catch (Exception e) {
-          e.printStackTrace();
-      }
-      return jsi;
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see net.oauth.jsontoken.discovery.ServerInfo#getVerificationKey(java.lang.String)
-   */
-  @Override
-  public PublicKey getVerificationKey(String keyId) {
-    String magicKey = verificationKeys.get(keyId);
-    if (magicKey == null) {
-      return null;
-    } else {
-      return new MagicRsaPublicKey(magicKey).getKey();
+    /**
+     * Parses a JSON-formatted server info document and returns it as a
+     * {@link JsonServerInfo} object.
+     * @param json the contents of the JSON-formatted server info document.
+     */
+    public static JsonServerInfo getDocument(String json) {
+        JsonServerInfo jsi = null;
+        try {
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            jsi = mapper.readValue(json, JsonServerInfo.class);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsi;
     }
-  }
+
+    /*
+     * (non-Javadoc)
+     * @see net.oauth.jsontoken.discovery.ServerInfo#getVerificationKey(java.lang.String)
+     */
+    @Override
+    public PublicKey getVerificationKey(String keyId) {
+        String magicKey = verificationKeys.get(keyId);
+        if (magicKey == null) {
+            return null;
+        } else {
+            return new MagicRsaPublicKey(magicKey).getKey();
+        }
+    }
 }

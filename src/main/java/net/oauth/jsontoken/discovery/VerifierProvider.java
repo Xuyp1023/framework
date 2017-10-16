@@ -16,10 +16,10 @@
  */
 package net.oauth.jsontoken.discovery;
 
+import java.util.List;
+
 import net.oauth.jsontoken.JsonTokenParser;
 import net.oauth.jsontoken.crypto.Verifier;
-
-import java.util.List;
 
 /**
  * An interface that must be implemented by JSON Token verifiers. The {@link JsonTokenParser}
@@ -33,14 +33,14 @@ import java.util.List;
  */
 public interface VerifierProvider {
 
-  /**
-   * Returns the {@link Verifier} that represents a certain verification
-   * key, given the key's id and its issuer.
-   * @param issuer the id of the issuer that's using the key.
-   * @param keyId the id of the key, if keyId mismatches, return a list of 
-   * possible verification keys.
-   * @return a {@link Verifier} object that represents the verification key.
-   */
-  public List<Verifier> findVerifier(String issuer, String keyId);
+    /**
+     * Returns the {@link Verifier} that represents a certain verification
+     * key, given the key's id and its issuer.
+     * @param issuer the id of the issuer that's using the key.
+     * @param keyId the id of the key, if keyId mismatches, return a list of 
+     * possible verification keys.
+     * @return a {@link Verifier} object that represents the verification key.
+     */
+    public List<Verifier> findVerifier(String issuer, String keyId);
 
 }

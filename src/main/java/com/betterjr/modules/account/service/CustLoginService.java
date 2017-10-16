@@ -73,7 +73,7 @@ public class CustLoginService extends BaseService<CustLoginRecordMapper, CustLog
      * @return
      */
     public CustContextInfo saveTicketLogin(final String anTicket, final CustCertInfo anCertInfo) {
-        final String ticket = BetterStringUtils.deleteWhitespace(anTicket);
+        final String ticket = StringUtils.deleteWhitespace(anTicket);
 
         String msg = null;
         int errCode = 20401;
@@ -83,7 +83,8 @@ public class CustLoginService extends BaseService<CustLoginRecordMapper, CustLog
 
                 final String workToken = custKeyManager.decrypt(arrStr[0]);
                 final String workTokenSign = arrStr[1];
-                final X509Certificate certificate = (X509Certificate) KeyReader.fromCerBase64String(anCertInfo.getCertInfo());
+                final X509Certificate certificate = (X509Certificate) KeyReader
+                        .fromCerBase64String(anCertInfo.getCertInfo());
 
                 if (SignHelper.verifySign(workToken, workTokenSign, certificate)) {
                     final Map<String, String> param = TicketUtils.getToken(workToken);
@@ -104,33 +105,29 @@ public class CustLoginService extends BaseService<CustLoginRecordMapper, CustLog
                         }
                         // 验证上下文信息是否有效，登录是否超时，以及提供的证书是否由私钥签发；如果都通过，则去获取客户信息
                         if (contextInfo != null && contextInfo.isValid()) {
-                            final CustLoginRecord tmpRecord = CustLoginRecord.createByOperator(contextInfo.getOperatorInfo(), "0");
+                            final CustLoginRecord tmpRecord = CustLoginRecord
+                                    .createByOperator(contextInfo.getOperatorInfo(), "0");
                             saveLoginRecord(tmpRecord);
                             contextInfo.setOperatorInfo(operator);
                             return contextInfo;
-                        }
-                        else {
+                        } else {
                             errCode = 20402;
                             msg = "back login context has error!";
                         }
-                    }
-                    else {
+                    } else {
                         errCode = 20405;
                         msg = "back login context has error!";
                     }
-                }
-                else {
+                } else {
                     errCode = 20404;
                     msg = "back login context has error!";
                 }
 
-            }
-            else {
+            } else {
                 errCode = 20403;
                 msg = "request body is error";
             }
-        }
-        else {
+        } else {
             msg = "token is null";
         }
         throw new AuthenticationException(new BytterSecurityException(errCode, msg));

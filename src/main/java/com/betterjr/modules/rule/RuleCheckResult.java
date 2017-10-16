@@ -1,7 +1,12 @@
 package com.betterjr.modules.rule;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.betterjr.common.utils.BetterStringUtils;
 
@@ -39,13 +44,14 @@ public class RuleCheckResult implements Serializable {
 
     public boolean workContinue(String anStr) {
 
-        return errorList.size() == 0 && BetterStringUtils.isNotBlank(anStr);
+        return errorList.size() == 0 && StringUtils.isNotBlank(anStr);
     }
 
     public Map<String, Object> getRuleWorkResult() {
         return ruleWorkResult;
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
@@ -53,7 +59,7 @@ public class RuleCheckResult implements Serializable {
         sb.append(", workStatus=").append(workStatus);
         sb.append(", ruleWorkResult=").append(ruleWorkResult);
         sb.append("\r, errorList=");
-        for(String tmpStr : errorList){
+        for (String tmpStr : errorList) {
             sb.append("\r\t").append(tmpStr);
         }
         sb.append("]");

@@ -26,9 +26,9 @@ import java.security.PublicKey;
  */
 public interface ServerInfo {
 
-  /**
-   * Returns the verification key with the given key id.
-   */
-  public PublicKey getVerificationKey(String keyId);
+    /**
+     * Returns the verification key with the given key id.
+     */
+    public PublicKey getVerificationKey(String keyId);
 
 }

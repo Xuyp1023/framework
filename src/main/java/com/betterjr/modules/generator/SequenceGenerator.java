@@ -18,11 +18,11 @@ import com.betterjr.modules.generator.service.SequenceService;
 public class SequenceGenerator implements Generator {
     private SequenceService sequenceService;
 
-    public SequenceGenerator() {
-    }
+    public SequenceGenerator() {}
 
     @Override
-    public Object getValue(final String anSeqId, final String anOperOrg, final Long anCustNo, final String anPattern, final String anCycle) throws BytterException {
+    public Object getValue(final String anSeqId, final String anOperOrg, final Long anCustNo, final String anPattern,
+            final String anCycle) throws BytterException {
         BTAssert.notNull(sequenceService, "序列化生产服务未找到！");
         String domainId = "DEFAULT";
         Long custNo = 0L;
@@ -36,8 +36,7 @@ public class SequenceGenerator implements Generator {
     }
 
     @Override
-    public void setParameters(final Map<String, Object> params) {
-    }
+    public void setParameters(final Map<String, Object> params) {}
 
     /* (non-Javadoc)
      * @see com.betterjr.modules.generator.Generator#setSequenceService(com.betterjr.modules.generator.service.SequenceService)

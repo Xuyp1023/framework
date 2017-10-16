@@ -1,22 +1,24 @@
 package com.betterjr.common.config;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.LinkedCaseInsensitiveMap;
 
+import com.betterjr.common.data.SaleSimpleRequest;
 import com.betterjr.common.data.SimpleDataEntity;
 import com.betterjr.common.utils.reflection.ReflectionUtils;
-import com.betterjr.common.data.SaleSimpleRequest;
- 
+
 //全局的参数服务
 public class ConfigService {
     protected static Logger logger = LoggerFactory.getLogger(ConfigService.class);
     private static ConfigService instance;
 
-    private  Map<String, ConfigServiceFace> configMap = new LinkedCaseInsensitiveMap();
-    private  Map<String, List> configValueMap = new LinkedCaseInsensitiveMap();
+    private Map<String, ConfigServiceFace> configMap = new LinkedCaseInsensitiveMap();
+    private Map<String, List> configValueMap = new LinkedCaseInsensitiveMap();
     private List<ConfigServiceFace> configServices = new ArrayList();
 
     public void initConfig() {
@@ -26,15 +28,15 @@ public class ConfigService {
             configValueMap.put(configFace.getMyServiceName(), configFace.findAll());
             configMap.put(configFace.getMyServiceName(), configFace);
         }
-        
-       // SaleFundInfoService.initFundInfo();
+
+        // SaleFundInfoService.initFundInfo();
     }
-    
-    public static List findConfigList(String anKey){
-        
+
+    public static List findConfigList(String anKey) {
+
         return instance.configValueMap.get(anKey);
     }
-    
+
     public List<ConfigServiceFace> getConfigServices() {
 
         return configServices;

@@ -1,10 +1,19 @@
 package com.betterjr.common.service;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
-import com.betterjr.common.selectkey.*;
+import com.betterjr.common.selectkey.ISelectKeyGenFace;
+import com.betterjr.common.selectkey.SelectKeyDateGen;
+import com.betterjr.common.selectkey.SelectKeyGuidGen;
+import com.betterjr.common.selectkey.SelectKeyTimeGen;
+import com.betterjr.common.selectkey.SelectKeyUserIDGen;
+import com.betterjr.common.selectkey.SelectKeyUserNameGen;
+import com.betterjr.common.selectkey.SelectKeyclientIPGen;
+import com.betterjr.common.selectkey.SerialGenerator;
 
 @Service
 public class SelectKeyGenService {
@@ -37,19 +46,16 @@ public class SelectKeyGenService {
         keyGeneratorList.addAll(anKeyGenorList);
     }
 
-    public SelectKeyGenService() {
-    }
+    public SelectKeyGenService() {}
 
     public static Object getValue(String anType, String anKey) {
 
         if (anType.toLowerCase().startsWith(SerialGenerator.BANK_SERIAL)) {
-           anKey = anKey.substring(SerialGenerator.BANK_SERIAL.length());
-           return SerialGenerator.getAppSerialNo(Integer.parseInt(anKey));
-        }
-        else if ("LongValue".equalsIgnoreCase(anType)) {
+            anKey = anKey.substring(SerialGenerator.BANK_SERIAL.length());
+            return SerialGenerator.getAppSerialNo(Integer.parseInt(anKey));
+        } else if ("LongValue".equalsIgnoreCase(anType)) {
             return SerialGenerator.getLongValue(anKey);
-        }
-        else {
+        } else {
             for (ISelectKeyGenFace genFace : keyGeneratorList) {
                 if (genFace.getName().equalsIgnoreCase(anType)) {
                     System.out.println("find " + anType);

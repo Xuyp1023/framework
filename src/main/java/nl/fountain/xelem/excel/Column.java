@@ -19,8 +19,6 @@
  */
 package nl.fountain.xelem.excel;
 
-
-
 /**
  * Represents the Column element. Only add columns
  * if formatting of columns is necessary.
@@ -35,7 +33,7 @@ package nl.fountain.xelem.excel;
  * 
  */
 public interface Column extends XLElement {
-    
+
     /**
      * Sets the ss:StyleID on this column. If no styleID is set on a column,
      * the ss:StyleID-attribute is not deployed in the resulting xml and
@@ -44,7 +42,7 @@ public interface Column extends XLElement {
      * @param 	id	the id of the style to employ on this column.
      */
     void setStyleID(String id);
-    
+
     /**
      * Gets the ss:StyleID which was set on this column.
      * 
@@ -52,7 +50,7 @@ public interface Column extends XLElement {
      * 			<code>null</code> if no styleID was previously set.
      */
     String getStyleID();
-    
+
     /**
      * Sets column-width to autofit for datatypes 'DateTime' and 'Number'. 
      * The default setting of Excel is 'true', so this method only has effect
@@ -62,7 +60,7 @@ public interface Column extends XLElement {
      * 					desired.
      */
     void setAutoFitWidth(boolean autoFit);
-    
+
     /**
      * Specifies whether autofit was set on this column.
      * 
@@ -70,7 +68,7 @@ public interface Column extends XLElement {
      * 		<code>false</code> otherwise 
      */
     boolean getAutoFitWith();
-    
+
     /**
      * Sets the span of this column.
      * The value of 
@@ -89,21 +87,21 @@ public interface Column extends XLElement {
      * @param 	s	The number of additional columns to include in the span.
      */
     void setSpan(int s);
-    
+
     /**
      * Gets the number of extra columns this column spans.
      * 
      * @return	the number of extra columns this column spans
      */
     int getSpan();
-    
+
     /**
      * Sets the width of this column.
      * 
      * @param w	The width of the column (in points).
      */
     void setWidth(double w);
-    
+
     /**
      * Gets the width of this column. A return value of <code>0.0</code>
      * may indicate this column has a default width.
@@ -111,19 +109,19 @@ public interface Column extends XLElement {
      * @return	the width of this column
      */
     double getWidth();
-    
+
     /**
      * Sets whether this column will be hidden.
      * 
      * @param hide	<code>true</code> if this column must not be displayed.
      */
     void setHidden(boolean hide);
-    
+
     /**
      * Specifies whether this column is hidden.
      */
     boolean isHidden();
-    
+
     /**
      * Sets the value of the ss:Index-attribute of this Column-element. 
      * Any value set may be overruled  
@@ -139,7 +137,7 @@ public interface Column extends XLElement {
      * @param index the index of this column
      */
     void setIndex(int index);
-    
+
     /**
      * Gets the value of the ss:Index-attribute of this Column-element.
      * The returned value only makes sence if this column was read with the

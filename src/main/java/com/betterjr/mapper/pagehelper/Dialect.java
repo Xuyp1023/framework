@@ -34,7 +34,8 @@ public enum Dialect {
         try {
             Dialect d = Dialect.valueOf(dialect);
             return d;
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             String dialects = null;
             for (Dialect d : Dialect.values()) {
                 if (dialects == null) {

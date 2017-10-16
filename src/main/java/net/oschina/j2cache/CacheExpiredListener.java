@@ -6,11 +6,11 @@ package net.oschina.j2cache;
  */
 public interface CacheExpiredListener {
 
-	/**
-	 * 当缓存中的某个对象超时被清除的时候触发
-	 * @param region: Cache region name
-	 * @param key: cache key
-	 */
-	public void notifyElementExpired(String region, Object key) ;
+    /**
+     * 当缓存中的某个对象超时被清除的时候触发
+     * @param region: Cache region name
+     * @param key: cache key
+     */
+    public void notifyElementExpired(String region, Object key);
 
 }

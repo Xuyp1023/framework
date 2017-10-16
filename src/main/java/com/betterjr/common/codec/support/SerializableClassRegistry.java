@@ -1,10 +1,8 @@
 package com.betterjr.common.codec.support;
 
-
 import java.util.LinkedHashSet;
 import java.util.Set;
 
- 
 public abstract class SerializableClassRegistry {
 
     private static final Set<Class> registrations = new LinkedHashSet<Class>();

@@ -28,29 +28,29 @@ import java.security.SignatureException;
  */
 public interface Signer {
 
-  /**
-   * Returns the id of this signing key. If not null, this will be included in
-   * the JSON Token's envelope as the key_id parameter.
-   */
-  public String getKeyId();
+    /**
+     * Returns the id of this signing key. If not null, this will be included in
+     * the JSON Token's envelope as the key_id parameter.
+     */
+    public String getKeyId();
 
-  /**
-   * The issuer of the JSON Token. Each signer belongs to an issuer, and an issuer
-   * may have one or more signers, each with a distinct key id.
-   */
-  public String getIssuer();
+    /**
+     * The issuer of the JSON Token. Each signer belongs to an issuer, and an issuer
+     * may have one or more signers, each with a distinct key id.
+     */
+    public String getIssuer();
 
-  /**
-   * Returns the signature algorithm used by this signer.
-   */
-  public SignatureAlgorithm getSignatureAlgorithm();
+    /**
+     * Returns the signature algorithm used by this signer.
+     */
+    public SignatureAlgorithm getSignatureAlgorithm();
 
-  /**
-   * Signs an array of bytes.
-   * @param source The bytes that should be signed.
-   * @return The signature on the bytes.
-   * @throws SignatureException if the signer could not create the signature.
-   */
-  public byte[] sign(byte[] source) throws SignatureException;
+    /**
+     * Signs an array of bytes.
+     * @param source The bytes that should be signed.
+     * @return The signature on the bytes.
+     * @throws SignatureException if the signer could not create the signature.
+     */
+    public byte[] sign(byte[] source) throws SignatureException;
 
 }

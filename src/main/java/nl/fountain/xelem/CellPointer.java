@@ -21,7 +21,6 @@ package nl.fountain.xelem;
 
 import nl.fountain.xelem.excel.Worksheet;
 
-
 /**
  * Keeps track of the position of cells being added to the
  * {@link nl.fountain.xelem.excel.Worksheet}.
@@ -41,32 +40,32 @@ import nl.fountain.xelem.excel.Worksheet;
  * 1 column to the right.
  */
 public class CellPointer extends Address {
-    
+
     /**
      * A constant for the method {@link #setMovement(int)}.
      */
     public static final int MOVE_RIGHT = 0;
-    
+
     /**
      * A constant for the method {@link #setMovement(int)}.
      */
     public static final int MOVE_LEFT = 1;
-    
+
     /**
      * A constant for the method {@link #setMovement(int)}.
      */
     public static final int MOVE_DOWN = 2;
-    
+
     /**
      * A constant for the method {@link #setMovement(int)}.
      */
     public static final int MOVE_UP = 3;
-    
+
     private int hStep;
     private int vStep;
     private int hMove;
     private int vMove;
-    
+
     /**
      * Constructs a new CellPointer. The position of the pointer will be at
      * row 1, column 1. The initial movement of the pointer is MOVE_RIGHT.
@@ -82,7 +81,7 @@ public class CellPointer extends Address {
         vStep = 1;
         hMove = 1;
     }
-    
+
     /**
      * Gets the address of the cell where this cellpointer is pointing at.
      * 
@@ -92,7 +91,7 @@ public class CellPointer extends Address {
     public Address getAddress() {
         return new Address(r, c);
     }
-    
+
     /**
      * Sets the number of cells this cellpointer will move 
      * in the horizontal axis after a call to {@link #move()}.
@@ -117,14 +116,14 @@ public class CellPointer extends Address {
     public void setHorizontalStepDistance(int distance) {
         hStep = distance;
     }
-    
+
     /**
      * Gets the horizontalStepDistance.
      */
     public int getHorizontalStepDistance() {
         return hStep;
     }
-    
+
     /**
      * Sets the number of cells this cellpointer will move 
      * in the vertical axis after a call to {@link #move()}.
@@ -149,14 +148,14 @@ public class CellPointer extends Address {
     public void setVerticalStepDistance(int distance) {
         vStep = distance;
     }
-    
+
     /**
      * Gets the verticalStepDistance.
      */
     public int getVerticalStepDistance() {
         return vStep;
     }
-    
+
     /**
      * Sets the direction this cellpointer will move after a call to
      * {@link #move()}. The default is MOVE_RIGHT.
@@ -167,15 +166,27 @@ public class CellPointer extends Address {
      */
     public void setMovement(int moveConst) {
         switch (moveConst) {
-        	case MOVE_RIGHT: hMove = 1; vMove = 0; break;
-        	case MOVE_LEFT: hMove = -1; vMove = 0; break;
-        	case MOVE_DOWN: hMove = 0; vMove = 1; break;
-        	case MOVE_UP: hMove = 0; vMove = -1; break;
-        	default: throw new IllegalArgumentException(
-        	        moveConst + ". Legal values are 0, 1, 2 and 3.");
+        case MOVE_RIGHT:
+            hMove = 1;
+            vMove = 0;
+            break;
+        case MOVE_LEFT:
+            hMove = -1;
+            vMove = 0;
+            break;
+        case MOVE_DOWN:
+            hMove = 0;
+            vMove = 1;
+            break;
+        case MOVE_UP:
+            hMove = 0;
+            vMove = -1;
+            break;
+        default:
+            throw new IllegalArgumentException(moveConst + ". Legal values are 0, 1, 2 and 3.");
         }
     }
-    
+
     /**
      * Gets the direction into which this cellpointer will move. The returned int will
      * be equal to one of CellPointer's MOVE_RIGHT, MOVE_LEFT, MOVE_DOWN
@@ -187,7 +198,7 @@ public class CellPointer extends Address {
         if (vMove == 1) return MOVE_DOWN;
         return MOVE_UP;
     }
-    
+
     /**
      * Moves this cellpointer. The direction of the movement depends on the 
      * setting of {@link #setMovement(int)}. How many cells the pointer will
@@ -201,7 +212,7 @@ public class CellPointer extends Address {
         c += (hStep * hMove);
         r += (vStep * vMove);
     }
-    
+
     /**
      * Moves this cellpointer to a new position relative to it's old position.
      * If this cellpointer was previously at oldR, oldC, the new position will 
@@ -214,7 +225,7 @@ public class CellPointer extends Address {
         r += rows;
         c += columns;
     }
-    
+
     /**
      * Moves this cellpointer to the specified row and column number.
      * 
@@ -225,7 +236,7 @@ public class CellPointer extends Address {
         r = row;
         c = column;
     }
-    
+
     /**
      * Moves this cellpointer to the address specified by the given A1-reference
      * string.
@@ -236,7 +247,7 @@ public class CellPointer extends Address {
         r = calculateRow(a1_ref);
         c = calculateColumn(a1_ref);
     }
-    
+
     /**
      * Moves this cellpointer to the specified address.
      * 
@@ -246,7 +257,7 @@ public class CellPointer extends Address {
         r = address.r;
         c = address.c;
     }
-    
+
     /**
      * Moves this cellpointer to the first column of the present row.
      * The first column is determined by the value of 
@@ -255,7 +266,7 @@ public class CellPointer extends Address {
     public void moveHome() {
         c = Worksheet.firstColumn;
     }
-    
+
     /**
      * Moves this cellpointer to the first column of the next row.
      * The first column is determined by the value of 

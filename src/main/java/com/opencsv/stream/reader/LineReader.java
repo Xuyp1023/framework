@@ -1,9 +1,9 @@
 package com.opencsv.stream.reader;
 
-import com.opencsv.CSVParser;
-
 import java.io.BufferedReader;
 import java.io.IOException;
+
+import com.opencsv.CSVParser;
 
 /**
  * This class was created for issue #106 (https://sourceforge.net/p/opencsv/bugs/106/) where

@@ -28,12 +28,12 @@ import java.util.Date;
  * A utility class for xelem.
  */
 public class XLUtil {
-       
+
     private static SimpleDateFormat xldf;
-    
+
     // this class has only static methods.
     private XLUtil() {}
-    
+
     /**
      * Converts rgb to a string. Like <code><i>#ff00ba</i></code>
      * 
@@ -55,13 +55,13 @@ public class XLUtil {
         sb.append(blue.length() < 2 ? "0" + blue : blue);
         return sb.toString();
     }
-    
+
     private static int toByte(int i) {
         if (i < 0) i = 0;
         if (i > 255) i = 255;
         return i;
     }
-    
+
     /**
      * Formats a Date into a Date-Time value used by SpreadsheetML.
      * 
@@ -75,7 +75,7 @@ public class XLUtil {
         sb.append(getTimeFormat().format(date));
         return sb.toString();
     }
-    
+
     /**
      * Parses a string in the DateTime format used by SpreadsheetML 
      * to a Date.
@@ -91,12 +91,13 @@ public class XLUtil {
         Date date = null;
         try {
             date = getExcelFormat().parse(datum + " " + tijd);
-        } catch (ParseException e) {
+        }
+        catch (ParseException e) {
             e.printStackTrace();
         }
         return date;
     }
-    
+
     private static DateFormat getDateFormat() {
         if (xldf == null) {
             xldf = new SimpleDateFormat();
@@ -104,18 +105,18 @@ public class XLUtil {
         xldf.applyPattern("yyyy-MM-dd");
         return xldf;
     }
-    
+
     private static DateFormat getTimeFormat() {
         if (xldf == null) {
-           xldf = new SimpleDateFormat(); 
+            xldf = new SimpleDateFormat();
         }
         xldf.applyPattern("HH:mm:ss.SSS");
         return xldf;
     }
-    
+
     private static DateFormat getExcelFormat() {
         if (xldf == null) {
-           xldf = new SimpleDateFormat(); 
+            xldf = new SimpleDateFormat();
         }
         xldf.applyPattern("yyyy-MM-dd HH:mm:ss");
         return xldf;

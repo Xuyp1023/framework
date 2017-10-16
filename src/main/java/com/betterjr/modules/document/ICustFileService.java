@@ -17,7 +17,8 @@ public interface ICustFileService {
      * 
      * @param request
      */
-    public String webUpdateCustFileAuditInfo(Map<String, String[]> anParamMap, Enumeration<String> anParamNames, Long anCustNo);
+    public String webUpdateCustFileAuditInfo(Map<String, String[]> anParamMap, Enumeration<String> anParamNames,
+            Long anCustNo);
 
     /**
      * 查询用户认证文件信息
@@ -134,8 +135,8 @@ public interface ICustFileService {
      */
     public List<CustFileItem> findCustFilesByBatch(List<Long> anBatchNoList);
 
-    public CustFileItem saveAndUpdateFileItem(String filePath, Long fileLength, String anWorkType, String anFileName, FileStoreType anStoreType,
-            boolean anWithBatchNo);
+    public CustFileItem saveAndUpdateFileItem(String filePath, Long fileLength, String anWorkType, String anFileName,
+            FileStoreType anStoreType, boolean anWithBatchNo);
 
     /**
      * 保存文件信息，如果存在就更新，不存在就增加
@@ -143,7 +144,8 @@ public interface ICustFileService {
      * @param anFileItem
      * @return
      */
-    public String webSaveAndUpdateFileItem(String filePath, Long fileLength, String anWorkType, String anFileName, FileStoreType anStoreType);
+    public String webSaveAndUpdateFileItem(String filePath, Long fileLength, String anWorkType, String anFileName,
+            FileStoreType anStoreType);
 
     /**
      * 删除附件，具体逻辑是如果存在并匹配上了，就可以设置batchNo为负值，便于今后查询

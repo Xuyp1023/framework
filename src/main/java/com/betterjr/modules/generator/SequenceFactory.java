@@ -17,16 +17,17 @@ import com.betterjr.modules.generator.service.SequenceService;
 public final class SequenceFactory {
     private static final Generator generator = new PatternSequenceGenerator();
 
-
     public void init() {
         generator.setSequenceService(SpringContextHolder.getBean(SequenceService.class));
     }
 
-    public static String generate(final String anSeqId, final String anOperOrg, final Long anCustNo, final String anPattern, final String anCycle) {
+    public static String generate(final String anSeqId, final String anOperOrg, final Long anCustNo,
+            final String anPattern, final String anCycle) {
         return generator.getValue(anSeqId, anOperOrg, anCustNo, anPattern, anCycle).toString();
     }
 
-    public static String generate(final String anSeqId, final String anOperOrg, final String anPattern, final String anCycle) {
+    public static String generate(final String anSeqId, final String anOperOrg, final String anPattern,
+            final String anCycle) {
         return generator.getValue(anSeqId, anOperOrg, null, anPattern, anCycle).toString();
     }
 

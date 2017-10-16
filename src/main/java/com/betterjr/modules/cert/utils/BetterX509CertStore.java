@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,24 +33,24 @@ public abstract class BetterX509CertStore implements java.io.Serializable {
     private String description;
     protected X509Certificate userCert = null;
     protected KeyStore store;
-    
+
     public BetterX509CertStore() {
 
     }
 
-    public BetterX509CertType findCertType(){
-        
-        return BetterX509CertType.checkType(this.findCertificate());        
+    public BetterX509CertType findCertType() {
+
+        return BetterX509CertType.checkType(this.findCertificate());
     }
-    
-    public String findSigner(){
-        if (this.parent != null ){
+
+    public String findSigner() {
+        if (this.parent != null) {
             X509Certificate tmpCert = this.parent.findCertificate();
             return BetterX509Utils.findCertificateSubjectItem(tmpCert, "CN");
         }
         return " ";
     }
-    
+
     public BetterX509CertStore(BetterX509CertStore anParent, String anPassword, String anCertAlias) {
         this.parent = anParent;
         this.password = anPassword;
@@ -57,7 +58,7 @@ public abstract class BetterX509CertStore implements java.io.Serializable {
     }
 
     public String findCertAlias() {
-        if (BetterStringUtils.isBlank(this.certAlias)) {
+        if (StringUtils.isBlank(this.certAlias)) {
             openKeyStore(false);
             Enumeration<String> ee;
             try {
@@ -100,16 +101,16 @@ public abstract class BetterX509CertStore implements java.io.Serializable {
 
         return findPrivateKey(null);
     }
-    
-    public byte[] findPrivateKeyEncode(){
+
+    public byte[] findPrivateKeyEncode() {
         PrivateKey tmpKey = findPrivateKey();
-        if (tmpKey == null){
+        if (tmpKey == null) {
             return new byte[0];
-        }
-        else{
+        } else {
             return tmpKey.getEncoded();
         }
     }
+
     public PrivateKey findPrivateKey(KeyStore anKeyStore) {
         try {
             store = anKeyStore;
@@ -122,7 +123,7 @@ public abstract class BetterX509CertStore implements java.io.Serializable {
         }
         catch (Exception e) {
 
-          //  throw new BytterSecurityException("从数据仓库获取数字证书私钥出现异常", e);
+            // throw new BytterSecurityException("从数据仓库获取数字证书私钥出现异常", e);
             return null;
         }
     }
@@ -149,13 +150,13 @@ public abstract class BetterX509CertStore implements java.io.Serializable {
             throw new BytterSecurityException("不能导入数字证书到数字证书仓库 ", e);
         }
     }
-    
+
     /**
      * 读取原始的信息
      * @return
      */
     public abstract byte[] readOrignData();
-    
+
     /**
      * 根据数字证书别名，从数字证书仓库中获得数字证书
      *
@@ -195,24 +196,23 @@ public abstract class BetterX509CertStore implements java.io.Serializable {
     public abstract void saveKeyStore(KeyStore anStore);
 
     public BetterX509CertStore getParent() {
-        
+
         return this.parent;
     }
 
     public void setParent(BetterX509CertStore anParent) {
-        
+
         this.parent = anParent;
     }
 
     public char[] findPassword() {
-        if (BetterStringUtils.isNotBlank(this.password)) {
+        if (StringUtils.isNotBlank(this.password)) {
             return this.password.toCharArray();
-        }
-        else {
+        } else {
             return new char[] {};
         }
     }
-   
+
     /**
      * 查找证书链信息
      * 
@@ -259,6 +259,7 @@ public abstract class BetterX509CertStore implements java.io.Serializable {
         this.description = anDescription;
     }
 
+    @Override
     public String toString() {
 
         return ToStringBuilder.reflectionToString(this);

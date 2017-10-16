@@ -2,8 +2,6 @@ package com.betterjr.modules.document.utils;
 
 import java.io.InputStream;
 
-import com.betterjr.modules.document.entity.CustFileItem;
-
 public interface FileManager {
 
     /**
@@ -26,12 +24,12 @@ public interface FileManager {
      * @return
      */
     public boolean exists(String anFilePath);
-    
+
     /**
      * 查找文件大小
      * @param anFilePath
      * @return
      */
     public long findSize(String anFilePath);
-    
+
 }

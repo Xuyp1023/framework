@@ -17,7 +17,8 @@ public interface DataValidatorFace {
      * @param 业务规则数据
      * @return
      */
-    public boolean evaluate(WorkRuleValidator anValidator, QLExpressContext anContext, RuleCheckResult anResult, RuleBusiness anRuleBusin, Object anValue, Object anBusinValue, String anMessage);
-    
+    public boolean evaluate(WorkRuleValidator anValidator, QLExpressContext anContext, RuleCheckResult anResult,
+            RuleBusiness anRuleBusin, Object anValue, Object anBusinValue, String anMessage);
+
     public String getValidatorName();
 }

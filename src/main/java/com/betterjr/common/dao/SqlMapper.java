@@ -1,17 +1,20 @@
 package com.betterjr.common.dao;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.builder.StaticSqlSource;
 import org.apache.ibatis.builder.annotation.AnnonHelper;
 import org.apache.ibatis.exceptions.TooManyResultsException;
-import org.apache.ibatis.mapping.*;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.ResultMap;
+import org.apache.ibatis.mapping.ResultMapping;
+import org.apache.ibatis.mapping.SqlCommandType;
+import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * MyBatis执行sql工具
@@ -42,7 +45,8 @@ public class SqlMapper {
         if (list.size() == 1) {
             return list.get(0);
         } else if (list.size() > 1) {
-            throw new TooManyResultsException("Expected one result (or null) to be returned by selectOne(), but found: " + list.size());
+            throw new TooManyResultsException(
+                    "Expected one result (or null) to be returned by selectOne(), but found: " + list.size());
         } else {
             return null;
         }
@@ -275,11 +279,11 @@ public class SqlMapper {
             MappedStatement ms = new MappedStatement.Builder(configuration, msId, sqlSource, SqlCommandType.SELECT)
                     .resultMaps(new ArrayList<ResultMap>() {
                         {
-                            add(new ResultMap.Builder(configuration, "defaultResultMap", resultType, new ArrayList<ResultMapping>(0)).build());
+                            add(new ResultMap.Builder(configuration, "defaultResultMap", resultType,
+                                    new ArrayList<ResultMapping>(0)).build());
                         }
-                    })
-                    .build();
-            //缓存
+                    }).build();
+            // 缓存
             configuration.addMappedStatement(ms);
         }
 
@@ -294,11 +298,11 @@ public class SqlMapper {
             MappedStatement ms = new MappedStatement.Builder(configuration, msId, sqlSource, sqlCommandType)
                     .resultMaps(new ArrayList<ResultMap>() {
                         {
-                            add(new ResultMap.Builder(configuration, "defaultResultMap", int.class, new ArrayList<ResultMapping>(0)).build());
+                            add(new ResultMap.Builder(configuration, "defaultResultMap", int.class,
+                                    new ArrayList<ResultMapping>(0)).build());
                         }
-                    })
-                    .build();
-            //缓存
+                    }).build();
+            // 缓存
             configuration.addMappedStatement(ms);
         }
 
@@ -338,7 +342,7 @@ public class SqlMapper {
             if (hasMappedStatement(msId)) {
                 return msId;
             }
-            
+
             sql = AnnonHelper.parseNode(sql, resultType);
             SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, parameterType);
             newSelectMappedStatement(msId, sqlSource, resultType);

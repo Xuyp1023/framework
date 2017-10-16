@@ -1,7 +1,15 @@
 package com.betterjr.modules.document.entity;
 
-import com.alibaba.rocketmq.common.protocol.header.QueryMessageRequestHeader;
-import com.betterjr.common.annotation.*;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.common.selectkey.SerialGenerator;
 import com.betterjr.common.utils.BetterDateUtils;
@@ -9,10 +17,6 @@ import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.QueryTermBuilder;
 import com.betterjr.modules.document.data.FileStoreType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import java.util.Map;
-
-import javax.persistence.*;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -23,31 +27,31 @@ public class AuthorFileGroup implements BetterjrEntity {
      * 文件信息类型
      */
     @Id
-    @Column(name = "C_FILEINFOTYPE",  columnDefinition="VARCHAR" )
-    @MetaData( value="文件信息类型", comments = "文件信息类")
+    @Column(name = "C_FILEINFOTYPE", columnDefinition = "VARCHAR")
+    @MetaData(value = "文件信息类型", comments = "文件信息类")
     private String fileInfoType;
 
     /**
      * 业务代码 00：其它文件，01账户文件,02交易文件
      */
-    @Column(name = "C_BUSINFLAG",  columnDefinition="VARCHAR" )
-    @MetaData( value="业务代码", comments = "业务代码；取文件的分割")
+    @Column(name = "C_BUSINFLAG", columnDefinition = "VARCHAR")
+    @MetaData(value = "业务代码", comments = "业务代码；取文件的分割")
     private String businFlag;
 
     /**
      * 业务描述
      */
-    @Column(name = "C_DESCRIPTION",  columnDefinition="VARCHAR" )
-    @MetaData( value="业务描述", comments = "业务描述")
+    @Column(name = "C_DESCRIPTION", columnDefinition = "VARCHAR")
+    @MetaData(value = "业务描述", comments = "业务描述")
     private String description;
-    
+
     /**
      * 适用范围
      */
-    @Column(name = "C_SUB_RANG",  columnDefinition="VARCHAR" )
-    @MetaData( value="适用范围", comments = "适用范围")
+    @Column(name = "C_SUB_RANG", columnDefinition = "VARCHAR")
+    @MetaData(value = "适用范围", comments = "适用范围")
     private String workRang;
- 
+
     /**
      * 状态，0 停用 ;1启用
      */
@@ -85,9 +89,9 @@ public class AuthorFileGroup implements BetterjrEntity {
     @Column(name = "c_permit_filetypes", columnDefinition = "VARCHAR")
     @MetaData(value = "该类型允许的文件类型，多个使用逗号分隔，默认是全部平台允许的类型", comments = "该类型允许的文件类型，多个使用逗号分隔，默认是全部平台允许的类型")
     private String permitFileTypes;
-    
+
     private static final long serialVersionUID = 1440667936389L;
- 
+
     public String getStoreType() {
         return this.storeType;
     }
@@ -103,7 +107,7 @@ public class AuthorFileGroup implements BetterjrEntity {
     public void setBusinFlag(String businFlag) {
         this.businFlag = businFlag == null ? null : businFlag.trim();
     }
- 
+
     public String getFileInfoType() {
         return this.fileInfoType;
     }
@@ -119,7 +123,7 @@ public class AuthorFileGroup implements BetterjrEntity {
     public void setDescription(String anDescription) {
         this.description = anDescription;
     }
- 
+
     public String getGroupStatus() {
         return this.groupStatus;
     }
@@ -127,7 +131,7 @@ public class AuthorFileGroup implements BetterjrEntity {
     public void setGroupStatus(String anGroupStatus) {
         this.groupStatus = anGroupStatus;
     }
-  
+
     public String getWorkRang() {
         return this.workRang;
     }
@@ -182,15 +186,24 @@ public class AuthorFileGroup implements BetterjrEntity {
             return false;
         }
         AuthorFileGroup other = (AuthorFileGroup) that;
-        return (this.getFileInfoType() == null ? other.getFileInfoType() == null : this.getFileInfoType().equals(other.getFileInfoType()))
-            && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
-            && (this.getWorkRang() == null ? other.getWorkRang() == null : this.getWorkRang().equals(other.getWorkRang()))
-            && (this.getBusinFlag() == null ? other.getBusinFlag() == null : this.getBusinFlag().equals(other.getBusinFlag()))
-            && (this.getDeficiencyInfo() == null ? other.getDeficiencyInfo() == null : this.getDeficiencyInfo().equals(other.getDeficiencyInfo()))
-            && (this.getStoreType() == null ? other.getStoreType() == null : this.getStoreType().equals(other.getStoreType()))
-            && (this.getStorePath() == null ? other.getStorePath() == null : this.getStorePath().equals(other.getStorePath()))
-            && (this.getPermitFileTypes() == null ? other.getPermitFileTypes() == null : this.getPermitFileTypes().equals(other.getPermitFileTypes()))
-            && (this.getGroupStatus() == null ? other.getGroupStatus() == null : this.getGroupStatus().equals(other.getGroupStatus()));
+        return (this.getFileInfoType() == null ? other.getFileInfoType() == null
+                : this.getFileInfoType().equals(other.getFileInfoType()))
+                && (this.getDescription() == null ? other.getDescription() == null
+                        : this.getDescription().equals(other.getDescription()))
+                && (this.getWorkRang() == null ? other.getWorkRang() == null
+                        : this.getWorkRang().equals(other.getWorkRang()))
+                && (this.getBusinFlag() == null ? other.getBusinFlag() == null
+                        : this.getBusinFlag().equals(other.getBusinFlag()))
+                && (this.getDeficiencyInfo() == null ? other.getDeficiencyInfo() == null
+                        : this.getDeficiencyInfo().equals(other.getDeficiencyInfo()))
+                && (this.getStoreType() == null ? other.getStoreType() == null
+                        : this.getStoreType().equals(other.getStoreType()))
+                && (this.getStorePath() == null ? other.getStorePath() == null
+                        : this.getStorePath().equals(other.getStorePath()))
+                && (this.getPermitFileTypes() == null ? other.getPermitFileTypes() == null
+                        : this.getPermitFileTypes().equals(other.getPermitFileTypes()))
+                && (this.getGroupStatus() == null ? other.getGroupStatus() == null
+                        : this.getGroupStatus().equals(other.getGroupStatus()));
     }
 
     public String getStorePath() {
@@ -216,56 +229,57 @@ public class AuthorFileGroup implements BetterjrEntity {
         result = prime * result + ((getPermitFileTypes() == null) ? 0 : getPermitFileTypes().hashCode());
         return result;
     }
-    
-    public AuthorFileGroup(){
-        
+
+    public AuthorFileGroup() {
+
     }
-    
-    public AuthorFileGroup(String anBusinClass, String anFileInfoType){
+
+    public AuthorFileGroup(String anBusinClass, String anFileInfoType) {
         this.businFlag = anBusinClass;
         this.fileInfoType = anFileInfoType;
     }
-    
-    private static String findStorePath(String anBusinFlag){
-        String tmpStr =(String) QueryTermBuilder.newInstance().put("00", "other").put("01", "account").put("02", "trade").build().get(anBusinFlag);
-        if (BetterStringUtils.isBlank(tmpStr)){
+
+    private static String findStorePath(String anBusinFlag) {
+        String tmpStr = (String) QueryTermBuilder.newInstance().put("00", "other").put("01", "account")
+                .put("02", "trade").build().get(anBusinFlag);
+        if (StringUtils.isBlank(tmpStr)) {
             tmpStr = "other";
         }
         return tmpStr;
     }
-    
+
     /**
      * 查找文件创建路径信息
      * @return
      */
-    public String findCreateFilePath(FileStoreType anStoreType){
-       StringBuilder sb = new StringBuilder();
-       if (anStoreType != FileStoreType.OSS_STORE){
-           sb.append("/");
-       }
-       sb.append(BetterDateUtils.getNumDate()).append("/");
-       sb.append(findStorePath(this.businFlag)).append("/");
-       if (BetterStringUtils.isNotBlank(this.storePath)){
-          sb.append(this.storePath).append("/"); 
-       }
-       if (BetterStringUtils.isNotBlank(fileInfoType)){
-          sb.append(this.fileInfoType).append("/");
-       }
-       sb.append(SerialGenerator.uuid());
-       return sb.toString();
+    public String findCreateFilePath(FileStoreType anStoreType) {
+        StringBuilder sb = new StringBuilder();
+        if (anStoreType != FileStoreType.OSS_STORE) {
+            sb.append("/");
+        }
+        sb.append(BetterDateUtils.getNumDate()).append("/");
+        sb.append(findStorePath(this.businFlag)).append("/");
+        if (StringUtils.isNotBlank(this.storePath)) {
+            sb.append(this.storePath).append("/");
+        }
+        if (StringUtils.isNotBlank(fileInfoType)) {
+            sb.append(this.fileInfoType).append("/");
+        }
+        sb.append(SerialGenerator.uuid());
+        return sb.toString();
     }
-    
+
     /**
      *检查该业务类型允许的文件类型 
      * @param anFileType 文件类型
      * @return
      */
-    public boolean checkFileType(String anFileType){
-       if (BetterStringUtils.isBlank(this.permitFileTypes) || BetterStringUtils.isBlank(anFileType)){
- 
-           return true;
-       }
-       
-       return this.permitFileTypes.indexOf(anFileType) > -1;
+    public boolean checkFileType(String anFileType) {
+        if (StringUtils.isBlank(this.permitFileTypes) || StringUtils.isBlank(anFileType)) {
+
+            return true;
+        }
+
+        return this.permitFileTypes.indexOf(anFileType) > -1;
     }
 }

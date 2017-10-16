@@ -146,7 +146,7 @@ public class BTObjectUtils extends org.apache.commons.lang3.ObjectUtils {
     }
 
     public static Object fastDeserializeStr(final String bytes) {
-        if (BetterStringUtils.isNotBlank(bytes)) {
+        if (StringUtils.isNotBlank(bytes)) {
             try {
                 final byte[] bb = Base64.decodeBase64(bytes);
 
@@ -188,10 +188,10 @@ public class BTObjectUtils extends org.apache.commons.lang3.ObjectUtils {
     /**
      * 对象强制类型转换时，如果为空，返回为空
      */
-    public static <T> T castSafety(final Object obj,final Class<T> cls){
-        if(obj==null){
+    public static <T> T castSafety(final Object obj, final Class<T> cls) {
+        if (obj == null) {
             return null;
         }
-        return (T)obj;
+        return (T) obj;
     }
 }

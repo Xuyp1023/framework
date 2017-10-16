@@ -24,10 +24,12 @@ public class OrderByRawSqlSource implements SqlSource, OrderBySqlSource {
         this.original = sqlSource;
     }
 
+    @Override
     public BoundSql getBoundSql(Object parameterObject) {
         return sqlSource.getBoundSql(parameterObject);
     }
 
+    @Override
     public SqlSource getOriginal() {
         return original;
     }

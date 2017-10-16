@@ -28,9 +28,9 @@ import java.net.URI;
  */
 public interface ServerDescriptorProvider {
 
-  /**
-   * Returns the server descriptor, given the issuer id present in a JSON Token.
-   */
-  public URI getServerDescriptor(String issuer);
+    /**
+     * Returns the server descriptor, given the issuer id present in a JSON Token.
+     */
+    public URI getServerDescriptor(String issuer);
 
 }

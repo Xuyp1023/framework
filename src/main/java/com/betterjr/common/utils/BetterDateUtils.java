@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 /**
@@ -18,10 +19,12 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
     private final static long NM = 1000 * 60;
     private final static long NS = 1000;
 
-    private static String[] parsePatterns = { "yyyyMMdd", "yyyyMMdd HHmmss", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy/MM/dd HH:mm:ss",
-            "yyyy/MM/dd HH:mm", "yyyy.MM.dd HH:mm:ss", "yyyy-MM", "yyyy/MM/dd", "yyyy-MM-dd", "yyyy/MM", "yyyy.MM.dd", "yyyy.MM.dd HH:mm", "yyyy.MM","yyyyMM" };
+    private static String[] parsePatterns = { "yyyyMMdd", "yyyyMMdd HHmmss", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm",
+            "yyyy/MM/dd HH:mm:ss", "yyyy/MM/dd HH:mm", "yyyy.MM.dd HH:mm:ss", "yyyy-MM", "yyyy/MM/dd", "yyyy-MM-dd",
+            "yyyy/MM", "yyyy.MM.dd", "yyyy.MM.dd HH:mm", "yyyy.MM", "yyyyMM" };
 
-    private static String[] patterDislay = { "yyyy年MM月dd日", "yyyy年MM月dd日 HH时mm分", "yyyy年MM月dd日 HH时mm分ss秒", "HH时mm分ss秒","yyyy年MM月" };
+    private static String[] patterDislay = { "yyyy年MM月dd日", "yyyy年MM月dd日 HH时mm分", "yyyy年MM月dd日 HH时mm分ss秒", "HH时mm分ss秒",
+            "yyyy年MM月" };
 
     public static String DATE_DEFFMT = "yyyy-MM-dd";
 
@@ -37,7 +40,7 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
     }
 
     public static String formatDispay(String anDate) {
-        if (BetterStringUtils.isNotBlank(anDate)) {
+        if (StringUtils.isNotBlank(anDate)) {
             String pp = null;
             String opp = null;
             Date dd = null;
@@ -45,20 +48,16 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
                 if (anDate.length() == 8) {
                     pp = "yyyyMMdd";
                     opp = patterDislay[0];
-                }
-                else if (anDate.length() == 6) {
+                } else if (anDate.length() == 6) {
                     pp = "HHmmss";
                     opp = patterDislay[3];
-                }
-                else if (anDate.length() == 13) {
+                } else if (anDate.length() == 13) {
                     pp = "yyyyMMdd HHmm";
                     opp = patterDislay[1];
-                }
-                else if (anDate.length() > 13) {
+                } else if (anDate.length() > 13) {
                     pp = "yyyyMMdd HHmmss";
                     opp = patterDislay[2];
-                }
-                else {
+                } else {
                     dd = parseDate(anDate, parsePatterns);
                     opp = patterDislay[0];
                 }
@@ -68,14 +67,13 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
             catch (ParseException e) {
                 return anDate;
             }
-        }
-        else {
+        } else {
             return anDate;
         }
     }
-    
+
     public static String formatMonthDispay(String anDate) {
-        if (BetterStringUtils.isNotBlank(anDate)) {
+        if (StringUtils.isNotBlank(anDate)) {
             String pp = null;
             String opp = null;
             Date dd = null;
@@ -88,8 +86,7 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
             catch (ParseException e) {
                 return anDate;
             }
-        }
-        else {
+        } else {
             return anDate;
         }
     }
@@ -101,16 +98,16 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
         return DateFormatUtils.format(new Date(), pattern);
     }
 
-    public static String getCHDate(){
-        
+    public static String getCHDate() {
+
         return DateFormatUtils.format(new Date(), "yyyy年MM月dd日");
     }
 
-    public static String getCHDateTime(){
-        
+    public static String getCHDateTime() {
+
         return DateFormatUtils.format(new Date(), "yyyy年MM月dd日  HH时mm分");
     }
-    
+
     public static java.util.Date getNow() {
         return new Date(System.currentTimeMillis());
     }
@@ -124,14 +121,13 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
      * 得到日期字符串 默认格式（yyyy-MM-dd） pattern可以为："yyyy-MM-dd" "HH:mm:ss" "E"
      */
     public static String formatDate(Date date, Object... pattern) {
-        if(date==null){
+        if (date == null) {
             return null;
         }
         String formatDate = null;
         if (pattern != null && pattern.length > 0) {
             formatDate = DateFormatUtils.format(date, pattern[0].toString());
-        }
-        else {
+        } else {
             formatDate = DateFormatUtils.format(date, "yyyy-MM-dd");
         }
         return formatDate;
@@ -139,7 +135,7 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
 
     // 格式化输出日期格式
     public static String formatDispDate(String anDate) {
-        if (BetterStringUtils.isNotBlank(anDate)) {
+        if (StringUtils.isNotBlank(anDate)) {
             StringBuilder sb = new StringBuilder();
             int[] arrInt = new int[] { 0, 4, 6, 8 };
             for (int i = 0; i < 3; i++) {
@@ -150,16 +146,16 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
         }
         return anDate;
     }
-    
+
     /**
      * 格式化输出日期格式  202013 HH:mm:ss
      * 
      * 
      */
     public static String formatDispTime(String anTime) {
-        if (BetterStringUtils.isNotBlank(anTime)) {
+        if (StringUtils.isNotBlank(anTime)) {
             StringBuilder sb = new StringBuilder();
-            int[] arrInt = new int[] { 0, 2, 4, 6};
+            int[] arrInt = new int[] { 0, 2, 4, 6 };
             for (int i = 0; i < 3; i++) {
                 sb.append(anTime.substring(arrInt[i], arrInt[i + 1])).append(":");
             }
@@ -208,7 +204,7 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
     public static String getNumDateTime() {
         return formatDate(new Date(), "yyyyMMdd HHmmss");
     }
-    
+
     public static String getNumMonth() {
         return formatDate(new Date(), "yyyyMM");
     }
@@ -348,7 +344,6 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
         return (afterTime - beforeTime) / (1000 * 60 * 60 * 24);
     }
 
-
     /**
      * 计算日期之间的天数，如果起始日期或终止日期为空或0；则返回0
      * 
@@ -357,27 +352,27 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
      * @return
      */
     public static int getDistanceOfTwoDay(String anBefore, String anAfter) {
-        
+
         Date actualDate = parseDate(anBefore);
         Date endDate = parseDate(anAfter);
-        if(null == actualDate || null == endDate) {
-            
+        if (null == actualDate || null == endDate) {
+
             return 0;
         }
-        
-        return (int)Math.round(BetterDateUtils.getDistanceOfTwoDate(actualDate, endDate));
+
+        return (int) Math.round(BetterDateUtils.getDistanceOfTwoDate(actualDate, endDate));
     }
-    
+
     /**
      * 获得当前的小时
      * @return
      */
-    public static int getHourTime(){
+    public static int getHourTime() {
         Calendar cd = Calendar.getInstance();
         cd.setTime(getNow());
         return cd.get(Calendar.HOUR_OF_DAY);
     }
-    
+
     public static String dateDiff(Date anStartTime, Date anEndTime, String anFormat) {
         long diff = anEndTime.getTime() - anStartTime.getTime();
         long day = diff / ND;
@@ -410,7 +405,8 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
             do {
                 days += d1.getActualMaximum(java.util.Calendar.DAY_OF_YEAR);
                 d1.add(java.util.Calendar.YEAR, 1);
-            } while (d1.get(java.util.Calendar.YEAR) != y2);
+            }
+            while (d1.get(java.util.Calendar.YEAR) != y2);
         }
         return days;
     }
@@ -477,7 +473,8 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
         do {
             result = (Calendar) result.clone();
             result.add(Calendar.DATE, 1);
-        } while (result.get(Calendar.DAY_OF_WEEK) != 2);
+        }
+        while (result.get(Calendar.DAY_OF_WEEK) != 2);
         return result;
     }
 
@@ -500,12 +497,11 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
     public static String addStrDays(String anDate, final int amount, String anPatten) {
         Date dd = null;
         try {
-            if (BetterStringUtils.isNotBlank(anPatten)) {
+            if (StringUtils.isNotBlank(anPatten)) {
                 dd = parseDate(anDate, anPatten);
                 dd = addDays(dd, amount);
                 return formatDate(dd, anPatten);
-            }
-            else {
+            } else {
                 dd = parseDate(anDate, parsePatterns);
                 dd = addDays(dd, amount);
                 return formatNumberDate(dd);
@@ -516,21 +512,20 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
             return anDate;
         }
     }
-    
+
     public static String addStrMonths(String anDate, final int amount) {
 
         return addStrMonths(anDate, amount, null);
     }
-    
+
     public static String addStrMonths(String anDate, final int amount, String anPatten) {
         Date dd = null;
         try {
-            if (BetterStringUtils.isNotBlank(anPatten)) {
+            if (StringUtils.isNotBlank(anPatten)) {
                 dd = parseDate(anDate, anPatten);
                 dd = addMonths(dd, amount);
                 return formatDate(dd, anPatten);
-            }
-            else {
+            } else {
                 dd = parseDate(anDate, parsePatterns);
                 dd = addMonths(dd, amount);
                 return formatNumberDate(dd);
@@ -543,7 +538,7 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
     }
 
     public static String formatRemotePath(String anWorkPath, String anWorkDate) {
-        if (BetterStringUtils.isNotBlank(anWorkDate)) {
+        if (StringUtils.isNotBlank(anWorkDate)) {
             Date workD = BetterDateUtils.parseDate(anWorkDate);
             if (workD != null) {
                 anWorkPath = anWorkPath.replaceAll("@Y", BetterDateUtils.formatDate(workD, "yyyy"));
@@ -553,86 +548,86 @@ public class BetterDateUtils extends org.apache.commons.lang3.time.DateUtils {
         }
         return anWorkPath;
     }
-    
-    private static Date getDay(Date date,int anLength) {
+
+    private static Date getDay(Date date, int anLength) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.DAY_OF_MONTH, anLength);
         date = calendar.getTime();
         return date;
     }
-    
-    //得到后一天
-    public  static Date getNextDay(Date date){
-        
+
+    // 得到后一天
+    public static Date getNextDay(Date date) {
+
         return getDay(date, 1);
-        
+
     }
-    
-    //得到前一天
-    public static Date getForwardDay(Date date){
-        
+
+    // 得到前一天
+    public static Date getForwardDay(Date date) {
+
         return getDay(date, -1);
     }
-    
-    
-    public static String getForwardDay(){
-        
-        try{
-            
-            SimpleDateFormat format=new SimpleDateFormat("yyyyMMdd");
-            Date date=format.parse(getNumDate());
+
+    public static String getForwardDay() {
+
+        try {
+
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+            Date date = format.parse(getNumDate());
             return format.format(getForwardDay(date));
-            
-        }catch(Exception e){
-            
+
+        }
+        catch (Exception e) {
+
             return getNumDate();
         }
-        
+
     }
-    
-    public static String getNextDay(){
-        
-        try{
-            
-            SimpleDateFormat format=new SimpleDateFormat("yyyyMMdd");
-            Date date=format.parse(getNumDate());
+
+    public static String getNextDay() {
+
+        try {
+
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+            Date date = format.parse(getNumDate());
             return format.format(getNextDay(date));
-            
-        }catch(Exception e){
-            
+
+        }
+        catch (Exception e) {
+
             return getNumDate();
         }
-        
+
     }
-    
+
     /**
      * @param args
      * @throws ParseException
      */
     public static void main(String[] args) throws ParseException {
-//        System.out.println(pastDateStr(-60));
-//        System.out.println(formatDispTime("102123"));
+        // System.out.println(pastDateStr(-60));
+        // System.out.println(formatDispTime("102123"));
         // System.out.println(formatDate(parseDate("2010/3/6")));
         // System.out.println(getDate("yyyy年MM月dd日 E"));
-//         long time = new Date().getTime()-parseDate("2017-05-01").getTime();
-//         System.out.println(time/(24*60*60*1000));
-       // System.out.println(formatMonthDispay("201705"));
-        //System.out.println(formatDispTime("111212"));
-//        System.out.println(getNumMonth());
-        
-        SimpleDateFormat format=new SimpleDateFormat("yyyyMMdd");
-        Date date=format.parse(getNumDate());
+        // long time = new Date().getTime()-parseDate("2017-05-01").getTime();
+        // System.out.println(time/(24*60*60*1000));
+        // System.out.println(formatMonthDispay("201705"));
+        // System.out.println(formatDispTime("111212"));
+        // System.out.println(getNumMonth());
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+        Date date = format.parse(getNumDate());
         System.out.println(getNumDate());
         System.out.println(getForwardDay());
         System.out.println(getNextDay());
-        System.out.println("forward........."+format.format(getForwardDay(date)));
-        
-        
-        //Date date2=new Date(2017, 6, 30);
-        System.out.println("nexData........."+format.format(getNextDay(format.parse(getNumDate()))));
-        
-//        long time = BetterDateUtils.parseDate("201607").getTime()-BetterDateUtils.parseDate("201705").getTime();
-//        System.out.println(time);
+        System.out.println("forward........." + format.format(getForwardDay(date)));
+
+        // Date date2=new Date(2017, 6, 30);
+        System.out.println("nexData........." + format.format(getNextDay(format.parse(getNumDate()))));
+
+        // long time = BetterDateUtils.parseDate("201607").getTime()-BetterDateUtils.parseDate("201705").getTime();
+        // System.out.println(time);
     }
 }

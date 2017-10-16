@@ -41,12 +41,12 @@ import nl.fountain.xelem.excel.WorksheetOptions;
  * @since xelem.2.0
  */
 public interface ExcelReaderListener {
-    
+
     /**
      * Recieve notification of the start of the document.
      */
     void startDocument();
-    
+
     /**
      * Recieve notification of processing instruction.
      * 
@@ -54,28 +54,28 @@ public interface ExcelReaderListener {
      * @param data		the data of the processing instruction
      */
     void processingInstruction(String target, String data);
-    
+
     /**
      * Recieve notification of the start of the Workbook tag.
      * 
      * @param systemID the systemID or "source" if no systemID was encountered
      */
     void startWorkbook(String systemID);
-    
+
     /**
      * Recieve notification of the the construction of DocumentProperties.
      * 
      * @param docProps	fully populated instance of DocumentProperties
      */
     void setDocumentProperties(DocumentProperties docProps);
-    
+
     /**
      * Recieve notification of the the construction of ExcelWorkbook.
      * 
      * @param excelWb	fully populated instance of ExcelWorkbook
      */
     void setExcelWorkbook(ExcelWorkbook excelWb);
-    
+
     /**
      * Recieve notification of the the construction of a NamedRange on the 
      * workbook level.
@@ -83,7 +83,7 @@ public interface ExcelReaderListener {
      * @param namedRange	fully populated instance of NamedRange
      */
     void setNamedRange(NamedRange namedRange);
-    
+
     /**
      * Recieve notification of the the start of a Worksheet tag.
      * 
@@ -93,7 +93,7 @@ public interface ExcelReaderListener {
      * 
      */
     void startWorksheet(int sheetIndex, Worksheet sheet);
-    
+
     /**
      * Recieve notification of the the construction of a NamedRange on the 
      * worksheet level.
@@ -103,7 +103,7 @@ public interface ExcelReaderListener {
      * @param namedRange	fully populated instance of NamedRange
      */
     void setNamedRange(int sheetIndex, String sheetName, NamedRange namedRange);
-    
+
     /**
      * Recieve notification of the start of a Table tag.
      * 
@@ -113,7 +113,7 @@ public interface ExcelReaderListener {
      * 	of the Table-element have been set on the instance
      */
     void startTable(int sheetIndex, String sheetName, Table table);
-    
+
     /**
      * Recieve notification of the the construction of a Column. The column is fully
      * populated, it's column index has been set and can be obtained by
@@ -124,7 +124,7 @@ public interface ExcelReaderListener {
      * @param column		fully populated instance of Column
      */
     void setColumn(int sheetIndex, String sheetName, Column column);
-    
+
     /**
      * Recieve notification of the the construction of a Row. The row is fully
      * populated, it's row index has been set and can be obtained by
@@ -135,7 +135,7 @@ public interface ExcelReaderListener {
      * @param row 			fully populated instance of Row
      */
     void setRow(int sheetIndex, String sheetName, Row row);
-    
+
     /**
      * Recieve notification of the the construction of a Cell. The cell is fully
      * populated, it's cell index has been set and can be obtained by
@@ -147,7 +147,7 @@ public interface ExcelReaderListener {
      * @param cell 			fully populated instance of Cell
      */
     void setCell(int sheetIndex, String sheetName, int rowIndex, Cell cell);
-    
+
     /**
      * Recieve notification of the the construction of WorksheetOptions.
      * 
@@ -156,7 +156,7 @@ public interface ExcelReaderListener {
      * @param wsOptions		fully populated instance of WorksheetOptions
      */
     void setWorksheetOptions(int sheetIndex, String sheetName, WorksheetOptions wsOptions);
-    
+
     /**
      * Recieve notification of the the construction of AutoFilter.
      * 
@@ -165,7 +165,7 @@ public interface ExcelReaderListener {
      * @param autoFilter	fully populated instance of AutoFilter
      */
     void setAutoFilter(int sheetIndex, String sheetName, AutoFilter autoFilter);
-    
+
     /**
      * Recieve notification of the end of a worksheet.
      * 
@@ -173,7 +173,7 @@ public interface ExcelReaderListener {
      * @param sheetName		the name of the worksheet
      */
     void endWorksheet(int sheetIndex, String sheetName);
-    
+
     /**
      * Recieve notification of the end of the document.
      * 

@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.lang.*;
 
-import com.betterjr.common.utils.BetterClassUtils;
 import com.betterjr.common.utils.PackageUtil;
 
 public class ExpressPackage {
@@ -39,7 +37,7 @@ public class ExpressPackage {
             int pos = 0;
             for (String tmpClass : PackageUtil.getClassName(anPackageName, true)) {
                 pos = tmpClass.lastIndexOf(".");
-                if (pos > -1 && tmpClass.indexOf("$") < 0){
+                if (pos > -1 && tmpClass.indexOf("$") < 0) {
                     name2FullMap.put(tmpClass.substring(pos + 1), tmpClass);
                 }
             }
@@ -63,8 +61,7 @@ public class ExpressPackage {
             }
             if (this.name2CallCache == null) {
                 this.name2CallCache = new ConcurrentHashMap<String, Class<?>>();
-            }
-            else {
+            } else {
                 tempClass = this.name2CallCache.get(name);
             }
             if (tempClass == null) {
@@ -75,8 +72,7 @@ public class ExpressPackage {
                         try {
                             tempClass = Class.forName(tmpC);
                         }
-                        catch (ClassNotFoundException e) {
-                        }
+                        catch (ClassNotFoundException e) {}
                     }
                     tempClass = S_NULL;
                 }
@@ -86,8 +82,7 @@ public class ExpressPackage {
 
         if (tempClass == S_NULL) {
             return null;
-        }
-        else {
+        } else {
             return tempClass;
         }
     }
@@ -100,8 +95,7 @@ public class ExpressPackage {
                 try {
                     result = Class.forName(name);
                 }
-                catch (Throwable ex) {
-                }
+                catch (Throwable ex) {}
                 return result;
             }
             if (Integer.TYPE.getName().equals(name) == true) return Integer.TYPE;
@@ -118,8 +112,7 @@ public class ExpressPackage {
                 String tmp = "";
                 if (m_packages.get(i).endsWith("." + name) == true) {
                     tmp = m_packages.get(i);
-                }
-                else {
+                } else {
                     tmp = m_packages.get(i) + "." + name;
                 }
                 try {

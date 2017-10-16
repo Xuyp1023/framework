@@ -24,6 +24,10 @@
 
 package com.betterjr.mapper.pagehelper.sqlsource;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.ibatis.builder.BuilderException;
 import org.apache.ibatis.builder.SqlSourceBuilder;
 import org.apache.ibatis.builder.StaticSqlSource;
@@ -38,10 +42,6 @@ import com.betterjr.mapper.orderbyhelper.sqlsource.OrderBySqlSource;
 import com.betterjr.mapper.orderbyhelper.sqlsource.OrderByStaticSqlSource;
 import com.betterjr.mapper.pagehelper.Constant;
 import com.betterjr.mapper.pagehelper.parser.Parser;
-
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author liuzh
@@ -76,12 +76,13 @@ public class PageProviderSqlSource extends PageSqlSource implements OrderBySqlSo
                 sql = (String) providerMethod.invoke(providerType.newInstance());
             }
             Class<?> parameterType = parameterObject == null ? Object.class : parameterObject.getClass();
-            StaticSqlSource sqlSource = (StaticSqlSource) sqlSourceParser.parse(sql, parameterType, new HashMap<String, Object>());
+            StaticSqlSource sqlSource = (StaticSqlSource) sqlSourceParser.parse(sql, parameterType,
+                    new HashMap<String, Object>());
             return new OrderByStaticSqlSource(sqlSource);
-        } catch (Exception e) {
-            throw new BuilderException("Error invoking SqlProvider method ("
-                    + providerType.getName() + "." + providerMethod.getName()
-                    + ").  Cause: " + e, e);
+        }
+        catch (Exception e) {
+            throw new BuilderException("Error invoking SqlProvider method (" + providerType.getName() + "."
+                    + providerMethod.getName() + ").  Cause: " + e, e);
         }
     }
 
@@ -96,10 +97,7 @@ public class PageProviderSqlSource extends PageSqlSource implements OrderBySqlSo
         BoundSql boundSql;
         SqlSource sqlSource = createSqlSource(parameterObject);
         boundSql = sqlSource.getBoundSql(parameterObject);
-        return new BoundSql(
-                configuration,
-                parser.getCountSql(boundSql.getSql()),
-                boundSql.getParameterMappings(),
+        return new BoundSql(configuration, parser.getCountSql(boundSql.getSql()), boundSql.getParameterMappings(),
                 parameterObject);
     }
 
@@ -113,13 +111,11 @@ public class PageProviderSqlSource extends PageSqlSource implements OrderBySqlSo
             SqlSource sqlSource = createSqlSource(parameterObject);
             boundSql = sqlSource.getBoundSql(parameterObject);
         }
-        return new BoundSql(
-                configuration,
-                parser.getPageSql(boundSql.getSql()),
-                parser.getPageParameterMapping(configuration, boundSql),
-                parameterObject);
+        return new BoundSql(configuration, parser.getPageSql(boundSql.getSql()),
+                parser.getPageParameterMapping(configuration, boundSql), parameterObject);
     }
 
+    @Override
     public SqlSource getOriginal() {
         return original;
     }

@@ -3,12 +3,22 @@
  */
 package com.betterjr.common.utils.reflection;
 
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.apache.commons.lang3.StringUtils;
@@ -22,11 +32,6 @@ import com.betterjr.common.mapper.BeanMapperHelper;
 import com.betterjr.common.utils.Collections3;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.beans.*;
 
 /**
  * 反射工具类. 提供调用getter/setter方法, 访问私有变量, 调用私有方法, 获取泛型类型Class, 被AOP过的真实类等工具函数.
@@ -125,7 +130,8 @@ public class ReflectionUtils {
         return (Map) listConvertToMap(anList, anProperName, false, true, false);
     }
 
-    private static Object listConvertToMap(List anList, String anProperName, boolean anMuitMap, boolean anUserObj, boolean anUseSet) {
+    private static Object listConvertToMap(List anList, String anProperName, boolean anMuitMap, boolean anUserObj,
+            boolean anUseSet) {
         if (Collections3.isEmpty(anList) == false) {
             Object obj = anList.get(0);
             String getterMethodName = GETTER_PREFIX + StringUtils.capitalize(anProperName);
@@ -137,18 +143,15 @@ public class ReflectionUtils {
                         map.put(mm.invoke(subObj, BeanMapperHelper.objs), subObj);
                     }
                     return map;
-                }
-                else {
+                } else {
                     Map map = null;
                     Set resultSet = null;
                     if (anUseSet) {
                         resultSet = new LinkedHashSet();
-                    }
-                    else {
+                    } else {
                         if (anUserObj) {
                             map = new LinkedHashMap();
-                        }
-                        else {
+                        } else {
                             map = new LinkedCaseInsensitiveMap();
                         }
                     }
@@ -157,12 +160,10 @@ public class ReflectionUtils {
                         if (mmX != null) {
                             if (anUseSet) {
                                 resultSet.add(mmX);
-                            }
-                            else {
+                            } else {
                                 if (anUserObj) {
                                     map.put(mmX, subObj);
-                                }
-                                else {
+                                } else {
                                     map.put(mmX.toString(), subObj);
                                 }
                             }
@@ -170,8 +171,7 @@ public class ReflectionUtils {
                     }
                     if (anUseSet) {
                         return resultSet;
-                    }
-                    else {
+                    } else {
                         return map;
                     }
                 }
@@ -195,8 +195,7 @@ public class ReflectionUtils {
         }
         if (anUseSet) {
             return new LinkedHashSet();
-        }
-        else {
+        } else {
             return new HashMap();
         }
 
@@ -235,14 +234,12 @@ public class ReflectionUtils {
         for (PropertyDescriptor pds : utilsBean.getPropertyDescriptors(anClass)) {
             if (anReader) {
                 mm = utilsBean.getReadMethod(pds);
-            }
-            else {
+            } else {
                 mm = utilsBean.getWriteMethod(pds);
             }
             if (mm != null) {
                 list.add(mm);
-            }
-            else {
+            } else {
                 // System.out.println(pds);
             }
         }
@@ -260,8 +257,7 @@ public class ReflectionUtils {
             if (i < names.length - 1) {
                 String getterMethodName = GETTER_PREFIX + StringUtils.capitalize(names[i]);
                 object = invokeMethod(object, getterMethodName, new Class[] {}, BeanMapperHelper.objs);
-            }
-            else {
+            } else {
                 String setterMethodName = SETTER_PREFIX + StringUtils.capitalize(names[i]);
                 invokeMethodByName(object, setterMethodName, new Object[] { value });
             }
@@ -309,7 +305,8 @@ public class ReflectionUtils {
     /**
      * 直接调用对象方法, 无视private/protected修饰符. 用于一次性调用的情况，否则应使用getAccessibleMethod()函数获得Method后反复调用. 同时匹配方法名+参数类型，
      */
-    public static Object invokeMethod(final Object obj, final String methodName, final Class<?>[] parameterTypes, final Object[] args) {
+    public static Object invokeMethod(final Object obj, final String methodName, final Class<?>[] parameterTypes,
+            final Object[] args) {
         Method method = getAccessibleMethod(obj, methodName, parameterTypes);
         if (method == null) {
             throw new IllegalArgumentException("Could not find method [" + methodName + "] on target [" + obj + "]");
@@ -327,10 +324,10 @@ public class ReflectionUtils {
      * 直接调用对象方法, 无视private/protected修饰符， 用于一次性调用的情况，否则应使用getAccessibleMethodByName()函数获得Method后反复调用. 只匹配函数名，如果有多个同名函数调用第一个。
      */
     public static Object invokeMethodByName(final Object obj, final String methodName) {
-        
+
         return invokeMethodByName(obj, methodName, BeanMapperHelper.objs);
     }
-    
+
     public static Object invokeMethodByName(final Object obj, final String methodName, final Object[] args) {
         Method method = getAccessibleMethodByName(obj, methodName);
         if (method == null) {
@@ -386,11 +383,13 @@ public class ReflectionUtils {
      * 
      * 用于方法需要被多次调用的情况. 先使用本函数先取得Method,然后调用Method.invoke(Object obj, Object... args)
      */
-    public static Method getAccessibleMethod(final Object obj, final String methodName, final Class<?>... parameterTypes) {
+    public static Method getAccessibleMethod(final Object obj, final String methodName,
+            final Class<?>... parameterTypes) {
         Validate.notNull(obj, "object can't be null");
         Validate.notBlank(methodName, "methodName can't be blank");
 
-        for (Class<?> searchType = obj.getClass(); searchType != Object.class; searchType = searchType.getSuperclass()) {
+        for (Class<?> searchType = obj.getClass(); searchType != Object.class; searchType = searchType
+                .getSuperclass()) {
             try {
                 Method method = searchType.getDeclaredMethod(methodName, parameterTypes);
                 makeAccessible(method);
@@ -413,7 +412,8 @@ public class ReflectionUtils {
         Validate.notNull(obj, "object can't be null");
         Validate.notBlank(methodName, "methodName can't be blank");
 
-        for (Class<?> searchType = obj.getClass(); searchType != Object.class; searchType = searchType.getSuperclass()) {
+        for (Class<?> searchType = obj.getClass(); searchType != Object.class; searchType = searchType
+                .getSuperclass()) {
             Method[] methods = searchType.getDeclaredMethods();
             for (Method method : methods) {
                 if (method.getName().equals(methodName)) {
@@ -429,7 +429,8 @@ public class ReflectionUtils {
      * 改变private/protected的方法为public，尽量不调用实际改动的语句，避免JDK的SecurityManager抱怨。
      */
     public static void makeAccessible(Method method) {
-        if ((!Modifier.isPublic(method.getModifiers()) || !Modifier.isPublic(method.getDeclaringClass().getModifiers())) && !method.isAccessible()) {
+        if ((!Modifier.isPublic(method.getModifiers()) || !Modifier.isPublic(method.getDeclaringClass().getModifiers()))
+                && !method.isAccessible()) {
             method.setAccessible(true);
         }
     }
@@ -438,8 +439,8 @@ public class ReflectionUtils {
      * 改变private/protected的成员变量为public，尽量不调用实际改动的语句，避免JDK的SecurityManager抱怨。
      */
     public static void makeAccessible(Field field) {
-        if ((!Modifier.isPublic(field.getModifiers()) || !Modifier.isPublic(field.getDeclaringClass().getModifiers()) || Modifier.isFinal(field
-                .getModifiers())) && !field.isAccessible()) {
+        if ((!Modifier.isPublic(field.getModifiers()) || !Modifier.isPublic(field.getDeclaringClass().getModifiers())
+                || Modifier.isFinal(field.getModifiers())) && !field.isAccessible()) {
             field.setAccessible(true);
         }
     }
@@ -479,7 +480,8 @@ public class ReflectionUtils {
         Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
 
         if (index >= params.length || index < 0) {
-            logger.warn("Index: " + index + ", Size of " + clazz.getSimpleName() + "'s Parameterized Type: " + params.length);
+            logger.warn("Index: " + index + ", Size of " + clazz.getSimpleName() + "'s Parameterized Type: "
+                    + params.length);
             return Object.class;
         }
         if (!(params[index] instanceof Class)) {
@@ -507,13 +509,12 @@ public class ReflectionUtils {
      * 将反射时的checked exception转换为unchecked exception.
      */
     public static RuntimeException convertReflectionExceptionToUnchecked(Exception e) {
-        if (e instanceof IllegalAccessException || e instanceof IllegalArgumentException || e instanceof NoSuchMethodException) {
+        if (e instanceof IllegalAccessException || e instanceof IllegalArgumentException
+                || e instanceof NoSuchMethodException) {
             return new IllegalArgumentException(e);
-        }
-        else if (e instanceof InvocationTargetException) {
+        } else if (e instanceof InvocationTargetException) {
             return new RuntimeException(((InvocationTargetException) e).getTargetException());
-        }
-        else if (e instanceof RuntimeException) {
+        } else if (e instanceof RuntimeException) {
             return (RuntimeException) e;
         }
         return new RuntimeException("Unexpected Checked Exception.", e);
@@ -582,7 +583,8 @@ public class ReflectionUtils {
         Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
 
         if (index >= params.length || index < 0) {
-            logger.warn("Index: " + index + ", Size of " + clazz.getSimpleName() + "'s Parameterized Type: " + params.length);
+            logger.warn("Index: " + index + ", Size of " + clazz.getSimpleName() + "'s Parameterized Type: "
+                    + params.length);
             return Object.class;
         }
         if (!(params[index] instanceof Class)) {
@@ -641,7 +643,8 @@ public class ReflectionUtils {
         case JVM_SHORT:
             return short.class;
         case 'L':
-            desc = desc.substring(1, desc.length() - 1).replace('/', '.'); // "Ljava/lang/Object;" ==> "java.lang.Object"
+            desc = desc.substring(1, desc.length() - 1).replace('/', '.'); // "Ljava/lang/Object;" ==>
+                                                                           // "java.lang.Object"
             break;
         case '[':
             desc = desc.replace('/', '.'); // "[[Ljava/lang/Object;" ==> "[[Ljava.lang.Object;"
@@ -666,8 +669,7 @@ public class ReflectionUtils {
         try {
             cl = Thread.currentThread().getContextClassLoader();
         }
-        catch (Throwable ex) {
-        }
+        catch (Throwable ex) {}
         if (cl == null) {
             cl = cls.getClassLoader();
         }
@@ -693,8 +695,7 @@ public class ReflectionUtils {
             else if ("int".equals(t)) ret.append(JVM_INT);
             else if ("long".equals(t)) ret.append(JVM_LONG);
             else if ("short".equals(t)) ret.append(JVM_SHORT);
-        }
-        else {
+        } else {
             ret.append('L');
             ret.append(c.getName().replace('.', '/'));
             ret.append(';');
@@ -715,21 +716,20 @@ public class ReflectionUtils {
         try {
             clazz.getDeclaredConstructor();
             return true;
-        } catch (NoSuchMethodException e) {
+        }
+        catch (NoSuchMethodException e) {
             return false;
         }
     }
-    
-    public static StringBuilder fieldToString( StringBuilder sb,Object obj) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException{
-        Field [] fields = obj.getClass().getDeclaredFields();
-        sb.append(obj.getClass().getName())
-        .append(";");
-         
-        for(Field f:fields){
+
+    public static StringBuilder fieldToString(StringBuilder sb, Object obj)
+            throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+        Field[] fields = obj.getClass().getDeclaredFields();
+        sb.append(obj.getClass().getName()).append(";");
+
+        for (Field f : fields) {
             f.setAccessible(true);
-            sb.append(f.getName())
-            .append("=")
-            .append(f.get(obj)).append(";");
+            sb.append(f.getName()).append("=").append(f.get(obj)).append(";");
         }
         return sb;
     }

@@ -23,6 +23,9 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import nl.fountain.xelem.Area;
 import nl.fountain.xelem.GIO;
 import nl.fountain.xelem.XLUtil;
@@ -30,14 +33,11 @@ import nl.fountain.xelem.excel.AbstractXLElement;
 import nl.fountain.xelem.excel.Pane;
 import nl.fountain.xelem.excel.WorksheetOptions;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 /**
  * An implementation of the XLElement WorksheetOptions.
  */
 public class XWorksheetOptions extends AbstractXLElement implements WorksheetOptions {
-    
+
     private Map<Integer, Pane> panes;
     private int zoom;
     private int tabColorIndex = -1;
@@ -56,138 +56,153 @@ public class XWorksheetOptions extends AbstractXLElement implements WorksheetOpt
     private int splitVertical;
     private boolean freezePanes;
     private Pane currentPane;
-    
+
     /**
      * Constructs a new XWorksheetOptions.
      * 
      * @see nl.fountain.xelem.excel.Worksheet#getWorksheetOptions()
      */
     public XWorksheetOptions() {}
-    
+
+    @Override
     public void setTopRowVisible(int tr) {
         topRowVisible = tr;
     }
-    
+
     private void setTopRowVisible(String s) {
         topRowVisible = Integer.parseInt(s);
     }
 
     // @see nl.fountain.xelem.excel.x.WorksheetOptions#getTopRowVisible()
+    @Override
     public int getTopRowVisible() {
         return topRowVisible;
     }
 
     // @see nl.fountain.xelem.excel.x.WorksheetOptions#setLeftColumnVisible(int)
+    @Override
     public void setLeftColumnVisible(int lc) {
         leftColumnVisible = lc;
     }
-    
+
     private void setLeftColumnVisible(String s) {
         leftColumnVisible = Integer.parseInt(s);
     }
 
     // @see nl.fountain.xelem.excel.x.WorksheetOptions#getLeftColumnVisible()
+    @Override
     public int getLeftColumnVisible() {
         return leftColumnVisible;
     }
 
     // @see nl.fountain.xelem.excel.x.WorksheetOptions#setZoom(int)
+    @Override
     public void setZoom(int z) {
         zoom = z;
     }
-    
+
     private void setZoom(String s) {
         zoom = Integer.parseInt(s);
     }
 
     // @see nl.fountain.xelem.excel.x.WorksheetOptions#getZoom()
+    @Override
     public int getZoom() {
         return zoom;
     }
 
     // @see nl.fountain.xelem.excel.x.WorksheetOptions#setTabColorIndex(int)
+    @Override
     public void setTabColorIndex(int ci) {
         tabColorIndex = ci;
     }
-    
+
     private void setTabColorIndex(String s) {
         tabColorIndex = Integer.parseInt(s);
     }
 
     // @see nl.fountain.xelem.excel.x.WorksheetOptions#getTabColorIndex()
+    @Override
     public int getTabColorIndex() {
         return tabColorIndex;
     }
 
     // @see nl.fountain.xelem.excel.x.WorksheetOptions#setSelected(boolean)
+    @Override
     public void setSelected(boolean s) {
         selected = s;
     }
-    
+
     private void setSelected(String s) {
         selected = "".equals(s);
     }
 
     // @see nl.fountain.xelem.excel.x.WorksheetOptions#isSelected()
+    @Override
     public boolean isSelected() {
         return selected;
     }
 
     // @see nl.fountain.xelem.excel.x.WorksheetOptions#doNotDisplayHeadings(boolean)
+    @Override
     public void doNotDisplayHeadings(boolean b) {
         noHeadings = b;
     }
-    
+
     private void setDoNotDisplayHeadings(String s) {
         noHeadings = "".equals(s);
     }
 
     // @see nl.fountain.xelem.excel.x.WorksheetOptions#displaysNoHeadings()
+    @Override
     public boolean displaysNoHeadings() {
         return noHeadings;
     }
 
     // @see nl.fountain.xelem.excel.x.WorksheetOptions#doNotDisplayGridlines(boolean)
+    @Override
     public void doNotDisplayGridlines(boolean b) {
         noGridlines = b;
     }
-    
+
     private void setDoNotDisplayGridlines(String s) {
         noGridlines = "".equals(s);
     }
 
     // @see nl.fountain.xelem.excel.x.WorksheetOptions#displaysNoGridlines()
+    @Override
     public boolean displaysNoGridlines() {
         return noGridlines;
     }
 
     // @see nl.fountain.xelem.excel.x.WorksheetOptions#doDisplayFormulas(boolean)
+    @Override
     public void doDisplayFormulas(boolean f) {
         displayFormulas = f;
     }
-    
+
     private void setDisplayFormulas(String s) {
         displayFormulas = "".equals(s);
     }
 
     // @see nl.fountain.xelem.excel.x.WorksheetOptions#displaysFormulas()
+    @Override
     public boolean displaysFormulas() {
         return displayFormulas;
     }
-    
+
     // @see nl.fountain.xelem.excel.x.WorksheetOptions#setVisible(boolean)
+    @Override
     public void setVisible(String wsoValue) {
-        if (SHEET_HIDDEN.equals(wsoValue)
-                || SHEET_VERY_HIDDEN.equals(wsoValue)
-                || SHEET_VISIBLE.equals(wsoValue)
+        if (SHEET_HIDDEN.equals(wsoValue) || SHEET_VERY_HIDDEN.equals(wsoValue) || SHEET_VISIBLE.equals(wsoValue)
                 || wsoValue == null) {
             visible = wsoValue;
         } else {
-            throw new IllegalArgumentException(wsoValue +
-                    ". Should be one of WorksheetOptions.SHEET_xxx values.");
+            throw new IllegalArgumentException(wsoValue + ". Should be one of WorksheetOptions.SHEET_xxx values.");
         }
     }
-    
+
+    @Override
     public String getVisible() {
         if (visible == null) {
             return SHEET_VISIBLE;
@@ -195,10 +210,11 @@ public class XWorksheetOptions extends AbstractXLElement implements WorksheetOpt
             return visible;
         }
     }
-    
+
     /**
      * @throws java.lang.IllegalArgumentException if r < 1 or c < 1.
      */
+    @Override
     public void setActiveCell(int r, int c) {
         if (r < 1) {
             throw new IllegalArgumentException(r + ". Can't be less than 1.");
@@ -208,20 +224,22 @@ public class XWorksheetOptions extends AbstractXLElement implements WorksheetOpt
         }
         getPane(3).setActiveCell(r, c);
     }
-    
+
     /**
      * @throws java.lang.IllegalArgumentException if paneNumber < 0 or
      * 			paneNumber > 3.
      * @throws java.lang.IllegalArgumentException if r < 1 or c < 1.
      */
+    @Override
     public void setActiveCell(int paneNumber, int r, int c) {
         getPane(paneNumber).setActiveCell(r, c);
         activePane = paneNumber;
     }
-    
+
     /**
      * 
      */
+    @Override
     public void setRangeSelection(String rcRange) {
         if (currentPane == null) { // normal condition.
             getPane(3).setRangeSelection(rcRange);
@@ -229,22 +247,25 @@ public class XWorksheetOptions extends AbstractXLElement implements WorksheetOpt
             currentPane.setRangeSelection(rcRange);
         }
     }
-    
+
+    @Override
     public void setRangeSelection(Area area) {
         setRangeSelection(area.getAbsoluteRange());
     }
-    
+
     /**
      * @throws java.lang.IllegalArgumentException if paneNumber < 0 or
      * 			paneNumber > 3.
      */
+    @Override
     public void setRangeSelection(int paneNumber, String rcRange) {
         getPane(paneNumber).setRangeSelection(rcRange);
     }
-    
+
     /**
      * @throws java.lang.IllegalArgumentException if topRow < 1.
      */
+    @Override
     public void splitHorizontal(int points, int topRow) {
         if (topRow < 1) {
             throw new IllegalArgumentException(topRow + ". Can't be less than 1.");
@@ -252,14 +273,16 @@ public class XWorksheetOptions extends AbstractXLElement implements WorksheetOpt
         splitHorizontal = points;
         topRowBottomPane = topRow - 1;
     }
-    
+
+    @Override
     public boolean hasHorizontalSplit() {
-       return (splitHorizontal > 0 || topRowBottomPane > -1); 
+        return (splitHorizontal > 0 || topRowBottomPane > -1);
     }
-    
+
     /**
      * @throws java.lang.IllegalArgumentException if leftColumn < 1.
      */
+    @Override
     public void splitVertical(int points, int leftColumn) {
         if (leftColumn < 1) {
             throw new IllegalArgumentException(leftColumn + ". Can't be less than 1.");
@@ -267,16 +290,19 @@ public class XWorksheetOptions extends AbstractXLElement implements WorksheetOpt
         splitVertical = points;
         leftColumnRightPane = leftColumn - 1;
     }
-    
+
+    @Override
     public boolean hasVerticalSplit() {
         return (splitVertical > 0 || leftColumnRightPane > -1);
     }
-    
+
+    @Override
     public boolean hasSplit() {
         return hasHorizontalSplit() || hasVerticalSplit();
     }
-    
+
     // @see nl.fountain.xelem.excel.WorksheetOptions#freezePanes(int, int)
+    @Override
     public void freezePanesAt(int row, int column) {
         freezePanes = true;
         splitHorizontal = row;
@@ -285,197 +311,199 @@ public class XWorksheetOptions extends AbstractXLElement implements WorksheetOpt
         leftColumnRightPane = column;
         if (row > 0 && column > 0) {
             activePane = Pane.BOTTOM_RIGHT;
-        } else if ( row > 0) {
+        } else if (row > 0) {
             activePane = Pane.BOTTOM_LEFT;
-        }       
+        }
     }
-    
+
+    @Override
     public boolean hasFrozenPanes() {
         return freezePanes;
     }
-    
+
     private void setFreezePanes(String s) {
         freezePanes = "".equals(s);
     }
+
     private void setSplitHorizontal(String s) {
         splitHorizontal = Integer.parseInt(s);
     }
+
     private void setTopRowBottomPane(String s) {
         topRowBottomPane = Integer.parseInt(s);
     }
+
     private void setSplitVertical(String s) {
         splitVertical = Integer.parseInt(s);
     }
+
     private void setLeftColumnRightPane(String s) {
         leftColumnRightPane = Integer.parseInt(s);
     }
+
     private void setActivePane(String s) {
         activePane = Integer.parseInt(s);
     }
-    
-    
+
     // @see nl.fountain.xelem.excel.x.WorksheetOptions#setGridlineColorIndex(int)
+    @Override
     public void setGridlineColor(int r, int g, int b) {
-        gridlineColor = XLUtil.convertToHex(r, g , b);
+        gridlineColor = XLUtil.convertToHex(r, g, b);
     }
-    
+
     private void setGridlineColor(String s) {
         gridlineColor = s;
     }
-    
+
     // @see nl.fountain.xelem.excel.WorksheetOptions#getGridlineColor()
+    @Override
     public String getGridlineColor() {
         return gridlineColor;
     }
-    
+
     // @see nl.fountain.xelem.excel.XLElement#getTagName()
+    @Override
     public String getTagName() {
         return "WorksheetOptions";
     }
-    
+
     // @see nl.fountain.xelem.excel.XLElement#getNameSpace()
+    @Override
     public String getNameSpace() {
         return XMLNS_X;
     }
-    
+
     // @see nl.fountain.xelem.excel.XLElement#getPrefix()
+    @Override
     public String getPrefix() {
         return PREFIX_X;
     }
-    
+
     /**
      * @return the newly assembled element
      */
+    @Override
     public Element assemble(Element parent, GIO gio) {
         Document doc = parent.getOwnerDocument();
         Element wsoe = assemble(doc, gio);
-        
+
         parent.appendChild(wsoe);
-        
+
         if (isSelected()) {
             wsoe.appendChild(createElementNS(doc, "Selected"));
             gio.increaseSelectedSheets();
         }
-        if (displaysNoHeadings()) wsoe.appendChild(
-                createElementNS(doc, "DoNotDisplayHeadings"));
-        if (displaysNoGridlines()) wsoe.appendChild(
-                createElementNS(doc, "DoNotDisplayGridlines"));
-        if (displaysFormulas()) wsoe.appendChild(
-                createElementNS(doc, "DisplayFormulas"));
-        if (topRowVisible > -1) wsoe.appendChild(
-                createElementNS(doc, "TopRowVisible", topRowVisible));
-        if (leftColumnVisible > -1) wsoe.appendChild(
-                createElementNS(doc, "LeftColumnVisible", leftColumnVisible));
-        if (zoom > 0) wsoe.appendChild(
-                createElementNS(doc, "Zoom", zoom));
-        if (tabColorIndex != -1) wsoe.appendChild(
-                createElementNS(doc, "TabColorIndex", tabColorIndex));
-        if (gridlineColor != null) wsoe.appendChild(
-                createElementNS(doc, "GridlineColor", gridlineColor));
-        if (visible != null) wsoe.appendChild(
-                createElementNS(doc, "Visible", visible));
+        if (displaysNoHeadings()) wsoe.appendChild(createElementNS(doc, "DoNotDisplayHeadings"));
+        if (displaysNoGridlines()) wsoe.appendChild(createElementNS(doc, "DoNotDisplayGridlines"));
+        if (displaysFormulas()) wsoe.appendChild(createElementNS(doc, "DisplayFormulas"));
+        if (topRowVisible > -1) wsoe.appendChild(createElementNS(doc, "TopRowVisible", topRowVisible));
+        if (leftColumnVisible > -1) wsoe.appendChild(createElementNS(doc, "LeftColumnVisible", leftColumnVisible));
+        if (zoom > 0) wsoe.appendChild(createElementNS(doc, "Zoom", zoom));
+        if (tabColorIndex != -1) wsoe.appendChild(createElementNS(doc, "TabColorIndex", tabColorIndex));
+        if (gridlineColor != null) wsoe.appendChild(createElementNS(doc, "GridlineColor", gridlineColor));
+        if (visible != null) wsoe.appendChild(createElementNS(doc, "Visible", visible));
         if (freezePanes) {
             wsoe.appendChild(createElementNS(doc, "FreezePanes"));
             wsoe.appendChild(createElementNS(doc, "FrozenNoSplit"));
         }
-        
+
         boolean splitH = false;
         if (splitHorizontal > 0 || topRowBottomPane > -1) {
             splitH = true;
-            wsoe.appendChild(createElementNS(
-                    doc, "SplitHorizontal", splitHorizontal));
-            wsoe.appendChild(createElementNS(
-                    doc, "TopRowBottomPane", topRowBottomPane));
+            wsoe.appendChild(createElementNS(doc, "SplitHorizontal", splitHorizontal));
+            wsoe.appendChild(createElementNS(doc, "TopRowBottomPane", topRowBottomPane));
         }
-        
+
         boolean splitV = false;
         if (splitVertical > 0 || leftColumnRightPane > -1) {
             splitV = true;
-            wsoe.appendChild(createElementNS(
-                    doc, "SplitVertical", splitVertical));
-            wsoe.appendChild(createElementNS(
-                    doc, "LeftColumnRightPane", leftColumnRightPane));
+            wsoe.appendChild(createElementNS(doc, "SplitVertical", splitVertical));
+            wsoe.appendChild(createElementNS(doc, "LeftColumnRightPane", leftColumnRightPane));
         }
-        
-        if (activePane == 3
-                || (splitH && activePane == 2)
-                || (splitV && activePane == 1)
+
+        if (activePane == 3 || (splitH && activePane == 2) || (splitV && activePane == 1)
                 || (splitH && splitV && activePane == 0)) {
             wsoe.appendChild(createElementNS(doc, "ActivePane", activePane));
         }
-        
-        if (panes != null) {            
+
+        if (panes != null) {
             Element panesE = createElementNS(doc, "Panes");
             wsoe.appendChild(panesE);
-            
-            Pane pane3 = (Pane) panes.get(new Integer(3));
+
+            Pane pane3 = panes.get(new Integer(3));
             if (pane3 != null) {
                 pane3.assemble(panesE, gio);
             }
-            
-            Pane pane2 = (Pane) panes.get(new Integer(2));
+
+            Pane pane2 = panes.get(new Integer(2));
             if (pane2 != null && splitH) {
                 pane2.assemble(panesE, gio);
             }
-            
-            Pane pane1 = (Pane) panes.get(new Integer(1));
+
+            Pane pane1 = panes.get(new Integer(1));
             if (pane1 != null && splitV) {
                 pane1.assemble(panesE, gio);
             }
-            
-            Pane pane0 = (Pane) panes.get(new Integer(0));
+
+            Pane pane0 = panes.get(new Integer(0));
             if (pane0 != null && splitH && splitV) {
                 pane0.assemble(panesE, gio);
             }
         }
-        
+
         return wsoe;
     }
-    
+
     private Pane getPane(int number) {
         if (panes == null) {
             panes = new HashMap<Integer, Pane>();
         }
-        Pane pane = (Pane) panes.get(new Integer(number));
+        Pane pane = panes.get(new Integer(number));
         if (pane == null) {
             pane = new XPane(number);
             panes.put(new Integer(pane.getNumber()), pane);
         }
         return pane;
     }
-    
+
     // start reading Pane-element ///////////////////////////////
     // hopefully the <Number> element is the first child of a <Pane> element.
     // obviously this thing will go haywire if this presumption is not true.
     private void setNumber(String s) {
         currentPane = getPane(Integer.parseInt(s));
     }
+
     private void setActiveRow(String s) {
         currentPane.setActiveRow(Integer.parseInt(s) + 1);
     }
+
     private void setActiveCol(String s) {
         currentPane.setActiveCol(Integer.parseInt(s) + 1);
     }
+
     private void setPane(String s) {
         currentPane = null; // endElement
         if (s == null) {}
     }
     // end reading Pane-element //////////////////////////////////
-    
+
+    @Override
     public void setChildElement(String localName, String content) {
-        //System.out.println(localName+"="+content);
+        // System.out.println(localName+"="+content);
         invokeMethod(localName, content);
     }
-    
-	private void invokeMethod(String name, Object value) {
+
+    private void invokeMethod(String name, Object value) {
         Class[] types = new Class[] { value.getClass() };
         Method method = null;
         try {
             method = this.getClass().getDeclaredMethod("set" + name, types);
             method.invoke(this, new Object[] { value });
-        } catch (NoSuchMethodException e) {
+        }
+        catch (NoSuchMethodException e) {
             // no big deal
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }

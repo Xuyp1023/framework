@@ -1,5 +1,7 @@
 package com.betterjr.common.data;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.betterjr.common.utils.BetterStringUtils;
 
 public enum PlatformBusinClass {
@@ -17,14 +19,14 @@ public enum PlatformBusinClass {
 
     public static PlatformBusinClass checking(String anWorkType) {
         try {
-            if (BetterStringUtils.isNotBlank(anWorkType)) {
+            if (StringUtils.isNotBlank(anWorkType)) {
                 for (PlatformBusinClass mm : PlatformBusinClass.values()) {
                     if (mm.value.equalsIgnoreCase(anWorkType)) {
-                        
+
                         return mm;
                     }
                 }
-                
+
                 return PlatformBusinClass.valueOf(anWorkType.trim().toUpperCase());
             }
         }

@@ -3,21 +3,23 @@ package com.betterjr.common.utils;
 import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.LocaleResolver;
 
 import com.betterjr.common.service.SpringContextHolder;
 import com.google.common.collect.Lists;
-import java.util.*;
 
 /**
  * 字符串工具类, 继承org.apache.commons.lang3.StringUtils类
@@ -43,8 +45,7 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
             catch (UnsupportedEncodingException e) {
                 return null;
             }
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -52,8 +53,7 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
     public static <T> T nvlCheck(T source, T dest) {
         if (source == null) {
             return dest;
-        }
-        else {
+        } else {
             return source;
         }
     }
@@ -66,17 +66,15 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
         }
         if (anPhone.matches("\\d{4}-\\d{8}|\\d{4}-\\d{7}|\\d(3)-\\d(8)")) {
             return true;
-        }
-        else if (anPhone.matches("^[1][3,5]+\\d{9}")) {
+        } else if (anPhone.matches("^[1][3,5]+\\d{9}")) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
 
     public static boolean isMobileNo(String anMobile) {
-        if (BetterStringUtils.isBlank(anMobile)) {
+        if (StringUtils.isBlank(anMobile)) {
             return true;
         }
         Pattern p = Pattern.compile("^((13[0-9])|(15[^4,\\D])|(18[^4,\\D]))\\d{8}$");
@@ -91,8 +89,7 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
         }
         if (anPost.matches("[1-9]\\d{5}(?!\\d)")) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -199,8 +196,7 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
                 currentLength += String.valueOf(c).getBytes("GBK").length;
                 if (currentLength <= length - 3) {
                     sb.append(c);
-                }
-                else {
+                } else {
                     sb.append("...");
                     break;
                 }
@@ -226,15 +222,12 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
             temp = param.charAt(i);
             if (temp == '<') {
                 isCode = true;
-            }
-            else if (temp == '&') {
+            } else if (temp == '&') {
                 isHTML = true;
-            }
-            else if (temp == '>' && isCode) {
+            } else if (temp == '>' && isCode) {
                 n = n - 1;
                 isCode = false;
-            }
-            else if (temp == ';' && isHTML) {
+            } else if (temp == ';' && isHTML) {
                 isHTML = false;
             }
             try {
@@ -248,8 +241,7 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
 
             if (n <= length - 3) {
                 result.append(temp);
-            }
-            else {
+            } else {
                 result.append("...");
                 break;
             }
@@ -257,10 +249,9 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
         // 取出截取字符串中的HTML标记
         String temp_result = result.toString().replaceAll("(>)[^<>]*(<?)", "$1$2");
         // 去掉不需要结素标记的HTML标记
-        temp_result = temp_result
-                .replaceAll(
-                        "</?(AREA|BASE|BASEFONT|BODY|BR|COL|COLGROUP|DD|DT|FRAME|HEAD|HR|HTML|IMG|INPUT|ISINDEX|LI|LINK|META|OPTION|P|PARAM|TBODY|TD|TFOOT|TH|THEAD|TR|area|base|basefont|body|br|col|colgroup|dd|dt|frame|head|hr|html|img|input|isindex|li|link|meta|option|p|param|tbody|td|tfoot|th|thead|tr)[^<>]*/?>",
-                        "");
+        temp_result = temp_result.replaceAll(
+                "</?(AREA|BASE|BASEFONT|BODY|BR|COL|COLGROUP|DD|DT|FRAME|HEAD|HR|HTML|IMG|INPUT|ISINDEX|LI|LINK|META|OPTION|P|PARAM|TBODY|TD|TFOOT|TH|THEAD|TR|area|base|basefont|body|br|col|colgroup|dd|dt|frame|head|hr|html|img|input|isindex|li|link|meta|option|p|param|tbody|td|tfoot|th|thead|tr)[^<>]*/?>",
+                "");
         // 去掉成对的HTML标记
         temp_result = temp_result.replaceAll("<([a-zA-Z]+)[^<>]*>(.*?)</\\1>", "$2");
         // 用正则表达式取出标记
@@ -336,6 +327,7 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
 
         return buf.toString();
     }
+
     /**
      * 使用给定的分隔符, 将一个数组拼接成字符串
      * 
@@ -348,7 +340,7 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
     public static <T> String join(String sp, T... array) {
         return join(sp, array).toString();
     }
-    
+
     /**
      * 将一个数组转换成字符串
      * <p>
@@ -362,8 +354,7 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
      */
     public static <T> StringBuilder join(Object c, T[] objs) {
         StringBuilder sb = new StringBuilder();
-        if (null == objs || 0 == objs.length)
-            return sb;
+        if (null == objs || 0 == objs.length) return sb;
 
         sb.append(objs[0]);
         for (int i = 1; i < objs.length; i++)
@@ -376,8 +367,9 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
      * 获得i18n字符串
      */
     public static String getMessage(String code, Object[] args) {
-        LocaleResolver localLocaleResolver = (LocaleResolver) SpringContextHolder.getBean(LocaleResolver.class);
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        LocaleResolver localLocaleResolver = SpringContextHolder.getBean(LocaleResolver.class);
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                .getRequest();
         Locale localLocale = localLocaleResolver.resolveLocale(request);
         return SpringContextHolder.getApplicationContext().getMessage(code, args, localLocale);
     }
@@ -402,12 +394,10 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
 
             if (c == SEPARATOR) {
                 upperCase = true;
-            }
-            else if (upperCase) {
+            } else if (upperCase) {
                 sb.append(Character.toUpperCase(c));
                 upperCase = false;
-            }
-            else {
+            } else {
                 sb.append(c);
             }
         }
@@ -456,8 +446,7 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
                     sb.append(SEPARATOR);
                 }
                 upperCase = true;
-            }
-            else {
+            } else {
                 upperCase = false;
             }
 
@@ -524,8 +513,7 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
     public static Boolean defBoolean(Boolean anB, Boolean anDef) {
         if (anB == null) {
             return anDef;
-        }
-        else {
+        } else {
             return anB;
         }
     }
@@ -533,8 +521,7 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
     public static String defCmfCustType(String anCustType, String anIdentType) {
         if ("0".equalsIgnoreCase(anCustType)) {
             return "1".concat(anIdentType);
-        }
-        else {
+        } else {
             return anIdentType;
         }
     }
@@ -558,12 +545,12 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
         }
         return tmpList;
     }
-    
+
     public static Map<String, String> parseParamsMap(String anStr) {
-       
+
         return parseParamsMap(anStr, '&', '=');
     }
-     
+
     /**
      * 将字符串按照参数分隔符号和键值分隔符号解析为Map数组。
      * @param anStr
@@ -575,36 +562,34 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
         Map<String, String> paramsMap = new HashMap();
 
         if (isNotBlank(anStr)) {
-           char[] workCharArr = anStr.toCharArray();
-           boolean usePart = false, endSplit = false;
-           String workKey = null, workData;
-           StringBuilder sb = new StringBuilder();
-           for(int i=0; i < workCharArr.length; i++){
-              if (usePart == false && anPartChar == workCharArr[i]){
-                 usePart = true;
-                 workKey = sb.toString();
-                 sb.setLength(0);
-                 endSplit = false;
-              }
-              else if (anSplitChar == workCharArr[i] && usePart == true){
-                 usePart = false;
-                 workData = sb.toString();
-                 sb.setLength(0);
-                 paramsMap.put(workKey, workData);
-                 endSplit = true;
-              }
-              else{
-                  sb.append(workCharArr[i]);
-              }
-           }
-           if (endSplit == false){
-               paramsMap.put(workKey, sb.toString());
-           }
+            char[] workCharArr = anStr.toCharArray();
+            boolean usePart = false, endSplit = false;
+            String workKey = null, workData;
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < workCharArr.length; i++) {
+                if (usePart == false && anPartChar == workCharArr[i]) {
+                    usePart = true;
+                    workKey = sb.toString();
+                    sb.setLength(0);
+                    endSplit = false;
+                } else if (anSplitChar == workCharArr[i] && usePart == true) {
+                    usePart = false;
+                    workData = sb.toString();
+                    sb.setLength(0);
+                    paramsMap.put(workKey, workData);
+                    endSplit = true;
+                } else {
+                    sb.append(workCharArr[i]);
+                }
+            }
+            if (endSplit == false) {
+                paramsMap.put(workKey, sb.toString());
+            }
         }
-        
+
         return paramsMap;
     }
-    
+
     /**
      * 判断一个对象是否是字符串
      * 
@@ -621,7 +606,6 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
         return false;
     }
 
-
     public static String createRandomCharAndNum(int length) {
         String val = "";
         SecureRandom random = new SecureRandom();
@@ -632,9 +616,8 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
             // 字符串
             if ("char".equalsIgnoreCase(charOrNum)) {
                 // 取得字母
-                val += chars.charAt((int) (random.nextInt(chars.length())));
-            }
-            else if ("num".equalsIgnoreCase(charOrNum)) { // 数字
+                val += chars.charAt((random.nextInt(chars.length())));
+            } else if ("num".equalsIgnoreCase(charOrNum)) { // 数字
                 val += String.valueOf(random.nextInt(10));
             }
         }
@@ -646,26 +629,26 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
      * @param anStr
      * @return
      */
-    public static boolean defShortString(String anStr){
-        
+    public static boolean defShortString(String anStr) {
+
         return shortString(anStr, 3);
     }
-    
+
     /**
      * 判断字符串的长度是否小于或等于指定长度，如果是，则为真
      * @param anStr
      * @param anLength
      * @return
-     */    
-    public static boolean shortString(String anStr, int anLength){
-       if (isBlank(anStr)){
-           return true;
-       }
-       if (anStr.trim().length() <= anLength){
-           return true;
-       }
-       
-       return false;        
+     */
+    public static boolean shortString(String anStr, int anLength) {
+        if (isBlank(anStr)) {
+            return true;
+        }
+        if (anStr.trim().length() <= anLength) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -674,13 +657,12 @@ public class BetterStringUtils extends org.apache.commons.lang3.StringUtils {
      * @param src
      * @return
      */
-    public static String toSemiangle(String anStr){
+    public static String toSemiangle(String anStr) {
         char[] c = anStr.toCharArray();
         for (int index = 0; index < c.length; index++) {
             if (c[index] == 12288) {// 全角空格
                 c[index] = (char) 32;
-            }
-            else if (c[index] > 65280 && c[index] < 65375) {// 其他全角字符
+            } else if (c[index] > 65280 && c[index] < 65375) {// 其他全角字符
                 c[index] = (char) (c[index] - 65248);
             }
         }

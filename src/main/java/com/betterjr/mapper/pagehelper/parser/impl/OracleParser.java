@@ -24,12 +24,12 @@
 
 package com.betterjr.mapper.pagehelper.parser.impl;
 
+import java.util.Map;
+
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 
 import com.betterjr.mapper.pagehelper.Page;
-
-import java.util.Map;
 
 /**
  * @author liuzh

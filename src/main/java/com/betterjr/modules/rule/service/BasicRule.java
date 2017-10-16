@@ -33,10 +33,12 @@ public abstract class BasicRule implements BaseRuleFace {
 
     protected QLExpressContext context;
 
+    @Override
     public QLExpressContext getContext() {
         return context;
     }
 
+    @Override
     public void setContext(QLExpressContext anContext) {
         context = anContext;
     }
@@ -56,8 +58,7 @@ public abstract class BasicRule implements BaseRuleFace {
         return this.groupName;
     }
 
-    public BasicRule(final String name) {
-    }
+    public BasicRule(final String name) {}
 
     public BasicRule(final String name, final String description) {
         this.name = name;
@@ -75,6 +76,7 @@ public abstract class BasicRule implements BaseRuleFace {
         return name;
     }
 
+    @Override
     public void setRuleNo(String anRuleNo) {
         ruleNo = anRuleNo;
     }
@@ -127,6 +129,7 @@ public abstract class BasicRule implements BaseRuleFace {
         return name;
     }
 
+    @Override
     public RuleObjectFace clone() {
         RuleObjectFace obj;
         try {
@@ -146,11 +149,9 @@ public abstract class BasicRule implements BaseRuleFace {
 
         if (priority < otherPriority) {
             return -1;
-        }
-        else if (priority > otherPriority) {
+        } else if (priority > otherPriority) {
             return 1;
-        }
-        else {
+        } else {
             return this.ruleNo.compareTo(otherName);
         }
     }

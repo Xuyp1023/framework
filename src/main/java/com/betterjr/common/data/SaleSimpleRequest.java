@@ -1,6 +1,5 @@
 package com.betterjr.common.data;
 
-
 public interface SaleSimpleRequest extends BaseRemoteEntity {
 
     String getTradeDate();
@@ -44,11 +43,11 @@ public interface SaleSimpleRequest extends BaseRemoteEntity {
     void setAcceptMode(String acceptMode);
 
     String getFundCode();
-    
+
     void setFundCode(String fundCode);
-    
+
     String getTradeAccount();
 
     String getFundAccount();
- 
+
 }

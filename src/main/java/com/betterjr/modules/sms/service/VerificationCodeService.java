@@ -11,6 +11,7 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -58,7 +59,7 @@ public class VerificationCodeService {
         final String checkKey = SmsConstants.smsVerifiCodeFrequencyPrefix + anType.getType() + anMobile;
 
         final String oneMinute = JedisUtils.get(checkKey);
-        if (BetterStringUtils.isBlank(oneMinute)) {
+        if (StringUtils.isBlank(oneMinute)) {
             JedisUtils.set(checkKey, "1", SmsConstants.SEC_60);
         } else {
             logger.info("该接口调用太频繁");
@@ -74,9 +75,11 @@ public class VerificationCodeService {
      * @param anVerificationCode
      */
     private void sendNotification(final VerifyCode anVerificationCode) {
-        final Long platformCustNo = Long.valueOf(Collections3.getFirst(DictUtils.getDictList("PlatformGroup")).getItemValue());
+        final Long platformCustNo = Long
+                .valueOf(Collections3.getFirst(DictUtils.getDictList("PlatformGroup")).getItemValue());
         final CustInfo platformCustomer = accountService.findCustInfo(platformCustNo);
-        final CustOperatorInfo platformOperator = Collections3.getFirst(custOperatorService.queryOperatorInfoByCustNo(platformCustomer.getCustNo()));
+        final CustOperatorInfo platformOperator = Collections3
+                .getFirst(custOperatorService.queryOperatorInfoByCustNo(platformCustomer.getCustNo()));
 
         final Builder builder = NotificationModel.newBuilder("平台短信验证码", platformCustomer, platformOperator);
         builder.addParam("verifiCode", anVerificationCode.getVerifiCode());

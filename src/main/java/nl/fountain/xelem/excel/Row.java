@@ -26,8 +26,6 @@ import java.util.TreeMap;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-
-
 /**
  * Represents the Row element. The XLElement Row is not aware of it's parent,
  * nor of it's index-position in a table or worksheet. This makes it possible
@@ -41,16 +39,16 @@ import org.w3c.dom.Element;
  * @see nl.fountain.xelem.excel.Table#addRow()
  */
 public interface Row extends XLElement {
-    
-	/**
-	 * Sets the ss:StyleID on this row. If no styleID is set on a row,
-	 * the ss:StyleID-attribute is not deployed in the resulting xml and
-	 * Excel employes the Default-style on the row.
-	 * 
-	 * @param 	id	the id of the style to employ on this row.
-	 */
+
+    /**
+     * Sets the ss:StyleID on this row. If no styleID is set on a row,
+     * the ss:StyleID-attribute is not deployed in the resulting xml and
+     * Excel employes the Default-style on the row.
+     * 
+     * @param 	id	the id of the style to employ on this row.
+     */
     void setStyleID(String id);
-    
+
     /**
      * Gets the ss:StyleID which was set on this row.
      * 
@@ -58,7 +56,7 @@ public interface Row extends XLElement {
      * 			<code>null</code> if no styleID was previously set.
      */
     String getStyleID();
-    
+
     /**
      * Sets the span of this row.
      * The value of 
@@ -77,21 +75,21 @@ public interface Row extends XLElement {
      * @param 	s	The number of additional rows to include in the span.
      */
     void setSpan(int s);
-    
+
     /**
      * Gets the number of extra rows this row spans.
      * 
      * @return	the number of extra rows this row spans
      */
     int getSpan();
-    
+
     /**
      * Sets the height of this row.
      * 
      * @param h	The height of the row (in points).
      */
     void setHeight(double h);
-    
+
     /**
      * Gets the height of this row. A return value of <code>0.0</code>
      * may indicate this row has a default height.
@@ -99,21 +97,21 @@ public interface Row extends XLElement {
      * @return the height of the row (in points).
      */
     double getHeight();
-    
+
     /**
      * Sets whether this row will be hidden.
      * 
      * @param hide	<code>true</code> if this row must not be displayed.
      */
     void setHidden(boolean hide);
-    
+
     /**
      * Specifies whether this row is hidden.
      */
     boolean isHidden();
-    
-    //void setAutoFitHeight(boolean autoFit);
-    
+
+    // void setAutoFitHeight(boolean autoFit);
+
     /**
      * Adds a new Cell to this row. If no cells were previously added
      * the cell will be added at index 1. Otherwise the cell will be added
@@ -127,7 +125,7 @@ public interface Row extends XLElement {
      * 			{@link nl.fountain.xelem.excel.Worksheet#lastColumn}
      */
     Cell addCell();
-    
+
     /**
      * Adds a new Cell to this row. If no cells were previously added
      * the cell will be added at index 1. Otherwise the cell will be added
@@ -145,7 +143,7 @@ public interface Row extends XLElement {
      * @see nl.fountain.xelem.excel.Cell#setData(Object)
      */
     Cell addCell(Object data);
-    
+
     /**
      * Adds a new Cell to this row. If no cells were previously added
      * the cell will be added at index 1. Otherwise the cell will be added
@@ -166,7 +164,7 @@ public interface Row extends XLElement {
      * @see nl.fountain.xelem.excel.Cell#setStyleID(String)
      */
     Cell addCell(Object data, String styleID);
-    
+
     /**
      * Adds a new Cell to this row. If no cells were previously added
      * the cell will be added at index 1. Otherwise the cell will be added
@@ -182,7 +180,7 @@ public interface Row extends XLElement {
      * @see nl.fountain.xelem.excel.Cell#setData(double)
      */
     Cell addCell(double data);
-    
+
     /**
      * Adds a new Cell to this row. If no cells were previously added
      * the cell will be added at index 1. Otherwise the cell will be added
@@ -201,7 +199,7 @@ public interface Row extends XLElement {
      * @see nl.fountain.xelem.excel.Cell#setStyleID(String)
      */
     Cell addCell(double data, String styleID);
-    
+
     /**
      * Adds a new Cell to this row. If no cells were previously added
      * the cell will be added at index 1. Otherwise the cell will be added
@@ -215,7 +213,7 @@ public interface Row extends XLElement {
      * 			{@link nl.fountain.xelem.excel.Worksheet#lastColumn}
      */
     Cell addCell(int data);
-    
+
     /**
      * Adds a new Cell to this row. If no cells were previously added
      * the cell will be added at index 1. Otherwise the cell will be added
@@ -233,7 +231,7 @@ public interface Row extends XLElement {
      * @see nl.fountain.xelem.excel.Cell#setStyleID(String)
      */
     Cell addCell(int data, String styleID);
-    
+
     /**
      * Adds the given Cell to this row. If no cells were previously added
      * the cell will be added at index 1. Otherwise the cell will be added
@@ -247,7 +245,7 @@ public interface Row extends XLElement {
      * 			{@link nl.fountain.xelem.excel.Worksheet#lastColumn}
      */
     Cell addCell(Cell cell);
-    
+
     /**
      * Adds a new Cell at the given index. If the index was allready occupied
      * by another cell, replaces this cell.
@@ -261,8 +259,8 @@ public interface Row extends XLElement {
      * 			or greater then
      * 			{@link nl.fountain.xelem.excel.Worksheet#lastColumn}
      */
-    Cell addCellAt(int index); 
-    
+    Cell addCellAt(int index);
+
     /**
      * Adds the given Cell at the given index. If the index was allready occupied
      * by another cell, replaces this cell.
@@ -277,7 +275,7 @@ public interface Row extends XLElement {
      * 			{@link nl.fountain.xelem.excel.Worksheet#lastColumn}
      */
     Cell addCellAt(int index, Cell cell);
-    
+
     /**
      * Removes the cell at the given index.
      * 
@@ -287,7 +285,7 @@ public interface Row extends XLElement {
      * 			by a cell.
      */
     Cell removeCellAt(int index);
-    
+
     /**
      * Gets the cell at the given index.
      * 
@@ -296,19 +294,19 @@ public interface Row extends XLElement {
      * @return The cell at the given index. Never <code>null</code> 
      */
     Cell getCellAt(int index);
-    
+
     /**
      * Specifies whether this row has a cell at the given index
      */
     boolean hasCellAt(int index);
-    
+
     /**
      * Gets all the cells of this row in the order of their index.
      * 
      * @return A collection of cells.
      */
     Collection<Cell> getCells();
-    
+
     /**
      * Gets all the cells of this row. The key of the Map.Entrys is of type
      * Integer and stands for the index number of the cell.
@@ -316,21 +314,21 @@ public interface Row extends XLElement {
      * @return A TreeMap of cells.
      */
     TreeMap<Integer, Cell> getCellMap();
-    
+
     /**
      * Gets the number of cells in this row.
      * 
      * @return The number of cells in this row.
      */
     int size();
-    
+
     /**
      * Gets the highest index number of the cells in this row.
      * 
      * @return The highest index number of the cells in this row.
      */
     int maxCellIndex();
-    
+
     /**
      * Returns an iterator for the cells in this row. Cells are aware of their
      * index number when passed by this iterator.
@@ -338,7 +336,7 @@ public interface Row extends XLElement {
      * @return An iterator for the cells in this row.
      */
     Iterator<Cell> cellIterator();
-    
+
     /**
      * Creates an {@link org.w3c.dom.Element} with the specified 
      * <code>doc</code> as owner-document.
@@ -349,7 +347,7 @@ public interface Row extends XLElement {
      * @return this row as an {@link org.w3c.dom.Element}.
      */
     Element createElement(Document doc);
-    
+
     /**
      * Sets the value of the ss:Index-attribute of this Row-element. 
      * Any value set may be overruled  
@@ -365,7 +363,7 @@ public interface Row extends XLElement {
      * @param index the index of this row
      */
     void setIndex(int index);
-    
+
     /**
      * Gets the value of the ss:Index-attribute of this Row-element.
      * The returned value only makes sence if this row was read with the
@@ -376,5 +374,5 @@ public interface Row extends XLElement {
      * @since xelem.2.0
      */
     int getIndex();
-    
+
 }

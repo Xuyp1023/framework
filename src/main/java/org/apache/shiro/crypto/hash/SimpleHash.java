@@ -18,16 +18,16 @@
  */
 package org.apache.shiro.crypto.hash;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.codec.CodecException;
 import org.apache.shiro.codec.Hex;
 import org.apache.shiro.crypto.UnknownAlgorithmException;
 import org.apache.shiro.util.ByteSource;
 import org.apache.shiro.util.StringUtils;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 
 /**
  * A {@code Hash} implementation that allows any {@link java.security.MessageDigest MessageDigest} algorithm name to
@@ -113,7 +113,7 @@ public class SimpleHash extends AbstractHash {
      * @throws UnknownAlgorithmException if the {@code algorithmName} is not available.
      */
     public SimpleHash(String algorithmName, Object source) throws CodecException, UnknownAlgorithmException {
-        //noinspection NullableProblems
+        // noinspection NullableProblems
         this(algorithmName, source, null, DEFAULT_ITERATIONS);
     }
 
@@ -135,7 +135,8 @@ public class SimpleHash extends AbstractHash {
      * @throws CodecException            if either constructor argument cannot be converted into a byte array.
      * @throws UnknownAlgorithmException if the {@code algorithmName} is not available.
      */
-    public SimpleHash(String algorithmName, Object source, Object salt) throws CodecException, UnknownAlgorithmException {
+    public SimpleHash(String algorithmName, Object source, Object salt)
+            throws CodecException, UnknownAlgorithmException {
         this(algorithmName, source, salt, DEFAULT_ITERATIONS);
     }
 
@@ -224,10 +225,11 @@ public class SimpleHash extends AbstractHash {
         return ByteSource.Util.bytes(bytes);
     }
 
-    private void hash(ByteSource source, ByteSource salt, int hashIterations) throws CodecException, UnknownAlgorithmException {
+    private void hash(ByteSource source, ByteSource salt, int hashIterations)
+            throws CodecException, UnknownAlgorithmException {
         byte[] saltBytes = salt != null ? salt.getBytes() : null;
         byte[] hashedBytes = hash(source.getBytes(), saltBytes, hashIterations);
-        //System.out.println(org.apache.commons.codec.binary.Hex.encodeHexString(hashedBytes));
+        // System.out.println(org.apache.commons.codec.binary.Hex.encodeHexString(hashedBytes));
         setBytes(hashedBytes);
     }
 
@@ -236,18 +238,22 @@ public class SimpleHash extends AbstractHash {
      *
      * @return the {@link java.security.MessageDigest MessageDigest} algorithm name to use when performing the hash.
      */
+    @Override
     public String getAlgorithmName() {
         return this.algorithmName;
     }
 
+    @Override
     public ByteSource getSalt() {
         return this.salt;
     }
 
+    @Override
     public int getIterations() {
         return this.iterations;
     }
 
+    @Override
     public byte[] getBytes() {
         return this.bytes;
     }
@@ -260,6 +266,7 @@ public class SimpleHash extends AbstractHash {
      *
      * @param alreadyHashedBytes the raw already-hashed bytes to store in this instance.
      */
+    @Override
     public void setBytes(byte[] alreadyHashedBytes) {
         this.bytes = alreadyHashedBytes;
         this.hexEncoded = null;
@@ -299,10 +306,12 @@ public class SimpleHash extends AbstractHash {
      * @return the MessageDigest object for the specified {@code algorithm}.
      * @throws UnknownAlgorithmException if the specified algorithm name is not available.
      */
+    @Override
     protected MessageDigest getDigest(String algorithmName) throws UnknownAlgorithmException {
         try {
             return MessageDigest.getInstance(algorithmName);
-        } catch (NoSuchAlgorithmException e) {
+        }
+        catch (NoSuchAlgorithmException e) {
             String msg = "No native '" + algorithmName + "' MessageDigest instance available on the current JVM.";
             throw new UnknownAlgorithmException(msg, e);
         }
@@ -315,6 +324,7 @@ public class SimpleHash extends AbstractHash {
      * @return the hashed bytes.
      * @throws UnknownAlgorithmException if the configured {@link #getAlgorithmName() algorithmName} is not available.
      */
+    @Override
     protected byte[] hash(byte[] bytes) throws UnknownAlgorithmException {
         return hash(bytes, null, DEFAULT_ITERATIONS);
     }
@@ -327,6 +337,7 @@ public class SimpleHash extends AbstractHash {
      * @return the hashed bytes
      * @throws UnknownAlgorithmException if the configured {@link #getAlgorithmName() algorithmName} is not available.
      */
+    @Override
     protected byte[] hash(byte[] bytes, byte[] salt) throws UnknownAlgorithmException {
         return hash(bytes, salt, DEFAULT_ITERATIONS);
     }
@@ -340,6 +351,7 @@ public class SimpleHash extends AbstractHash {
      * @return the hashed bytes.
      * @throws UnknownAlgorithmException if the {@link #getAlgorithmName() algorithmName} is not available.
      */
+    @Override
     protected byte[] hash(byte[] bytes, byte[] salt, int hashIterations) throws UnknownAlgorithmException {
         MessageDigest digest = getDigest(getAlgorithmName());
         if (salt != null) {
@@ -347,15 +359,16 @@ public class SimpleHash extends AbstractHash {
             digest.update(salt);
         }
         byte[] hashed = digest.digest(bytes);
-        int iterations = hashIterations - DEFAULT_ITERATIONS; //already hashed once above
-        //iterate remaining number:
+        int iterations = hashIterations - DEFAULT_ITERATIONS; // already hashed once above
+        // iterate remaining number:
         for (int i = 0; i < iterations; i++) {
             digest.reset();
             hashed = digest.digest(hashed);
         }
-         return hashed;
+        return hashed;
     }
 
+    @Override
     public boolean isEmpty() {
         return this.bytes == null || this.bytes.length == 0;
     }
@@ -369,6 +382,7 @@ public class SimpleHash extends AbstractHash {
      *
      * @return a hex-encoded string of the underlying {@link #getBytes byte array}.
      */
+    @Override
     public String toHex() {
         if (this.hexEncoded == null) {
             this.hexEncoded = Hex.encodeToString(getBytes());
@@ -385,9 +399,10 @@ public class SimpleHash extends AbstractHash {
      *
      * @return a Base64-encoded string of the underlying {@link #getBytes byte array}.
      */
+    @Override
     public String toBase64() {
         if (this.base64Encoded == null) {
-            //cache result in case this method is called multiple times.
+            // cache result in case this method is called multiple times.
             this.base64Encoded = Base64.encodeToString(getBytes());
         }
         return this.base64Encoded;
@@ -398,6 +413,7 @@ public class SimpleHash extends AbstractHash {
      *
      * @return the {@link #toHex() toHex()} value.
      */
+    @Override
     public String toString() {
         return toHex();
     }
@@ -410,6 +426,7 @@ public class SimpleHash extends AbstractHash {
      * @return {@code true} if the specified object is a Hash and its {@link #getBytes byte array} is identical to
      *         this Hash's byte array, {@code false} otherwise.
      */
+    @Override
     public boolean equals(Object o) {
         if (o instanceof Hash) {
             Hash other = (Hash) o;
@@ -423,6 +440,7 @@ public class SimpleHash extends AbstractHash {
      *
      * @return toHex().hashCode()
      */
+    @Override
     public int hashCode() {
         if (this.bytes == null || this.bytes.length == 0) {
             return 0;

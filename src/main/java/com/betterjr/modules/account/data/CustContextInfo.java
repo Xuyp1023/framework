@@ -22,7 +22,6 @@ import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.account.entity.SaleTradeAccountInfo;
 import com.betterjr.modules.cert.entity.CustCertInfo;
 
-
 /**
  * 当前客户的上下文信息,打通前端和后端的信息
  *
@@ -36,7 +35,8 @@ public class CustContextInfo implements Serializable {
 
     public static final String CACHE_CUST_CONTEXT_MAP = "custContextMap";
 
-    public static Map<String, CustContextInfo> contextMap = (Map<String, CustContextInfo>) CacheUtils.get(CACHE_CUST_CONTEXT_MAP);
+    public static Map<String, CustContextInfo> contextMap = (Map<String, CustContextInfo>) CacheUtils
+            .get(CACHE_CUST_CONTEXT_MAP);
     private static final long serialVersionUID = -3157823563301650231L;
     /**
      * 证书信息
@@ -218,15 +218,15 @@ public class CustContextInfo implements Serializable {
      * @throws 异常情况
      */
     public static CustContextInfo findCustContextInfo(final String anToken) {
-        //Map<String, CustContextInfo> contextMap = (Map<String, CustContextInfo>) CacheUtils.get(CACHE_CUST_CONTEXT_MAP);
+        // Map<String, CustContextInfo> contextMap = (Map<String, CustContextInfo>)
+        // CacheUtils.get(CACHE_CUST_CONTEXT_MAP);
         CustContextInfo custContext = JedisUtils.getObject(custContextPrefix + anToken);
 
         if (custContext == null) {
-            logger.warn("the token " + anToken+", context info is null");
+            logger.warn("the token " + anToken + ", context info is null");
             custContext = new CustContextInfo();
-        }
-        else{
-            logger.info( "this is token =" + anToken +", custContext is " + custContext.getOperatorInfo());
+        } else {
+            logger.info("this is token =" + anToken + ", custContext is " + custContext.getOperatorInfo());
         }
 
         return custContext;
@@ -234,7 +234,8 @@ public class CustContextInfo implements Serializable {
 
     public void invalid() {
         this.valid = false;
-        // Map<String, CustContextInfo> contextMap = (Map<String, CustContextInfo>) CacheUtils.get(CACHE_CUST_CONTEXT_MAP);
+        // Map<String, CustContextInfo> contextMap = (Map<String, CustContextInfo>)
+        // CacheUtils.get(CACHE_CUST_CONTEXT_MAP);
         if (contextMap != null) {
             contextMap.remove(token);
         }
@@ -266,12 +267,13 @@ public class CustContextInfo implements Serializable {
     }
 
     public static void putCustContextInfo(final String anToken, final CustContextInfo anCustContext) {
-        //  Map<String, CustContextInfo> contextMap = (Map<String, CustContextInfo>) CacheUtils.get(CACHE_CUST_CONTEXT_MAP);
-        //        if (contextMap == null) {
-        //            contextMap = new ConcurrentHashMap();
-        //            CacheUtils.put(CACHE_CUST_CONTEXT_MAP, contextMap);
-        //        }
-        //        contextMap.put(anCustContext.getToken(), anCustContext);
+        // Map<String, CustContextInfo> contextMap = (Map<String, CustContextInfo>)
+        // CacheUtils.get(CACHE_CUST_CONTEXT_MAP);
+        // if (contextMap == null) {
+        // contextMap = new ConcurrentHashMap();
+        // CacheUtils.put(CACHE_CUST_CONTEXT_MAP, contextMap);
+        // }
+        // contextMap.put(anCustContext.getToken(), anCustContext);
         JedisUtils.setObject(custContextPrefix + anToken, anCustContext, 0);
     }
 
@@ -287,8 +289,7 @@ public class CustContextInfo implements Serializable {
         if (anBackSess != null) {
             WorkSessionContext.addSession(anBackSess);
             this.backSessionID = anBackSess.getId();
-        }
-        else{
+        } else {
             this.backSessionID = null;
         }
     }

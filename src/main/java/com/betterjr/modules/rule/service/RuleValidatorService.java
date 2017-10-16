@@ -1,5 +1,17 @@
 package com.betterjr.modules.rule.service;
 
+import java.lang.reflect.Modifier;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedCaseInsensitiveMap;
+
 import com.betterjr.common.service.BaseService;
 import com.betterjr.common.service.SpringContextHolder;
 import com.betterjr.common.utils.BetterClassUtils;
@@ -8,17 +20,14 @@ import com.betterjr.common.utils.XmlUtils;
 import com.betterjr.common.utils.reflection.ReflectionUtils;
 import com.betterjr.modules.rule.RuleCheckResult;
 import com.betterjr.modules.rule.dao.RuleValidatorMapper;
-import com.betterjr.modules.rule.entity.*;
-import com.betterjr.modules.rule.validator.*;
-
-import java.lang.reflect.Modifier;
-import java.util.*;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedCaseInsensitiveMap;
+import com.betterjr.modules.rule.entity.RuleBusinValidator;
+import com.betterjr.modules.rule.entity.RuleBusiness;
+import com.betterjr.modules.rule.entity.RuleValidator;
+import com.betterjr.modules.rule.entity.WorkRuleValidator;
+import com.betterjr.modules.rule.validator.DataValidContext;
+import com.betterjr.modules.rule.validator.DataValidatorFace;
+import com.betterjr.modules.rule.validator.MaxDataValidator;
+import com.betterjr.modules.rule.validator.MinDataValidator;
 
 @Service
 public class RuleValidatorService extends BaseService<RuleValidatorMapper, RuleValidator> {
@@ -46,12 +55,12 @@ public class RuleValidatorService extends BaseService<RuleValidatorMapper, RuleV
         for (String tmpPath : XmlUtils.split(validatorPath)) {
             list = BetterClassUtils.getClassList(tmpPath, false, null);
             for (Class cc : list) {
-                if (DataValidatorFace.class.isAssignableFrom(cc) && (cc.isInterface() == false) && (Modifier.isAbstract(cc.getModifiers()) == false)) {
+                if (DataValidatorFace.class.isAssignableFrom(cc) && (cc.isInterface() == false)
+                        && (Modifier.isAbstract(cc.getModifiers()) == false)) {
                     try {
                         if (cc.getAnnotation(Service.class) != null) {
                             dvFace = (DataValidatorFace) SpringContextHolder.getBean(cc);
-                        }
-                        else {
+                        } else {
                             dvFace = (DataValidatorFace) cc.newInstance();
                         }
                         validatorMap.put(dvFace.getValidatorName(), dvFace);
@@ -83,9 +92,9 @@ public class RuleValidatorService extends BaseService<RuleValidatorMapper, RuleV
             RuleValidator rv;
             for (RuleBusinValidator rbv : businValidator.values()) {
                 rv = map.get(rbv.getValidName());
-                if(rv==null){
-                    logger.error("Not found validator:"+rbv.getValidName()+";business name:"+rbv.getBusinName());
-                }else{
+                if (rv == null) {
+                    logger.error("Not found validator:" + rbv.getValidName() + ";business name:" + rbv.getBusinName());
+                } else {
                     wv = new WorkRuleValidator(rv, rbv);
                     mapValidator.add(wv);
                 }
@@ -95,7 +104,7 @@ public class RuleValidatorService extends BaseService<RuleValidatorMapper, RuleV
     }
 
     private Map<String, Object> findRefValue(QLExpressContext anContext, String anRefValue) {
-        if (BetterStringUtils.isBlank(anRefValue)) {
+        if (StringUtils.isBlank(anRefValue)) {
 
             return null;
         }
@@ -123,7 +132,7 @@ public class RuleValidatorService extends BaseService<RuleValidatorMapper, RuleV
             obj = anContext.getObjValue(validator.getFieldName());
             if (obj instanceof String) {
 
-                obj = BetterStringUtils.trimToNull((String) obj);
+                obj = StringUtils.trimToNull((String) obj);
             }
             boolean bb = true;
 
@@ -133,11 +142,9 @@ public class RuleValidatorService extends BaseService<RuleValidatorMapper, RuleV
                 if (validFace != null) {
                     if (validFace instanceof MinDataValidator) {
                         businObj = validator.getMinValue();
-                    }
-                    else if (validFace instanceof MaxDataValidator) {
+                    } else if (validFace instanceof MaxDataValidator) {
                         businObj = validator.getMaxValues();
-                    }
-                    else {
+                    } else {
                         businObj = null;
                     }
                     bb = validFace.evaluate(validator, anContext, anResult, ruleBusin, obj, businObj, null);
@@ -150,19 +157,21 @@ public class RuleValidatorService extends BaseService<RuleValidatorMapper, RuleV
             // 处理依赖的验证器，并将自己的验证器追加在最后处理
             if (bb) {
                 try {
-                    DataValidContext.addValidContext(validator, anContext, anResult, ruleBusin, obj, null, validator.getMessage());
+                    DataValidContext.addValidContext(validator, anContext, anResult, ruleBusin, obj, null,
+                            validator.getMessage());
                     businObj = anContext.getBusinValue(validator.getBusinField());
                     DataValidContext.addBusinObj(businObj);
                     DataValidContext.addRefValue(findRefValue(anContext, validator.getRefValue()));
                     List<String> tmpList = XmlUtils.split(validator.getDepends());
-                    if (BetterStringUtils.isNoneBlank(validator.getValidator())) {
+                    if (StringUtils.isNoneBlank(validator.getValidator())) {
                         tmpList.add(validator.getValidator().trim());
                     }
                     for (String tmpValidator : tmpList) {
                         validFace = validatorMap.get(tmpValidator);
                         if (validFace != null) {
                             if (obj != null) {
-                                bb = validFace.evaluate(validator, anContext, anResult, ruleBusin, obj, businObj, validator.getMessage());
+                                bb = validFace.evaluate(validator, anContext, anResult, ruleBusin, obj, businObj,
+                                        validator.getMessage());
                                 if (bb == false) {
 
                                     break;
@@ -179,8 +188,7 @@ public class RuleValidatorService extends BaseService<RuleValidatorMapper, RuleV
             if (bb == false) {
                 if (this.muiltError) {
                     continue;
-                }
-                else {
+                } else {
                     break;
                 }
             }

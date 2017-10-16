@@ -30,7 +30,8 @@ public class X509CertDubboClientService {
     /**
      * 查询数字证书
      */
-    public String queryCertificateInfo(final Map<String, Object> anParam, final int anFlag, final int anPageNum, final int anPageSize) {
+    public String queryCertificateInfo(final Map<String, Object> anParam, final int anFlag, final int anPageNum,
+            final int anPageSize) {
         return betterX509CertService.webQueryCertificateInfo(anParam, anFlag, anPageNum, anPageSize);
     }
 

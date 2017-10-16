@@ -25,6 +25,7 @@ import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -58,8 +59,8 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
 
     private final static PasswordCreate passwordCreate = new PasswordCreate();
 
-    private final static String[] QUERY_TERM = new String[] { "status", "GTEregDate", "LTEregDate", "GTEcreateDate", "LTEvalidDate", "contName",
-    "custName" };
+    private final static String[] QUERY_TERM = new String[] { "status", "GTEregDate", "LTEregDate", "GTEcreateDate",
+            "LTEvalidDate", "contName", "custName" };
 
     @Autowired
     private BetterX509CertService betterCertService;
@@ -141,7 +142,6 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         return certInfo;
     }
 
-
     /**
      * 下载颁发的数字证书
      *
@@ -150,7 +150,7 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
      * @return
      */
     public byte[] saveDownloadCert(final String anToken) {
-        if (BetterStringUtils.isBlank(anToken) || BetterStringUtils.trim(anToken).length() < 80) {
+        if (StringUtils.isBlank(anToken) || StringUtils.trim(anToken).length() < 80) {
             return new byte[0];
         }
         final List<CustCertInfo> tmpList = selectByProperty("token", anToken);
@@ -170,8 +170,7 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
     public static String createToken(final int anLength) {
         if (anLength <= 32) {
             return SerialGenerator.uuid();
-        }
-        else {
+        } else {
             return SerialGenerator.uuid() + SerialGenerator.randomBase62(anLength - 32);
         }
     }
@@ -181,20 +180,18 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         final StringBuffer sb = new StringBuffer();
         final Random r = new Random();
         final int range = buffer.length();
-        for (int i = 0; i < length; i ++) {
+        for (int i = 0; i < length; i++) {
             sb.append(buffer.charAt(r.nextInt(range)));
         }
         return sb.toString();
     }
 
-
     protected static String createPassword(final String anComplexValue) {
-
 
         return passwordCreate.createPassWord(8);
         /*final String tmpStr = BetterStringUtils.createRandomCharAndNum(8);
         if (BetterStringUtils.isNotBlank(anComplexValue) && (anComplexValue.length() > 6)) {
-
+        
             return tmpStr.concat(anComplexValue.substring(0, 6));
         }
         else {
@@ -214,15 +211,14 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         final CustCertInfo certInfo = this.findBySerialNo(anSerialNo);
         if (certInfo != null) {
             // 检查是否可以作废
-            BTAssert.isTrue(BetterStringUtils.equals(certInfo.getStatus(), "1"), "证书状态不允许作废！");
+            BTAssert.isTrue(StringUtils.equals(certInfo.getStatus(), "1"), "证书状态不允许作废！");
 
-            betterCertService.saveCertStatus(certInfo.getCertId(), anSerialNo, "0");    // 释放数字证书
+            betterCertService.saveCertStatus(certInfo.getCertId(), anSerialNo, "0"); // 释放数字证书
 
-            certRuleService.saveDelCertRuleBySerialNo(certInfo.getSerialNo());  // 删除关联关系
+            certRuleService.saveDelCertRuleBySerialNo(certInfo.getSerialNo()); // 删除关联关系
 
             this.delete(certInfo); // 删除当前数字证书
-        }
-        else {
+        } else {
             throw new BytterTradeException("没有找到对应的数字证书！");
         }
     }
@@ -237,10 +233,11 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
 
         anCertInfo.setOperOrg(anTempCertInfo.getOperOrg());
 
-        final CustCertInfo certInfo =  saveCustCertInfo(anCertInfo, false);
+        final CustCertInfo certInfo = saveCustCertInfo(anCertInfo, false);
 
         return certInfo;
     }
+
     /**
      * @param anTempCertInfo
      */
@@ -286,7 +283,7 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         final CustCertInfo tmpCertInfo = this.selectByPrimaryKey(anCertInfo.getSerialNo());
         if (tmpCertInfo == null) {
             anCertInfo.initValue(UserUtils.getOperatorInfo());
-            if (!BetterStringUtils.equals(anCertInfo.getStatus(), "8")) {
+            if (!StringUtils.equals(anCertInfo.getStatus(), "8")) {
                 anCertInfo.setStatus("1");
             }
             this.insert(anCertInfo);
@@ -294,17 +291,16 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
             for (final String rule : rules) {
                 certRuleService.addCustCertRule(serialNo, rule, custName);
             }
-        }
-        else {
+        } else {
             BTAssert.isTrue(anCreate == false, "创建客户数字证书时，选择的数字证书已经存在！");
 
             final String orginSerialNo = anCertInfo.getSerialNo();
             final Long orginCertId = tmpCertInfo.getCertId();
-            if (BetterStringUtils.equals(tmpCertInfo.getStatus(), "8")) {
+            if (StringUtils.equals(tmpCertInfo.getStatus(), "8")) {
                 final BetterX509CertInfo x509CertInfo = betterCertService.findX509CertInfo(anCertInfo.getCertId());
 
                 BTAssert.notNull(x509CertInfo, "找不到相应的数字证书！");
-                BTAssert.isTrue(BetterStringUtils.equals(x509CertInfo.getCertStatus(), "0"), "数字证书已使用！");
+                BTAssert.isTrue(StringUtils.equals(x509CertInfo.getCertStatus(), "0"), "数字证书已使用！");
                 final CustCertInfo tempCertInfo = this.findBySerialNo(x509CertInfo.getSerialNo());
                 BTAssert.isNull(tempCertInfo, "该数字证书已经使用！");
 
@@ -314,7 +310,7 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
                 tmpCertInfo.setCertId(anCertInfo.getCertId());
             }
             // 两个序列号相同处理
-            if (BetterStringUtils.equals(orginSerialNo, tmpCertInfo.getSerialNo())) {
+            if (StringUtils.equals(orginSerialNo, tmpCertInfo.getSerialNo())) {
                 tmpCertInfo.modifyValue(UserUtils.getOperatorInfo(), anCertInfo);
                 this.updateByPrimaryKeySelective(tmpCertInfo);
 
@@ -324,8 +320,7 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
                     final CustCertRule certRule = findCertRule(serialNo, rule, certRules);
                     if (certRule != null) {
                         certRules.remove(certRule);
-                    }
-                    else {
+                    } else {
                         certRuleService.addCustCertRule(serialNo, rule, custName);
                     }
                 }
@@ -334,10 +329,10 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
                     certRuleService.saveDelCertRule(certRule);
                 }
             } else {
-                betterCertService.saveCertStatus(orginCertId, orginSerialNo, "0");    // 释放数字证书
+                betterCertService.saveCertStatus(orginCertId, orginSerialNo, "0"); // 释放数字证书
                 saveDelOrginCertInfo(orginSerialNo);
 
-                betterCertService.saveCertStatus(tmpCertInfo.getCertId(), tmpCertInfo.getSerialNo(), "2");    // 占用数字证书
+                betterCertService.saveCertStatus(tmpCertInfo.getCertId(), tmpCertInfo.getSerialNo(), "2"); // 占用数字证书
                 tmpCertInfo.initValue(UserUtils.getOperatorInfo());
                 tmpCertInfo.setStatus("1");
                 this.insert(tmpCertInfo);
@@ -351,10 +346,12 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         return anCertInfo;
     }
 
-    private CustCertRule findCertRule(final String anSerialNo, final String anRule, final List<CustCertRule> anCertRules) {
+    private CustCertRule findCertRule(final String anSerialNo, final String anRule,
+            final List<CustCertRule> anCertRules) {
 
         for (final CustCertRule certRule : anCertRules) {
-            if (BetterStringUtils.equals(certRule.getSerialNo(), anSerialNo) && BetterStringUtils.equals(certRule.getRule(), anRule)) {
+            if (StringUtils.equals(certRule.getSerialNo(), anSerialNo)
+                    && StringUtils.equals(certRule.getRule(), anRule)) {
                 return certRule;
             }
         }
@@ -373,7 +370,7 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
             final BetterX509CertInfo x509CertInfo = betterCertService.findX509CertInfo(certInfo.getCertId());
 
             BTAssert.notNull(x509CertInfo, "找不到相应的数字证书！");
-            BTAssert.isTrue(BetterStringUtils.equals(x509CertInfo.getCertStatus(), "0"), "数字证书已使用！");
+            BTAssert.isTrue(StringUtils.equals(x509CertInfo.getCertStatus(), "0"), "数字证书已使用！");
             final CustCertInfo tempCertInfo = this.findBySerialNo(x509CertInfo.getSerialNo());
             BTAssert.isNull(tempCertInfo, "该数字证书已经使用！");
 
@@ -383,7 +380,6 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
 
             betterCertService.saveCertStatus(x509CertInfo.getId(), x509CertInfo.getSerialNo(), "2");
         }
-
 
         return saveCustCertInfo(certInfo, true);
     }
@@ -401,14 +397,17 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
      *            是否需要计算
      * @return
      */
-    public Page<CustCertInfo> queryCustCertInfo(final Map<String, Object> anParam, final int anPageNum, final int anPageSize, final String anFlag) {
-        final Map termMap = Collections3.fuzzyMap(Collections3.filterMap(anParam, QUERY_TERM), new String[] { "contName", "custName" });
+    public Page<CustCertInfo> queryCustCertInfo(final Map<String, Object> anParam, final int anPageNum,
+            final int anPageSize, final String anFlag) {
+        final Map termMap = Collections3.fuzzyMap(Collections3.filterMap(anParam, QUERY_TERM),
+                new String[] { "contName", "custName" });
 
-        final Page<CustCertInfo> certInfos = this.selectPropertyByPage(termMap, anPageNum, anPageSize, "1".equals(anFlag));
+        final Page<CustCertInfo> certInfos = this.selectPropertyByPage(termMap, anPageNum, anPageSize,
+                "1".equals(anFlag));
 
         certInfos.forEach(certInfo -> {
             final BetterX509CertInfo x509CertInfo = betterCertService.findX509CertInfo(certInfo.getCertId());
-            certInfo.setCommName(x509CertInfo !=null ? x509CertInfo.getCommName(): "");
+            certInfo.setCommName(x509CertInfo != null ? x509CertInfo.getCommName() : "");
             certInfo.setCertRuleList(certRuleService.queryCertRuleListBySerialNo(certInfo.getSerialNo()));
         });
         return certInfos;
@@ -442,8 +441,8 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         final Set<String> operOrgSet = new HashSet<>();
 
         for (final String role : anRoles) {
-            operOrgSet.addAll(this.selectByProperty("LIKEruleList", "%" + role + "%").stream().map(certInfo -> certInfo.getOperOrg())
-                    .collect(Collectors.toSet()));
+            operOrgSet.addAll(this.selectByProperty("LIKEruleList", "%" + role + "%").stream()
+                    .map(certInfo -> certInfo.getOperOrg()).collect(Collectors.toSet()));
         }
 
         return operOrgSet;
@@ -500,8 +499,7 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
             if (sb.length() > 10) {
                 sb.setLength(sb.length() - 1);
                 return sb.toString();
-            }
-            else {
+            } else {
                 return anX509.getSubjectDN().getName();
             }
         }
@@ -534,8 +532,7 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
         KeyStore ks = null;
         if (inFile.toLowerCase().endsWith(".p12") || inFile.toLowerCase().endsWith(".pfx")) {
             ks = KeyStore.getInstance("PKCS12");
-        }
-        else {
+        } else {
             ks = KeyStore.getInstance("JKS");
         }
         final FileInputStream fis = new FileInputStream(inFile);
@@ -578,14 +575,13 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
             // 找回Rule列表
             certInfo.setCertRuleList(certRuleService.queryCertRuleListBySerialNo(certInfo.getSerialNo()));
 
-            if (BetterStringUtils.equals(certInfo.getStatus(), "9") == true) { // 首次访问
+            if (StringUtils.equals(certInfo.getStatus(), "9") == true) { // 首次访问
                 certInfo.setStatus("0");
                 this.updateByPrimaryKeySelective(certInfo);
             }
             logger.debug(" checkValidity 2 :" + certInfo);
             return certInfo;
-        }
-        else {
+        } else {
             throw new ServiceException(20001, "证书验证失败");
         }
     }
@@ -596,8 +592,7 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
             final CustCertInfo certInfo = list.get(0);
             certInfo.setCertRuleList(certRuleService.queryCertRuleListBySerialNo(certInfo.getSerialNo()));
             return certInfo;
-        }
-        else {
+        } else {
             return new CustCertInfo();
         }
     }
@@ -629,11 +624,11 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
      * @return
      */
     public CustCertInfo findFirstCertInfoByOperOrg(final String anOperOrg) {
-        if (BetterStringUtils.isBlank(anOperOrg)) {
+        if (StringUtils.isBlank(anOperOrg)) {
 
             return null;
         }
-        final CustCertInfo certInfo =  Collections3.getFirst(selectByProperty("operOrg", anOperOrg, "serialNo"));
+        final CustCertInfo certInfo = Collections3.getFirst(selectByProperty("operOrg", anOperOrg, "serialNo"));
         if (certInfo != null) {
             certInfo.setCertRuleList(certRuleService.queryCertRuleListBySerialNo(certInfo.getSerialNo()));
         }
@@ -682,7 +677,8 @@ public class CustCertService extends BaseService<CustCertInfoMapper, CustCertInf
 
         final List<CustCertRule> roleList = certRuleService.queryCertRuleListBySerialNo(anSerialNo);
 
-        return roleList.stream().map(certRole -> new SimpleDataEntity(roleName(certRole.getRule()), certRole.getRule())).collect(Collectors.toList());
+        return roleList.stream().map(certRole -> new SimpleDataEntity(roleName(certRole.getRule()), certRole.getRule()))
+                .collect(Collectors.toList());
     }
 
     public String roleName(final String anRole) {

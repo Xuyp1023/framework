@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.betterjr.common.utils.Base62;
 import com.betterjr.common.utils.Encodes;
+
 /**
  * base系列编码工具类
  *
@@ -70,18 +71,16 @@ public enum DataEncoding {
 
     private byte[] base64SafeDecode(String anData) {
         StringBuilder sb = new StringBuilder(anData.length());
-        for (char cc : anData.toCharArray()){
+        for (char cc : anData.toCharArray()) {
             if (cc == '-') {
                 sb.append('+');
-            }
-            else if (cc == '_') {
+            } else if (cc == '_') {
                 sb.append('/');
-            }
-            else {
+            } else {
                 sb.append(cc);
             }
         }
-        
+
         return Encodes.decodeBase64(sb.toString());
     }
 

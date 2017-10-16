@@ -3,10 +3,10 @@ package com.betterjr.common.web;
 import com.betterjr.mapper.pagehelper.Page;
 
 public class WorkPageInfo {
-    private int pageNum =-1;
-    private int pageSize =-1;
-    private int pages =-1;
-    private long total =-1;
+    private int pageNum = -1;
+    private int pageSize = -1;
+    private int pages = -1;
+    private long total = -1;
 
     public WorkPageInfo() {
 

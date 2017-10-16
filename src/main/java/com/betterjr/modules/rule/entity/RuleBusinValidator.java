@@ -1,9 +1,15 @@
 package com.betterjr.modules.rule.entity;
 
-import com.betterjr.common.annotation.*;
-import com.betterjr.common.entity.BetterjrEntity;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
 
-import javax.persistence.*;
+import com.betterjr.common.annotation.MetaData;
+import com.betterjr.common.entity.BetterjrEntity;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -80,7 +86,7 @@ public class RuleBusinValidator implements BetterjrEntity {
     @Column(name = "C_MUSTITEM", columnDefinition = "VARCHAR")
     @MetaData(value = "0不是必须内容", comments = "0不是必须内容，1必须内容")
     private String mustItem;
-    
+
     private static final long serialVersionUID = -4810839603379461453L;
 
     public Long getId() {
@@ -197,15 +203,23 @@ public class RuleBusinValidator implements BetterjrEntity {
         }
         RuleBusinValidator other = (RuleBusinValidator) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-                && (this.getBusinName() == null ? other.getBusinName() == null : this.getBusinName().equals(other.getBusinName()))
-                && (this.getValidName() == null ? other.getValidName() == null : this.getValidName().equals(other.getValidName()))
-                && (this.getShowName() == null ? other.getShowName() == null : this.getShowName().equals(other.getShowName()))
-                && (this.getFieldName() == null ? other.getFieldName() == null : this.getFieldName().equals(other.getFieldName()))
-                && (this.getMustItem() == null ? other.getMustItem() == null : this.getMustItem().equals(other.getMustItem()))
-                && (this.getValidPrior() == null ? other.getValidPrior() == null : this.getValidPrior().equals(other.getValidPrior()))
+                && (this.getBusinName() == null ? other.getBusinName() == null
+                        : this.getBusinName().equals(other.getBusinName()))
+                && (this.getValidName() == null ? other.getValidName() == null
+                        : this.getValidName().equals(other.getValidName()))
+                && (this.getShowName() == null ? other.getShowName() == null
+                        : this.getShowName().equals(other.getShowName()))
+                && (this.getFieldName() == null ? other.getFieldName() == null
+                        : this.getFieldName().equals(other.getFieldName()))
+                && (this.getMustItem() == null ? other.getMustItem() == null
+                        : this.getMustItem().equals(other.getMustItem()))
+                && (this.getValidPrior() == null ? other.getValidPrior() == null
+                        : this.getValidPrior().equals(other.getValidPrior()))
                 && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
-                && (this.getRegDate() == null ? other.getRegDate() == null : this.getRegDate().equals(other.getRegDate()))
-                && (this.getModiDate() == null ? other.getModiDate() == null : this.getModiDate().equals(other.getModiDate()));
+                && (this.getRegDate() == null ? other.getRegDate() == null
+                        : this.getRegDate().equals(other.getRegDate()))
+                && (this.getModiDate() == null ? other.getModiDate() == null
+                        : this.getModiDate().equals(other.getModiDate()));
     }
 
     @Override

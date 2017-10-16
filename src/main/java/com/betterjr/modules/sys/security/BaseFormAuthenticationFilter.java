@@ -26,9 +26,9 @@ import com.betterjr.common.web.Servlets;
 public class BaseFormAuthenticationFilter extends FormAuthenticationFilter {
     private static final Logger log = LoggerFactory.getLogger(BaseFormAuthenticationFilter.class);
 
-    protected static final String[] blackUrlPathPattern = new String[] { "*.aspx*", "*.asp*", "*.php*", "*.exe*", "*.pl*", "*.py*", "*.groovy*",
-            "*.sh*", "*.rb*", "*.dll*", "*.bat*", "*.bin*", "*.dat*", "*.bas*", "*.c*", "*.cmd*", "*.com*", "*.cpp*", "*.jar*", "*.class*",
-            "*.lnk*" }; // 防文件攻击
+    protected static final String[] blackUrlPathPattern = new String[] { "*.aspx*", "*.asp*", "*.php*", "*.exe*",
+            "*.pl*", "*.py*", "*.groovy*", "*.sh*", "*.rb*", "*.dll*", "*.bat*", "*.bin*", "*.dat*", "*.bas*", "*.c*",
+            "*.cmd*", "*.com*", "*.cpp*", "*.jar*", "*.class*", "*.lnk*" }; // 防文件攻击
 
     /*
      * 覆盖默认实现，打印日志便于调试，查看具体登录是什么错误。（可以扩展把错误写入数据库之类的。） (non-Javadoc)
@@ -37,7 +37,8 @@ public class BaseFormAuthenticationFilter extends FormAuthenticationFilter {
      * org.apache.shiro.authc.AuthenticationException, javax.servlet.ServletRequest, javax.servlet.ServletResponse)
      */
     @Override
-    protected boolean onLoginFailure(AuthenticationToken token, AuthenticationException e, ServletRequest request, ServletResponse response) {
+    protected boolean onLoginFailure(AuthenticationToken token, AuthenticationException e, ServletRequest request,
+            ServletResponse response) {
         if (log.isDebugEnabled()) {
             Class<?> clazz = e.getClass();
             if (clazz.equals(AuthenticationException.class)) {
@@ -110,7 +111,8 @@ public class BaseFormAuthenticationFilter extends FormAuthenticationFilter {
      *      org.apache.shiro.subject.Subject, javax.servlet.ServletRequest, javax.servlet.ServletResponse)
      */
     @Override
-    protected boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request, ServletResponse response) throws Exception {
+    protected boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request,
+            ServletResponse response) throws Exception {
         log.warn("isAccessAllowed onLoginSuccess");
         PrincipalCollection cc = SecurityUtils.getSubject().getPrincipals();
         if (cc != null) {
@@ -124,8 +126,7 @@ public class BaseFormAuthenticationFilter extends FormAuthenticationFilter {
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         if (!"XMLHttpRequest".equalsIgnoreCase(httpServletRequest.getHeader("X-Requested-With"))) {// 不是ajax请求
             httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + this.getSuccessUrl());
-        }
-        else {
+        } else {
             // httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/login/timeout/success");
             Map<String, Object> reslut = new HashMap<>();
             reslut.put("code", 200);
@@ -136,9 +137,10 @@ public class BaseFormAuthenticationFilter extends FormAuthenticationFilter {
         log.warn("loginSuccess : 登录成功");
         return false;
     }
-    
+
+    @Override
     protected boolean isLoginSubmission(ServletRequest request, ServletResponse response) {
-    	//&& WebUtils.toHttp(request).getMethod().equalsIgnoreCase(POST_METHOD);
-        return (request instanceof HttpServletRequest) ;
+        // && WebUtils.toHttp(request).getMethod().equalsIgnoreCase(POST_METHOD);
+        return (request instanceof HttpServletRequest);
     }
 }

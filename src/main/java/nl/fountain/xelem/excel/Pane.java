@@ -41,42 +41,50 @@ import nl.fountain.xelem.Area;
  * @see nl.fountain.xelem.excel.WorksheetOptions#setRangeSelection(String)
  */
 public interface Pane extends XLElement {
-    
+
     /**
      * Variable indicating the top left pane. The top left pane is the standard
      * pane which is allways visible.
      */
     public static final int TOP_LEFT = 3;
-    
+
     /**
      * Variable indicating the bottom left pane. The bottom left pane can
      * only be addressed if a window is split horizontally, either by splitting
      * or freezing panes.
      */
     public static final int BOTTOM_LEFT = 2;
-    
+
     /**
      * Variable indicating the top right pane. The top right pane can 
      * only be addressed if a window is split vertically, either by splitting 
      * or freezing panes.
      */
     public static final int TOP_RIGHT = 1;
-    
+
     /**
      * Variable indicating the bottom right pane. The bottom right pane can
      * only be addressed if a window is split vertically <em>and</em> horizontally,
      * either by spltting or freezing panes.
      */
     public static final int BOTTOM_RIGHT = 0;
-    
+
     int getNumber();
+
     void setActiveCell(int row, int col);
+
     void setActiveCol(int col);
+
     int getActiveCol();
+
     void setActiveRow(int row);
+
     int getActiveRow();
+
     void setRangeSelection(String rc);
+
     void setRangeSelection(Area area);
+
     String getRangeSelection();
 
 }

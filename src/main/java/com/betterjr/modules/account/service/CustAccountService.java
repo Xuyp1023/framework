@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -107,7 +108,7 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
     public List<SimpleDataEntity> findCustInfo() {
         final List<CustInfo> custList = UserUtils.findCustInfoList();
         if (Collections3.isEmpty(custList)) {
-            //throw new SessionInvalidException(20005, "not find custinfo please relogin or add Org");
+            // throw new SessionInvalidException(20005, "not find custinfo please relogin or add Org");
             logger.warn("not find CustNo List; please open account or relogin");
             return new ArrayList<SimpleDataEntity>();
         }
@@ -134,7 +135,7 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
      * 根据条件查询
      * @return
      */
-    public List<CustInfo> findValidCustInfo(final Map<String,Object> anMap) {
+    public List<CustInfo> findValidCustInfo(final Map<String, Object> anMap) {
         anMap.put("identValid", "1");
         anMap.put("businStatus", "0");
         return this.selectByProperty(anMap);
@@ -147,13 +148,14 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
      * @param anFlag
      * @return
      */
-    public Page<CustInfo> queryValidCustInfo(final Map<String, Object> anParam, final int anFlag, final int anPageNum, final int anPageSize) {
+    public Page<CustInfo> queryValidCustInfo(final Map<String, Object> anParam, final int anFlag, final int anPageNum,
+            final int anPageSize) {
         final Map<String, Object> conditionMap = new HashMap<>();
         conditionMap.put("identValid", "1");
         conditionMap.put("businStatus", "0");
         if (anParam != null) {
             final String custName = (String) anParam.get("LIKEcustName");
-            if (BetterStringUtils.isBlank(custName)) {
+            if (StringUtils.isBlank(custName)) {
                 anParam.remove("LIKEcustName");
             } else {
                 conditionMap.put("LIKEcustName", "%" + custName + "%");
@@ -166,13 +168,14 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
      * 查询未审核及无效客户 分页
      * @return
      */
-    public Page<CustInfo> queryInvalidCustInfo(final Map<String, Object> anParam, final int anFlag, final int anPageNum, final int anPageSize) {
+    public Page<CustInfo> queryInvalidCustInfo(final Map<String, Object> anParam, final int anFlag, final int anPageNum,
+            final int anPageSize) {
         final Map<String, Object> conditionMap = new HashMap<>();
         conditionMap.put("identValid", "0");
-        conditionMap.put("businStatus", new String[]{"0", "1", "9"});
+        conditionMap.put("businStatus", new String[] { "0", "1", "9" });
         if (anParam != null) {
             final String custName = (String) anParam.get("LIKEcustName");
-            if (BetterStringUtils.isBlank(custName)) {
+            if (StringUtils.isBlank(custName)) {
                 anParam.remove("LIKEcustName");
             } else {
                 conditionMap.put("LIKEcustName", "%" + custName + "%");
@@ -198,7 +201,7 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
      *
      * @return
      */
-    public List<SimpleDataEntity> findCustInfoIsOpen(){
+    public List<SimpleDataEntity> findCustInfoIsOpen() {
         final List<CustInfo> custList = UserUtils.findCustInfoList();
         if (Collections3.isEmpty(custList)) {
             logger.warn("not find CustNo List; please open account or relogin");
@@ -206,10 +209,10 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
         }
         final List<SimpleDataEntity> dataList = new ArrayList();
         for (final CustInfo custInfo : custList) {
-            //List<String> agencyNoList = this.findOpenedAgencyNoList(custInfo.getCustNo());
-            //if(agencyNoList.size()>0){
+            // List<String> agencyNoList = this.findOpenedAgencyNoList(custInfo.getCustNo());
+            // if(agencyNoList.size()>0){
             dataList.add(new SimpleDataEntity(custInfo.getCustName(), custInfo.getCustNo().toString()));
-            //}
+            // }
         }
         return dataList;
     }
@@ -226,7 +229,7 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
      * @throws 异常情况
      */
     public boolean checkAccountExists(final String anCustType, final String anIdentType, final String anIdentNo) {
-        if (BetterStringUtils.isNotBlank(anIdentType) && BetterStringUtils.isNotBlank(anIdentType)) {
+        if (StringUtils.isNotBlank(anIdentType) && StringUtils.isNotBlank(anIdentType)) {
             final Map<String, Object> map = new HashMap();
             map.put("custType", anCustType);
             map.put("identType", anIdentType);
@@ -258,7 +261,7 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
         operator.setZipCode(request.getZipCode());
     }
 
-    public CustOperatorInfo insertCustOperator(final SaleAccoRequestInfo request){
+    public CustOperatorInfo insertCustOperator(final SaleAccoRequestInfo request) {
         final CustOperatorInfo operator = new CustOperatorInfo();
         operator.setId(SerialGenerator.getLongValue(SerialGenerator.OPERATOR_ID));
         operator.setName(request.getContName());
@@ -307,15 +310,15 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
         mechCustService.insert(new MechCustBaseInfo(request));
 
         // 增加操作员和客户之间关系
-        custAndOpService.insert(new CustOperatorRelation(operator.getId(), custInfo.getCustNo(), operator.getOperOrg()));
+        custAndOpService
+                .insert(new CustOperatorRelation(operator.getId(), custInfo.getCustNo(), operator.getOperOrg()));
 
         // 将新用户加入到上下文中
         custContext.addNewCustInfo(custInfo);
-        //custContext.addNewTradeAccount(tradeAccount);
+        // custContext.addNewTradeAccount(tradeAccount);
         custContext.setOperatorInfo(operator);
 
     }
-
 
     /**
      * 客户登录成功后，注册相关客户和交易账户信息
@@ -325,8 +328,8 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
      */
     public CustContextInfo loginOperate(CustContextInfo contextInfo, final CustOperatorInfo anOperator) {
         if (contextInfo == null) {
-            //            String token = Servlets.getSession().getId();
-            final String token=UserUtils.getSessionId();
+            // String token = Servlets.getSession().getId();
+            final String token = UserUtils.getSessionId();
             contextInfo = new CustContextInfo(token, null, null);
             CustContextInfo.putCustContextInfo(contextInfo);
             contextInfo.setOperatorInfo(anOperator);
@@ -336,7 +339,7 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
         contextInfo.login(custList);
 
         // 增加交易账户信息
-        //        contextInfo.addTradeAccount(tradeAccountService.findTradeAccountByCustInfo(custList));
+        // contextInfo.addTradeAccount(tradeAccountService.findTradeAccountByCustInfo(custList));
         // todo;登录信息和状态暂时不处理
         return contextInfo;
     }
@@ -348,7 +351,7 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
      * @return
      */
     public CustContextInfo loginOperateByToken(final String token, final CustOperatorInfo anOperator) {
-        //            String token = Servlets.getSession().getId();
+        // String token = Servlets.getSession().getId();
         final CustContextInfo contextInfo = new CustContextInfo(token, null, null);
         CustContextInfo.putCustContextInfo(contextInfo);
         contextInfo.setOperatorInfo(anOperator);
@@ -359,7 +362,7 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
     }
 
     public List<CustInfo> findCustInfoByOperator(final Long anOperNo, final String anOperOrg) {
-        final List<Long> custList = custAndOpService.findCustNoList(anOperNo,anOperOrg);
+        final List<Long> custList = custAndOpService.findCustNoList(anOperNo, anOperOrg);
         return this.selectByProperty("custNo", custList);
     }
 
@@ -368,12 +371,12 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
      * @param anOperOrg
      * @return
      */
-    public List findSysMenuByOperator(final String anOperOrg){
+    public List findSysMenuByOperator(final String anOperOrg) {
         final WorkUserInfo userInfo = UserUtils.getUser();
-        List<String> menuIds  = null;
-        if(UserUtils.isBytterUser()){
+        List<String> menuIds = null;
+        if (UserUtils.isBytterUser()) {
             menuIds = sysMenuRuleService.findAllByRuleList("BYTTER_USER");
-        }else{
+        } else {
             menuIds = sysMenuRuleService.findAllByRuleList(userInfo.getRuleList());
         }
         return sysMenuService.findMenuList(menuIds);
@@ -384,35 +387,35 @@ public class CustAccountService extends BaseService<CustInfoMapper, CustInfo> {
      * @param anCustNo
      * @return
      */
-    public String queryCustName(final Long anCustNo){
-        if (anCustNo == null){
+    public String queryCustName(final Long anCustNo) {
+        if (anCustNo == null) {
             return "";
         }
         final CustInfo custInfo = this.selectByPrimaryKey(anCustNo);
-        if (custInfo == null){
+        if (custInfo == null) {
             return anCustNo.toString();
         }
         return custInfo.getCustName();
     }
-    
+
     /**
      * 根据企业名称查询企业信息
      * @param anCustName
      * @return
      */
-    public CustInfo queryCustByCustName(final String anCustName){
-        
-        CustInfo custInfo =new CustInfo();
+    public CustInfo queryCustByCustName(final String anCustName) {
+
+        CustInfo custInfo = new CustInfo();
         custInfo.setCustName(anCustName);
         custInfo.setBusinStatus("0");
         CustInfo info = this.selectOne(custInfo);
-        if(info !=null && info.getCustNo()!=null){
-            
+        if (info != null && info.getCustNo() != null) {
+
             return info;
-        }else{
+        } else {
             return null;
         }
-        
+
     }
 
     /**

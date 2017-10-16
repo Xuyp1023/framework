@@ -34,12 +34,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
-import nl.fountain.xelem.Address;
-import nl.fountain.xelem.XelemException;
-import nl.fountain.xelem.excel.Cell;
-import nl.fountain.xelem.excel.Row;
-import nl.fountain.xelem.excel.XLElement;
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -47,6 +41,12 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import nl.fountain.xelem.Address;
+import nl.fountain.xelem.XelemException;
+import nl.fountain.xelem.excel.Cell;
+import nl.fountain.xelem.excel.Row;
+import nl.fountain.xelem.excel.XLElement;
 
 /**
  * A class that will take an existing xml-spreadsheet as a template.
@@ -193,10 +193,10 @@ import org.xml.sax.SAXException;
  * 
  */
 public class XLDocument {
-    
+
     private Document doc;
     private Map<String, Node> tableMap;
-    
+
     /**
      * Creates a new XLDocument by parsing the specified file into a
      * {@link org.w3c.dom.Document}.
@@ -216,7 +216,7 @@ public class XLDocument {
         doc = loadDocument(fileName);
         tableMap = new HashMap<String, Node>();
     }
-    
+
     /**
      * Gets the underlying {@link org.w3c.dom.Document Document}-implementation.
      * Use one of the serialize-methods of {@link nl.fountain.xelem.XSerializer}
@@ -227,7 +227,7 @@ public class XLDocument {
     public Document getDocument() {
         return doc;
     }
-    
+
     /**
      * Appends the {@link nl.fountain.xelem.excel.Row} to the mentioned sheet.
      * The row will be appended right under the last row-elemnt.
@@ -242,7 +242,7 @@ public class XLDocument {
         Element rowElement = row.createElement(doc);
         getTableElement(sheetName).appendChild(rowElement);
     }
-    
+
     /**
      * Appends all the {@link nl.fountain.xelem.excel.Row rows} in the Collection
      * to the mentioned sheet. The rows will be appended in the order of the 
@@ -258,9 +258,9 @@ public class XLDocument {
         Node table = getTableElement(sheetName);
         for (Iterator<Row> iter = rows.iterator(); iter.hasNext();) {
             table.appendChild(iter.next().createElement(doc));
-        }      
+        }
     }
-    
+
     /**
      * Will set or replace (only) the data-element of the cell-element at 
      * the intersection of the mentioned row- and columnIndex. 
@@ -297,7 +297,7 @@ public class XLDocument {
             cellElement.replaceChild(data, oldData);
         }
     }
-    
+
     /**
      * Replaces the old text in FileName elements with a
      * new one. This method may be usefull if your template contains
@@ -324,7 +324,7 @@ public class XLDocument {
             nodelist = doc.getElementsByTagNameNS(XLElement.XMLNS_X, "FileName");
         }
         for (int i = 0; i < nodelist.getLength(); i++) {
-            Node fileNameElement = nodelist.item(i);           
+            Node fileNameElement = nodelist.item(i);
             Node oldTekst = fileNameElement.getFirstChild();
             Node newTekst = doc.createTextNode(fileName);
             fileNameElement.replaceChild(newTekst, oldTekst);
@@ -332,7 +332,7 @@ public class XLDocument {
         }
         return n;
     }
-    
+
     /**
      * Replaces the old text in FileName elements with a
      * new one. This method may be usefull if your template contains
@@ -357,7 +357,7 @@ public class XLDocument {
     public int setPTSourceFileName(String fileName, String sheetName) {
         return setPTSourceFileName("[" + fileName + "]" + sheetName);
     }
-    
+
     /**
      * Replaces the old text in Reference elements with a
      * new one. This method may be usefull if your template contains
@@ -380,7 +380,7 @@ public class XLDocument {
             nodelist = doc.getElementsByTagNameNS(XLElement.XMLNS_X, "Reference");
         }
         for (int i = 0; i < nodelist.getLength(); i++) {
-            Node element = nodelist.item(0);           
+            Node element = nodelist.item(0);
             Node oldTekst = element.getFirstChild();
             Node newTekst = doc.createTextNode(reference);
             element.replaceChild(newTekst, oldTekst);
@@ -388,7 +388,7 @@ public class XLDocument {
         }
         return n;
     }
-    
+
     /**
      * Replaces the old text in Reference elements with a
      * new string of R1C1 reference style. The string is composed as the absolute range
@@ -407,10 +407,10 @@ public class XLDocument {
      * @return the number of replacements
      */
     public int setPTSourceReference(Address address1, Address address2) {
-       String ref = address1.getAbsoluteRange(address2);
-       return setPTSourceReference(ref);
+        String ref = address1.getAbsoluteRange(address2);
+        return setPTSourceReference(ref);
     }
-    
+
     /**
      * Replaces the old text in Reference elements with a
      * new string of R1C1 reference style. The string is composed as the absolute range
@@ -434,7 +434,7 @@ public class XLDocument {
     public int setPTSourceReference(int r1, int c1, int r2, int c2) {
         return setPTSourceReference(new Address(r1, c1).getAbsoluteRange(r2, c2));
     }
-    
+
     /**
      * Gets the Worksheet element with the given name.
      * 
@@ -456,10 +456,9 @@ public class XLDocument {
                 return (Element) sheetNode;
             }
         }
-        throw new NoSuchElementException("The worksheet '" + sheetName +
-                "' does not exist.");
+        throw new NoSuchElementException("The worksheet '" + sheetName + "' does not exist.");
     }
-    
+
     /**
      * Gets the Table element that is the child of the Worksheet element with the 
      * given name. If this element did not exist, it will be created.
@@ -472,21 +471,17 @@ public class XLDocument {
     protected Element getTableElement(String sheetName) {
         Element tableElement = (Element) tableMap.get(sheetName);
         if (tableElement == null) {
-	        Node sheet = getSheetElement(sheetName);
+            Node sheet = getSheetElement(sheetName);
             NodeList sheetKits = sheet.getChildNodes();
             for (int i = 0; i < sheetKits.getLength(); i++) {
                 Node node = sheetKits.item(i);
                 if ("Table".equals(node.getLocalName())) {
                     NamedNodeMap atrbs = node.getAttributes();
-                    if (atrbs.getNamedItemNS(
-                            XLElement.XMLNS_SS, "ExpandedColumnCount") != null) {
-                        atrbs.removeNamedItemNS(
-                                XLElement.XMLNS_SS, "ExpandedColumnCount");
+                    if (atrbs.getNamedItemNS(XLElement.XMLNS_SS, "ExpandedColumnCount") != null) {
+                        atrbs.removeNamedItemNS(XLElement.XMLNS_SS, "ExpandedColumnCount");
                     }
-                    if (atrbs.getNamedItemNS(
-                            XLElement.XMLNS_SS, "ExpandedRowCount") != null) {
-                        atrbs.removeNamedItemNS(
-                                XLElement.XMLNS_SS, "ExpandedRowCount");
+                    if (atrbs.getNamedItemNS(XLElement.XMLNS_SS, "ExpandedRowCount") != null) {
+                        atrbs.removeNamedItemNS(XLElement.XMLNS_SS, "ExpandedRowCount");
                     }
                     tableMap.put(sheetName, node);
                     return (Element) node;
@@ -498,10 +493,10 @@ public class XLDocument {
                 tableMap.put(sheetName, tableElement);
             }
         }
-        
+
         return tableElement;
     }
-    
+
     /**
      * Gets the Cell element at the given worksheet at the given index. 
      * If this element did not exist, it will be created.
@@ -521,8 +516,7 @@ public class XLDocument {
             Node node = nodelist.item(i);
             if ("Cell".equals(node.getLocalName())) {
                 teller++;
-                Node idx = node.getAttributes().getNamedItemNS(
-                        XLElement.XMLNS_SS, "Index");
+                Node idx = node.getAttributes().getNamedItemNS(XLElement.XMLNS_SS, "Index");
                 if (idx != null) {
                     teller = Integer.parseInt(idx.getNodeValue());
                 }
@@ -539,7 +533,7 @@ public class XLDocument {
         row.appendChild(cellElement);
         return cellElement;
     }
-    
+
     /**
      * Gets the Row element at the given worksheet with the given index.
      * If this element did not exist, it will be created.
@@ -558,8 +552,7 @@ public class XLDocument {
             Node node = nodelist.item(i);
             if ("Row".equals(node.getLocalName())) {
                 teller++;
-                Node idx = node.getAttributes().getNamedItemNS(
-                        XLElement.XMLNS_SS, "Index");
+                Node idx = node.getAttributes().getNamedItemNS(XLElement.XMLNS_SS, "Index");
                 if (idx != null) {
                     teller = Integer.parseInt(idx.getNodeValue());
                 }
@@ -576,25 +569,21 @@ public class XLDocument {
         table.appendChild(rowElement);
         return rowElement;
     }
-    
-    
+
     private Element createIndexedElement(String qName, int index) {
-        Element element = 
-            doc.createElementNS(XLElement.XMLNS_SS, qName);
+        Element element = doc.createElementNS(XLElement.XMLNS_SS, qName);
         element.setPrefix(XLElement.PREFIX_SS);
-        element.setAttributeNodeNS(
-            createAttributeNS("Index", XLElement.XMLNS_SS, 
-                    XLElement.PREFIX_SS, index));
+        element.setAttributeNodeNS(createAttributeNS("Index", XLElement.XMLNS_SS, XLElement.PREFIX_SS, index));
         return element;
     }
-    
+
     private Attr createAttributeNS(String qName, String nameSpace, String prefix, int i) {
         Attr attr = doc.createAttributeNS(nameSpace, qName);
         attr.setPrefix(prefix);
         attr.setValue("" + i);
         return attr;
     }
-    
+
     private Document loadDocument(String fileName) throws XelemException {
         Document document = null;
         InputStream is = null;
@@ -605,19 +594,23 @@ public class XLDocument {
             is = new FileInputStream(fileName);
             document = builder.parse(is);
             is.close();
-        } catch (FileNotFoundException e) {
+        }
+        catch (FileNotFoundException e) {
             throw new XelemException(e.fillInStackTrace());
-        } catch (FactoryConfigurationError e) {
+        }
+        catch (FactoryConfigurationError e) {
             throw new XelemException(e.fillInStackTrace());
-        } catch (ParserConfigurationException e) {
+        }
+        catch (ParserConfigurationException e) {
             throw new XelemException(e.fillInStackTrace());
-        } catch (SAXException e) {
+        }
+        catch (SAXException e) {
             throw new XelemException(e.fillInStackTrace());
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new XelemException(e.fillInStackTrace());
         }
         return document;
     }
-    
 
 }

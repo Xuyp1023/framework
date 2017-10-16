@@ -1,18 +1,18 @@
 package com.betterjr.common.config;
 
-import java.util.*;
+import java.util.List;
 
-import com.betterjr.common.service.BaseService;
 import com.betterjr.common.data.SaleSimpleRequest;
- 
+import com.betterjr.common.service.BaseService;
+
 public abstract class ConfigServiceFace<D, T> extends BaseService {
 
-    //获得所有的参数信息
+    // 获得所有的参数信息
     public abstract List<T> findAll();
 
-    //根据交易申请，获得单笔约束记录
+    // 根据交易申请，获得单笔约束记录
     public abstract T findOne(SaleSimpleRequest anRequest);
-    
-    //获得服务名称
+
+    // 获得服务名称
     public abstract String getMyServiceName();
 }

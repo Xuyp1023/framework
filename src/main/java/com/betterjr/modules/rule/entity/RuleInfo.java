@@ -1,10 +1,15 @@
 package com.betterjr.modules.rule.entity;
 
-import com.betterjr.common.annotation.*;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.modules.rule.service.BusinRuleService;
-
-import javax.persistence.*;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -111,14 +116,17 @@ public class RuleInfo implements BetterjrEntity, RuleFace {
     @MetaData(value = "参数控制", comments = "参数控制")
     private String itemType;
 
+    @Override
     public String getDescription() {
         return description;
     }
 
+    @Override
     public Integer getPriority() {
         return 0;
     }
 
+    @Override
     public void setPriority(Integer anPriority) {
 
     }
@@ -127,14 +135,17 @@ public class RuleInfo implements BetterjrEntity, RuleFace {
         description = anDescription;
     }
 
+    @Override
     public String getRuleNo() {
         return ruleNo;
     }
 
+    @Override
     public void setRuleNo(String ruleNo) {
         this.ruleNo = ruleNo == null ? null : ruleNo.trim();
     }
 
+    @Override
     public String getRuleName() {
         return ruleName;
     }
@@ -151,6 +162,7 @@ public class RuleInfo implements BetterjrEntity, RuleFace {
         this.groupType = groupType == null ? null : groupType.trim();
     }
 
+    @Override
     public String getGroupName() {
         return groupName;
     }
@@ -274,19 +286,32 @@ public class RuleInfo implements BetterjrEntity, RuleFace {
         }
         RuleInfo other = (RuleInfo) that;
         return (this.getRuleNo() == null ? other.getRuleNo() == null : this.getRuleNo().equals(other.getRuleNo()))
-                && (this.getRuleName() == null ? other.getRuleName() == null : this.getRuleName().equals(other.getRuleName()))
-                && (this.getGroupType() == null ? other.getGroupType() == null : this.getGroupType().equals(other.getGroupType()))
-                && (this.getGroupName() == null ? other.getGroupName() == null : this.getGroupName().equals(other.getGroupName()))
-                && (this.getMatchCond() == null ? other.getMatchCond() == null : this.getMatchCond().equals(other.getMatchCond()))
-                && (this.getExecContent() == null ? other.getExecContent() == null : this.getExecContent().equals(other.getExecContent()))
-                && (this.getEffectDate() == null ? other.getEffectDate() == null : this.getEffectDate().equals(other.getEffectDate()))
-                && (this.getValidDate() == null ? other.getValidDate() == null : this.getValidDate().equals(other.getValidDate()))
-                && (this.getRuleDialect() == null ? other.getRuleDialect() == null : this.getRuleDialect().equals(other.getRuleDialect()))
-                && (this.getRegDate() == null ? other.getRegDate() == null : this.getRegDate().equals(other.getRegDate()))
-                && (this.getModiDate() == null ? other.getModiDate() == null : this.getModiDate().equals(other.getModiDate()))
-                && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
-                && (this.getWorkMode() == null ? other.getWorkMode() == null : this.getWorkMode().equals(other.getWorkMode()))
-                && (this.getItemType() == null ? other.getItemType() == null : this.getItemType().equals(other.getItemType()));
+                && (this.getRuleName() == null ? other.getRuleName() == null
+                        : this.getRuleName().equals(other.getRuleName()))
+                && (this.getGroupType() == null ? other.getGroupType() == null
+                        : this.getGroupType().equals(other.getGroupType()))
+                && (this.getGroupName() == null ? other.getGroupName() == null
+                        : this.getGroupName().equals(other.getGroupName()))
+                && (this.getMatchCond() == null ? other.getMatchCond() == null
+                        : this.getMatchCond().equals(other.getMatchCond()))
+                && (this.getExecContent() == null ? other.getExecContent() == null
+                        : this.getExecContent().equals(other.getExecContent()))
+                && (this.getEffectDate() == null ? other.getEffectDate() == null
+                        : this.getEffectDate().equals(other.getEffectDate()))
+                && (this.getValidDate() == null ? other.getValidDate() == null
+                        : this.getValidDate().equals(other.getValidDate()))
+                && (this.getRuleDialect() == null ? other.getRuleDialect() == null
+                        : this.getRuleDialect().equals(other.getRuleDialect()))
+                && (this.getRegDate() == null ? other.getRegDate() == null
+                        : this.getRegDate().equals(other.getRegDate()))
+                && (this.getModiDate() == null ? other.getModiDate() == null
+                        : this.getModiDate().equals(other.getModiDate()))
+                && (this.getDescription() == null ? other.getDescription() == null
+                        : this.getDescription().equals(other.getDescription()))
+                && (this.getWorkMode() == null ? other.getWorkMode() == null
+                        : this.getWorkMode().equals(other.getWorkMode()))
+                && (this.getItemType() == null ? other.getItemType() == null
+                        : this.getItemType().equals(other.getItemType()));
     }
 
     @Override

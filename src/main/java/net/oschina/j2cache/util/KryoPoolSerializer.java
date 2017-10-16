@@ -1,18 +1,19 @@
 package net.oschina.j2cache.util;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
-import net.oschina.j2cache.CacheException;
-
 import java.io.IOException;
 import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
+
+import net.oschina.j2cache.CacheException;
+
 /**
  * Created by chenlei on 14-9-28.
  */
-public class KryoPoolSerializer implements Serializer{
+public class KryoPoolSerializer implements Serializer {
 
     /**
      * Kryo 的包装
@@ -20,7 +21,7 @@ public class KryoPoolSerializer implements Serializer{
     private static class KryoHolder {
         private Kryo kryo;
         static final int BUFFER_SIZE = 1024;
-        private Output output = new Output(BUFFER_SIZE, -1);     //reuse
+        private Output output = new Output(BUFFER_SIZE, -1); // reuse
         private Input input = new Input();
 
         KryoHolder(Kryo kryo) {
@@ -28,7 +29,6 @@ public class KryoPoolSerializer implements Serializer{
         }
 
     }
-
 
     interface KryoPool {
 
@@ -45,8 +45,6 @@ public class KryoPoolSerializer implements Serializer{
         void offer(KryoHolder kryo);
     }
 
-
-
     /**
      * 由于kryo创建的代价相对较高 ，这里使用空间换时间
      * 对KryoHolder对象进行重用
@@ -60,7 +58,7 @@ public class KryoPoolSerializer implements Serializer{
         /**
          * thread safe list
          */
-        private final Deque<KryoHolder> kryoHolderDeque=new ConcurrentLinkedDeque<KryoHolder>();
+        private final Deque<KryoHolder> kryoHolderDeque = new ConcurrentLinkedDeque<KryoHolder>();
 
         private KryoPoolImpl() {
 
@@ -80,7 +78,8 @@ public class KryoPoolSerializer implements Serializer{
          */
         @Override
         public KryoHolder get() {
-            KryoHolder kryoHolder = kryoHolderDeque.pollFirst();       // Retrieves and removes the head of the queue represented by this table
+            KryoHolder kryoHolder = kryoHolderDeque.pollFirst(); // Retrieves and removes the head of the queue
+                                                                 // represented by this table
             return kryoHolder == null ? creatInstnce() : kryoHolder;
         }
 
@@ -129,14 +128,16 @@ public class KryoPoolSerializer implements Serializer{
         if (obj == null) throw new CacheException("obj can not be null");
         try {
             kryoHolder = KryoPoolImpl.getInstance().get();
-            kryoHolder.output.clear();  //clear Output    -->每次调用的时候  重置
+            kryoHolder.output.clear(); // clear Output -->每次调用的时候 重置
             kryoHolder.kryo.writeClassAndObject(kryoHolder.output, obj);
-            return kryoHolder.output.toBytes();// 无法避免拷贝  ~~~
-        } catch (CacheException e) {
+            return kryoHolder.output.toBytes();// 无法避免拷贝 ~~~
+        }
+        catch (CacheException e) {
             throw new CacheException("Serialize obj exception");
-        } finally {
+        }
+        finally {
             KryoPoolImpl.getInstance().offer(kryoHolder);
-            obj = null; //GC
+            obj = null; // GC
         }
     }
 
@@ -151,13 +152,15 @@ public class KryoPoolSerializer implements Serializer{
         if (bytes == null) throw new CacheException("bytes can not be null");
         try {
             kryoHolder = KryoPoolImpl.getInstance().get();
-            kryoHolder.input.setBuffer(bytes, 0, bytes.length);//call it ,and then use input object  ,discard any array
+            kryoHolder.input.setBuffer(bytes, 0, bytes.length);// call it ,and then use input object ,discard any array
             return kryoHolder.kryo.readClassAndObject(kryoHolder.input);
-        } catch (CacheException e) {
+        }
+        catch (CacheException e) {
             throw new CacheException("Deserialize bytes exception");
-        } finally {
+        }
+        finally {
             KryoPoolImpl.getInstance().offer(kryoHolder);
-            bytes = null;       //  for gc
+            bytes = null; // for gc
         }
     }
 }

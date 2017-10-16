@@ -4,6 +4,7 @@ import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alibaba.dubbo.config.annotation.Service;
@@ -17,7 +18,7 @@ import com.betterjr.modules.cert.service.BetterX509CertService;
 import com.betterjr.modules.cert.service.CustCertService;
 import com.betterjr.modules.rule.service.RuleServiceDubboFilterInvoker;
 
-@Service(interfaceClass=ICustCertService.class)
+@Service(interfaceClass = ICustCertService.class)
 public class CustCertDubboService implements ICustCertService {
 
     @Autowired
@@ -48,10 +49,14 @@ public class CustCertDubboService implements ICustCertService {
     }
 
     @Override
-    public String webQueryCustCertificate(final Map<String, Object> anParam, final int anFlag, final int anPageNum, final int anPageSize) {
+    public String webQueryCustCertificate(final Map<String, Object> anParam, final int anFlag, final int anPageNum,
+            final int anPageSize) {
         final Map<String, Object> param = RuleServiceDubboFilterInvoker.getInputObj();
 
-        return AjaxObject.newOkWithPage("查询证书信息成功", custCertService.queryCustCertInfo(param, anPageNum, anPageSize, String.valueOf(anFlag))).toJson();
+        return AjaxObject
+                .newOkWithPage("查询证书信息成功",
+                        custCertService.queryCustCertInfo(param, anPageNum, anPageSize, String.valueOf(anFlag)))
+                .toJson();
     }
 
     @Override
@@ -75,7 +80,8 @@ public class CustCertDubboService implements ICustCertService {
     }
 
     @Override
-    public String webSaveCustCertificate(final String anSerialNo, final String anOrginSerialNo, final Map<String, Object> anParam) {
+    public String webSaveCustCertificate(final String anSerialNo, final String anOrginSerialNo,
+            final Map<String, Object> anParam) {
         final CustCertInfo certInfo = RuleServiceDubboFilterInvoker.getInputObj();
 
         final CustCertInfo tempCertInfo = custCertService.findBySerialNo(anOrginSerialNo);
@@ -96,7 +102,7 @@ public class CustCertDubboService implements ICustCertService {
         final CustCertInfo certInfo = custCertService.findBySerialNo(anSerialNo);
 
         BTAssert.notNull(certInfo, "没有找到相应的客户证书！");
-        BTAssert.isTrue(BetterStringUtils.equals(certInfo.getStatus(), "1"),"客户证书已使用不允许作废！");
+        BTAssert.isTrue(StringUtils.equals(certInfo.getStatus(), "1"), "客户证书已使用不允许作废！");
 
         custCertService.saveCancelCustCert(anSerialNo);
         return AjaxObject.newOk("作废证书成功！").toJson();
@@ -123,6 +129,5 @@ public class CustCertDubboService implements ICustCertService {
     public String webQueryCustCertRoleList(final String anSerialNo) {
         return AjaxObject.newOk("获取证书角色成功！", custCertService.queryCustCertRoleList(anSerialNo)).toJson();
     }
-
 
 }

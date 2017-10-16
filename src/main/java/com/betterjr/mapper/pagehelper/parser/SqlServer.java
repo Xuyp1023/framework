@@ -24,19 +24,34 @@
 
 package com.betterjr.mapper.pagehelper.parser;
 
-import net.sf.jsqlparser.JSQLParserException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.operators.relational.GreaterThan;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.Statement;
-import net.sf.jsqlparser.statement.select.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import net.sf.jsqlparser.statement.select.AllColumns;
+import net.sf.jsqlparser.statement.select.AllTableColumns;
+import net.sf.jsqlparser.statement.select.FromItem;
+import net.sf.jsqlparser.statement.select.Join;
+import net.sf.jsqlparser.statement.select.LateralSubSelect;
+import net.sf.jsqlparser.statement.select.OrderByElement;
+import net.sf.jsqlparser.statement.select.PlainSelect;
+import net.sf.jsqlparser.statement.select.Select;
+import net.sf.jsqlparser.statement.select.SelectBody;
+import net.sf.jsqlparser.statement.select.SelectExpressionItem;
+import net.sf.jsqlparser.statement.select.SelectItem;
+import net.sf.jsqlparser.statement.select.SetOperationList;
+import net.sf.jsqlparser.statement.select.SubJoin;
+import net.sf.jsqlparser.statement.select.SubSelect;
+import net.sf.jsqlparser.statement.select.Top;
+import net.sf.jsqlparser.statement.select.ValuesList;
+import net.sf.jsqlparser.statement.select.WithItem;
 
 /**
  * 将sqlserver查询语句转换为分页语句<br>
@@ -54,26 +69,26 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author liuzh
  */
 public class SqlServer {
-    //缓存结果
+    // 缓存结果
     private static final Map<String, String> CACHE = new ConcurrentHashMap<String, String>();
-    //开始行号
+    // 开始行号
     private static final String START_ROW = String.valueOf(Long.MIN_VALUE);
-    //结束行号
+    // 结束行号
     private static final String PAGE_SIZE = String.valueOf(Long.MAX_VALUE);
-    //外层包装表
+    // 外层包装表
     private static final String WRAP_TABLE = "WRAP_OUTER_TABLE";
-    //表别名名字
+    // 表别名名字
     private static final String PAGE_TABLE_NAME = "PAGE_TABLE_ALIAS";
-    //private
+    // private
     public static final Alias PAGE_TABLE_ALIAS = new Alias(PAGE_TABLE_NAME);
-    //行号
+    // 行号
     private static final String PAGE_ROW_NUMBER = "PAGE_ROW_NUMBER";
-    //行号列
+    // 行号列
     private static final Column PAGE_ROW_NUMBER_COLUMN = new Column(PAGE_ROW_NUMBER);
-    //TOP 100 PERCENT
+    // TOP 100 PERCENT
     private static final Top TOP100_PERCENT;
 
-    //静态方法处理
+    // 静态方法处理
     static {
         TOP100_PERCENT = new Top();
         TOP100_PERCENT.setRowCount(100);
@@ -91,17 +106,18 @@ public class SqlServer {
     public String convertToPageSql(String sql, int offset, int limit) {
         String pageSql = CACHE.get(sql);
         if (pageSql == null) {
-            //解析SQL
+            // 解析SQL
             Statement stmt;
             try {
                 stmt = CCJSqlParserUtil.parse(sql);
-            } catch (Throwable e) {
+            }
+            catch (Throwable e) {
                 throw new RuntimeException("不支持该SQL转换为分页查询!");
             }
             if (!(stmt instanceof Select)) {
                 throw new RuntimeException("分页语句必须是Select查询!");
             }
-            //获取分页查询的select
+            // 获取分页查询的select
             Select pageSelect = getPageSelect((Select) stmt);
             pageSql = pageSelect.toString();
             CACHE.put(sql, pageSql);
@@ -122,38 +138,38 @@ public class SqlServer {
         if (selectBody instanceof SetOperationList) {
             selectBody = wrapSetOperationList((SetOperationList) selectBody);
         }
-        //这里的selectBody一定是PlainSelect
+        // 这里的selectBody一定是PlainSelect
         if (((PlainSelect) selectBody).getTop() != null) {
             throw new RuntimeException("被分页的语句已经包含了Top，不能再通过分页插件进行分页查询!");
         }
-        //获取查询列
+        // 获取查询列
         List<SelectItem> selectItems = getSelectItems((PlainSelect) selectBody);
-        //对一层的SQL增加ROW_NUMBER()
+        // 对一层的SQL增加ROW_NUMBER()
         addRowNumber((PlainSelect) selectBody);
-        //处理子语句中的order by
+        // 处理子语句中的order by
         processSelectBody(selectBody, 0);
 
-        //新建一个select
+        // 新建一个select
         Select newSelect = new Select();
         PlainSelect newSelectBody = new PlainSelect();
-        //设置top
+        // 设置top
         Top top = new Top();
         top.setRowCount(Long.MAX_VALUE);
         newSelectBody.setTop(top);
-        //设置order by
+        // 设置order by
         List<OrderByElement> orderByElements = new ArrayList<OrderByElement>();
         OrderByElement orderByElement = new OrderByElement();
         orderByElement.setExpression(PAGE_ROW_NUMBER_COLUMN);
         orderByElements.add(orderByElement);
         newSelectBody.setOrderByElements(orderByElements);
-        //设置where
+        // 设置where
         GreaterThan greaterThan = new GreaterThan();
         greaterThan.setLeftExpression(PAGE_ROW_NUMBER_COLUMN);
         greaterThan.setRightExpression(new LongValue(Long.MIN_VALUE));
         newSelectBody.setWhere(greaterThan);
-        //设置selectItems
+        // 设置selectItems
         newSelectBody.setSelectItems(selectItems);
-        //设置fromIterm
+        // 设置fromIterm
         SubSelect fromItem = new SubSelect();
         fromItem.setSelectBody(selectBody);
         fromItem.setAlias(PAGE_TABLE_ALIAS);
@@ -173,19 +189,19 @@ public class SqlServer {
      * @return
      */
     private SelectBody wrapSetOperationList(SetOperationList setOperationList) {
-        //获取最后一个plainSelect
+        // 获取最后一个plainSelect
         SelectBody tmpSelect = setOperationList.getSelects().get(setOperationList.getSelects().size() - 1);
-        PlainSelect plainSelect = (PlainSelect)tmpSelect;
+        PlainSelect plainSelect = (PlainSelect) tmpSelect;
         PlainSelect selectBody = new PlainSelect();
         List<SelectItem> selectItems = getSelectItems(plainSelect);
         selectBody.setSelectItems(selectItems);
 
-        //设置fromIterm
+        // 设置fromIterm
         SubSelect fromItem = new SubSelect();
         fromItem.setSelectBody(setOperationList);
         fromItem.setAlias(new Alias(WRAP_TABLE));
         selectBody.setFromItem(fromItem);
-        //order by
+        // order by
         if (isNotEmptyList(plainSelect.getOrderByElements())) {
             selectBody.setOrderByElements(plainSelect.getOrderByElements());
             plainSelect.setOrderByElements(null);
@@ -200,14 +216,14 @@ public class SqlServer {
      * @return
      */
     private List<SelectItem> getSelectItems(PlainSelect plainSelect) {
-        //设置selectItems
+        // 设置selectItems
         List<SelectItem> selectItems = new ArrayList<SelectItem>();
         for (SelectItem selectItem : plainSelect.getSelectItems()) {
-            //别名需要特殊处理
+            // 别名需要特殊处理
             if (selectItem instanceof SelectExpressionItem) {
                 SelectExpressionItem selectExpressionItem = (SelectExpressionItem) selectItem;
                 if (selectExpressionItem.getAlias() != null) {
-                    //直接使用别名
+                    // 直接使用别名
                     Column column = new Column(selectExpressionItem.getAlias().getName());
                     SelectExpressionItem expressionItem = new SelectExpressionItem(column);
                     selectItems.add(expressionItem);
@@ -239,16 +255,16 @@ public class SqlServer {
      * @param plainSelect
      */
     private void addRowNumber(PlainSelect plainSelect) {
-        //增加ROW_NUMBER()
+        // 增加ROW_NUMBER()
         StringBuilder orderByBuilder = new StringBuilder();
         orderByBuilder.append("ROW_NUMBER() OVER (");
         if (isNotEmptyList(plainSelect.getOrderByElements())) {
-            //注意：order by别名的时候有错,由于没法判断一个列是否为别名，所以不能解决
+            // 注意：order by别名的时候有错,由于没法判断一个列是否为别名，所以不能解决
             orderByBuilder.append(PlainSelect.orderByToString(false, plainSelect.getOrderByElements()));
         } else {
             throw new RuntimeException("请您在sql中包含order by语句!");
         }
-        //需要把改orderby清空
+        // 需要把改orderby清空
         if (isNotEmptyList(plainSelect.getOrderByElements())) {
             plainSelect.setOrderByElements(null);
         }
@@ -276,7 +292,7 @@ public class SqlServer {
             if (operationList.getSelects() != null && operationList.getSelects().size() > 0) {
                 List<SelectBody> plainSelects = operationList.getSelects();
                 for (SelectBody plainSelect : plainSelects) {
-                    processPlainSelect((PlainSelect)plainSelect, level + 1);
+                    processPlainSelect((PlainSelect) plainSelect, level + 1);
                 }
             }
         }
@@ -340,7 +356,7 @@ public class SqlServer {
                 }
             }
         }
-        //Table时不用处理
+        // Table时不用处理
     }
 
     /**

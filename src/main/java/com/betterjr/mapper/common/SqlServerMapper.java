@@ -24,7 +24,6 @@
 
 package com.betterjr.mapper.common;
 
-
 import com.betterjr.mapper.common.sqlserver.InsertMapper;
 import com.betterjr.mapper.common.sqlserver.InsertSelectiveMapper;
 
@@ -34,8 +33,6 @@ import com.betterjr.mapper.common.sqlserver.InsertSelectiveMapper;
  * @param <T> 不能为空
  * @author liuzh
  */
-public interface SqlServerMapper<T> extends
-        InsertMapper<T>,
-        InsertSelectiveMapper<T> {
+public interface SqlServerMapper<T> extends InsertMapper<T>, InsertSelectiveMapper<T> {
 
 }

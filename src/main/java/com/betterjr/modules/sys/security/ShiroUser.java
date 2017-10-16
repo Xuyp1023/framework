@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.betterjr.common.data.PlatformBaseRuleType;
 import com.betterjr.common.data.SimpleDataEntity;
 import com.betterjr.common.data.UserType;
@@ -38,7 +40,7 @@ public class ShiroUser implements Serializable {
     }
 
     public <T> T getParam(final String anKey) {
-        return (T)param.get(anKey);
+        return (T) param.get(anKey);
     }
 
     public void setInnerRules(final List<PlatformBaseRuleType> anInnerRuleList) {
@@ -84,7 +86,7 @@ public class ShiroUser implements Serializable {
     }
 
     public <T> T getData() {
-        return (T)data;
+        return (T) data;
     }
 
     public long getLoginTime() {
@@ -96,7 +98,8 @@ public class ShiroUser implements Serializable {
     }
 
     public boolean checkPass(final String anType, final String anPass) {
-        if (Collections3.isEmpty(userPassData) || BetterStringUtils.isBlank(anType) || BetterStringUtils.isBlank(anPass)) {
+        if (Collections3.isEmpty(userPassData) || StringUtils.isBlank(anType)
+                || StringUtils.isBlank(anPass)) {
 
             return false;
         }
@@ -114,8 +117,8 @@ public class ShiroUser implements Serializable {
 
     public String[] fingUserRule() {
         String[] arrUser = UserType.findUserRule(userType);
-        if (BetterStringUtils.isNotBlank(this.user.getRuleList())) {
-            final String[] arrRule = BetterStringUtils.split(this.user.getRuleList(), ";|,");
+        if (StringUtils.isNotBlank(this.user.getRuleList())) {
+            final String[] arrRule = StringUtils.split(this.user.getRuleList(), ";|,");
             arrUser = Collections3.mergeArray(arrUser, arrRule);
         }
 
@@ -131,8 +134,9 @@ public class ShiroUser implements Serializable {
      * @param createTime
      * @param status
      */
-    public ShiroUser(final UserType anUserType, final Long id, final String loginName, final WorkUserInfo anUser, final String anCustRole, final CustCertInfo anCertInfo,
-            final boolean anMobileLogin, final Object anData, final List<SimpleDataEntity> anUserPassData) {
+    public ShiroUser(final UserType anUserType, final Long id, final String loginName, final WorkUserInfo anUser,
+            final String anCustRole, final CustCertInfo anCertInfo, final boolean anMobileLogin, final Object anData,
+            final List<SimpleDataEntity> anUserPassData) {
         this.mobileLogin = anMobileLogin;
         this.userType = anUserType;
         this.id = id;
@@ -140,11 +144,12 @@ public class ShiroUser implements Serializable {
         this.user = anUser;
         this.loginTime = System.currentTimeMillis();
         this.data = anData;
-        if (BetterStringUtils.isNotBlank(anCustRole)) {
+        if (StringUtils.isNotBlank(anCustRole)) {
             this.innerRules = new ArrayList<>();
             this.innerRules.add(PlatformBaseRuleType.checking(anCustRole));
         } else {
-            this.innerRules = anUserType.equals(UserType.NONE_USER) || anCertInfo == null ? new ArrayList<>() : PlatformBaseRuleType.checkList(anCertInfo.getCertRuleList());
+            this.innerRules = anUserType.equals(UserType.NONE_USER) || anCertInfo == null ? new ArrayList<>()
+                    : PlatformBaseRuleType.checkList(anCertInfo.getCertRuleList());
         }
         this.userPassData = anUserPassData;
         this.cretInfo = anCertInfo;

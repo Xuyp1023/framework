@@ -14,14 +14,14 @@ public class RevokeLimitValidator extends BaseDataValidator {
 
     @Override
     public String getValidatorName() {
-        
+
         return "revokeValid";
     }
 
     @Override
-    public boolean evaluate(WorkRuleValidator anValidator, QLExpressContext anContext, RuleCheckResult anResult, RuleBusiness anRuleBusin,
-            Object anValue, Object anBusinValue, String anMessage) {
-        
+    public boolean evaluate(WorkRuleValidator anValidator, QLExpressContext anContext, RuleCheckResult anResult,
+            RuleBusiness anRuleBusin, Object anValue, Object anBusinValue, String anMessage) {
+
         return false;
     }
 }

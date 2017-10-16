@@ -1,6 +1,10 @@
 package com.betterjr.common.codec.support.json;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,46 +32,57 @@ public class JacksonObjectOutput implements BtObjectOutput {
         this.data = new HashMap<String, Object>();
     }
 
+    @Override
     public void writeBool(boolean v) throws IOException {
         writeObject0(v);
     }
 
+    @Override
     public void writeByte(byte v) throws IOException {
         writeObject0(v);
     }
 
+    @Override
     public void writeShort(short v) throws IOException {
         writeObject0(v);
     }
 
+    @Override
     public void writeInt(int v) throws IOException {
         writeObject0(v);
     }
 
+    @Override
     public void writeLong(long v) throws IOException {
         writeObject0(v);
     }
 
+    @Override
     public void writeFloat(float v) throws IOException {
         writeObject0(v);
     }
 
+    @Override
     public void writeDouble(double v) throws IOException {
         writeObject0(v);
     }
 
+    @Override
     public void writeUTF(String v) throws IOException {
         writeObject0(v);
     }
 
+    @Override
     public void writeBytes(byte[] b) throws IOException {
         writeObject0(new String(b));
     }
 
+    @Override
     public void writeBytes(byte[] b, int off, int len) throws IOException {
         writeObject0(new String(b, off, len));
     }
 
+    @Override
     public void writeObject(Object obj) throws IOException {
         if (obj == null) {
             writeObject0(obj);
@@ -84,6 +99,7 @@ public class JacksonObjectOutput implements BtObjectOutput {
         data.put(KEY_PREFIX + (++index), objectMapper.writeValueAsString(obj));
     }
 
+    @Override
     public void flushBuffer() throws IOException {
         objectMapper.writeValue(writer, data);
         writer.println();

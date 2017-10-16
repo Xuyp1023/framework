@@ -24,8 +24,11 @@
 
 package com.betterjr.mapper.common;
 
-
-import com.betterjr.mapper.common.condition.*;
+import com.betterjr.mapper.common.condition.DeleteByConditionMapper;
+import com.betterjr.mapper.common.condition.SelectByConditionMapper;
+import com.betterjr.mapper.common.condition.SelectCountByConditionMapper;
+import com.betterjr.mapper.common.condition.UpdateByConditionMapper;
+import com.betterjr.mapper.common.condition.UpdateByConditionSelectiveMapper;
 
 /**
  * 通用Mapper接口,Condition查询
@@ -33,11 +36,7 @@ import com.betterjr.mapper.common.condition.*;
  * @param <T> 不能为空
  * @author liuzh
  */
-public interface ConditionMapper<T> extends
-        SelectByConditionMapper<T>,
-        SelectCountByConditionMapper<T>,
-        DeleteByConditionMapper<T>,
-        UpdateByConditionMapper<T>,
-        UpdateByConditionSelectiveMapper<T> {
+public interface ConditionMapper<T> extends SelectByConditionMapper<T>, SelectCountByConditionMapper<T>,
+        DeleteByConditionMapper<T>, UpdateByConditionMapper<T>, UpdateByConditionSelectiveMapper<T> {
 
 }

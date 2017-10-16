@@ -12,8 +12,5 @@ package com.betterjr.modules.config.constants;
  *
  */
 public enum ConfigType {
-    STRING,
-    NUMBER,
-    MONEY,
-    OBJECT
+    STRING, NUMBER, MONEY, OBJECT
 }

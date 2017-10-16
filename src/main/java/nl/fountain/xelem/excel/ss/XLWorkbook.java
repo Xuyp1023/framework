@@ -32,6 +32,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import nl.fountain.xelem.GIO;
 import nl.fountain.xelem.UnsupportedStyleException;
 import nl.fountain.xelem.XFactory;
@@ -45,10 +49,6 @@ import nl.fountain.xelem.excel.Workbook;
 import nl.fountain.xelem.excel.Worksheet;
 import nl.fountain.xelem.excel.o.ODocumentProperties;
 import nl.fountain.xelem.excel.x.XExcelWorkbook;
-
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * An implementation of the XLElement Workbook, the root of a SpreadsheetML document.
@@ -74,13 +74,13 @@ import org.w3c.dom.Element;
  * 
  */
 public class XLWorkbook extends AbstractXLElement implements Workbook {
-    
+
     private DocumentProperties documentProperties;
     private ExcelWorkbook excelWorkbook;
     private String name;
     private String filename;
     private Collection<String> docComments;
-    private Map<String, Worksheet>sheets;
+    private Map<String, Worksheet> sheets;
     private List<String> sheetList;
     private Map<String, NamedRange> namedRanges;
     private boolean printComments = true;
@@ -89,7 +89,7 @@ public class XLWorkbook extends AbstractXLElement implements Workbook {
     private XFactory xFactory;
     private List<String> warnings;
     private SimpleDateFormat sdf;
-    
+
     /**
      * Creates a new XLWorkbook.
      *
@@ -97,7 +97,7 @@ public class XLWorkbook extends AbstractXLElement implements Workbook {
     public XLWorkbook() {
         this("");
     }
-    
+
     /**
      * Creates a new XLWorkbook with the given name.
      */
@@ -106,19 +106,23 @@ public class XLWorkbook extends AbstractXLElement implements Workbook {
         sheetList = new ArrayList<String>();
         this.name = name;
     }
-    
+
+    @Override
     public void setName(String name) {
         this.name = name;
     }
-    
+
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setFileName(String filename) {
         this.filename = filename;
     }
 
+    @Override
     public String getFileName() {
         if (filename == null) {
             return name + ".xls";
@@ -126,20 +130,23 @@ public class XLWorkbook extends AbstractXLElement implements Workbook {
             return filename;
         }
     }
-    
-    public void mergeStyles(String newID, String id1, String id2) 
-    										throws UnsupportedStyleException {
+
+    @Override
+    public void mergeStyles(String newID, String id1, String id2) throws UnsupportedStyleException {
         getFactory().mergeStyles(newID, id1, id2);
     }
-    
+
+    @Override
     public void appendInfoSheet() {
         appendInfoSheet = true;
     }
-    
+
+    @Override
     public void setDocumentProperties(DocumentProperties docProps) {
         documentProperties = docProps;
     }
 
+    @Override
     public DocumentProperties getDocumentProperties() {
         if (documentProperties == null) {
             documentProperties = new ODocumentProperties();
@@ -147,25 +154,30 @@ public class XLWorkbook extends AbstractXLElement implements Workbook {
         return documentProperties;
     }
 
+    @Override
     public boolean hasDocumentProperties() {
         return documentProperties != null;
     }
-    
+
+    @Override
     public void setExcelWorkbook(ExcelWorkbook excelWb) {
         excelWorkbook = excelWb;
     }
-    
+
+    @Override
     public ExcelWorkbook getExcelWorkbook() {
         if (excelWorkbook == null) {
             excelWorkbook = new XExcelWorkbook();
         }
         return excelWorkbook;
     }
-    
+
+    @Override
     public boolean hasExcelWorkbook() {
         return excelWorkbook != null;
     }
-    
+
+    @Override
     public NamedRange addNamedRange(NamedRange nr) {
         if (namedRanges == null) {
             namedRanges = new HashMap<String, NamedRange>();
@@ -173,11 +185,13 @@ public class XLWorkbook extends AbstractXLElement implements Workbook {
         namedRanges.put(nr.getName(), nr);
         return nr;
     }
-    
+
+    @Override
     public NamedRange addNamedRange(String name, String refersTo) {
         return addNamedRange(new SSNamedRange(name, refersTo));
-    }  
-    
+    }
+
+    @Override
     public Map<String, NamedRange> getNamedRanges() {
         if (namedRanges == null) {
             return Collections.emptyMap();
@@ -185,16 +199,18 @@ public class XLWorkbook extends AbstractXLElement implements Workbook {
             return namedRanges;
         }
     }
-    
+
+    @Override
     public Worksheet addSheet() {
         int nr = sheets.size();
         String name;
         do
             name = "Sheet" + ++nr;
-        while(sheetList.contains(name));
+        while (sheetList.contains(name));
         return addSheet(name);
     }
-    
+
+    @Override
     public Worksheet addSheet(String name) {
         if (name == null || "".equals(name)) {
             return addSheet();
@@ -202,43 +218,48 @@ public class XLWorkbook extends AbstractXLElement implements Workbook {
         return addSheet(new SSWorksheet(name));
     }
 
+    @Override
     public Worksheet addSheet(Worksheet sheet) {
         if (sheetList.contains(sheet.getName())) {
-           throw new DuplicateNameException(
-                   "Duplicate name in worksheets collection: '"
-                   + sheet.getName() + "'."); 
+            throw new DuplicateNameException("Duplicate name in worksheets collection: '" + sheet.getName() + "'.");
         }
         sheetList.add(sheet.getName());
         sheets.put(sheet.getName(), sheet);
         return sheet;
     }
 
+    @Override
     public List<Worksheet> getWorksheets() {
         List<Worksheet> worksheets = new ArrayList<Worksheet>();
         for (String s : sheetList) {
-            worksheets.add(sheets.get(s));           
+            worksheets.add(sheets.get(s));
         }
         return worksheets;
     }
-    
+
+    @Override
     public List<String> getSheetNames() {
         return sheetList;
     }
 
+    @Override
     public Worksheet getWorksheet(String name) {
         return sheets.get(name);
     }
-    
+
+    @Override
     public Worksheet getWorksheetAt(int index) {
         Worksheet ws = null;
         try {
             ws = sheets.get(sheetList.get(index));
-        } catch (IndexOutOfBoundsException e) {
+        }
+        catch (IndexOutOfBoundsException e) {
             //
         }
         return ws;
     }
-    
+
+    @Override
     public Worksheet removeSheet(String name) {
         int index = sheetList.indexOf(name);
         if (index < 0) return null;
@@ -246,34 +267,42 @@ public class XLWorkbook extends AbstractXLElement implements Workbook {
         return sheets.remove(name);
     }
 
+    @Override
     public void setPrintElementComments(boolean print) {
         printComments = print;
     }
 
+    @Override
     public void setPrintDocComments(boolean print) {
         printDocComments = print;
     }
 
+    @Override
     public boolean isPrintingElementComments() {
         return printComments;
     }
 
+    @Override
     public boolean isPrintingDocComments() {
         return printDocComments;
     }
 
+    @Override
     public String getTagName() {
         return "Workbook";
     }
-    
+
+    @Override
     public String getNameSpace() {
         return XMLNS;
     }
-    
+
+    @Override
     public String getPrefix() {
         return PREFIX_SS;
     }
-    
+
+    @Override
     public Document createDocument() throws ParserConfigurationException {
         GIO gio = new GIO();
         Document doc = getDoc();
@@ -281,45 +310,45 @@ public class XLWorkbook extends AbstractXLElement implements Workbook {
         assemble(root, gio);
         return doc;
     }
-    
+
+    @Override
     public Element assemble(Element root, GIO gio) {
         Document doc = root.getOwnerDocument();
         warnings = null;
         gio.setPrintComments(isPrintingElementComments());
-        doc.insertBefore(doc.createProcessingInstruction("mso-application",
-                "progid=\"Excel.Sheet\""), root);
-        
+        doc.insertBefore(doc.createProcessingInstruction("mso-application", "progid=\"Excel.Sheet\""), root);
+
         if (isPrintingDocComments()) {
             for (String s : getFactory().getDocComments()) {
                 doc.insertBefore(doc.createComment(s), root);
             }
         }
-        
+
         root.setAttribute("xmlns", XMLNS);
         root.setAttribute("xmlns:o", XMLNS_O);
         root.setAttribute("xmlns:x", XMLNS_X);
         root.setAttribute("xmlns:ss", XMLNS_SS);
         root.setAttribute("xmlns:html", XMLNS_HTML);
-        
+
         if (isPrintingElementComments() && getElementComments() != null) {
             for (String s : getElementComments()) {
                 root.appendChild(doc.createComment(s));
             }
         }
 
-        //o:DocumentProperties
+        // o:DocumentProperties
         if (hasDocumentProperties()) {
             documentProperties.assemble(root, gio);
         }
 
-        //x:ExcelWorkbook
+        // x:ExcelWorkbook
         Element xlwbe = getExcelWorkbook().assemble(root, gio);
 
-        //Styles
+        // Styles
         Element styles = doc.createElement("Styles");
         root.appendChild(styles);
         appendDefaultStyle(doc, styles);
-        
+
         // Names
         if (namedRanges != null) {
             Element names = doc.createElement("Names");
@@ -337,29 +366,31 @@ public class XLWorkbook extends AbstractXLElement implements Workbook {
             Worksheet ws = sheets.get(s);
             ws.assemble(root, gio);
         }
-        
+
         // append xelem-info sheet
         if (appendInfoSheet) {
             try {
                 getFactory().appendInfoSheet(root, gio);
-            } catch (XelemException e) {
+            }
+            catch (XelemException e) {
                 addWarning(e.getCause());
             }
         }
-        
+
         // append Global Information
         int selectedSheets = gio.getSelectedSheetsCount();
-        if ( selectedSheets > 1) {
+        if (selectedSheets > 1) {
             Element n = doc.createElementNS(XMLNS_X, "SelectedSheets");
             n.setPrefix(PREFIX_X);
             n.appendChild(doc.createTextNode("" + selectedSheets));
             xlwbe.appendChild(n);
-        }        
+        }
         appendStyles(doc, styles, gio);
-        
+
         return root;
     }
 
+    @Override
     public List<String> getWarnings() {
         if (warnings == null) {
             return Collections.emptyList();
@@ -367,7 +398,7 @@ public class XLWorkbook extends AbstractXLElement implements Workbook {
             return warnings;
         }
     }
-    
+
     private Document getDoc() throws ParserConfigurationException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
@@ -375,19 +406,19 @@ public class XLWorkbook extends AbstractXLElement implements Workbook {
         DOMImplementation domImpl = builder.getDOMImplementation();
         return domImpl.createDocument(XMLNS, getTagName(), null);
     }
-    
+
     private void appendDefaultStyle(Document doc, Element styles) {
         Element dse = getFactory().getStyle("Default");
         if (dse == null) {
             dse = doc.createElement("Style");
-            
+
             dse.setAttributeNodeNS(createAttributeNS(doc, "ID", "Default"));
             dse.setAttributeNodeNS(createAttributeNS(doc, "Name", "Normal"));
-            
+
             Element alignment = doc.createElement("Alignment");
             dse.appendChild(alignment);
             alignment.setAttributeNodeNS(createAttributeNS(doc, "Vertical", "Bottom"));
-            
+
             dse.appendChild(doc.createElement("Borders"));
             dse.appendChild(doc.createElement("Font"));
             dse.appendChild(doc.createElement("Interior"));
@@ -398,16 +429,16 @@ public class XLWorkbook extends AbstractXLElement implements Workbook {
         }
         styles.appendChild(dse);
     }
-    
+
     private void appendStyles(Document doc, Element styles, GIO gio) {
-        for (String id : gio.getStyleIDSet()) {;
+        for (String id : gio.getStyleIDSet()) {
+            ;
             Element style = getFactory().getStyle(id);
             if (style == null) {
                 // last resort: create one on the spot
                 style = doc.createElement("Style");
                 style.setAttributeNodeNS(createAttributeNS(doc, "ID", id));
-                addWarning(new UnsupportedStyleException(
-                        "Style '" + id + "' not found."));
+                addWarning(new UnsupportedStyleException("Style '" + id + "' not found."));
             } else {
                 // we have a style from the XFactory
                 style = (Element) doc.importNode(style, true);
@@ -415,20 +446,21 @@ public class XLWorkbook extends AbstractXLElement implements Workbook {
             styles.appendChild(style);
         }
     }
-    
+
     private XFactory getFactory() {
         if (xFactory == null) {
             try {
                 xFactory = XFactory.newInstance();
-            } catch (XelemException e) {
+            }
+            catch (XelemException e) {
                 addWarning(e.getCause());
                 // return an empty factory
                 xFactory = XFactory.emptyFactory();
-            } 
+            }
         }
         return xFactory;
     }
-    
+
     private void addWarning(Throwable e) {
         if (warnings == null) {
             warnings = new ArrayList<String>();
@@ -445,7 +477,5 @@ public class XLWorkbook extends AbstractXLElement implements Workbook {
         }
         warnings.add(sdf.format(new Date()) + msg.toString());
     }
-
-
 
 }

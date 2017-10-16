@@ -4,7 +4,7 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.betterjr.common.utils.DictUtils;
 import com.betterjr.modules.sys.dubbo.interfaces.IDictToWebService;
 
-@Service(interfaceClass=IDictToWebService.class)
+@Service(interfaceClass = IDictToWebService.class)
 public class DictToWebDubboService implements IDictToWebService {
 
     @Override

@@ -1,6 +1,7 @@
 package com.betterjr.common.web;
 
 import java.util.regex.Pattern;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
@@ -37,8 +38,8 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public String getHeader(String name) {
         String value = super.getHeader(name);
-        if ("Accept".equalsIgnoreCase(name)){
-           value = "application/json,".concat(value); 
+        if ("Accept".equalsIgnoreCase(name)) {
+            value = "application/json,".concat(value);
         }
         return stripXSS(value);
     }
@@ -58,10 +59,12 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
             value = scriptPattern.matcher(value).replaceAll("");
 
             // Avoid anything in a src='...' type of e­xpression
-            scriptPattern = Pattern.compile("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+            scriptPattern = Pattern.compile("src[\r\n]*=[\r\n]*\\\'(.*?)\\\'",
+                    Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
             value = scriptPattern.matcher(value).replaceAll("");
 
-            scriptPattern = Pattern.compile("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+            scriptPattern = Pattern.compile("src[\r\n]*=[\r\n]*\\\"(.*?)\\\"",
+                    Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
             value = scriptPattern.matcher(value).replaceAll("");
 
             // Remove any lonesome </script> tag
@@ -69,15 +72,18 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
             value = scriptPattern.matcher(value).replaceAll("");
 
             // Remove any lonesome <script ...> tag
-            scriptPattern = Pattern.compile("<script(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+            scriptPattern = Pattern.compile("<script(.*?)>",
+                    Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
             value = scriptPattern.matcher(value).replaceAll("");
 
             // Avoid eval(...) e­xpressions
-            scriptPattern = Pattern.compile("eval\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+            scriptPattern = Pattern.compile("eval\\((.*?)\\)",
+                    Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
             value = scriptPattern.matcher(value).replaceAll("");
 
             // Avoid e­xpression(...) e­xpressions
-            scriptPattern = Pattern.compile("e­xpression\\((.*?)\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+            scriptPattern = Pattern.compile("e­xpression\\((.*?)\\)",
+                    Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
             value = scriptPattern.matcher(value).replaceAll("");
 
             // Avoid javascript:... e­xpressions
@@ -89,7 +95,8 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
             value = scriptPattern.matcher(value).replaceAll("");
 
             // Avoid onload= e­xpressions
-            scriptPattern = Pattern.compile("onload(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+            scriptPattern = Pattern.compile("onload(.*?)=",
+                    Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
             value = scriptPattern.matcher(value).replaceAll("");
         }
         return value;

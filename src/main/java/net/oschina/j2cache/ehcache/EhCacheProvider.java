@@ -36,16 +36,16 @@ import net.sf.ehcache.CacheManager;
  */
 public class EhCacheProvider implements CacheProvider {
 
-	private final static Logger log = LoggerFactory.getLogger(EhCacheProvider.class);
-	private final static String CONFIG_XML = "/ehcache.xml";
+    private final static Logger log = LoggerFactory.getLogger(EhCacheProvider.class);
+    private final static String CONFIG_XML = "/ehcache.xml";
 
-	private CacheManager manager;
-	private ConcurrentHashMap<String, EhCache> _CacheManager ;
+    private CacheManager manager;
+    private ConcurrentHashMap<String, EhCache> _CacheManager;
 
-	@Override
-	public String name() {
-		return "ehcache";
-	}
+    @Override
+    public String name() {
+        return "ehcache";
+    }
 
     /**
      * Builds a Cache.
@@ -60,64 +60,65 @@ public class EhCacheProvider implements CacheProvider {
      * @return a newly built cache will be built and initialised
      * @throws CacheException inter alia, if a cache of the same name already exists
      */
+    @Override
     public EhCache buildCache(String name, boolean autoCreate, CacheExpiredListener listener) throws CacheException {
-    	EhCache ehcache = _CacheManager.get(name);
-    	if(ehcache == null && autoCreate){
-		    try {
-	            synchronized(_CacheManager){
-	            	ehcache = _CacheManager.get(name);
-	            	if(ehcache == null){
-			            net.sf.ehcache.Cache cache = manager.getCache(name);
-			            if (cache == null) {
-			                log.warn("Could not find configuration [" + name + "]; using defaults.");
-			                manager.addCache(name);
-			                cache = manager.getCache(name);
-			                log.debug("started EHCache region: " + name);                
-			            }
-			            ehcache = new EhCache(cache, listener);
-			            _CacheManager.put(name, ehcache);
-	            	}
-	            }
-		    }
-	        catch (net.sf.ehcache.CacheException e) {
-	            throw new CacheException(e);
-	        }
-    	}
+        EhCache ehcache = _CacheManager.get(name);
+        if (ehcache == null && autoCreate) {
+            try {
+                synchronized (_CacheManager) {
+                    ehcache = _CacheManager.get(name);
+                    if (ehcache == null) {
+                        net.sf.ehcache.Cache cache = manager.getCache(name);
+                        if (cache == null) {
+                            log.warn("Could not find configuration [" + name + "]; using defaults.");
+                            manager.addCache(name);
+                            cache = manager.getCache(name);
+                            log.debug("started EHCache region: " + name);
+                        }
+                        ehcache = new EhCache(cache, listener);
+                        _CacheManager.put(name, ehcache);
+                    }
+                }
+            }
+            catch (net.sf.ehcache.CacheException e) {
+                throw new CacheException(e);
+            }
+        }
         return ehcache;
     }
 
-	/**
-	 * Callback to perform any necessary initialization of the underlying cache implementation
-	 * during SessionFactory construction.
-	 *
-	 * @param props current configuration settings.
-	 */
-	public void start(Properties props) throws CacheException {
-		if (manager != null) {
-            log.warn("Attempt to restart an already started EhCacheProvider. Use sessionFactory.close() " +
-                    " between repeated calls to buildSessionFactory. Using previously created EhCacheProvider." +
-                    " If this behaviour is required, consider using net.sf.ehcache.hibernate.SingletonEhCacheProvider.");
+    /**
+     * Callback to perform any necessary initialization of the underlying cache implementation
+     * during SessionFactory construction.
+     *
+     * @param props current configuration settings.
+     */
+    @Override
+    public void start(Properties props) throws CacheException {
+        if (manager != null) {
+            log.warn("Attempt to restart an already started EhCacheProvider. Use sessionFactory.close() "
+                    + " between repeated calls to buildSessionFactory. Using previously created EhCacheProvider."
+                    + " If this behaviour is required, consider using net.sf.ehcache.hibernate.SingletonEhCacheProvider.");
             return;
         }
-		URL xml = getClass().getClassLoader().getParent().getResource(CONFIG_XML);
-		if(xml == null)
-			xml = getClass().getResource(CONFIG_XML);
-		if(xml == null)
-			throw new CacheException("cannot find ehcache.xml !!!");
-		
+        URL xml = getClass().getClassLoader().getParent().getResource(CONFIG_XML);
+        if (xml == null) xml = getClass().getResource(CONFIG_XML);
+        if (xml == null) throw new CacheException("cannot find ehcache.xml !!!");
+
         manager = new CacheManager();
         _CacheManager = new ConcurrentHashMap<String, EhCache>();
-	}
+    }
 
-	/**
-	 * Callback to perform any necessary cleanup of the underlying cache implementation
-	 * during SessionFactory.close().
-	 */
-	public void stop() {
-		if (manager != null) {
+    /**
+     * Callback to perform any necessary cleanup of the underlying cache implementation
+     * during SessionFactory.close().
+     */
+    @Override
+    public void stop() {
+        if (manager != null) {
             manager.shutdown();
             manager = null;
         }
-	}
+    }
 
 }

@@ -13,8 +13,7 @@ package com.betterjr.modules.sms.util;
  *
  */
 public enum VerifyCodeType {
-    CHANGE_TRADE_PASSWORD("1"),
-    OPEN_ACCOUNT_PASSWORD("2");
+    CHANGE_TRADE_PASSWORD("1"), OPEN_ACCOUNT_PASSWORD("2");
 
     private final String type;
 

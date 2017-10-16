@@ -40,9 +40,10 @@ import nl.fountain.xelem.excel.WorksheetOptions;
  * @since xelem.2.0
  */
 public class DefaultExcelReaderFilter implements ExcelReaderFilter {
-    
+
     private List<ExcelReaderListener> listeners;
 
+    @Override
     public List<ExcelReaderListener> getListeners() {
         if (listeners == null) {
             listeners = new ArrayList<ExcelReaderListener>();
@@ -50,24 +51,28 @@ public class DefaultExcelReaderFilter implements ExcelReaderFilter {
         return listeners;
     }
 
+    @Override
     public void addExcelReaderListener(ExcelReaderListener listener) {
         if (!getListeners().contains(listener)) {
             getListeners().add(listener);
         }
     }
 
+    @Override
     public boolean removeExcelReaderListener(ExcelReaderListener listener) {
         return getListeners().remove(listener);
     }
 
+    @Override
     public void clearExcelReaderListeners() {
         getListeners().clear();
     }
-    
+
     /**
      * Passes the event unfiltered to it's listeners. 
      * Subclasses can override this method and take appropriate action.
      */
+    @Override
     public void startDocument() {
         for (ExcelReaderListener l : getListeners()) {
             l.startDocument();
@@ -78,8 +83,9 @@ public class DefaultExcelReaderFilter implements ExcelReaderFilter {
      * Passes the event unfiltered to it's listeners. 
      * Subclasses can override this method and take appropriate action.
      */
+    @Override
     public void processingInstruction(String target, String data) {
-    	for (ExcelReaderListener l : getListeners()) {
+        for (ExcelReaderListener l : getListeners()) {
             l.processingInstruction(target, data);
         }
     }
@@ -88,8 +94,9 @@ public class DefaultExcelReaderFilter implements ExcelReaderFilter {
      * Passes the event unfiltered to it's listeners. 
      * Subclasses can override this method and take appropriate action.
      */
+    @Override
     public void startWorkbook(String systemID) {
-    	for (ExcelReaderListener l : getListeners()) {
+        for (ExcelReaderListener l : getListeners()) {
             l.startWorkbook(systemID);
         }
     }
@@ -98,6 +105,7 @@ public class DefaultExcelReaderFilter implements ExcelReaderFilter {
      * Passes the event unfiltered to it's listeners. 
      * Subclasses can override this method and take appropriate action.
      */
+    @Override
     public void setDocumentProperties(DocumentProperties docProps) {
         for (ExcelReaderListener l : getListeners()) {
             l.setDocumentProperties(docProps);
@@ -108,6 +116,7 @@ public class DefaultExcelReaderFilter implements ExcelReaderFilter {
      * Passes the event unfiltered to it's listeners. 
      * Subclasses can override this method and take appropriate action.
      */
+    @Override
     public void setExcelWorkbook(ExcelWorkbook excelWb) {
         for (ExcelReaderListener l : getListeners()) {
             l.setExcelWorkbook(excelWb);
@@ -118,6 +127,7 @@ public class DefaultExcelReaderFilter implements ExcelReaderFilter {
      * Passes the event unfiltered to it's listeners. 
      * Subclasses can override this method and take appropriate action.
      */
+    @Override
     public void setNamedRange(NamedRange namedRange) {
         for (ExcelReaderListener l : getListeners()) {
             l.setNamedRange(namedRange);
@@ -128,6 +138,7 @@ public class DefaultExcelReaderFilter implements ExcelReaderFilter {
      * Passes the event unfiltered to it's listeners. 
      * Subclasses can override this method and take appropriate action.
      */
+    @Override
     public void startWorksheet(int sheetIndex, Worksheet sheet) {
         for (ExcelReaderListener l : getListeners()) {
             l.startWorksheet(sheetIndex, sheet);
@@ -138,8 +149,8 @@ public class DefaultExcelReaderFilter implements ExcelReaderFilter {
      * Passes the event unfiltered to it's listeners. 
      * Subclasses can override this method and take appropriate action.
      */
-    public void setNamedRange(int sheetIndex, String sheetName,
-            NamedRange namedRange) {
+    @Override
+    public void setNamedRange(int sheetIndex, String sheetName, NamedRange namedRange) {
         for (ExcelReaderListener l : getListeners()) {
             l.setNamedRange(sheetIndex, sheetName, namedRange);
         }
@@ -149,6 +160,7 @@ public class DefaultExcelReaderFilter implements ExcelReaderFilter {
      * Passes the event unfiltered to it's listeners. 
      * Subclasses can override this method and take appropriate action.
      */
+    @Override
     public void startTable(int sheetIndex, String sheetName, Table table) {
         for (ExcelReaderListener l : getListeners()) {
             l.startTable(sheetIndex, sheetName, table);
@@ -159,6 +171,7 @@ public class DefaultExcelReaderFilter implements ExcelReaderFilter {
      * Passes the event unfiltered to it's listeners. 
      * Subclasses can override this method and take appropriate action.
      */
+    @Override
     public void setColumn(int sheetIndex, String sheetName, Column column) {
         for (ExcelReaderListener l : getListeners()) {
             l.setColumn(sheetIndex, sheetName, column);
@@ -169,6 +182,7 @@ public class DefaultExcelReaderFilter implements ExcelReaderFilter {
      * Passes the event unfiltered to it's listeners. 
      * Subclasses can override this method and take appropriate action.
      */
+    @Override
     public void setRow(int sheetIndex, String sheetName, Row row) {
         for (ExcelReaderListener l : getListeners()) {
             l.setRow(sheetIndex, sheetName, row);
@@ -179,8 +193,8 @@ public class DefaultExcelReaderFilter implements ExcelReaderFilter {
      * Passes the event unfiltered to it's listeners. 
      * Subclasses can override this method and take appropriate action.
      */
-    public void setCell(int sheetIndex, String sheetName, int rowIndex,
-            Cell cell) {
+    @Override
+    public void setCell(int sheetIndex, String sheetName, int rowIndex, Cell cell) {
         for (ExcelReaderListener l : getListeners()) {
             l.setCell(sheetIndex, sheetName, rowIndex, cell);
         }
@@ -190,8 +204,8 @@ public class DefaultExcelReaderFilter implements ExcelReaderFilter {
      * Passes the event unfiltered to it's listeners. 
      * Subclasses can override this method and take appropriate action.
      */
-    public void setWorksheetOptions(int sheetIndex, String sheetName,
-            WorksheetOptions wsOptions) {
+    @Override
+    public void setWorksheetOptions(int sheetIndex, String sheetName, WorksheetOptions wsOptions) {
         for (ExcelReaderListener l : getListeners()) {
             l.setWorksheetOptions(sheetIndex, sheetName, wsOptions);
         }
@@ -201,27 +215,29 @@ public class DefaultExcelReaderFilter implements ExcelReaderFilter {
      * Passes the event unfiltered to it's listeners. 
      * Subclasses can override this method and take appropriate action.
      */
-    public void setAutoFilter(int sheetIndex, String sheetName,
-            AutoFilter autoFilter) {
+    @Override
+    public void setAutoFilter(int sheetIndex, String sheetName, AutoFilter autoFilter) {
         for (ExcelReaderListener l : getListeners()) {
             l.setAutoFilter(sheetIndex, sheetName, autoFilter);
         }
-    }
-    
-    /**
-     * Passes the event unfiltered to it's listeners. 
-     * Subclasses can override this method and take appropriate action.
-     */
-    public void endWorksheet(int sheetIndex, String sheetName) {
-        for (ExcelReaderListener l : getListeners()) {
-            l.endWorksheet(sheetIndex, sheetName);
-        } 
     }
 
     /**
      * Passes the event unfiltered to it's listeners. 
      * Subclasses can override this method and take appropriate action.
      */
+    @Override
+    public void endWorksheet(int sheetIndex, String sheetName) {
+        for (ExcelReaderListener l : getListeners()) {
+            l.endWorksheet(sheetIndex, sheetName);
+        }
+    }
+
+    /**
+     * Passes the event unfiltered to it's listeners. 
+     * Subclasses can override this method and take appropriate action.
+     */
+    @Override
     public void endDocument(Map<String, String> prefixMap) {
         for (ExcelReaderListener l : getListeners()) {
             l.endDocument(prefixMap);

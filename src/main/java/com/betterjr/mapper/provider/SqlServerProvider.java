@@ -24,16 +24,20 @@
 
 package com.betterjr.mapper.provider;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.scripting.xmltags.*;
+import org.apache.ibatis.scripting.xmltags.IfSqlNode;
+import org.apache.ibatis.scripting.xmltags.MixedSqlNode;
+import org.apache.ibatis.scripting.xmltags.SqlNode;
+import org.apache.ibatis.scripting.xmltags.StaticTextSqlNode;
+import org.apache.ibatis.scripting.xmltags.TrimSqlNode;
 
 import com.betterjr.mapper.mapperhelper.EntityHelper;
 import com.betterjr.mapper.mapperhelper.MapperHelper;
 import com.betterjr.mapper.mapperhelper.MapperTemplate;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Mappper实现类，特殊方法实现类
@@ -54,7 +58,7 @@ public class SqlServerProvider extends MapperTemplate {
     public String insert(MappedStatement ms) {
         final Class<?> entityClass = getSelectReturnType(ms);
         EntityHelper.EntityTable table = EntityHelper.getEntityTable(entityClass);
-        //开始拼sql
+        // 开始拼sql
         StringBuilder sql = new StringBuilder();
         sql.append("insert into ");
         sql.append(table.getName());
@@ -64,7 +68,7 @@ public class SqlServerProvider extends MapperTemplate {
             if (column.isId()) {
                 continue;
             }
-            if(!first) {
+            if (!first) {
                 sql.append(",");
             }
             sql.append(column.getColumn());
@@ -76,7 +80,7 @@ public class SqlServerProvider extends MapperTemplate {
             if (column.isId()) {
                 continue;
             }
-            if(!first) {
+            if (!first) {
                 sql.append(",");
             }
             sql.append("#{").append(column.getProperty()).append("}");
@@ -95,32 +99,33 @@ public class SqlServerProvider extends MapperTemplate {
     public SqlNode insertSelective(MappedStatement ms) {
         Class<?> entityClass = getSelectReturnType(ms);
         List<SqlNode> sqlNodes = new LinkedList<SqlNode>();
-        //insert into table
+        // insert into table
         sqlNodes.add(new StaticTextSqlNode("INSERT INTO " + tableName(entityClass)));
-        //获取全部列
+        // 获取全部列
         Set<EntityHelper.EntityColumn> columnList = EntityHelper.getColumns(entityClass);
         List<SqlNode> ifNodes = new LinkedList<SqlNode>();
-        //Identity列只能有一个
-//        Boolean hasIdentityKey = false;
-        //当某个列有主键策略时，不需要考虑他的属性是否为空，因为如果为空，一定会根据主键策略给他生成一个值
+        // Identity列只能有一个
+        // Boolean hasIdentityKey = false;
+        // 当某个列有主键策略时，不需要考虑他的属性是否为空，因为如果为空，一定会根据主键策略给他生成一个值
         for (EntityHelper.EntityColumn column : columnList) {
-            //当使用序列时
+            // 当使用序列时
             if (!column.isId()) {
                 ifNodes.add(getIfNotNull(column, new StaticTextSqlNode(column.getColumn() + ",")));
             }
         }
-        //将动态的列加入sqlNodes
+        // 将动态的列加入sqlNodes
         sqlNodes.add(new TrimSqlNode(ms.getConfiguration(), new MixedSqlNode(ifNodes), "(", null, ")", ","));
 
         ifNodes = new LinkedList<SqlNode>();
-        //处理values(#{property},#{property}...)
+        // 处理values(#{property},#{property}...)
         for (EntityHelper.EntityColumn column : columnList) {
-            //当参数中的属性值不为空的时候,使用传入的值
+            // 当参数中的属性值不为空的时候,使用传入的值
             if (!column.isId()) {
-                ifNodes.add(new IfSqlNode(new StaticTextSqlNode("#{" + column.getProperty() + "},"), column.getProperty() + " != null "));
+                ifNodes.add(new IfSqlNode(new StaticTextSqlNode("#{" + column.getProperty() + "},"),
+                        column.getProperty() + " != null "));
             }
         }
-        //values(#{property},#{property}...)
+        // values(#{property},#{property}...)
         sqlNodes.add(new TrimSqlNode(ms.getConfiguration(), new MixedSqlNode(ifNodes), "VALUES (", null, ")", ","));
         return new MixedSqlNode(sqlNodes);
     }

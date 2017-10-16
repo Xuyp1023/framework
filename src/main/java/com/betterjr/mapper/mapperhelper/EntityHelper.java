@@ -24,20 +24,35 @@
 
 package com.betterjr.mapper.mapperhelper;
 
-import javax.persistence.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OrderBy;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.type.JdbcType;
 
 import com.betterjr.common.annotation.AnnonVersionField;
 import com.betterjr.common.utils.BetterStringUtils;
-import com.betterjr.mapper.entity.Example;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 实体类工具类 - 处理实体和数据库表以及字段关键的一个类
@@ -153,14 +168,13 @@ public class EntityHelper {
             selectBuilder.append(entityColumn.getColumn());
             if (!skipAlias && !entityColumn.getColumn().equalsIgnoreCase(entityColumn.getProperty())) {
                 // 不等的时候分几种情况，例如`DESC`
-                if (entityColumn.getColumn().substring(1, entityColumn.getColumn().length() - 1).equalsIgnoreCase(entityColumn.getProperty())) {
+                if (entityColumn.getColumn().substring(1, entityColumn.getColumn().length() - 1)
+                        .equalsIgnoreCase(entityColumn.getProperty())) {
                     selectBuilder.append(",");
-                }
-                else {
+                } else {
                     selectBuilder.append(" AS ").append(entityColumn.getProperty()).append(",");
                 }
-            }
-            else {
+            } else {
                 selectBuilder.append(",");
             }
         }
@@ -202,7 +216,7 @@ public class EntityHelper {
     private static String prepareJdbcType(String anJdbcType, Class anClass) {
         JdbcType jt = null;
         try {
-            if (BetterStringUtils.isNotBlank(anJdbcType)) {
+            if (StringUtils.isNotBlank(anJdbcType)) {
                 jt = JdbcType.valueOf(anJdbcType.toUpperCase());
             }
         }
@@ -284,36 +298,33 @@ public class EntityHelper {
                 OrderBy orderBy = field.getAnnotation(OrderBy.class);
                 if (orderBy.value().equals("")) {
                     entityColumn.setOrderBy("ASC");
-                }
-                else {
+                } else {
                     entityColumn.setOrderBy(orderBy.value());
                 }
             }
-            //如果字段标注为版本号；则update操作自动使用版本处理
+            // 如果字段标注为版本号；则update操作自动使用版本处理
             if (field.isAnnotationPresent(AnnonVersionField.class)) {
                 entityColumn.setVersionField(true);
             }
-            
+
             // 主键策略 - Oracle序列，MySql自动增长，UUID
             if (field.isAnnotationPresent(SequenceGenerator.class)) {
                 SequenceGenerator sequenceGenerator = field.getAnnotation(SequenceGenerator.class);
                 if (sequenceGenerator.sequenceName().equals("")) {
-                    throw new RuntimeException(entityClass + "字段" + field.getName() + "的注解@SequenceGenerator未指定sequenceName!");
+                    throw new RuntimeException(
+                            entityClass + "字段" + field.getName() + "的注解@SequenceGenerator未指定sequenceName!");
                 }
                 entityColumn.setSequenceName(sequenceGenerator.sequenceName());
-            }
-            else if (field.isAnnotationPresent(GeneratedValue.class)) {
+            } else if (field.isAnnotationPresent(GeneratedValue.class)) {
                 GeneratedValue generatedValue = field.getAnnotation(GeneratedValue.class);
                 if (generatedValue.generator().equals("UUID")) {
                     entityColumn.setUuid(true);
-                }
-                else if (generatedValue.generator().equals("JDBC")) {
+                } else if (generatedValue.generator().equals("JDBC")) {
                     entityColumn.setIdentity(true);
                     entityColumn.setGenerator("JDBC");
                     entityTable.setKeyProperties(entityColumn.getProperty());
                     entityTable.setKeyColumns(entityColumn.getColumn());
-                }
-                else {
+                } else {
                     // 允许通过generator来设置获取id的sql,例如mysql=CALL
                     // IDENTITY(),hsqldb=SELECT SCOPE_IDENTITY()
                     // 允许通过拦截器参数设置公共的generator
@@ -326,14 +337,12 @@ public class EntityHelper {
                                     .getDatabaseDialect(generatedValue.generator());
                             if (identityDialect != null) {
                                 generator = identityDialect.getIdentityRetrievalStatement();
-                            }
-                            else {
+                            } else {
                                 generator = generatedValue.generator();
                             }
                             entityColumn.setGenerator(generator);
                         }
-                    }
-                    else {
+                    } else {
                         throw new RuntimeException(field.getName() + " - 该字段@GeneratedValue配置只允许以下几种形式:"
                                 + "\n1.全部数据库通用的@GeneratedValue(generator=\"UUID\")"
                                 + "\n2.useGeneratedKeys的@GeneratedValue(generator=\\\"JDBC\\\")  "
@@ -349,8 +358,7 @@ public class EntityHelper {
         entityTable.entityClassColumns = columnSet;
         if (pkColumnSet.size() == 0) {
             entityTable.entityClassPKColumns = columnSet;
-        }
-        else {
+        } else {
             entityTable.entityClassPKColumns = pkColumnSet;
         }
         // 缓存
@@ -390,8 +398,7 @@ public class EntityHelper {
             c = chars[i];
             if (isUppercaseAlpha(c)) {
                 sb.append('_').append(c);
-            }
-            else {
+            } else {
                 sb.append(toUpperAscii(c));
             }
         }
@@ -450,10 +457,8 @@ public class EntityHelper {
             }
         }
         Class<?> superClass = entityClass.getSuperclass();
-        if (superClass != null
-                && !superClass.equals(Object.class)
-                && (superClass.isAnnotationPresent(Entity.class) || (!Map.class.isAssignableFrom(superClass) && !Collection.class
-                        .isAssignableFrom(superClass)))) {
+        if (superClass != null && !superClass.equals(Object.class) && (superClass.isAnnotationPresent(Entity.class)
+                || (!Map.class.isAssignableFrom(superClass) && !Collection.class.isAssignableFrom(superClass)))) {
             return getAllField(entityClass.getSuperclass(), fieldList);
         }
         return fieldList;
@@ -465,13 +470,10 @@ public class EntityHelper {
         }
         catch (Exception ex) {
             Class<?> superClass = anClass.getSuperclass();
-            if (superClass != null
-                    && !superClass.equals(Object.class)
-                    && (superClass.isAnnotationPresent(Entity.class) || (!Map.class.isAssignableFrom(superClass) && !Collection.class
-                            .isAssignableFrom(superClass)))) {
+            if (superClass != null && !superClass.equals(Object.class) && (superClass.isAnnotationPresent(Entity.class)
+                    || (!Map.class.isAssignableFrom(superClass) && !Collection.class.isAssignableFrom(superClass)))) {
                 return findField(anClass.getSuperclass(), anFieldName);
-            }
-            else {
+            } else {
                 return null;
             }
         }
@@ -549,8 +551,7 @@ public class EntityHelper {
             if (this.keyProperties == null) {
                 this.keyProperties = new LinkedList<String>();
                 this.keyProperties.add(keyProperty);
-            }
-            else {
+            } else {
                 this.keyProperties.add(keyProperty);
             }
         }
@@ -566,8 +567,7 @@ public class EntityHelper {
             if (this.keyColumns == null) {
                 this.keyColumns = new LinkedList<String>();
                 this.keyColumns.add(keyColumn);
-            }
-            else {
+            } else {
                 this.keyColumns.add(keyColumn);
             }
         }
@@ -678,8 +678,7 @@ public class EntityHelper {
         private String orderBy;
         private String jdbcType;
 
-        public EntityColumn() {
-        }
+        public EntityColumn() {}
 
         public EntityColumn(EntityTable table) {
             this.table = table;
@@ -702,10 +701,9 @@ public class EntityHelper {
         }
 
         public String getFullJdbcType() {
-            if (BetterStringUtils.isNotBlank(jdbcType)) {
+            if (StringUtils.isNotBlank(jdbcType)) {
                 return ", jdbcType=" + jdbcType;
-            }
-            else {
+            } else {
                 return "";
             }
         }
@@ -806,9 +804,10 @@ public class EntityHelper {
             if (javaType != null ? !javaType.equals(that.javaType) : that.javaType != null) return false;
             if (orderBy != null ? !orderBy.equals(that.orderBy) : that.orderBy != null) return false;
             if (property != null ? !property.equals(that.property) : that.property != null) return false;
-            if (sequenceName != null ? !sequenceName.equals(that.sequenceName) : that.sequenceName != null) return false;
+            if (sequenceName != null ? !sequenceName.equals(that.sequenceName) : that.sequenceName != null)
+                return false;
             if (versionField != that.versionField) return false;
-            
+
             return true;
         }
 

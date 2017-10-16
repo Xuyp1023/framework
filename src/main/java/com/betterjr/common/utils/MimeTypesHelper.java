@@ -1,17 +1,19 @@
 package com.betterjr.common.utils;
 
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import java.io.InputStream;
-import java.util.*;
 
 public class MimeTypesHelper {
 
@@ -29,8 +31,8 @@ public class MimeTypesHelper {
                 Node nn = nList.item(i);
                 if (nn instanceof Element) {
                     Element mm = (Element) nn;
-                    mimeMap.put(mm.getElementsByTagName("extension").item(0).getTextContent(), mm.getElementsByTagName("mime-type").item(0)
-                            .getTextContent());
+                    mimeMap.put(mm.getElementsByTagName("extension").item(0).getTextContent(),
+                            mm.getElementsByTagName("mime-type").item(0).getTextContent());
                 }
             }
         }
@@ -43,7 +45,7 @@ public class MimeTypesHelper {
     }
 
     public static String getMimeType(String anFileType) {
-        if (BetterStringUtils.isBlank(anFileType)) {
+        if (StringUtils.isBlank(anFileType)) {
             return "application/octet-stream";
         }
         return mimeMap.get(anFileType);

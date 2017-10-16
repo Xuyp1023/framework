@@ -1,10 +1,11 @@
 package com.betterjr.modules.rule.validator;
 
+import java.util.Map;
+
 import com.betterjr.modules.rule.RuleCheckResult;
 import com.betterjr.modules.rule.entity.RuleBusiness;
 import com.betterjr.modules.rule.entity.WorkRuleValidator;
 import com.betterjr.modules.rule.service.QLExpressContext;
-import java.util.*;
 
 public class DataValidContext implements java.io.Serializable {
     private static final long serialVersionUID = 482265909230385315L;
@@ -29,9 +30,10 @@ public class DataValidContext implements java.io.Serializable {
         validContext.set(null);
     }
 
-    public static void addValidContext(WorkRuleValidator anValidator, QLExpressContext anContext, RuleCheckResult anResult, RuleBusiness anRuleBusin,
-            Object anValue, Object anBusinValue, String anMessage) {
-        validContext.set(new DataValidContext(anValidator, anContext, anResult, anRuleBusin, anValue, anBusinValue, anMessage));
+    public static void addValidContext(WorkRuleValidator anValidator, QLExpressContext anContext,
+            RuleCheckResult anResult, RuleBusiness anRuleBusin, Object anValue, Object anBusinValue, String anMessage) {
+        validContext.set(
+                new DataValidContext(anValidator, anContext, anResult, anRuleBusin, anValue, anBusinValue, anMessage));
     }
 
     public static void addRefValue(Map anRefValue) {
@@ -48,8 +50,8 @@ public class DataValidContext implements java.io.Serializable {
         }
     }
 
-    public DataValidContext(WorkRuleValidator anValidator, QLExpressContext anContext, RuleCheckResult anResult, RuleBusiness anRuleBusin,
-            Object anValue, Object anBusinValue, String anMessage) {
+    public DataValidContext(WorkRuleValidator anValidator, QLExpressContext anContext, RuleCheckResult anResult,
+            RuleBusiness anRuleBusin, Object anValue, Object anBusinValue, String anMessage) {
         this.validator = anValidator;
         this.context = anContext;
         this.result = anResult;

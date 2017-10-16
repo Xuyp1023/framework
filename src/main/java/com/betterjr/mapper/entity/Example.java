@@ -94,11 +94,9 @@ public class Example {
     public String column(String property) {
         if (propertyMap.containsKey(property)) {
             return propertyMap.get(property).getColumn();
-        }
-        else if (exists) {
+        } else if (exists) {
             throw new RuntimeException("当前实体类不包含名为" + property + "的属性!");
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -118,8 +116,7 @@ public class Example {
         if (rr != null) {
             entityClass = rr.value();
             localRefferClass.set(anEntityClass);
-        }
-        else {
+        } else {
             entityClass = anEntityClass;
         }
 
@@ -258,11 +255,9 @@ public class Example {
         private String column(String property) {
             if (propertyMap.containsKey(property)) {
                 return propertyMap.get(property).getColumn();
-            }
-            else if (exists) {
+            } else if (exists) {
                 throw new RuntimeException("当前实体类不包含名为" + property + "的属性!");
-            }
-            else {
+            } else {
                 return null;
             }
         }
@@ -270,11 +265,9 @@ public class Example {
         private String property(String property) {
             if (propertyMap.containsKey(property)) {
                 return property;
-            }
-            else if (exists) {
+            } else if (exists) {
                 throw new RuntimeException("当前实体类不包含名为" + property + "的属性!");
-            }
-            else {
+            } else {
                 return null;
             }
         }
@@ -515,8 +508,7 @@ public class Example {
             this.typeHandler = typeHandler;
             if (value instanceof List<?>) {
                 this.listValue = true;
-            }
-            else {
+            } else {
                 this.singleValue = true;
             }
         }

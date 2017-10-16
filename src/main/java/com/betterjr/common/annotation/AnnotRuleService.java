@@ -20,5 +20,6 @@ public @interface AnnotRuleService {
     RuleServiceType type() default RuleServiceType.FUNC;
 
     String description() default "";
+
     String groupName() default "";
 }

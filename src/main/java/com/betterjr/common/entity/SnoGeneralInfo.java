@@ -143,6 +143,7 @@ public class SnoGeneralInfo implements Serializable {
         dataLength = anDataLength;
     }
 
+    @Override
     public SnoGeneralInfo clone() {
         SnoGeneralInfo info = new SnoGeneralInfo();
         info.dataLength = this.dataLength;

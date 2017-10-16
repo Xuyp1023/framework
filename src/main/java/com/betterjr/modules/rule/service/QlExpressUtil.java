@@ -1,6 +1,9 @@
 package com.betterjr.modules.rule.service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
@@ -37,9 +40,10 @@ public class QlExpressUtil implements ApplicationContextAware, InitializingBean 
     private static ApplicationContext appContext;// spring上下文
     private List<String> defPackages = new ArrayList();
 
-    public static ExpressRunner getRunner(){
+    public static ExpressRunner getRunner() {
         return runner;
     }
+
     public void setDefPackages(List<String> anDefPackages) {
         defPackages = anDefPackages;
     }
@@ -76,21 +80,21 @@ public class QlExpressUtil implements ApplicationContextAware, InitializingBean 
         runner.setTrace(true);
         return runner.execute(qlExp, context, new ArrayList(), true, true, ExpressRunner.getLog());
     }
-    public static Object invoke(String qlExp, String anWorkType, Object anObj, List anErrList) throws Exception{
+
+    public static Object invoke(String qlExp, String anWorkType, Object anObj, List anErrList) throws Exception {
         runner.setTrace(true);
         Map<String, Object> map = null;
-        if (( anObj instanceof Map) && ("3".equals(anWorkType))){
-           map = (Map)anObj; 
-        }
-        else{
-           map = new HashMap();
-           map.put("inputParam", anObj); 
+        if ((anObj instanceof Map) && ("3".equals(anWorkType))) {
+            map = (Map) anObj;
+        } else {
+            map = new HashMap();
+            map.put("inputParam", anObj);
         }
         QLExpressContext context = new QLExpressContext(map, appContext);
-        
+
         return runner.execute(qlExp, context, anErrList, true, true, ExpressRunner.getLog());
     }
-    
+
     public void initRunner() {
         if (isInitialRunner == true) {
             return;
@@ -141,14 +145,14 @@ public class QlExpressUtil implements ApplicationContextAware, InitializingBean 
             try {
                 switch (funcType) {
                 case OBJECT:
-                    Object obj = this.appContext.getBean(func.getClassName());
+                    Object obj = QlExpressUtil.appContext.getBean(func.getClassName());
                     if (obj != null) {
-                        runner.addFunctionOfServiceMethod(func.getFeatureName(), obj, func.getFuncName(), findParamList(func.getParamList()),
-                                func.getErrorInfo());
-                    }
-                    else {
-                        throw new BytterDeclareException(40003, "runner.addFunctionOfServiceMethod has error, spring javabean " + func.getClassName()
-                                + ", not exits!");
+                        runner.addFunctionOfServiceMethod(func.getFeatureName(), obj, func.getFuncName(),
+                                findParamList(func.getParamList()), func.getErrorInfo());
+                    } else {
+                        throw new BytterDeclareException(40003,
+                                "runner.addFunctionOfServiceMethod has error, spring javabean " + func.getClassName()
+                                        + ", not exits!");
 
                     }
                     break;
@@ -171,9 +175,9 @@ public class QlExpressUtil implements ApplicationContextAware, InitializingBean 
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
-    }
+    public void afterPropertiesSet() throws Exception {}
 
+    @Override
     public void setApplicationContext(ApplicationContext aContext) throws BeansException {
         appContext = aContext;
     }

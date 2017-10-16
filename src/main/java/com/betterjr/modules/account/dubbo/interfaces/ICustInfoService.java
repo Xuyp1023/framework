@@ -15,13 +15,13 @@ public interface ICustInfoService {
      * @return
      */
     public String webQueryCustInfo();
-    
+
     /**
      * 查询当前操作员下的所有机构
      * @return
      */
     public Collection<CustInfo> queryCustInfo();
-    
+
     /***
      * 获取当前登录的客户号
      * @return

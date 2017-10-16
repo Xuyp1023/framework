@@ -6,7 +6,8 @@ package com.betterjr.common.data;
  *
  */
 public enum WebAccessType {
-    PERSON_PC("0"), PERSON_PC_PASS("1"), PERSON_MOBILE("0"), PERSON_MOBILE_PASS("1"), ORG_PC("6"), ORG_PC_PASS("7"), ORG_MOBILE("6"), ORG_MOBILE_PASS("7"), ALL("6");
+    PERSON_PC("0"), PERSON_PC_PASS("1"), PERSON_MOBILE("0"), PERSON_MOBILE_PASS("1"), ORG_PC("6"), ORG_PC_PASS(
+            "7"), ORG_MOBILE("6"), ORG_MOBILE_PASS("7"), ALL("6");
 
     private final String passType;
 
@@ -14,8 +15,8 @@ public enum WebAccessType {
         passType = anPassType;
     }
 
-    public String getPassType(){
-        
+    public String getPassType() {
+
         return this.passType;
     }
 }

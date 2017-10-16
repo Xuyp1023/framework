@@ -31,24 +31,24 @@ import nl.fountain.xelem.excel.Worksheet;
  * NamedRanges.
  */
 public class Address implements Comparable {
-    
-     /**
-      * The row index of this address.
-      */
+
+    /**
+     * The row index of this address.
+     */
     protected int r;
-    
+
     /**
      * The column index of this address.
      */
     protected int c;
-    
+
     private static int ABC_RADIX = 26;
-    
+
     /**
      * This constructor is protected.
      */
     protected Address() {}
-    
+
     /**
      * Constructs a new Address.
      * @param rowIndex		The row index of this Address.
@@ -58,7 +58,7 @@ public class Address implements Comparable {
         r = rowIndex;
         c = columnIndex;
     }
-    
+
     /**
      * Constructs a new Address.
      * The given string can be of A1-reference style, as used in Excel.
@@ -81,7 +81,7 @@ public class Address implements Comparable {
         r = calculateRow(a1_ref);
         c = calculateColumn(a1_ref);
     }
-    
+
     /**
      * Calculates the column number of a given string in A1-reference style.
      * Column indicator (letters) and row indicator (digits) may be intermingled.
@@ -107,7 +107,7 @@ public class Address implements Comparable {
         }
         return colnr;
     }
-    
+
     /**
      * Calculates the column notation in A1-reference style of a given column number.
      * A column number of 0 or less returns as an empty string ("").
@@ -131,20 +131,20 @@ public class Address implements Comparable {
         int af = 0;
         StringBuffer sb = new StringBuffer();
         int q;
-        while ((q = (columnNumber-af)/div) > 0) {
+        while ((q = (columnNumber - af) / div) > 0) {
             sb.insert(0, getDigit(q));
             af += div;
-            div *= ABC_RADIX;            
+            div *= ABC_RADIX;
         }
         return sb.toString();
     }
-    
+
     private static char getDigit(int q) {
         int r = q % ABC_RADIX;
         if (r == 0) r = ABC_RADIX;
         return (char) (r + 64);
     }
-    
+
     /**
      * Calculates the row number of a given string in A1-reference style.
      * Column indicator (letters) and row indicator (digits) may be intermingled.
@@ -157,7 +157,7 @@ public class Address implements Comparable {
     public static int calculateRow(String s) {
         int rownr = 0;
         int factor = 1;
-        for (int i = s.length() -1; i >=0; i--) {
+        for (int i = s.length() - 1; i >= 0; i--) {
             char ch = s.charAt(i);
             if (Character.isDigit(ch)) {
                 rownr += (ch - 48) * factor;
@@ -192,10 +192,10 @@ public class Address implements Comparable {
      * 	the sheet, <code>false</code> otherwise
      */
     public boolean isWithinSheet() {
-        return c >= Worksheet.firstColumn && c <= Worksheet.lastColumn 
-        	&& r >= Worksheet.firstRow && r <= Worksheet.lastRow;
+        return c >= Worksheet.firstColumn && c <= Worksheet.lastColumn && r >= Worksheet.firstRow
+                && r <= Worksheet.lastRow;
     }
-    
+
     /**
      * Translates the position of this address into an
      * A1-reference string.
@@ -222,7 +222,7 @@ public class Address implements Comparable {
         sb.append(c);
         return sb.toString();
     }
-    
+
     /**
      * Gets the absolute range-address of a rectangular range 
      * in R1C1-reference style. The rectangle is
@@ -239,7 +239,7 @@ public class Address implements Comparable {
     public String getAbsoluteRange(Address otherAddress) {
         return getAbsoluteRange(otherAddress.r, otherAddress.c);
     }
-    
+
     /**
      * Gets the absolute range-address of a rectangular range 
      * in R1C1-reference style. The rectangle is
@@ -281,7 +281,7 @@ public class Address implements Comparable {
         }
         return sb.toString();
     }
-    
+
     /**
      * Gets the absolute range-address of a collection of addresses
      * in R1C1-reference style.
@@ -300,12 +300,12 @@ public class Address implements Comparable {
         StringBuffer sb = new StringBuffer();
         Set<Address> adrs = new TreeSet<Address>(addresses);
         for (Address a : adrs) {
-            if (sb.length() > 0) sb.append(","); 
+            if (sb.length() > 0) sb.append(",");
             sb.append(a.getAbsoluteAddress());
         }
         return sb.toString();
     }
-    
+
     /**
      * Gets a relative reference from this address to another address 
      * in R1C1-reference style.
@@ -318,7 +318,7 @@ public class Address implements Comparable {
     public String getRefTo(Address otherAddress) {
         return getRefTo(otherAddress.r, otherAddress.c);
     }
-    
+
     /**
      * Gets a relative reference from this address to a cell at the 
      * intersection of row and column in R1C1-reference style.
@@ -346,7 +346,7 @@ public class Address implements Comparable {
         }
         return sb.toString();
     }
-    
+
     /**
      * Gets a relative reference from this address to a rectanglular range
      * in R1C1-reference style.
@@ -364,7 +364,7 @@ public class Address implements Comparable {
     public String getRefTo(Address address1, Address address2) {
         return getRefTo(address1.r, address1.c, address2.r, address2.c);
     }
-    
+
     /**
      * Gets a relative reference from this address to a rectanglular range
      * in R1C1-reference style.
@@ -393,7 +393,7 @@ public class Address implements Comparable {
         }
         return sb.toString();
     }
-    
+
     /**
      * Gets a relative reference from this address to an area.
      * 
@@ -403,7 +403,7 @@ public class Address implements Comparable {
     public String getRefTo(Area area) {
         return getRefTo(area.r1, area.c1, area.r2, area.c2);
     }
-    
+
     /**
      * Gets a relative reference from this address to a collection of
      * addresses in R1C1-reference style.
@@ -418,16 +418,16 @@ public class Address implements Comparable {
     public String getRefTo(Collection<Address> addresses) {
         if (addresses.size() == 0) {
             return null;
-        }   
+        }
         StringBuffer sb = new StringBuffer();
         Set<Address> adrs = new TreeSet<Address>(addresses);
         for (Address a : adrs) {
-            if (sb.length() > 0) sb.append(","); 
+            if (sb.length() > 0) sb.append(",");
             sb.append(getRefTo(a));
         }
         return sb.toString();
     }
-    
+
     /**
      * Returns a string representation of this address.
      * Composed as:
@@ -438,6 +438,7 @@ public class Address implements Comparable {
      * 
      * @return A string representation of this address.
      */
+    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer(this.getClass().getName());
         sb.append("[row=");
@@ -445,9 +446,9 @@ public class Address implements Comparable {
         sb.append(",column=");
         sb.append(c);
         sb.append("]");
-        return  sb.toString();
+        return sb.toString();
     }
-    
+
     /**
      * Specifies whether the object in the parameter is equal to this address.
      * Another object is equal to this address if
@@ -463,11 +464,12 @@ public class Address implements Comparable {
      * @return <code>true</code> if this address equals <code>obj</code>,
      * 			<code>false</code> otherwise.
      */
+    @Override
     public boolean equals(Object obj) {
         if (obj == null) return false;
         return this.toString().equals(obj.toString());
     }
-    
+
     /**
      * Compare this addres with the specified object for order. 
      * The specified object is cast to an address. Returns
@@ -488,17 +490,17 @@ public class Address implements Comparable {
      * @throws ClassCastException If the class of the specified object is not
      * 			equal to the class of this object.
      */
+    @Override
     public int compareTo(Object o) {
         if (!o.getClass().equals(this.getClass())) {
             throw new ClassCastException();
         }
         Address a = (Address) o;
-        //return Worksheet.lastColumn * (r - a.r) + (c - a.c);
+        // return Worksheet.lastColumn * (r - a.r) + (c - a.c);
         if (r == a.r) {
             return c - a.c;
         }
         return r - a.r;
     }
-    
 
 }

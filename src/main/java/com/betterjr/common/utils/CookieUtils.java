@@ -11,7 +11,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
- 
 /**
  * Cookie工具类
  * 
@@ -111,7 +110,6 @@ public class CookieUtils {
         return getCookie(request, response, name, true);
     }
 
-
     /**
      * 获得指定Cookie的值
      * 
@@ -125,7 +123,8 @@ public class CookieUtils {
      *            是否移除
      * @return 值
      */
-    public static String getCookie(HttpServletRequest request, HttpServletResponse response, String name, boolean isRemove) {
+    public static String getCookie(HttpServletRequest request, HttpServletResponse response, String name,
+            boolean isRemove) {
         String value = null;
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {

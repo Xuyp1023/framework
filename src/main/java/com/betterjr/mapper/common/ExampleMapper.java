@@ -24,7 +24,12 @@
 
 package com.betterjr.mapper.common;
 
-import com.betterjr.mapper.common.example.*;
+import com.betterjr.mapper.common.example.DeleteByExampleMapper;
+import com.betterjr.mapper.common.example.SelectByExampleMapper;
+import com.betterjr.mapper.common.example.SelectCountByExampleMapper;
+import com.betterjr.mapper.common.example.SelectSumByExampleMapper;
+import com.betterjr.mapper.common.example.UpdateByExampleMapper;
+import com.betterjr.mapper.common.example.UpdateByExampleSelectiveMapper;
 
 /**
  * 通用Mapper接口,Example查询
@@ -32,12 +37,8 @@ import com.betterjr.mapper.common.example.*;
  * @param <T> 不能为空
  * @author liuzh
  */
-public interface ExampleMapper<T> extends
-        SelectByExampleMapper<T>,
-        SelectCountByExampleMapper<T>,
-        SelectSumByExampleMapper<T>,
-        DeleteByExampleMapper<T>,
-        UpdateByExampleMapper<T>,
-        UpdateByExampleSelectiveMapper<T> {
+public interface ExampleMapper<T>
+        extends SelectByExampleMapper<T>, SelectCountByExampleMapper<T>, SelectSumByExampleMapper<T>,
+        DeleteByExampleMapper<T>, UpdateByExampleMapper<T>, UpdateByExampleSelectiveMapper<T> {
 
 }

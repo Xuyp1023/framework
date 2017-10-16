@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,20 +43,20 @@ public class BetterClassUtils {
             System.out.println(i + ":" + list.get(i));
         }
     }
-    
-    public static Class findInterfaceMatchAnnotation(Class anClass,Class annoCls){
-        Annotation anno=anClass.getAnnotation(annoCls);
-         if(anno!=null){
-             return anClass;
-         }
-         Class<?>[] clsA= anClass.getInterfaces();
-         for(Class cls:clsA){
-             anno=cls.getAnnotation(annoCls);
-             if(anno!=null){
-                 return cls;
-             }
-         }
-         return null;
+
+    public static Class findInterfaceMatchAnnotation(Class anClass, Class annoCls) {
+        Annotation anno = anClass.getAnnotation(annoCls);
+        if (anno != null) {
+            return anClass;
+        }
+        Class<?>[] clsA = anClass.getInterfaces();
+        for (Class cls : clsA) {
+            anno = cls.getAnnotation(annoCls);
+            if (anno != null) {
+                return cls;
+            }
+        }
+        return null;
     }
 
     /**
@@ -68,19 +69,18 @@ public class BetterClassUtils {
      * @return
      */
     public static Class findClassByName(String anClassName, List<String> anPackgeList) {
-        if (BetterStringUtils.isBlank(anClassName)) {
+        if (StringUtils.isBlank(anClassName)) {
 
             return null;
         }
         for (String tmpClassPath : anPackgeList) {
-            if (BetterStringUtils.isNotBlank(tmpClassPath)) {
+            if (StringUtils.isNotBlank(tmpClassPath)) {
                 tmpClassPath = tmpClassPath.trim().concat(".").concat(anClassName.trim());
-            }
-            else{
+            } else {
                 tmpClassPath = anClassName;
             }
             try {
-                if (tmpClassPath.indexOf("Map") > 0){
+                if (tmpClassPath.indexOf("Map") > 0) {
                     System.out.println(tmpClassPath);
                 }
                 Class cc = Class.forName(tmpClassPath);
@@ -93,7 +93,8 @@ public class BetterClassUtils {
         throw new BytterClassNotFoundException("declare class " + anClassName + ", not fund in declare Packages");
     }
 
-    public static List<Class<?>> getClassList(String pkgName, boolean isRecursive, Class<? extends Annotation> annotation) {
+    public static List<Class<?>> getClassList(String pkgName, boolean isRecursive,
+            Class<? extends Annotation> annotation) {
         List<Class<?>> classList = new ArrayList<Class<?>>();
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
@@ -109,8 +110,7 @@ public class BetterClassUtils {
                     if ("file".equals(protocol)) {
                         // 本地自己可见的代码
                         findClassName(classList, pkgName, pkgPath, isRecursive, annotation);
-                    }
-                    else if ("jar".equals(protocol)) {
+                    } else if ("jar".equals(protocol)) {
                         // 引用第三方jar的代码
                         findClassName(classList, pkgName, url, isRecursive, annotation);
                     }
@@ -138,8 +138,7 @@ public class BetterClassUtils {
                     // .class 文件的情况
                     String clazzName = getClassName(pkgName, fileName);
                     addClassName(clazzList, clazzName, annotation);
-                }
-                else {
+                } else {
                     // 文件夹的情况
                     if (isRecursive) {
                         // 需要继续查找该文件夹/包名下的类
@@ -157,8 +156,8 @@ public class BetterClassUtils {
      * 
      * @throws IOException
      * */
-    public static void findClassName(List<Class<?>> clazzList, String pkgName, URL url, boolean isRecursive, Class<? extends Annotation> annotation)
-            throws IOException {
+    public static void findClassName(List<Class<?>> clazzList, String pkgName, URL url, boolean isRecursive,
+            Class<? extends Annotation> annotation) throws IOException {
         JarURLConnection jarURLConnection = (JarURLConnection) url.openConnection();
         JarFile jarFile = jarURLConnection.getJarFile();
         logger.debug("jarFile:" + jarFile.getName());
@@ -170,7 +169,7 @@ public class BetterClassUtils {
             int endIndex = clazzName.lastIndexOf(".");
             String prefix = null;
             if (endIndex > 0) {
-            	clazzName = clazzName.substring(0, endIndex);
+                clazzName = clazzName.substring(0, endIndex);
                 endIndex = clazzName.lastIndexOf(".");
                 if (endIndex > 0) {
                     prefix = clazzName.substring(0, endIndex);
@@ -179,10 +178,9 @@ public class BetterClassUtils {
             if (prefix != null && jarEntryName.endsWith(".class")) {
                 // System.out.println("prefix:" + prefix +" pkgName:" + pkgName);
                 if (prefix.equals(pkgName)) {
-                    logger.debug("jar entryName:" + jarEntryName+" ; className:"+clazzName);
+                    logger.debug("jar entryName:" + jarEntryName + " ; className:" + clazzName);
                     addClassName(clazzList, clazzName, annotation);
-                }
-                else if (isRecursive && prefix.startsWith(pkgName)) {
+                } else if (isRecursive && prefix.startsWith(pkgName)) {
                     // 遍历子包名：子类
                     logger.debug("jar entryName:" + jarEntryName + " isRecursive:" + isRecursive);
                     addClassName(clazzList, clazzName, annotation);
@@ -217,7 +215,8 @@ public class BetterClassUtils {
         return clazzName;
     }
 
-    private static void addClassName(List<Class<?>> clazzList, String clazzName, Class<? extends Annotation> annotation) {
+    private static void addClassName(List<Class<?>> clazzList, String clazzName,
+            Class<? extends Annotation> annotation) {
         if (clazzList != null && clazzName != null) {
             Class<?> clazz = null;
             try {
@@ -236,8 +235,7 @@ public class BetterClassUtils {
             if (clazz != null) {
                 if (annotation == null) {
                     clazzList.add(clazz);
-                }
-                else if (clazz.isAnnotationPresent(annotation)) {
+                } else if (clazz.isAnnotationPresent(annotation)) {
                     clazzList.add(clazz);
                 }
             }

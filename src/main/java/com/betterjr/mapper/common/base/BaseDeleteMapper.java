@@ -33,8 +33,6 @@ import com.betterjr.mapper.common.base.delete.DeleteMapper;
  * @param <T> 不能为空
  * @author liuzh
  */
-public interface BaseDeleteMapper<T> extends
-        DeleteMapper<T>,
-        DeleteByPrimaryKeyMapper<T> {
+public interface BaseDeleteMapper<T> extends DeleteMapper<T>, DeleteByPrimaryKeyMapper<T> {
 
 }

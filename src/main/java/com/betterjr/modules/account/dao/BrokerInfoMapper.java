@@ -5,5 +5,4 @@ import com.betterjr.mapper.common.Mapper;
 import com.betterjr.modules.account.entity.BrokerInfo;
 
 @BetterjrMapper
-public interface BrokerInfoMapper extends Mapper<BrokerInfo> {
-}
+public interface BrokerInfoMapper extends Mapper<BrokerInfo> {}

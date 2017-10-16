@@ -1,5 +1,7 @@
 package com.betterjr.modules.rule.validator;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.modules.rule.RuleCheckResult;
 import com.betterjr.modules.rule.entity.RuleBusiness;
@@ -14,16 +16,16 @@ public class DataEqualsValidator extends BaseDataValidator {
     }
 
     @Override
-    public boolean evaluate(WorkRuleValidator anValidator, QLExpressContext anContext, RuleCheckResult anResult, RuleBusiness anRuleBusin,
-            Object anValue, Object anBusinValue, String anMessage) {
+    public boolean evaluate(WorkRuleValidator anValidator, QLExpressContext anContext, RuleCheckResult anResult,
+            RuleBusiness anRuleBusin, Object anValue, Object anBusinValue, String anMessage) {
         if (anValue == null) {
-            
+
             return false;
         }
-        if (BetterStringUtils.isBlank(anMessage)){
+        if (StringUtils.isBlank(anMessage)) {
             anMessage = "数据不同！";
         }
-        
+
         return returnValue(anValue.equals(anBusinValue), anResult, anMessage);
     }
 

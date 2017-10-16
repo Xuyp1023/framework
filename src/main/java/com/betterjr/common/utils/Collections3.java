@@ -5,19 +5,20 @@ package com.betterjr.common.utils;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.betterjr.common.utils.reflection.ReflectionUtils;
-
-import java.util.*;
 
 /**
  * Collections工具集. 在JDK的Collections和Guava的Collections2后, 命名为Collections3.
@@ -39,12 +40,14 @@ public class Collections3 {
      *            要提取为Map中的Value值的属性名.
      */
     @SuppressWarnings("unchecked")
-    public static Map extractToMap(final Collection collection, final String keyPropertyName, final String valuePropertyName) {
+    public static Map extractToMap(final Collection collection, final String keyPropertyName,
+            final String valuePropertyName) {
         Map map = new HashMap(collection.size());
 
         try {
             for (Object obj : collection) {
-                map.put(PropertyUtils.getProperty(obj, keyPropertyName), PropertyUtils.getProperty(obj, valuePropertyName));
+                map.put(PropertyUtils.getProperty(obj, keyPropertyName),
+                        PropertyUtils.getProperty(obj, valuePropertyName));
             }
         }
         catch (Exception e) {
@@ -53,7 +56,7 @@ public class Collections3 {
 
         return map;
     }
-    
+
     /**
      * 提取集合中的对象的一个属性(通过Getter函数), 组合成Map<属性，原对象>.
      * 
@@ -154,7 +157,8 @@ public class Collections3 {
      * @param separator
      *            分隔符.
      */
-    public static String extractToString(final Collection collection, final String propertyName, final String separator) {
+    public static String extractToString(final Collection collection, final String propertyName,
+            final String separator) {
         List list = extractToList(collection, propertyName);
         return StringUtils.join(list, separator);
     }
@@ -200,12 +204,12 @@ public class Collections3 {
         if (anArrStr == null || anArrStr.length == 0) {
             return true;
         }
-        for(String tmpStr : anArrStr){
-           if (BetterStringUtils.isNotBlank(tmpStr)){
-               return false;
-           }
+        for (String tmpStr : anArrStr) {
+            if (StringUtils.isNotBlank(tmpStr)) {
+                return false;
+            }
         }
-        
+
         return true;
     }
 
@@ -216,7 +220,7 @@ public class Collections3 {
 
         return (collection == null || collection.length == 0);
     }
-    
+
     /**
      * 取得Collection的第一个元素，如果collection为空返回null.
      */
@@ -327,7 +331,7 @@ public class Collections3 {
                 Object obj = anMap.get(tmpKey);
                 if (obj != null) {
                     if (obj instanceof String) {
-                        if (BetterStringUtils.isBlank((String) obj)) {
+                        if (StringUtils.isBlank((String) obj)) {
                             continue;
                         }
                     }
@@ -338,7 +342,7 @@ public class Collections3 {
 
         return termMap;
     }
-    
+
     public static Map filterMapEmptyObject(Map<String, Object> anMap) {
         Map<String, Object> termMap = new HashMap();
         if (isEmpty(anMap) == false) {
@@ -346,7 +350,7 @@ public class Collections3 {
                 Object obj = anMap.get(tmpKey);
                 if (obj != null) {
                     if (obj instanceof String) {
-                        if (BetterStringUtils.isBlank((String) obj)) {
+                        if (StringUtils.isBlank((String) obj)) {
                             continue;
                         }
                     }
@@ -354,7 +358,7 @@ public class Collections3 {
                 }
             }
         }
-        
+
         return termMap;
     }
 
@@ -389,8 +393,7 @@ public class Collections3 {
                 for (int i = 0; i < k; i++) {
                     list.add(Array.get(anObj, i));
                 }
-            }
-            else {
+            } else {
                 list.add(anObj);
             }
         }
@@ -436,15 +439,12 @@ public class Collections3 {
         }
         if (anObj instanceof Map) {
             return isEmpty((Map) anObj);
-        }
-        else if (anObj instanceof Collection) {
+        } else if (anObj instanceof Collection) {
             return isEmpty((Collection) anObj);
-        }
-        else if (anObj instanceof String) {
+        } else if (anObj instanceof String) {
 
-            return BetterStringUtils.isBlank((String) anObj);
-        }
-        else {
+            return StringUtils.isBlank((String) anObj);
+        } else {
             if (anObj.getClass().isArray()) {
                 int k = Array.getLength(anObj);
                 for (int i = 0; i < k; i++) {
@@ -463,14 +463,14 @@ public class Collections3 {
      * @param anObj
      * @return
      */
-    public static boolean hasEmptyObject(Object ... anObjs){
-       for(Object obj : anObjs){
-          if (isEmptyObject(obj)){
-              
-              return true;
-          }
-       }
-       
-       return false;
+    public static boolean hasEmptyObject(Object... anObjs) {
+        for (Object obj : anObjs) {
+            if (isEmptyObject(obj)) {
+
+                return true;
+            }
+        }
+
+        return false;
     }
 }

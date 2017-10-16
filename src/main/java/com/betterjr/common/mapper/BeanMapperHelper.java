@@ -10,13 +10,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 
 import com.betterjr.common.data.SimpleDataEntity;
 import com.betterjr.common.exception.BytterException;
 import com.betterjr.common.exception.BytterFieldNotFoundException;
 import com.betterjr.common.utils.BetterDateUtils;
 import com.betterjr.common.utils.BetterStringUtils;
-import com.betterjr.common.utils.reflection.ReflectionUtils; 
+import com.betterjr.common.utils.reflection.ReflectionUtils;
 
 public class BeanMapperHelper {
 
@@ -25,11 +26,11 @@ public class BeanMapperHelper {
     private Map<Method, Object> methodMap = new HashMap();
     public static final Object[] objs = new Object[] {};
     public static final Class[] nullClass = new Class[] {};
-    //public static Map<Class, Map<String, Method>> getMethodMap = initMethdMap(true);
+    // public static Map<Class, Map<String, Method>> getMethodMap = initMethdMap(true);
     public static Map<Class, Map<String, Method>> setMethodMap = initMethdMap(false);
 
     private static Map initMethdMap(boolean anReader) {
-        // SaleRequestInfo.class, SaleAccoRequestInfo.class, SaleSimpleRequestObj.class 
+        // SaleRequestInfo.class, SaleAccoRequestInfo.class, SaleSimpleRequestObj.class
         Class[] initMethodClasses = new Class[] {};
         Map<Class, Map<String, Method>> map = new HashMap();
         Map methodMap;
@@ -67,16 +68,15 @@ public class BeanMapperHelper {
                 try {
                     mm.invoke(anObj, obj);
                 }
-                catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                }
+                catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {}
             }
         }
     }
-    
+
     public static void invoke(Object source, Object destObj, Map anFieldDefMap) {
-        
+
     }
-    
+
     public static void invoke(Object source, Object destObj, String anFieldMap) {
         if (source == null || destObj == null) {
             return;
@@ -105,11 +105,10 @@ public class BeanMapperHelper {
             if (Date.class.isAssignableFrom(anClass)) {
                 try {
                     java.util.Date dd;
-                    if (BetterStringUtils.isBlank(anPatten)) {
+                    if (StringUtils.isBlank(anPatten)) {
                         dd = BetterDateUtils.parseDate(tmpStr);
-                    }
-                    else {
-                        dd = BetterDateUtils.parseDate(tmpStr, anPatten);
+                    } else {
+                        dd = DateUtils.parseDate(tmpStr, anPatten);
                     }
                     if (anClass.equals(Date.class)) {
 
@@ -118,14 +117,13 @@ public class BeanMapperHelper {
                     Constructor cc = anClass.getConstructor(long.class);
                     return cc.newInstance(dd.getTime());
                 }
-                catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
-                        | InvocationTargetException | ParseException e) {
+                catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
+                        | IllegalArgumentException | InvocationTargetException | ParseException e) {
                     e.printStackTrace();
 
                     return null;
                 }
-            }
-            else if (String.class.isAssignableFrom(anClass)) {
+            } else if (String.class.isAssignableFrom(anClass)) {
 
                 return tmpStr;
             }
@@ -134,20 +132,19 @@ public class BeanMapperHelper {
             try {
                 if (anClass == Integer.class) {
                     mName = "parseInt";
-                }
-                else if (anClass == BigDecimal.class) {
+                } else if (anClass == BigDecimal.class) {
 
                     return new BigDecimal(tmpStr);
                 }
                 method = anClass.getMethod(mName, String.class);
                 return method.invoke(null, tmpStr);
             }
-            catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
+                    | InvocationTargetException e) {
                 e.printStackTrace();
                 return null;
             }
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -214,8 +211,7 @@ public class BeanMapperHelper {
                 obj = ent.getKey().invoke(anSource, objs);
                 if (anMap) {
                     workMap.put(ent.getValue(), obj);
-                }
-                else {
+                } else {
                     destM = (Method) ent.getValue();
                     destM.invoke(anDest, obj);
                 }
@@ -232,23 +228,22 @@ public class BeanMapperHelper {
         String dName;
         Method sourceMethod;
         String tmpMethodName;
-        for (String tmpStr : BetterStringUtils.split(anFieldMap, ";")) {
+        for (String tmpStr : StringUtils.split(anFieldMap, ";")) {
             try {
                 if (Map.class.isAssignableFrom(anDest)) {
-                    tmpMethodName = ReflectionUtils.GETTER_PREFIX + StringUtils.capitalize(BetterStringUtils.trim(tmpStr));
+                    tmpMethodName = ReflectionUtils.GETTER_PREFIX
+                            + StringUtils.capitalize(StringUtils.trim(tmpStr));
                     sourceMethod = anSource.getMethod(tmpMethodName, new Class[] {});
-                    methodMap.put(sourceMethod, BetterStringUtils.trim(tmpStr));
-                }
-                else {
-                    String[] subTmpArr = BetterStringUtils.split(tmpStr, ":");
-                    sName = BetterStringUtils.trim(subTmpArr[0]);
-                    if (subTmpArr.length > 1){
-                        dName = BetterStringUtils.trim(subTmpArr[1]);
-                    }
-                    else{
+                    methodMap.put(sourceMethod, StringUtils.trim(tmpStr));
+                } else {
+                    String[] subTmpArr = StringUtils.split(tmpStr, ":");
+                    sName = StringUtils.trim(subTmpArr[0]);
+                    if (subTmpArr.length > 1) {
+                        dName = StringUtils.trim(subTmpArr[1]);
+                    } else {
                         dName = sName;
                     }
-                    
+
                     if (subTmpArr.length == 2) { // && (sName.equals(dName) == false)
                         tmpMethodName = ReflectionUtils.GETTER_PREFIX + StringUtils.capitalize(sName);
                         sourceMethod = anSource.getMethod(tmpMethodName, new Class[] {});

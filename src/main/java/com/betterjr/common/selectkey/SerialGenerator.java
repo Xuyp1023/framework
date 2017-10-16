@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.mgt.eis.SessionIdGenerator;
 import org.slf4j.Logger;
@@ -104,6 +105,7 @@ public class SerialGenerator implements SessionIdGenerator {
         return Encodes.encodeBase62(randomBytes);
     }
 
+    @Override
     public Serializable generateId(Session session) {
 
         return uuid();
@@ -122,7 +124,7 @@ public class SerialGenerator implements SessionIdGenerator {
 
     public static int getIntValue(String anKey) {
 
-        return (int)generator.selectKeyGenIDService.getLongValue(anKey);
+        return (int) generator.selectKeyGenIDService.getLongValue(anKey);
     }
 
     public static long getCustNo() {
@@ -171,20 +173,18 @@ public class SerialGenerator implements SessionIdGenerator {
         }
         if (tmpStr.length() > anLen) {
             tmpStr = tmpStr.substring(tmpStr.length() - anLen);
-        }
-        else {
+        } else {
             for (int i = tmpStr.length(); i < anLen; i++) {
                 tmpStr = "0".concat(tmpStr);
             }
         }
         if (anUseDate) {
             return BetterDateUtils.getNumDate().concat(tmpStr);
-        }
-        else {
+        } else {
             return tmpStr;
         }
     }
-    
+
     /**
      * 根据客户号和业务类型，获取循环序列号，循环的信息定义在序列数据表中<BR>
      * 循环序号号的KEY值是：客户号+“_” + 业务类型
@@ -192,46 +192,46 @@ public class SerialGenerator implements SessionIdGenerator {
      * @param anWorkType 业务类型
      * @return
      */
-    public static String findAppNoWithDayAndType(Long anCustNo, String anWorkType){
-       if (anCustNo == null){
-           
-           return "";
-       }
-       
-       if (anWorkType == null){
-           
-           anWorkType = "";
-       }
-       
-       return anWorkType.concat(findAppNoWithDay(Long.toString(anCustNo).concat("_").concat(anWorkType)));
+    public static String findAppNoWithDayAndType(Long anCustNo, String anWorkType) {
+        if (anCustNo == null) {
+
+            return "";
+        }
+
+        if (anWorkType == null) {
+
+            anWorkType = "";
+        }
+
+        return anWorkType.concat(findAppNoWithDay(Long.toString(anCustNo).concat("_").concat(anWorkType)));
     }
-    
+
     /**
      * 根据业务类型，获取循环序列号，循环的信息定义在序列数据表中
      * @param anWorkType
      * @return
      */
-    public static String findAppNoWithDayAndType(String anWorkType){
-        if (BetterStringUtils.isBlank(anWorkType)){
-            
+    public static String findAppNoWithDayAndType(String anWorkType) {
+        if (StringUtils.isBlank(anWorkType)) {
+
             return "";
         }
-        
+
         return anWorkType.concat(findAppNoWithDay(anWorkType));
     }
-    
+
     /**
      * 根据业务类型获取循环序列号
      * @param anWorkType 业务类型
      * @return
      */
-    public static String findAppNoWithDay(String anWorkType){
-       
+    public static String findAppNoWithDay(String anWorkType) {
+
         return generator.findAppNo(anWorkType);
     }
-    
-    private String findAppNo(String anWorkType){
-        
-      return this.selectKeyGenIDService.findAppNoWithDay(anWorkType); 
+
+    private String findAppNo(String anWorkType) {
+
+        return this.selectKeyGenIDService.findAppNoWithDay(anWorkType);
     }
 }

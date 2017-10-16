@@ -24,6 +24,19 @@
 
 package com.betterjr.mapper.mapperhelper;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.SelectProvider;
@@ -32,10 +45,6 @@ import org.apache.ibatis.builder.annotation.ProviderSqlSource;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
-
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 处理主要逻辑，最关键的一个类
@@ -139,13 +148,14 @@ public class MapperHelper {
         // TODO 先默认
         return Style.camelhump;
     }
+
     /**
      * Spring初始化方法，使用Spring时需要配置init-method="initMapper"
      */
     public void initMapper() {
-        //只有Spring会执行这个方法,所以Spring配置的时候,从这儿可以尝试获取Spring的版本
-        //先判断Spring版本,对下面的操作有影响
-        //Spring4以上支持泛型注入,因此可以扫描通用Mapper
+        // 只有Spring会执行这个方法,所以Spring配置的时候,从这儿可以尝试获取Spring的版本
+        // 先判断Spring版本,对下面的操作有影响
+        // Spring4以上支持泛型注入,因此可以扫描通用Mapper
         initSpringVersion();
         for (SqlSession sqlSession : sqlSessions) {
             processConfiguration(sqlSession.getConfiguration());
@@ -157,9 +167,10 @@ public class MapperHelper {
      */
     private void initSpringVersion() {
         try {
-            //反射获取SpringVersion
+            // 反射获取SpringVersion
             Class<?> springVersionClass = Class.forName("org.springframework.core.SpringVersion");
-            springVersion = (String) springVersionClass.getDeclaredMethod("getVersion", new Class<?>[0]).invoke(null, new Object[0]);
+            springVersion = (String) springVersionClass.getDeclaredMethod("getVersion", new Class<?>[0]).invoke(null,
+                    new Object[0]);
             spring = true;
             if (springVersion.indexOf(".") > 0) {
                 int MajorVersion = Integer.parseInt(springVersion.substring(0, springVersion.indexOf(".")));
@@ -169,7 +180,8 @@ public class MapperHelper {
                     spring4 = false;
                 }
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             spring = false;
             spring4 = false;
         }
@@ -243,15 +255,18 @@ public class MapperHelper {
         }
         MapperTemplate mapperTemplate = null;
         try {
-            mapperTemplate = (MapperTemplate) templateClass.getConstructor(Class.class, MapperHelper.class).newInstance(mapperClass, this);
-        } catch (Exception e) {
+            mapperTemplate = (MapperTemplate) templateClass.getConstructor(Class.class, MapperHelper.class)
+                    .newInstance(mapperClass, this);
+        }
+        catch (Exception e) {
             throw new RuntimeException("实例化MapperTemplate对象失败:" + e.getMessage());
         }
-        //注册方法
+        // 注册方法
         for (String methodName : methodSet) {
             try {
                 mapperTemplate.addMethodMap(methodName, templateClass.getMethod(methodName, MappedStatement.class));
-            } catch (NoSuchMethodException e) {
+            }
+            catch (NoSuchMethodException e) {
                 throw new RuntimeException(templateClass.getCanonicalName() + "中缺少" + methodName + "方法!");
             }
         }
@@ -268,7 +283,7 @@ public class MapperHelper {
         if (!registerMapper.containsKey(mapperClass)) {
             registerMapper.put(mapperClass, fromMapperClass(mapperClass));
         }
-        //自动注册继承的接口
+        // 自动注册继承的接口
         Class<?>[] interfaces = mapperClass.getInterfaces();
         if (interfaces != null && interfaces.length > 0) {
             for (Class<?> anInterface : interfaces) {
@@ -286,7 +301,8 @@ public class MapperHelper {
     public void registerMapper(String mapperClass) {
         try {
             registerMapper(Class.forName(mapperClass));
-        } catch (ClassNotFoundException e) {
+        }
+        catch (ClassNotFoundException e) {
             throw new RuntimeException("注册通用Mapper[" + mapperClass + "]失败，找不到该通用Mapper!");
         }
     }
@@ -313,7 +329,6 @@ public class MapperHelper {
         config.BEFORE = "BEFORE".equalsIgnoreCase(order);
     }
 
-  
     /**
      * 设置全局的catalog,默认为空，如果设置了值，操作表时的sql会是catalog.tablename
      *
@@ -370,6 +385,7 @@ public class MapperHelper {
     public void setUUID(String UUID) {
         config.UUID = UUID;
     }
+
     /**
      * 获取主键自增回写SQL
      *
@@ -379,7 +395,7 @@ public class MapperHelper {
         if (config.IDENTITY != null && config.IDENTITY.length() > 0) {
             return config.IDENTITY;
         }
-        //针对mysql的默认值
+        // 针对mysql的默认值
         return IdentityDialect.MYSQL.getIdentityRetrievalStatement();
     }
 
@@ -392,8 +408,7 @@ public class MapperHelper {
         IdentityDialect identityDialect = IdentityDialect.getDatabaseDialect(IDENTITY);
         if (identityDialect != null) {
             config.IDENTITY = identityDialect.getIdentityRetrievalStatement();
-        }
-        else {
+        } else {
             config.IDENTITY = IDENTITY;
         }
     }
@@ -428,6 +443,7 @@ public class MapperHelper {
     public void setSeqFormat(String seqFormat) {
         config.seqFormat = seqFormat;
     }
+
     /**
      * 获取表名
      *
@@ -438,7 +454,7 @@ public class MapperHelper {
         EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
         String prefix = entityTable.getPrefix();
         if (prefix.equals("")) {
-            //使用全局配置
+            // 使用全局配置
             prefix = getPrefix();
         }
         if (!prefix.equals("")) {
@@ -500,8 +516,9 @@ public class MapperHelper {
             if (mapperTemplate != null) {
                 mapperTemplate.setSqlSource(ms);
             }
-        } catch (Exception e) {
-        	e.printStackTrace();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException("调用方法异常:" + e.getMessage());
         }
     }
@@ -551,12 +568,11 @@ public class MapperHelper {
             catch (IllegalArgumentException e) {
                 throw new RuntimeException(styleStr + "不是合法的Style值!");
             }
-        }
-        else {
+        } else {
             // 默认驼峰
             this.style = Style.camelhump;
         }
-        //注册通用接口
+        // 注册通用接口
         String mapper = properties.getProperty("mappers");
         if (mapper != null && mapper.length() > 0) {
             String[] mappers = mapper.split(",");
@@ -576,7 +592,7 @@ public class MapperHelper {
      */
     public void processConfiguration(Configuration configuration) {
         Collection<MappedStatement> collection = configuration.getMappedStatements();
-        //防止反复处理一个
+        // 防止反复处理一个
         if (collectionSet.contains(collection)) {
             return;
         } else {
@@ -594,7 +610,7 @@ public class MapperHelper {
                     }
                 }
             }
-            //处理过程中可能会新增selectKey，导致ms增多，所以这里判断大小，重新循环
+            // 处理过程中可能会新增selectKey，导致ms增多，所以这里判断大小，重新循环
             if (collection.size() != size) {
                 size = collection.size();
                 iterator = collection.iterator();
@@ -606,10 +622,11 @@ public class MapperHelper {
      * IDENTITY的可选值
      */
     public enum IdentityDialect {
-        DB2("VALUES IDENTITY_VAL_LOCAL()"), MYSQL("SELECT LAST_INSERT_ID()"), SQLSERVER("SELECT SCOPE_IDENTITY()"), CLOUDSCAPE(
-                "VALUES IDENTITY_VAL_LOCAL()"), DERBY("VALUES IDENTITY_VAL_LOCAL()"), HSQLDB("CALL IDENTITY()"), SYBASE("SELECT @@IDENTITY"), DB2_MF(
-                        "SELECT IDENTITY_VAL_LOCAL() FROM SYSIBM.SYSDUMMY1"), INFORMIX(
-                                "select dbinfo('sqlca.sqlerrd1') from systables where tabid=1");
+        DB2("VALUES IDENTITY_VAL_LOCAL()"), MYSQL("SELECT LAST_INSERT_ID()"), SQLSERVER(
+                "SELECT SCOPE_IDENTITY()"), CLOUDSCAPE("VALUES IDENTITY_VAL_LOCAL()"), DERBY(
+                        "VALUES IDENTITY_VAL_LOCAL()"), HSQLDB("CALL IDENTITY()"), SYBASE("SELECT @@IDENTITY"), DB2_MF(
+                                "SELECT IDENTITY_VAL_LOCAL() FROM SYSIBM.SYSDUMMY1"), INFORMIX(
+                                        "select dbinfo('sqlca.sqlerrd1') from systables where tabid=1");
 
         private String identityRetrievalStatement;
 
@@ -621,29 +638,21 @@ public class MapperHelper {
             IdentityDialect returnValue = null;
             if ("DB2".equalsIgnoreCase(database)) {
                 returnValue = DB2;
-            }
-            else if ("MySQL".equalsIgnoreCase(database)) {
+            } else if ("MySQL".equalsIgnoreCase(database)) {
                 returnValue = MYSQL;
-            }
-            else if ("SqlServer".equalsIgnoreCase(database)) {
+            } else if ("SqlServer".equalsIgnoreCase(database)) {
                 returnValue = SQLSERVER;
-            }
-            else if ("Cloudscape".equalsIgnoreCase(database)) {
+            } else if ("Cloudscape".equalsIgnoreCase(database)) {
                 returnValue = CLOUDSCAPE;
-            }
-            else if ("Derby".equalsIgnoreCase(database)) {
+            } else if ("Derby".equalsIgnoreCase(database)) {
                 returnValue = DERBY;
-            }
-            else if ("HSQLDB".equalsIgnoreCase(database)) {
+            } else if ("HSQLDB".equalsIgnoreCase(database)) {
                 returnValue = HSQLDB;
-            }
-            else if ("SYBASE".equalsIgnoreCase(database)) {
+            } else if ("SYBASE".equalsIgnoreCase(database)) {
                 returnValue = SYBASE;
-            }
-            else if ("DB2_MF".equalsIgnoreCase(database)) {
+            } else if ("DB2_MF".equalsIgnoreCase(database)) {
                 returnValue = DB2_MF;
-            }
-            else if ("Informix".equalsIgnoreCase(database)) {
+            } else if ("Informix".equalsIgnoreCase(database)) {
                 returnValue = INFORMIX;
             }
             return returnValue;

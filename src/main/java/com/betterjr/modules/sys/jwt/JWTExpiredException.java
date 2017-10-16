@@ -1,7 +1,7 @@
 package com.betterjr.modules.sys.jwt;
 
 public class JWTExpiredException extends JWTVerifyException {
-    
+
     private static final long serialVersionUID = 6899250797022324704L;
     private long expiration;
 

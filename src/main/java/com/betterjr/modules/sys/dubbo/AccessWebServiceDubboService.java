@@ -10,6 +10,7 @@ package com.betterjr.modules.sys.dubbo;
 import java.security.cert.X509Certificate;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,6 @@ public class AccessWebServiceDubboService implements IAccessWebService {
 
     @Autowired
     private CustOperatorService custOperatorService;
-
 
     /* (non-Javadoc)
      * @see com.betterjr.modules.sys.dubbo.interfaces.IAccessWebService#login(java.util.Map)
@@ -81,14 +81,15 @@ public class AccessWebServiceDubboService implements IAccessWebService {
                 return null;
             }
 
-            final CustOperatorInfo operator = custOperatorService.findCustOperatorByOperCode(baseCertInfo.getOperOrg(), operCode);
+            final CustOperatorInfo operator = custOperatorService.findCustOperatorByOperCode(baseCertInfo.getOperOrg(),
+                    operCode);
             if (operator == null) {
                 logger.error("access ticket operCode错误: token=" + operCode);
                 return null;
             }
 
             // 验证证书 以及 用户
-            if (certInfo.validCertInfo(baseCertInfo) && BetterStringUtils.equals(operator.getStatus(), "1")) {
+            if (certInfo.validCertInfo(baseCertInfo) && StringUtils.equals(operator.getStatus(), "1")) {
                 final String ticket = SignHelper.randomBase64(40);
 
                 param.put("operOrg", baseCertInfo.getOperOrg());
@@ -100,7 +101,6 @@ public class AccessWebServiceDubboService implements IAccessWebService {
         logger.error("access ticket 验签错误: data=" + data + " sign=" + anSign + " serialNo=" + certInfo.getSerialNo());
         return null;
     }
-
 
     /* (non-Javadoc)
      * @see com.betterjr.modules.sys.dubbo.interfaces.IAccessWebService#firstLogin(java.util.Map)
@@ -121,8 +121,7 @@ public class AccessWebServiceDubboService implements IAccessWebService {
             final int workCount = certService.updateToken(certInfo);
             if (workCount == 1) {
                 return SignHelper.encrypt(token, cert.getPublicKey());
-            }
-            else {
+            } else {
                 throw new AccessError(200001, "this X509Certificate has used");
             }
         }

@@ -21,105 +21,107 @@ import net.oschina.j2cache.util.SerializationUtils;
  * 
  * @author winterlau
  */
-public class Command {		
+public class Command {
 
-	private final static Logger log = LoggerFactory.getLogger(Command.class);
+    private final static Logger log = LoggerFactory.getLogger(Command.class);
 
-	public final static byte OPT_DELETE_KEY = 0x01; 	//删除缓存
-	public final static byte OPT_CLEAR_KEY = 0x02; 		//清除缓存
-	
-	private byte operator;
-	private String region;
-	private Object key;
+    public final static byte OPT_DELETE_KEY = 0x01; // 删除缓存
+    public final static byte OPT_CLEAR_KEY = 0x02; // 清除缓存
 
-	public static void main(String[] args) {
-		Command cmd = new Command(OPT_DELETE_KEY, "users", "ld");
-		byte[] bufs = cmd.toBuffers();
-		for(byte b : bufs){
-			System.out.printf("[%s]",Integer.toHexString(b));			
-		}
-		System.out.println();
-		Command cmd2 = Command.parse(bufs);
-		System.out.printf("%d:%s:%s\n", cmd2.getOperator(), cmd2.getRegion(), cmd2.getKey());
-	}
+    private byte operator;
+    private String region;
+    private Object key;
 
-	public Command(byte o, String r, Object k){
-		this.operator = o;
-		this.region = r;
-		this.key = k;
-	}
-	
-	public byte[] toBuffers(){
-		byte[] keyBuffers = null;
-		try {
-			keyBuffers = SerializationUtils.serialize(key);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		int r_len = region.getBytes().length;
-		int k_len = keyBuffers.length;
+    public static void main(String[] args) {
+        Command cmd = new Command(OPT_DELETE_KEY, "users", "ld");
+        byte[] bufs = cmd.toBuffers();
+        for (byte b : bufs) {
+            System.out.printf("[%s]", Integer.toHexString(b));
+        }
+        System.out.println();
+        Command cmd2 = Command.parse(bufs);
+        System.out.printf("%d:%s:%s\n", cmd2.getOperator(), cmd2.getRegion(), cmd2.getKey());
+    }
 
-		byte[] buffers = new byte[5 + r_len + k_len];
-		int idx = 0;
-		buffers[idx] = operator;
-		buffers[++idx] = (byte)(r_len >> 8);
-		buffers[++idx] = (byte)(r_len & 0xFF);
-		System.arraycopy(region.getBytes(), 0, buffers, ++idx, r_len);
-		idx += r_len;
-		buffers[idx++] = (byte)(k_len >> 8);
-		buffers[idx++] = (byte)(k_len & 0xFF);
-		System.arraycopy(keyBuffers, 0, buffers, idx, k_len);
-		return buffers;
-	}
-	
-	public static Command parse(byte[] buffers) {
-		Command cmd = null;
-		try{
-			int idx = 0;
-			byte opt = buffers[idx];
-			int r_len = buffers[++idx] << 8;
-			r_len += buffers[++idx];
-			if(r_len > 0){
-				String region = new String(buffers, ++idx, r_len);
-				idx += r_len;
-				int k_len = buffers[idx++] << 8;
-				k_len += buffers[idx++];
-				if(k_len > 0){
-					//String key = new String(buffers, idx, k_len);
-					byte[] keyBuffers = new byte[k_len];
-					System.arraycopy(buffers, idx, keyBuffers, 0, k_len);
-					Object key = SerializationUtils.deserialize(keyBuffers);
-					cmd = new Command(opt, region, key);
-				}
-			}
-		}catch(Exception e){
-			log.error("Unabled to parse received command.", e);
-		}
-		return cmd;
-	}
+    public Command(byte o, String r, Object k) {
+        this.operator = o;
+        this.region = r;
+        this.key = k;
+    }
 
-	public byte getOperator() {
-		return operator;
-	}
+    public byte[] toBuffers() {
+        byte[] keyBuffers = null;
+        try {
+            keyBuffers = SerializationUtils.serialize(key);
+        }
+        catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        int r_len = region.getBytes().length;
+        int k_len = keyBuffers.length;
 
-	public void setOperator(byte operator) {
-		this.operator = operator;
-	}
+        byte[] buffers = new byte[5 + r_len + k_len];
+        int idx = 0;
+        buffers[idx] = operator;
+        buffers[++idx] = (byte) (r_len >> 8);
+        buffers[++idx] = (byte) (r_len & 0xFF);
+        System.arraycopy(region.getBytes(), 0, buffers, ++idx, r_len);
+        idx += r_len;
+        buffers[idx++] = (byte) (k_len >> 8);
+        buffers[idx++] = (byte) (k_len & 0xFF);
+        System.arraycopy(keyBuffers, 0, buffers, idx, k_len);
+        return buffers;
+    }
 
-	public String getRegion() {
-		return region;
-	}
+    public static Command parse(byte[] buffers) {
+        Command cmd = null;
+        try {
+            int idx = 0;
+            byte opt = buffers[idx];
+            int r_len = buffers[++idx] << 8;
+            r_len += buffers[++idx];
+            if (r_len > 0) {
+                String region = new String(buffers, ++idx, r_len);
+                idx += r_len;
+                int k_len = buffers[idx++] << 8;
+                k_len += buffers[idx++];
+                if (k_len > 0) {
+                    // String key = new String(buffers, idx, k_len);
+                    byte[] keyBuffers = new byte[k_len];
+                    System.arraycopy(buffers, idx, keyBuffers, 0, k_len);
+                    Object key = SerializationUtils.deserialize(keyBuffers);
+                    cmd = new Command(opt, region, key);
+                }
+            }
+        }
+        catch (Exception e) {
+            log.error("Unabled to parse received command.", e);
+        }
+        return cmd;
+    }
 
-	public void setRegion(String region) {
-		this.region = region;
-	}
+    public byte getOperator() {
+        return operator;
+    }
 
-	public Object getKey() {
-		return key;
-	}
+    public void setOperator(byte operator) {
+        this.operator = operator;
+    }
 
-	public void setKey(Object key) {
-		this.key = key;
-	}
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public Object getKey() {
+        return key;
+    }
+
+    public void setKey(Object key) {
+        this.key = key;
+    }
 }

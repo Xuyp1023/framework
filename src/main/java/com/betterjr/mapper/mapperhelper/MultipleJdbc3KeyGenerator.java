@@ -24,6 +24,16 @@
 
 package com.betterjr.mapper.mapperhelper;
 
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.ExecutorException;
 import org.apache.ibatis.executor.keygen.Jdbc3KeyGenerator;
@@ -32,12 +42,6 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
-
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.*;
 
 /**
  * 实现批量插入ID回写
@@ -70,13 +74,17 @@ public class MultipleJdbc3KeyGenerator extends Jdbc3KeyGenerator {
                     populateKeys(rs, metaParam, keyProperties, typeHandlers);
                 }
             }
-        } catch (Exception e) {
-            throw new ExecutorException("Error getting generated key or setting result to parameter object. Cause: " + e, e);
-        } finally {
+        }
+        catch (Exception e) {
+            throw new ExecutorException(
+                    "Error getting generated key or setting result to parameter object. Cause: " + e, e);
+        }
+        finally {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     // ignore
                 }
             }
@@ -104,7 +112,8 @@ public class MultipleJdbc3KeyGenerator extends Jdbc3KeyGenerator {
         return parameters;
     }
 
-    private TypeHandler<?>[] getTypeHandlers(TypeHandlerRegistry typeHandlerRegistry, MetaObject metaParam, String[] keyProperties) {
+    private TypeHandler<?>[] getTypeHandlers(TypeHandlerRegistry typeHandlerRegistry, MetaObject metaParam,
+            String[] keyProperties) {
         TypeHandler<?>[] typeHandlers = new TypeHandler<?>[keyProperties.length];
         for (int i = 0; i < keyProperties.length; i++) {
             if (metaParam.hasSetter(keyProperties[i])) {
@@ -116,7 +125,8 @@ public class MultipleJdbc3KeyGenerator extends Jdbc3KeyGenerator {
         return typeHandlers;
     }
 
-    private void populateKeys(ResultSet rs, MetaObject metaParam, String[] keyProperties, TypeHandler<?>[] typeHandlers) throws SQLException {
+    private void populateKeys(ResultSet rs, MetaObject metaParam, String[] keyProperties, TypeHandler<?>[] typeHandlers)
+            throws SQLException {
         for (int i = 0; i < keyProperties.length; i++) {
             TypeHandler<?> th = typeHandlers[i];
             if (th != null) {

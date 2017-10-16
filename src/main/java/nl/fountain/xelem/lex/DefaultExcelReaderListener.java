@@ -38,106 +38,117 @@ import nl.fountain.xelem.excel.WorksheetOptions;
  * @since xelem.2.0
  */
 public class DefaultExcelReaderListener implements ExcelReaderListener {
-    
+
     /**
      * Does effectively nothing. Subclasses can override this method
      * to do effectively something.
      */
-    public void startDocument() {
-    }
+    @Override
+    public void startDocument() {}
+
     /**
      * Does effectively nothing. Subclasses can override this method
      * to do effectively something.
      */
-    public void processingInstruction(String target, String data) {
-    }
+    @Override
+    public void processingInstruction(String target, String data) {}
+
     /**
      * Does effectively nothing. Subclasses can override this method
      * to do effectively something.
      */
-    public void startWorkbook(String systemID) {
-    }
+    @Override
+    public void startWorkbook(String systemID) {}
+
     /**
      * Does effectively nothing. Subclasses can override this method
      * to do effectively something.
      */
-    public void setDocumentProperties(DocumentProperties docProps) {
-    }
+    @Override
+    public void setDocumentProperties(DocumentProperties docProps) {}
+
     /**
      * Does effectively nothing. Subclasses can override this method
      * to do effectively something.
      */
-    public void setExcelWorkbook(ExcelWorkbook excelWb) {
-    }
+    @Override
+    public void setExcelWorkbook(ExcelWorkbook excelWb) {}
+
     /**
      * Does effectively nothing. Subclasses can override this method
      * to do effectively something.
      */
-    public void setNamedRange(NamedRange namedRange) {
-    }
+    @Override
+    public void setNamedRange(NamedRange namedRange) {}
+
     /**
      * Does effectively nothing. Subclasses can override this method
      * to do effectively something.
      */
-    public void startWorksheet(int sheetIndex, Worksheet sheet) {
-    }
+    @Override
+    public void startWorksheet(int sheetIndex, Worksheet sheet) {}
+
     /**
      * Does effectively nothing. Subclasses can override this method
      * to do effectively something.
      */
-    public void setNamedRange(int sheetIndex, String sheetName,
-            NamedRange namedRange) {
-    }
+    @Override
+    public void setNamedRange(int sheetIndex, String sheetName, NamedRange namedRange) {}
+
     /**
      * Does effectively nothing. Subclasses can override this method
      * to do effectively something.
      */
-    public void startTable(int sheetIndex, String sheetName, Table table) {
-    }
+    @Override
+    public void startTable(int sheetIndex, String sheetName, Table table) {}
+
     /**
      * Does effectively nothing. Subclasses can override this method
      * to do effectively something.
      */
-    public void setColumn(int sheetIndex, String sheetName, Column column) {
-    }
+    @Override
+    public void setColumn(int sheetIndex, String sheetName, Column column) {}
+
     /**
      * Does effectively nothing. Subclasses can override this method
      * to do effectively something.
      */
-    public void setRow(int sheetIndex, String sheetName, Row row) {
-    }
+    @Override
+    public void setRow(int sheetIndex, String sheetName, Row row) {}
+
     /**
      * Does effectively nothing. Subclasses can override this method
      * to do effectively something.
      */
-    public void setCell(int sheetIndex, String sheetName, int rowIndex,
-            Cell cell) {
-    }
+    @Override
+    public void setCell(int sheetIndex, String sheetName, int rowIndex, Cell cell) {}
+
     /**
      * Does effectively nothing. Subclasses can override this method
      * to do effectively something.
      */
-    public void setWorksheetOptions(int sheetIndex, String sheetName,
-            WorksheetOptions wsOptions) {
-    }
+    @Override
+    public void setWorksheetOptions(int sheetIndex, String sheetName, WorksheetOptions wsOptions) {}
+
     /**
      * Does effectively nothing. Subclasses can override this method
      * to do effectively something.
      */
-    public void setAutoFilter(int sheetIndex, String sheetName,
-            AutoFilter autoFilter) {
-    }
+    @Override
+    public void setAutoFilter(int sheetIndex, String sheetName, AutoFilter autoFilter) {}
+
     /**
      * Does effectively nothing. Subclasses can override this method
      * to do effectively something.
      */
-    public void endWorksheet(int sheetIndex, String sheetName) {
-    }
+    @Override
+    public void endWorksheet(int sheetIndex, String sheetName) {}
+
     /**
      * Does effectively nothing. Subclasses can override this method
      * to do effectively something.
      */
-    public void endDocument(Map<String, String> prefixMap) {
-    }
+    @Override
+    public void endDocument(Map<String, String> prefixMap) {}
 
 }

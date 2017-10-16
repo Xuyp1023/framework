@@ -23,7 +23,7 @@ package nl.fountain.xelem;
  * Indicates that a certain Style was not found.
  */
 public class UnsupportedStyleException extends Exception {
-    
+
     /**
      * 
      */

@@ -22,24 +22,24 @@ package nl.fountain.xelem.excel;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.fountain.xelem.GIO;
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 
+import nl.fountain.xelem.GIO;
+
 /**
  * An abstract implementation of an XLElement.
  */
 public abstract class AbstractXLElement implements XLElement {
-    
-    //private static Map nsMap;
+
+    // private static Map nsMap;
     private List<String> comments;
     private boolean printComments;
-    
+
     protected AbstractXLElement() {}
-    
+
     /**
      * Add a comment to this XLElement. Whether the comment will be printed
      * in the xml produced during assembly, depends on the setting of the
@@ -48,32 +48,36 @@ public abstract class AbstractXLElement implements XLElement {
      * 
      * @param 	comment the comment to be added.
      */
+    @Override
     public void addElementComment(String comment) {
         if (comments == null) {
             comments = new ArrayList<String>();
         }
         comments.add(comment);
     }
-    
+
     /**
      * Gets the list of added comments.
      * 
      * @return 	a list of Strings.
      */
+    @Override
     public List<String> getElementComments() {
         return comments;
     }
-    
+
     /**
      * Does effectively nothing.
      */
+    @Override
     public void setAttributes(Attributes attrs) {}
-    
+
     /**
      * Does effectively nothing.
      */
+    @Override
     public void setChildElement(String localName, String content) {}
-    
+
     /**
      * Creates an {@link org.w3c.dom.Element} with the tag-name, namespace and
      * prefix suitable for the calling XLElement-implementation. 
@@ -94,10 +98,10 @@ public abstract class AbstractXLElement implements XLElement {
                 element.appendChild(doc.createComment(s));
             }
         }
-        
+
         return element;
     }
-    
+
     /**
      * Creates an {@link org.w3c.dom.Element} with the given <code>qName</code>
      * as it's qualified name. Namespace and
@@ -114,7 +118,7 @@ public abstract class AbstractXLElement implements XLElement {
         n.setPrefix(getPrefix());
         return n;
     }
-    
+
     /**
      * Creates an {@link org.w3c.dom.Element} with the given <code>qName</code>
      * as it's qualified name and the given <code>value</code> appended to
@@ -156,7 +160,7 @@ public abstract class AbstractXLElement implements XLElement {
         n.appendChild(doc.createTextNode("" + i));
         return n;
     }
-    
+
     /**
      * Creates an {@link org.w3c.dom.Element} with the given <code>qName</code>
      * as it's qualified name and the given value of <code>b</code> appended to
@@ -177,7 +181,7 @@ public abstract class AbstractXLElement implements XLElement {
         n.appendChild(doc.createTextNode(b ? "True" : "False"));
         return n;
     }
-    
+
     /**
      * Creates an {@link org.w3c.dom.Attr} with the given <code>qName</code>
      * as it's qualified name and the given value of <code>i</code> as it's
@@ -198,7 +202,7 @@ public abstract class AbstractXLElement implements XLElement {
         attr.setValue("" + i);
         return attr;
     }
-    
+
     /**
      * Creates an {@link org.w3c.dom.Attr} with the given <code>qName</code>
      * as it's qualified name and the given <code>value</code> as it's
@@ -219,8 +223,7 @@ public abstract class AbstractXLElement implements XLElement {
         attr.setValue(value);
         return attr;
     }
-    
-    
+
     //////////////////////////////////////////////////////////////////////////////
 
 }

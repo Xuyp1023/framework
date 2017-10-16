@@ -7,11 +7,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.web.context.ContextLoader;
 
-import com.betterjr.common.utils.PropertiesLoader;
 import com.betterjr.common.utils.BetterStringUtils;
+import com.betterjr.common.utils.PropertiesLoader;
 //import com.ckfinder.connector.ServletContextFactory;
 import com.google.common.collect.Maps;
 
@@ -77,7 +78,7 @@ public class Global {
         String value = map.get(key);
         if (value == null) {
             value = loader.getProperty(key);
-            map.put(key, value != null ? value : BetterStringUtils.EMPTY);
+            map.put(key, value != null ? value : StringUtils.EMPTY);
         }
         return value;
     }
@@ -141,7 +142,7 @@ public class Global {
      */
     public static String getUserfilesBaseDir() {
         String dir = getConfig("userfiles.basedir");
-        if (BetterStringUtils.isBlank(dir)) {
+        if (StringUtils.isBlank(dir)) {
             try {
                 dir = ContextLoader.getCurrentWebApplicationContext().getServletContext().getRealPath("/WEB-INF");
             }
@@ -164,7 +165,7 @@ public class Global {
     public static String getProjectPath() {
         // 如果配置了工程路径，则直接返回，否则自动获取。
         String projectPath = Global.getConfig("projectPath");
-        if (BetterStringUtils.isNotBlank(projectPath)) {
+        if (StringUtils.isNotBlank(projectPath)) {
             return projectPath;
         }
         try {
@@ -177,8 +178,7 @@ public class Global {
                     }
                     if (file.getParentFile() != null) {
                         file = file.getParentFile();
-                    }
-                    else {
+                    } else {
                         break;
                     }
                 }

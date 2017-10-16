@@ -1,11 +1,16 @@
 package com.betterjr.modules.account.entity;
 
-import com.betterjr.common.annotation.*;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.common.mapper.BeanMapper;
 import com.betterjr.common.utils.BetterDateUtils;
- 
-import javax.persistence.*;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -294,20 +299,28 @@ public class CustContactInfo implements BetterjrEntity {
         }
         CustContactInfo other = (CustContactInfo) that;
         return (this.getCustNo() == null ? other.getCustNo() == null : this.getCustNo().equals(other.getCustNo()))
-                && (this.getZipCode() == null ? other.getZipCode() == null : this.getZipCode().equals(other.getZipCode()))
+                && (this.getZipCode() == null ? other.getZipCode() == null
+                        : this.getZipCode().equals(other.getZipCode()))
                 && (this.getCityNo() == null ? other.getCityNo() == null : this.getCityNo().equals(other.getCityNo()))
-                && (this.getAddress() == null ? other.getAddress() == null : this.getAddress().equals(other.getAddress()))
+                && (this.getAddress() == null ? other.getAddress() == null
+                        : this.getAddress().equals(other.getAddress()))
                 && (this.getPhone() == null ? other.getPhone() == null : this.getPhone().equals(other.getPhone()))
                 && (this.getFaxNo() == null ? other.getFaxNo() == null : this.getFaxNo().equals(other.getFaxNo()))
-                && (this.getMobileNo() == null ? other.getMobileNo() == null : this.getMobileNo().equals(other.getMobileNo()))
+                && (this.getMobileNo() == null ? other.getMobileNo() == null
+                        : this.getMobileNo().equals(other.getMobileNo()))
                 && (this.getEmail() == null ? other.getEmail() == null : this.getEmail().equals(other.getEmail()))
                 && (this.getWeiXin() == null ? other.getWeiXin() == null : this.getWeiXin().equals(other.getWeiXin()))
                 && (this.getQq() == null ? other.getQq() == null : this.getQq().equals(other.getQq()))
-                && (this.getWebAddr() == null ? other.getWebAddr() == null : this.getWebAddr().equals(other.getWebAddr()))
-                && (this.getModiDate() == null ? other.getModiDate() == null : this.getModiDate().equals(other.getModiDate()))
-                && (this.getHomePhone() == null ? other.getHomePhone() == null : this.getHomePhone().equals(other.getHomePhone()))
-                && (this.getOfficePhone() == null ? other.getOfficePhone() == null : this.getOfficePhone().equals(other.getOfficePhone()))
-                && (this.getCorpName() == null ? other.getCorpName() == null : this.getCorpName().equals(other.getCorpName()))
+                && (this.getWebAddr() == null ? other.getWebAddr() == null
+                        : this.getWebAddr().equals(other.getWebAddr()))
+                && (this.getModiDate() == null ? other.getModiDate() == null
+                        : this.getModiDate().equals(other.getModiDate()))
+                && (this.getHomePhone() == null ? other.getHomePhone() == null
+                        : this.getHomePhone().equals(other.getHomePhone()))
+                && (this.getOfficePhone() == null ? other.getOfficePhone() == null
+                        : this.getOfficePhone().equals(other.getOfficePhone()))
+                && (this.getCorpName() == null ? other.getCorpName() == null
+                        : this.getCorpName().equals(other.getCorpName()))
                 && (this.getCounty() == null ? other.getCounty() == null : this.getCounty().equals(other.getCounty()));
     }
 

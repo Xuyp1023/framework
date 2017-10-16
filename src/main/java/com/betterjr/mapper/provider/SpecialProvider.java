@@ -49,7 +49,7 @@ public class SpecialProvider extends MapperTemplate {
     public String insertList(MappedStatement ms) {
         final Class<?> entityClass = getSelectReturnType(ms);
         EntityHelper.EntityTable table = EntityHelper.getEntityTable(entityClass);
-        //开始拼sql
+        // 开始拼sql
         StringBuilder sql = new StringBuilder();
         sql.append("insert into ");
         sql.append(table.getName());
@@ -73,7 +73,7 @@ public class SpecialProvider extends MapperTemplate {
             if (column.isId()) {
                 continue;
             }
-            if(!first) {
+            if (!first) {
                 sql.append(",");
             }
             sql.append("#{record.").append(column.getProperty()).append("}");
@@ -92,7 +92,7 @@ public class SpecialProvider extends MapperTemplate {
     public String insertUseGeneratedKeys(MappedStatement ms) {
         final Class<?> entityClass = getSelectReturnType(ms);
         EntityHelper.EntityTable table = EntityHelper.getEntityTable(entityClass);
-        //开始拼sql
+        // 开始拼sql
         StringBuilder sql = new StringBuilder();
         sql.append("insert into ");
         sql.append(table.getName());
@@ -102,7 +102,7 @@ public class SpecialProvider extends MapperTemplate {
             if (column.isId()) {
                 continue;
             }
-            if(!first) {
+            if (!first) {
                 sql.append(",");
             }
             sql.append(column.getColumn());
@@ -114,7 +114,7 @@ public class SpecialProvider extends MapperTemplate {
             if (column.isId()) {
                 continue;
             }
-            if(!first) {
+            if (!first) {
                 sql.append(",");
             }
             sql.append("#{").append(column.getProperty()).append("}");

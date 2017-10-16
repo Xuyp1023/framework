@@ -9,7 +9,9 @@ import java.lang.reflect.Field;
 import javax.servlet.ServletContextEvent;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.realm.AuthorizingRealm;
+import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -18,9 +20,9 @@ import com.betterjr.modules.sys.dubboclient.DictToWebDubboClientService;
 
 public class ContextLoaderAndInjectToShiroLister extends ContextLoaderListener {
 
-    public static final String AuthorizingRealmInitPara="authorizingRealm";
-    public static final String DictDataFileName="jsParamFileName";
-    private static final String DubboClientServicePostfix="DubboClientService";
+    public static final String AuthorizingRealmInitPara = "authorizingRealm";
+    public static final String DictDataFileName = "jsParamFileName";
+    private static final String DubboClientServicePostfix = "DubboClientService";
 
     /**
      * Initialize the root web application context.
@@ -29,23 +31,23 @@ public class ContextLoaderAndInjectToShiroLister extends ContextLoaderListener {
     public void contextInitialized(final ServletContextEvent event) {
         super.contextInitialized(event);
 
-        final WebApplicationContext context=this.getCurrentWebApplicationContext();
+        final WebApplicationContext context = ContextLoader.getCurrentWebApplicationContext();
 
         final String shiroRealmName = context.getServletContext().getInitParameter(AuthorizingRealmInitPara);
-        if(BetterStringUtils.isBlank(shiroRealmName)){
-            System.out.println("please init context-param in web.xml: "+AuthorizingRealmInitPara);
+        if (StringUtils.isBlank(shiroRealmName)) {
+            System.out.println("please init context-param in web.xml: " + AuthorizingRealmInitPara);
             System.exit(0);
         }
 
         final String dictJs = context.getServletContext().getInitParameter(DictDataFileName);
-        if(BetterStringUtils.isBlank(dictJs)){
-            System.out.println("please init context-param in web.xml: "+DictDataFileName);
+        if (StringUtils.isBlank(dictJs)) {
+            System.out.println("please init context-param in web.xml: " + DictDataFileName);
             System.exit(0);
         }
 
-        injectDubboIntoShiroRealm(context,shiroRealmName);
+        injectDubboIntoShiroRealm(context, shiroRealmName);
 
-        createDictDataJS(context,dictJs);
+        createDictDataJS(context, dictJs);
     }
 
     /**
@@ -53,13 +55,13 @@ public class ContextLoaderAndInjectToShiroLister extends ContextLoaderListener {
      * @param anContext
      * @param shiroRealmName
      */
-    private void createDictDataJS(final WebApplicationContext anContext,final String anDictJs){
+    private void createDictDataJS(final WebApplicationContext anContext, final String anDictJs) {
 
         final String anFilePath = anContext.getServletContext().getRealPath(anDictJs);
         System.out.println("dict data js file:" + anFilePath);
 
-        final DictToWebDubboClientService dictService=anContext.getBean(DictToWebDubboClientService.class);
-        final String content=dictService.initWebCreateDictJS();
+        final DictToWebDubboClientService dictService = anContext.getBean(DictToWebDubboClientService.class);
+        final String content = dictService.initWebCreateDictJS();
         BufferedWriter outer = null;
         try {
             final File ff = new File(anFilePath);
@@ -82,24 +84,26 @@ public class ContextLoaderAndInjectToShiroLister extends ContextLoaderListener {
     /*
      * inject dubbo services into shiro realm
      */
-    private void injectDubboIntoShiroRealm(final WebApplicationContext anContext,final String anShiroRealmName) {
+    private void injectDubboIntoShiroRealm(final WebApplicationContext anContext, final String anShiroRealmName) {
 
-        final AuthorizingRealm realm=(AuthorizingRealm)anContext.getBean(anShiroRealmName);
-        if(realm==null){
-            System.out.println("shiro AuthorizingRealm bean name Not Equals with context-param "+AuthorizingRealmInitPara);
+        final AuthorizingRealm realm = (AuthorizingRealm) anContext.getBean(anShiroRealmName);
+        if (realm == null) {
+            System.out.println(
+                    "shiro AuthorizingRealm bean name Not Equals with context-param " + AuthorizingRealmInitPara);
             System.exit(0);
         }
 
-        final Field[] fields=realm.getClass().getDeclaredFields();
-        for(final Field field:fields){
-            final Class fieldType=field.getType();
-            final String fieldTypeName=fieldType.getName();
-            if(fieldTypeName.endsWith(DubboClientServicePostfix)){
-                final Object obj=anContext.getBean(fieldType);
+        final Field[] fields = realm.getClass().getDeclaredFields();
+        for (final Field field : fields) {
+            final Class fieldType = field.getType();
+            final String fieldTypeName = fieldType.getName();
+            if (fieldTypeName.endsWith(DubboClientServicePostfix)) {
+                final Object obj = anContext.getBean(fieldType);
                 try {
                     field.setAccessible(true);
                     field.set(realm, obj);
-                } catch (final Exception e) {
+                }
+                catch (final Exception e) {
                     System.out.println("inject dubbo service into AuthorizingRealm failed");
                     e.printStackTrace();
                     System.exit(0);

@@ -12,6 +12,7 @@ import de.ruedigermoeller.serialization.FSTObjectOutput;
 public class FstFactory {
     private static final FstFactory factory = new FstFactory();
     private final FSTConfiguration conf = FSTConfiguration.createDefaultConfiguration();
+
     public static FstFactory getDefaultFactory() {
         return factory;
     }

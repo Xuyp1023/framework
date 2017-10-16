@@ -7,15 +7,15 @@ package com.betterjr.common.data;
  */
 public class CheckDataResult implements java.io.Serializable {
     private static final long serialVersionUID = 8684723931526584282L;
-    //处理结果
+    // 处理结果
     private final boolean ok;
-    //处理状态码
+    // 处理状态码
     private final int code;
-    //处理返回消息
+    // 处理返回消息
     private final String message;
-    //处理后的错误信息
+    // 处理后的错误信息
     private final Exception ex;
-    
+
     public boolean isOk() {
         return this.ok;
     }

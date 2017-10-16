@@ -11,7 +11,7 @@ public class BettjerRuleException extends BytterException {
     public BettjerRuleException(int anCode, String message) {
         super(anCode, message);
     }
-    
+
     public static RuntimeException wrap(Throwable t) {
         if (t instanceof RuntimeException) return (RuntimeException) t;
         return new BettjerRuleException(30000, "", t);

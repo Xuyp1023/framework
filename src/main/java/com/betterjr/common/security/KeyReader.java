@@ -1,14 +1,23 @@
 package com.betterjr.common.security;
 
-import java.io.*;
-import java.security.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.security.Key;
+import java.security.KeyFactory;
+import java.security.KeyStore;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.security.spec.*;
-
-import org.apache.commons.codec.binary.Base64;
-
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +25,9 @@ import java.util.Map;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.ClassPathResource;
 
 import com.betterjr.common.exception.BytterException;
@@ -31,8 +42,7 @@ import com.betterjr.common.utils.BetterStringUtils;
  */
 public class KeyReader {
 
-    public KeyReader() {
-    }
+    public KeyReader() {}
 
     public static boolean isPublicKeyValid(String key, String algorithmName) {
         try {
@@ -76,7 +86,7 @@ public class KeyReader {
         KeyFactory keyFactory;
         byte encodedKey[];
         try {
-            if (BetterStringUtils.isNotBlank(keyStr) || keyStr.length() < 100) {
+            if (StringUtils.isNotBlank(keyStr) || keyStr.length() < 100) {
                 keyStr = readByteFromResource(keyStr);
             }
 
@@ -133,20 +143,19 @@ public class KeyReader {
         return km[0];
     }
 
-    private static Map<PrivateKey, Certificate> readKeyfromPKCS12StoredFile(String resourceName, String password, boolean anFileType) {
+    private static Map<PrivateKey, Certificate> readKeyfromPKCS12StoredFile(String resourceName, String password,
+            boolean anFileType) {
         InputStream istream = null;
         try {
             if (anFileType) {
                 istream = new FileInputStream(resourceName);
-            }
-            else {
+            } else {
                 ClassPathResource cc = new ClassPathResource(resourceName);
                 istream = cc.getInputStream();
             }
             if (resourceName.toLowerCase().endsWith(".p12") || resourceName.toLowerCase().endsWith(".pfx")) {
                 anFileType = true;
-            }
-            else {
+            } else {
                 anFileType = false;
             }
             return readKeyfromPKCS12StoredFile(istream, password, anFileType);
@@ -156,13 +165,13 @@ public class KeyReader {
         }
     }
 
-    public static Map<PrivateKey, Certificate> readKeyfromPKCS12StoredFile(InputStream istream, String password, boolean anFileType) {
+    public static Map<PrivateKey, Certificate> readKeyfromPKCS12StoredFile(InputStream istream, String password,
+            boolean anFileType) {
         try {
             KeyStore keystore = null;
             if (anFileType) {
                 keystore = KeyStore.getInstance("PKCS12");
-            }
-            else {
+            } else {
                 keystore = KeyStore.getInstance("JKS");
             }
 
@@ -205,8 +214,7 @@ public class KeyReader {
         try {
             if (anFile) {
                 inputStream = new FileInputStream(resourceName);
-            }
-            else {
+            } else {
 
                 ClassPathResource cc = new ClassPathResource(resourceName);
                 inputStream = cc.getInputStream();
@@ -271,8 +279,7 @@ public class KeyReader {
         try {
             if (anFileType) {
                 istream = new FileInputStream(resourceName);
-            }
-            else {
+            } else {
                 ClassPathResource cc = new ClassPathResource(resourceName);
                 istream = cc.getInputStream();
             }
@@ -304,11 +311,11 @@ public class KeyReader {
             inputStream = cc.getInputStream();
             keystore = KeyStore.getInstance("PKCS12");
             keystore.load(inputStream, anPassword.toCharArray());
-            
+
             return keystore;
         }
         catch (Exception ex) {
-            
+
             return null;
         }
         finally {
@@ -317,7 +324,8 @@ public class KeyReader {
     }
 
     public static void main(String[] args) throws Exception {
-        Certificate pk = fromCerBase64String("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");
+        Certificate pk = fromCerBase64String(
+                "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");
         if (pk instanceof X509Certificate) {
             X509Certificate pp = (X509Certificate) pk;
             System.out.println(pp.getSubjectDN());

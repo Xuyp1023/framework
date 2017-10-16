@@ -1,5 +1,5 @@
 package com.betterjr.common.exception;
- 
+
 /**
  * 类型转换工具类<br>
  * 
@@ -39,8 +39,7 @@ public class TypeCastException extends BytterException {
 
     public Throwable getNested() {
         if (nested == null) return this;
-        else
-            return nested;
+        else return nested;
     }
 
 }

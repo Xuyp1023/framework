@@ -52,12 +52,10 @@ public class PackageUtil {
             String type = url.getProtocol();
             if (type.equals("file")) {
                 fileNames = getClassNameByFile(url.getPath(), null, childPackage);
-            }
-            else if (type.equals("jar")) {
+            } else if (type.equals("jar")) {
                 fileNames = getClassNameByJar(url.getPath(), childPackage);
             }
-        }
-        else {
+        } else {
             fileNames = getClassNameByJars(((URLClassLoader) loader).getURLs(), packagePath, childPackage);
         }
         return fileNames;
@@ -83,11 +81,11 @@ public class PackageUtil {
                 if (childPackage) {
                     myClassName.addAll(getClassNameByFile(childFile.getPath(), myClassName, childPackage));
                 }
-            }
-            else {
+            } else {
                 String childFilePath = childFile.getPath();
                 if (childFilePath.endsWith(".class")) {
-                    childFilePath = childFilePath.substring(childFilePath.indexOf("\\classes") + 9, childFilePath.lastIndexOf("."));
+                    childFilePath = childFilePath.substring(childFilePath.indexOf("\\classes") + 9,
+                            childFilePath.lastIndexOf("."));
                     childFilePath = childFilePath.replace("\\", ".");
                     myClassName.add(childFilePath);
                 }
@@ -124,14 +122,12 @@ public class PackageUtil {
                             entryName = entryName.replace("/", ".").substring(0, entryName.lastIndexOf("."));
                             myClassName.add(entryName);
                         }
-                    }
-                    else {
+                    } else {
                         int index = entryName.lastIndexOf("/");
                         String myPackagePath;
                         if (index != -1) {
                             myPackagePath = entryName.substring(0, index);
-                        }
-                        else {
+                        } else {
                             myPackagePath = entryName;
                         }
                         if (myPackagePath.equals(packagePath)) {
@@ -143,15 +139,14 @@ public class PackageUtil {
             }
         }
         catch (Exception e) {
-           // e.printStackTrace();
+            // e.printStackTrace();
         }
         finally {
             if (jarFile != null) {
                 try {
                     jarFile.close();
                 }
-                catch (IOException e) {
-                }
+                catch (IOException e) {}
             }
         }
         return myClassName;

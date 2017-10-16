@@ -1,32 +1,39 @@
 package com.betterjr.modules.role.entity;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.common.selectkey.SerialGenerator;
 import com.betterjr.common.utils.BetterStringUtils;
-
-import javax.persistence.*;
 
 @Access(AccessType.FIELD)
 @Entity
 @Table(name = "T_CFG_ROLE")
 public class Role implements BetterjrEntity {
     @Id
-    @Column(name = "ID",  columnDefinition="INTEGER" )
+    @Column(name = "ID", columnDefinition = "INTEGER")
     private Long id;
 
-    @Column(name = "C_ROLE_NAME",  columnDefinition="VARCHAR" )
+    @Column(name = "C_ROLE_NAME", columnDefinition = "VARCHAR")
     private String roleName;
 
-    @Column(name = "C_ROLE_TYPE",  columnDefinition="VARCHAR" )
+    @Column(name = "C_ROLE_TYPE", columnDefinition = "VARCHAR")
     private String roleType;
 
-    @Column(name = "C_BUSIN_STATUS",  columnDefinition="VARCHAR" )
+    @Column(name = "C_BUSIN_STATUS", columnDefinition = "VARCHAR")
     private String businStatus;
 
-    @Column(name = "C_OPERORG",  columnDefinition="VARCHAR" )
+    @Column(name = "C_OPERORG", columnDefinition = "VARCHAR")
     private String operOrg;
 
-    @Column(name = "C_DEFAULT",  columnDefinition="CHAR" )
+    @Column(name = "C_DEFAULT", columnDefinition = "CHAR")
     private String def;
 
     private static final long serialVersionUID = 7232514578015396419L;
@@ -108,11 +115,15 @@ public class Role implements BetterjrEntity {
         }
         Role other = (Role) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getRoleName() == null ? other.getRoleName() == null : this.getRoleName().equals(other.getRoleName()))
-            && (this.getRoleType() == null ? other.getRoleType() == null : this.getRoleType().equals(other.getRoleType()))
-            && (this.getBusinStatus() == null ? other.getBusinStatus() == null : this.getBusinStatus().equals(other.getBusinStatus()))
-            && (this.getDef() == null ? other.getDef() == null : this.getDef().equals(other.getDef()))
-            && (this.getOperOrg() == null ? other.getOperOrg() == null : this.getOperOrg().equals(other.getOperOrg()));
+                && (this.getRoleName() == null ? other.getRoleName() == null
+                        : this.getRoleName().equals(other.getRoleName()))
+                && (this.getRoleType() == null ? other.getRoleType() == null
+                        : this.getRoleType().equals(other.getRoleType()))
+                && (this.getBusinStatus() == null ? other.getBusinStatus() == null
+                        : this.getBusinStatus().equals(other.getBusinStatus()))
+                && (this.getDef() == null ? other.getDef() == null : this.getDef().equals(other.getDef()))
+                && (this.getOperOrg() == null ? other.getOperOrg() == null
+                        : this.getOperOrg().equals(other.getOperOrg()));
     }
 
     @Override
@@ -126,20 +137,21 @@ public class Role implements BetterjrEntity {
         result = prime * result + ((getOperOrg() == null) ? 0 : getOperOrg().hashCode());
         return result;
     }
-    public Role(){
-        
+
+    public Role() {
+
     }
-    
-    public Role(String roleId,String roleName,String roleType,String businStatus,String operOrg,String anDefault){
-        if(BetterStringUtils.isBlank(roleId)){
-            this.id=SerialGenerator.getLongValue("Role.id");
-        }else{
-            this.id=Long.parseLong(roleId);
+
+    public Role(String roleId, String roleName, String roleType, String businStatus, String operOrg, String anDefault) {
+        if (StringUtils.isBlank(roleId)) {
+            this.id = SerialGenerator.getLongValue("Role.id");
+        } else {
+            this.id = Long.parseLong(roleId);
         }
-        this.roleName=roleName;
-        this.roleType=roleType;
-        this.businStatus=businStatus;
-        this.def=anDefault;
-        this.operOrg=operOrg;
+        this.roleName = roleName;
+        this.roleType = roleType;
+        this.businStatus = businStatus;
+        this.def = anDefault;
+        this.operOrg = operOrg;
     }
 }

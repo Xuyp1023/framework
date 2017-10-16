@@ -18,38 +18,39 @@
  */
 package nl.fountain.xelem.lex;
 
-import nl.fountain.xelem.excel.Comment;
-import nl.fountain.xelem.excel.XLElement;
-import nl.fountain.xelem.excel.ss.SSCell;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
+import nl.fountain.xelem.excel.Comment;
+import nl.fountain.xelem.excel.XLElement;
+import nl.fountain.xelem.excel.ss.SSCell;
+
 /**
  *
  */
 class SSCellBuilder extends AnonymousBuilder {
-    
+
     private SSCell current;
-    
+
     SSCellBuilder(Director director) {
         super(director);
     }
-    
+
+    @Override
     public void build(XMLReader reader, ContentHandler parent, XLElement xle) {
         setUpBuilder(reader, parent);
         current = (SSCell) xle;
     }
-    
-    public void startElement(String uri, String localName, String qName,
-            Attributes atts) throws SAXException {
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
         contents.reset();
         if (XLElement.XMLNS_SS.equals(uri)) {
             if ("Data".equals(localName)) {
-	            // set the atts of the data element
-	            current.setAttributes(atts);
+                // set the atts of the data element
+                current.setAttributes(atts);
             } else if ("Comment".equals(localName)) {
                 Comment comment = current.addComment();
                 comment.setAttributes(atts);
@@ -58,13 +59,13 @@ class SSCellBuilder extends AnonymousBuilder {
             }
         }
     }
-    
+
+    @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (current.getNameSpace().equals(uri)) {
             if (current.getTagName().equals(localName)) {
-            	for (ExcelReaderListener listener : director.getListeners()) {
-                    listener.setCell(director.getCurrentSheetIndex(),
-                            director.getCurrentSheetName(), 
+                for (ExcelReaderListener listener : director.getListeners()) {
+                    listener.setCell(director.getCurrentSheetIndex(), director.getCurrentSheetName(),
                             director.getCurrentRowIndex(), current);
                 }
                 reader.setContentHandler(parent);

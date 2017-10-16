@@ -3,7 +3,10 @@ package org.apache.ibatis.executor.resultset;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
@@ -21,7 +24,8 @@ public class ProcessUnmapped implements Serializable {
     // private static Map<String, ResultMapping> propertyMap = new
     // HashMap<String, ResultMapping>();
 
-    public static boolean process(List<String> anColumnList, ResultSet anRecd, MetaObject metaObject, String columnPrefix) throws SQLException {
+    public static boolean process(List<String> anColumnList, ResultSet anRecd, MetaObject metaObject,
+            String columnPrefix) throws SQLException {
         Object obj = metaObject.getOriginalObject();
         if (metaObject.getOriginalObject() != null && obj instanceof UnmappedEntity) {
             UnmappedEntity entity = (UnmappedEntity) obj;
@@ -30,8 +34,7 @@ public class ProcessUnmapped implements Serializable {
                 if (propertyMapping == null) {
                     logger.warn("this column not config from project :".concat(workColumn));
                     continue;
-                }
-                else {
+                } else {
                     final TypeHandler<?> typeHandler = propertyMapping.getTypeHandler();
                     final String column = prependPrefix(propertyMapping.getColumn(), columnPrefix);
                     Object value = typeHandler.getResult(anRecd, column);
@@ -52,8 +55,7 @@ public class ProcessUnmapped implements Serializable {
     private static boolean compareResultMapping(ResultMapping one, ResultMapping other) {
         if ((one == null) && (other == null)) {
             return true;
-        }
-        else if (((one != null) && (other == null)) || ((one == null) && (other != null))) {
+        } else if (((one != null) && (other == null)) || ((one == null) && (other != null))) {
             return false;
         }
         return one.getColumn().equals(other.getColumn()) && one.getJavaType().equals(other.getJavaType())
@@ -71,13 +73,14 @@ public class ProcessUnmapped implements Serializable {
                     List<ResultMapping> mapping = map.getResultMappings();
                     for (ResultMapping mp : mapping) {
                         if (mp.getColumn() != null) {
-                        //    System.out.println(mp.getColumn());
+                            // System.out.println(mp.getColumn());
                             ResultMapping tmpMP = userMap.get(mp.getColumn().trim());
                             if ((tmpMP != null) && (compareResultMapping(mp, tmpMP) == false)) {
-                                // logger.warn(map.getId() + "-->" + mp.getColumn() + "-->" + mp.getProperty() + "-->" + mp.getJavaType());
-                                 //logger.warn(map.getId() + "-->" + tmpMP.getColumn() + "-->" + tmpMP.getProperty() + "-->" + tmpMP.getJavaType());
-                            }
-                            else {
+                                // logger.warn(map.getId() + "-->" + mp.getColumn() + "-->" + mp.getProperty() + "-->" +
+                                // mp.getJavaType());
+                                // logger.warn(map.getId() + "-->" + tmpMP.getColumn() + "-->" + tmpMP.getProperty() +
+                                // "-->" + tmpMP.getJavaType());
+                            } else {
                                 userMap.put(mp.getColumn().toUpperCase(Locale.ENGLISH), mp);
                             }
                         }

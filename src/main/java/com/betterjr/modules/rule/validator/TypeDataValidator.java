@@ -15,15 +15,14 @@ import com.betterjr.modules.rule.service.QLExpressContext;
 public class TypeDataValidator extends BaseDataValidator implements DataValidatorFace {
 
     @Override
-    public boolean evaluate(WorkRuleValidator anValidator, QLExpressContext anContext, RuleCheckResult anResult, RuleBusiness anRuleBusin,
-            Object anValue, Object anBusinValue, String anMessage) {
+    public boolean evaluate(WorkRuleValidator anValidator, QLExpressContext anContext, RuleCheckResult anResult,
+            RuleBusiness anRuleBusin, Object anValue, Object anBusinValue, String anMessage) {
 
+        if (anValue == null) {
 
-        if (anValue == null){
-            
             return true;
         }
-        
+
         // 转换数据类型
         Class dt = DataTypeInfo.getClass(anValidator.getDataType());
 

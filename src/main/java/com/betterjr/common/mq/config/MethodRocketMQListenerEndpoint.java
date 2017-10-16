@@ -35,7 +35,8 @@ public class MethodRocketMQListenerEndpoint extends AbstractRocketMQListenerEndp
 
     @Override
     protected StringBuilder getEndpointDescription() {
-        return super.getEndpointDescription().append(" | bean='").append(this.bean).append("'").append(" | method='").append(this.method).append("'");
+        return super.getEndpointDescription().append(" | bean='").append(this.bean).append("'").append(" | method='")
+                .append(this.method).append("'");
     }
 
     @Override

@@ -297,18 +297,29 @@ public class CustFileAduit implements BetterjrEntity {
         final CustFileAduit other = (CustFileAduit) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
                 && (this.getCustNo() == null ? other.getCustNo() == null : this.getCustNo().equals(other.getCustNo()))
-                && (this.getFileCount() == null ? other.getFileCount() == null : this.getFileCount().equals(other.getFileCount()))
-                && (this.getAuditStatus() == null ? other.getAuditStatus() == null : this.getAuditStatus().equals(other.getAuditStatus()))
-                && (this.getWorkType() == null ? other.getWorkType() == null : this.getWorkType().equals(other.getWorkType()))
-                && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
-                && (this.getRegDate() == null ? other.getRegDate() == null : this.getRegDate().equals(other.getRegDate()))
-                && (this.getRegTime() == null ? other.getRegTime() == null : this.getRegTime().equals(other.getRegTime()))
-                && (this.getModiDate() == null ? other.getModiDate() == null : this.getModiDate().equals(other.getModiDate()))
+                && (this.getFileCount() == null ? other.getFileCount() == null
+                        : this.getFileCount().equals(other.getFileCount()))
+                && (this.getAuditStatus() == null ? other.getAuditStatus() == null
+                        : this.getAuditStatus().equals(other.getAuditStatus()))
+                && (this.getWorkType() == null ? other.getWorkType() == null
+                        : this.getWorkType().equals(other.getWorkType()))
+                && (this.getDescription() == null ? other.getDescription() == null
+                        : this.getDescription().equals(other.getDescription()))
+                && (this.getRegDate() == null ? other.getRegDate() == null
+                        : this.getRegDate().equals(other.getRegDate()))
+                && (this.getRegTime() == null ? other.getRegTime() == null
+                        : this.getRegTime().equals(other.getRegTime()))
+                && (this.getModiDate() == null ? other.getModiDate() == null
+                        : this.getModiDate().equals(other.getModiDate()))
                 && (this.getOperNo() == null ? other.getOperNo() == null : this.getOperNo().equals(other.getOperNo()))
-                && (this.getAduitCustNo() == null ? other.getAduitCustNo() == null : this.getAduitCustNo().equals(other.getAduitCustNo()))
-                && (this.getAuthorTime() == null ? other.getAuthorTime() == null : this.getAuthorTime().equals(other.getAuthorTime()))
-                && (this.getAduitorNo() == null ? other.getAduitorNo() == null : this.getAduitorNo().equals(other.getAduitorNo()))
-                && (this.getBatchNo() == null ? other.getBatchNo() == null : this.getBatchNo().equals(other.getBatchNo()));
+                && (this.getAduitCustNo() == null ? other.getAduitCustNo() == null
+                        : this.getAduitCustNo().equals(other.getAduitCustNo()))
+                && (this.getAuthorTime() == null ? other.getAuthorTime() == null
+                        : this.getAuthorTime().equals(other.getAuthorTime()))
+                && (this.getAduitorNo() == null ? other.getAduitorNo() == null
+                        : this.getAduitorNo().equals(other.getAduitorNo()))
+                && (this.getBatchNo() == null ? other.getBatchNo() == null
+                        : this.getBatchNo().equals(other.getBatchNo()));
     }
 
     @Override

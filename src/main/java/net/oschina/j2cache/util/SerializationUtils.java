@@ -1,14 +1,15 @@
 package net.oschina.j2cache.util;
 
-import net.oschina.j2cache.CacheManager;
-import net.sf.ehcache.CacheException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.oschina.j2cache.CacheManager;
+import net.sf.ehcache.CacheException;
 
 /**
  * 对象序列化工具包
@@ -36,8 +37,7 @@ public class SerializationUtils {
 
     static {
         String ser = CacheManager.getSerializer();
-        if (ser == null || "".equals(ser.trim()))
-            g_ser = new JavaSerializer();
+        if (ser == null || "".equals(ser.trim())) g_ser = new JavaSerializer();
         else {
             if (ser.equals("java")) {
                 g_ser = new JavaSerializer();
@@ -45,12 +45,13 @@ public class SerializationUtils {
                 g_ser = new FSTSerializer();
             } else if (ser.equals("kryo")) {
                 g_ser = new KryoSerializer();
-            } else if (ser.equals("kryo_pool_ser")){
-            	g_ser = new KryoPoolSerializer();
+            } else if (ser.equals("kryo_pool_ser")) {
+                g_ser = new KryoPoolSerializer();
             } else {
                 try {
                     g_ser = (Serializer) Class.forName(ser).newInstance();
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     throw new CacheException("Cannot initialize Serializer named [" + ser + ']', e);
                 }
             }

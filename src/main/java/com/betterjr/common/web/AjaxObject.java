@@ -122,7 +122,8 @@ public class AjaxObject {
      * @param rel
      * @param callbackType
      */
-    public AjaxObject(final int statusCode, final String message, final String navTabId, final String forwardUrl, final String rel, final String callbackType) {
+    public AjaxObject(final int statusCode, final String message, final String navTabId, final String forwardUrl,
+            final String rel, final String callbackType) {
         this.statusCode = statusCode;
         this.message = message;
         this.navTabId = navTabId;
@@ -289,12 +290,11 @@ public class AjaxObject {
         return new AjaxObject(STATUS_CODE_FAILURE, message);
     }
 
-    public static AjaxObject newError(final Exception anEx){
+    public static AjaxObject newError(final Exception anEx) {
         String message;
         if (anEx instanceof BytterException) {
             message = anEx.getMessage();
-        }
-        else {
+        } else {
             message = "未知错误！";
         }
 
@@ -308,6 +308,7 @@ public class AjaxObject {
     public static AjaxObject newForbidden(final String message) {
         return new AjaxObject(STATUS_CODE_FORBIDDEN, message);
     }
+
     public static AjaxObject newFristLogin(final String message) {
         return new AjaxObject(STATUS_CODE_FRISTLOGIN, message);
     }
@@ -371,8 +372,8 @@ public class AjaxObject {
     public String toString() {
         final StringBuilder buffer = new StringBuilder(200);
         buffer.append("{").append("\"code\":\"" + statusCode + "\",").append("\"message\":\"" + message + "\",")
-        .append("\"navTabId\":\"" + navTabId + "\",").append("\"rel\":\"" + rel + "\",").append("\"callbackType\":\"" + callbackType + "\",")
-        .append("\"forwardUrl\":\"" + forwardUrl + "\"");
+                .append("\"navTabId\":\"" + navTabId + "\",").append("\"rel\":\"" + rel + "\",")
+                .append("\"callbackType\":\"" + callbackType + "\",").append("\"forwardUrl\":\"" + forwardUrl + "\"");
         createPageInfo(buffer);
         createDataInfo(buffer);
         buffer.append("}");

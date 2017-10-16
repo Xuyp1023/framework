@@ -24,24 +24,46 @@
 
 package com.betterjr.mapper.mapperhelper;
 
-import org.apache.ibatis.cache.Cache;
-import org.apache.ibatis.executor.keygen.Jdbc3KeyGenerator;
-import org.apache.ibatis.executor.keygen.KeyGenerator;
-import org.apache.ibatis.executor.keygen.NoKeyGenerator;
-import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
- import org.apache.ibatis.mapping.*;
-import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.reflection.SystemMetaObject;
-import org.apache.ibatis.scripting.defaults.RawSqlSource;
-import org.apache.ibatis.scripting.xmltags.*;
-import org.apache.ibatis.session.Configuration;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.ibatis.cache.Cache;
+import org.apache.ibatis.executor.keygen.Jdbc3KeyGenerator;
+import org.apache.ibatis.executor.keygen.KeyGenerator;
+import org.apache.ibatis.executor.keygen.NoKeyGenerator;
+import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.ParameterMap;
+import org.apache.ibatis.mapping.ParameterMapping;
+import org.apache.ibatis.mapping.ParameterMode;
+import org.apache.ibatis.mapping.ResultMap;
+import org.apache.ibatis.mapping.ResultMapping;
+import org.apache.ibatis.mapping.SqlCommandType;
+import org.apache.ibatis.mapping.SqlSource;
+import org.apache.ibatis.mapping.StatementType;
+import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.reflection.SystemMetaObject;
+import org.apache.ibatis.scripting.defaults.RawSqlSource;
+import org.apache.ibatis.scripting.xmltags.ChooseSqlNode;
+import org.apache.ibatis.scripting.xmltags.DynamicSqlSource;
+import org.apache.ibatis.scripting.xmltags.ForEachSqlNode;
+import org.apache.ibatis.scripting.xmltags.IfSqlNode;
+import org.apache.ibatis.scripting.xmltags.MixedSqlNode;
+import org.apache.ibatis.scripting.xmltags.SqlNode;
+import org.apache.ibatis.scripting.xmltags.StaticTextSqlNode;
+import org.apache.ibatis.scripting.xmltags.TextSqlNode;
+import org.apache.ibatis.scripting.xmltags.TrimSqlNode;
+import org.apache.ibatis.scripting.xmltags.WhereSqlNode;
+import org.apache.ibatis.scripting.xmltags.XMLLanguageDriver;
+import org.apache.ibatis.session.Configuration;
 
 /**
  * 通用Mapper模板类，扩展通用Mapper时需要继承该类
@@ -109,7 +131,7 @@ public abstract class MapperTemplate {
      */
     protected void setResultType(MappedStatement ms, Class<?> entityClass) {
         ResultMap resultMap = ms.getResultMaps().get(0);
-//        System.out.println(resultMap.toString());
+        // System.out.println(resultMap.toString());
         MetaObject metaObject = SystemMetaObject.forObject(resultMap);
         metaObject.setValue("type", entityClass);
     }
@@ -125,7 +147,7 @@ public abstract class MapperTemplate {
         msObject.setValue("sqlSource", sqlSource);
         // 如果是Jdbc3KeyGenerator，就设置为MultipleJdbc3KeyGenerator
         KeyGenerator keyGenerator = ms.getKeyGenerator();
- //       System.out.println(keyGenerator.getClass().getName());
+        // System.out.println(keyGenerator.getClass().getName());
         if (keyGenerator instanceof Jdbc3KeyGenerator) {
             msObject.setValue("keyGenerator", new MultipleJdbc3KeyGenerator());
         }
@@ -167,12 +189,12 @@ public abstract class MapperTemplate {
         if (this.mapperClass == getMapperClass(ms.getId())) {
             if (mapperHelper.isSpring4()) {
                 return;
-            }
-            else if (mapperHelper.isSpring()) {
-                throw new RuntimeException("Spring4.x.x 及以上版本支持泛型注入," + "您当前的Spring版本为" + mapperHelper.getSpringVersion() + ",不能使用泛型注入,"
-                        + "因此在配置MapperScannerConfigurer时,不要扫描通用Mapper接口类," + "也不要在您Mybatis的xml配置文件中的<mappers>中指定通用Mapper接口类.");
-            }
-            else {
+            } else if (mapperHelper.isSpring()) {
+                throw new RuntimeException(
+                        "Spring4.x.x 及以上版本支持泛型注入," + "您当前的Spring版本为" + mapperHelper.getSpringVersion() + ",不能使用泛型注入,"
+                                + "因此在配置MapperScannerConfigurer时,不要扫描通用Mapper接口类,"
+                                + "也不要在您Mybatis的xml配置文件中的<mappers>中指定通用Mapper接口类.");
+            } else {
                 throw new RuntimeException("请不要在您Mybatis的xml配置文件中的<mappers>中指定通用Mapper接口类.");
             }
         }
@@ -180,8 +202,7 @@ public abstract class MapperTemplate {
         try {
             if (method.getReturnType() == Void.TYPE) {
                 method.invoke(this, ms);
-            }
-            else if (SqlNode.class.isAssignableFrom(method.getReturnType())) {
+            } else if (SqlNode.class.isAssignableFrom(method.getReturnType())) {
                 // System.out.println("invoke me");
                 SqlNode sqlNode = (SqlNode) method.invoke(this, ms);
                 /*
@@ -189,14 +210,12 @@ public abstract class MapperTemplate {
                  * (StackTraceElement yy : xx) { System.out.println(yy); }
                  */ DynamicSqlSource dynamicSqlSource = new DynamicSqlSource(ms.getConfiguration(), sqlNode);
                 setSqlSource(ms, dynamicSqlSource);
-            }
-            else if (String.class.equals(method.getReturnType())) {
+            } else if (String.class.equals(method.getReturnType())) {
                 String xmlSql = (String) method.invoke(this, ms);
                 SqlSource sqlSource = createSqlSource(ms, xmlSql);
                 // 替换原有的SqlSource
                 setSqlSource(ms, sqlSource);
-            }
-            else {
+            } else {
                 throw new RuntimeException("自定义Mapper方法返回类型错误,可选的返回类型为void,SqlNode,String三种!");
             }
             // cache
@@ -220,14 +239,14 @@ public abstract class MapperTemplate {
         String msId = ms.getId();
         if (entityClassMap.containsKey(msId)) {
             return entityClassMap.get(msId);
-        }
-        else {
+        } else {
             Class<?> mapperClass = getMapperClass(msId);
             Type[] types = mapperClass.getGenericInterfaces();
             for (Type type : types) {
                 if (type instanceof ParameterizedType) {
                     ParameterizedType t = (ParameterizedType) type;
-                    if (t.getRawType() == this.mapperClass || this.mapperClass.isAssignableFrom((Class<?>) t.getRawType())) {
+                    if (t.getRawType() == this.mapperClass
+                            || this.mapperClass.isAssignableFrom((Class<?>) t.getRawType())) {
                         Class<?> returnType = (Class<?>) t.getActualTypeArguments()[0];
                         // 获取该类型后，第一次对该类型进行初始化
                         EntityHelper.initEntityNameMap(returnType, mapperHelper.getStyle());
@@ -291,7 +310,8 @@ public abstract class MapperTemplate {
         Set<EntityHelper.EntityColumn> entityColumns = EntityHelper.getPKColumns(entityClass);
         List<ParameterMapping> parameterMappings = new LinkedList<ParameterMapping>();
         for (EntityHelper.EntityColumn column : entityColumns) {
-            ParameterMapping.Builder builder = new ParameterMapping.Builder(ms.getConfiguration(), column.getProperty(), column.getJavaType());
+            ParameterMapping.Builder builder = new ParameterMapping.Builder(ms.getConfiguration(), column.getProperty(),
+                    column.getJavaType());
             builder.mode(ParameterMode.IN);
             parameterMappings.add(builder.build());
         }
@@ -305,7 +325,8 @@ public abstract class MapperTemplate {
      * @return
      */
     protected String getSeqNextVal(EntityHelper.EntityColumn column) {
-        return MessageFormat.format(mapperHelper.getSeqFormat(), column.getSequenceName(), column.getColumn(), column.getProperty());
+        return MessageFormat.format(mapperHelper.getSeqFormat(), column.getSequenceName(), column.getColumn(),
+                column.getProperty());
     }
 
     /**
@@ -347,8 +368,7 @@ public abstract class MapperTemplate {
     protected SqlNode getIfNotNull(EntityHelper.EntityColumn column, SqlNode columnNode, boolean empty) {
         if (empty && column.getJavaType().equals(String.class)) {
             return new IfSqlNode(columnNode, column.getProperty() + " != null and " + column.getProperty() + " != ''");
-        }
-        else {
+        } else {
             return new IfSqlNode(columnNode, column.getProperty() + " != null ");
         }
     }
@@ -401,7 +421,8 @@ public abstract class MapperTemplate {
      * @return
      */
     protected SqlNode getColumnEqualsProperty(EntityHelper.EntityColumn column, boolean first) {
-        return new StaticTextSqlNode((first ? "" : " AND ") + column.getColumn() + " = #{" + column.getProperty() + column.getFullJdbcType()+ "} ");
+        return new StaticTextSqlNode((first ? "" : " AND ") + column.getColumn() + " = #{" + column.getProperty()
+                + column.getFullJdbcType() + "} ");
     }
 
     /**
@@ -434,7 +455,8 @@ public abstract class MapperTemplate {
         Set<EntityHelper.EntityColumn> entityColumns = EntityHelper.getColumns(entityClass);
         List<ParameterMapping> parameterMappings = new LinkedList<ParameterMapping>();
         for (EntityHelper.EntityColumn column : entityColumns) {
-            ParameterMapping.Builder builder = new ParameterMapping.Builder(ms.getConfiguration(), column.getProperty(), column.getJavaType());
+            ParameterMapping.Builder builder = new ParameterMapping.Builder(ms.getConfiguration(), column.getProperty(),
+                    column.getJavaType());
             builder.mode(ParameterMode.IN);
             parameterMappings.add(builder.build());
         }
@@ -457,14 +479,15 @@ public abstract class MapperTemplate {
         Configuration configuration = ms.getConfiguration();
         KeyGenerator keyGenerator;
         Boolean executeBefore = getBEFORE();
-        String IDENTITY = (column.getGenerator() == null || column.getGenerator().equals("")) ? getIDENTITY() : column.getGenerator();
+        String IDENTITY = (column.getGenerator() == null || column.getGenerator().equals("")) ? getIDENTITY()
+                : column.getGenerator();
         if (IDENTITY.equalsIgnoreCase("JDBC")) {
             keyGenerator = new Jdbc3KeyGenerator();
-        }
-        else {
+        } else {
             SqlSource sqlSource = new RawSqlSource(configuration, IDENTITY, entityClass);
 
-            MappedStatement.Builder statementBuilder = new MappedStatement.Builder(configuration, keyId, sqlSource, SqlCommandType.SELECT);
+            MappedStatement.Builder statementBuilder = new MappedStatement.Builder(configuration, keyId, sqlSource,
+                    SqlCommandType.SELECT);
             statementBuilder.resource(ms.getResource());
             statementBuilder.fetchSize(null);
             statementBuilder.statementType(StatementType.STATEMENT);
@@ -478,13 +501,13 @@ public abstract class MapperTemplate {
             statementBuilder.timeout(configuration.getDefaultStatementTimeout());
 
             List<ParameterMapping> parameterMappings = new LinkedList<ParameterMapping>();
-            ParameterMap.Builder inlineParameterMapBuilder = new ParameterMap.Builder(configuration, statementBuilder.id() + "-Inline", entityClass,
-                    parameterMappings);
+            ParameterMap.Builder inlineParameterMapBuilder = new ParameterMap.Builder(configuration,
+                    statementBuilder.id() + "-Inline", entityClass, parameterMappings);
             statementBuilder.parameterMap(inlineParameterMapBuilder.build());
 
             List<ResultMap> resultMaps = new LinkedList<ResultMap>();
-            ResultMap.Builder inlineResultMapBuilder = new ResultMap.Builder(configuration, statementBuilder.id() + "-Inline", column.getJavaType(),
-                    new LinkedList<ResultMapping>(), null);
+            ResultMap.Builder inlineResultMapBuilder = new ResultMap.Builder(configuration,
+                    statementBuilder.id() + "-Inline", column.getJavaType(), new LinkedList<ResultMapping>(), null);
             resultMaps.add(inlineResultMapBuilder.build());
             statementBuilder.resultMaps(resultMaps);
             statementBuilder.resultSetType(null);
@@ -525,23 +548,26 @@ public abstract class MapperTemplate {
         List<SqlNode> whenSqlNodes = new LinkedList<SqlNode>();
         IfSqlNode noValueSqlNode = new IfSqlNode(new TextSqlNode(" and ${criterion.condition}"), "criterion.noValue");
         whenSqlNodes.add(noValueSqlNode);
-        IfSqlNode singleValueSqlNode = new IfSqlNode(new TextSqlNode(" and ${criterion.condition} #{criterion.value}"), "criterion.singleValue");
+        IfSqlNode singleValueSqlNode = new IfSqlNode(new TextSqlNode(" and ${criterion.condition} #{criterion.value}"),
+                "criterion.singleValue");
         whenSqlNodes.add(singleValueSqlNode);
-        IfSqlNode betweenValueSqlNode = new IfSqlNode(new TextSqlNode(" and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}"),
+        IfSqlNode betweenValueSqlNode = new IfSqlNode(
+                new TextSqlNode(" and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}"),
                 "criterion.betweenValue");
         whenSqlNodes.add(betweenValueSqlNode);
 
         List<SqlNode> listValueContentSqlNodes = new LinkedList<SqlNode>();
         listValueContentSqlNodes.add(new TextSqlNode(" and ${criterion.condition}"));
-        ForEachSqlNode listValueForEachSqlNode = new ForEachSqlNode(configuration, new StaticTextSqlNode("#{listItem}"), "criterion.value", null,
-                "listItem", "(", ")", ",");
+        ForEachSqlNode listValueForEachSqlNode = new ForEachSqlNode(configuration, new StaticTextSqlNode("#{listItem}"),
+                "criterion.value", null, "listItem", "(", ")", ",");
         listValueContentSqlNodes.add(listValueForEachSqlNode);
         IfSqlNode listValueSqlNode = new IfSqlNode(new MixedSqlNode(listValueContentSqlNodes), "criterion.listValue");
         whenSqlNodes.add(listValueSqlNode);
 
         ChooseSqlNode chooseSqlNode = new ChooseSqlNode(whenSqlNodes, null);
 
-        ForEachSqlNode criteriaSqlNode = new ForEachSqlNode(configuration, chooseSqlNode, "criteria.criteria", null, "criterion", null, null, null);
+        ForEachSqlNode criteriaSqlNode = new ForEachSqlNode(configuration, chooseSqlNode, "criteria.criteria", null,
+                "criterion", null, null, null);
 
         TrimSqlNode trimSqlNode = new TrimSqlNode(configuration, criteriaSqlNode, "(", "and", ")", null);
         IfSqlNode validSqlNode = new IfSqlNode(trimSqlNode, "criteria.valid");
@@ -555,8 +581,8 @@ public abstract class MapperTemplate {
      * @return
      */
     public WhereSqlNode exampleWhereClause(Configuration configuration) {
-        ForEachSqlNode forEachSqlNode = new ForEachSqlNode(configuration, ExampleValidSqlNode(configuration), "oredCriteria", null, "criteria", null,
-                null, " or ");
+        ForEachSqlNode forEachSqlNode = new ForEachSqlNode(configuration, ExampleValidSqlNode(configuration),
+                "oredCriteria", null, "criteria", null, null, " or ");
         WhereSqlNode whereSqlNode = new WhereSqlNode(configuration, forEachSqlNode);
         return whereSqlNode;
     }
@@ -569,8 +595,8 @@ public abstract class MapperTemplate {
      */
     public WhereSqlNode updateByExampleWhereClause(Configuration configuration) {
         // 和上面方法的区别就在"example.oredCriteria"
-        ForEachSqlNode forEachSqlNode = new ForEachSqlNode(configuration, ExampleValidSqlNode(configuration), "example.oredCriteria", null,
-                "criteria", null, null, " or ");
+        ForEachSqlNode forEachSqlNode = new ForEachSqlNode(configuration, ExampleValidSqlNode(configuration),
+                "example.oredCriteria", null, "criteria", null, null, " or ");
         WhereSqlNode whereSqlNode = new WhereSqlNode(configuration, forEachSqlNode);
         return whereSqlNode;
     }

@@ -43,7 +43,8 @@ public class CaptchaUsernamePasswordToken extends UsernamePasswordToken {
         this.mobileLogin = false;
     }
 
-    public CaptchaUsernamePasswordToken(final String anIdentType, final String username, final String password, final String anHost, final String captcha, final String custRole, final boolean anMobileLogin,
+    public CaptchaUsernamePasswordToken(final String anIdentType, final String username, final String password,
+            final String anHost, final String captcha, final String custRole, final boolean anMobileLogin,
             final HttpServletRequest request, final HttpServletResponse response) {
         super(username, password, false, anHost);
         this.custRole = custRole;

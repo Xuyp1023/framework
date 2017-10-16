@@ -35,19 +35,19 @@ import net.oauth.jsontoken.crypto.Verifier;
  */
 public class VerifierProviders {
 
-  private final Map<SignatureAlgorithm, VerifierProvider> map = new HashMap<SignatureAlgorithm, VerifierProvider>();
+    private final Map<SignatureAlgorithm, VerifierProvider> map = new HashMap<SignatureAlgorithm, VerifierProvider>();
 
-  /**
-   * Sets a new {@link VerifierProvider} for the given {@link SignatureAlgorithm}.
-   */
-  public void setVerifierProvider(SignatureAlgorithm alg, VerifierProvider provider) {
-    map.put(alg, provider);
-  }
+    /**
+     * Sets a new {@link VerifierProvider} for the given {@link SignatureAlgorithm}.
+     */
+    public void setVerifierProvider(SignatureAlgorithm alg, VerifierProvider provider) {
+        map.put(alg, provider);
+    }
 
-  /**
-   * Returns the {@link VerifierProvider} for the given {@link SignatureAlgorithm}.
-   */
-  public VerifierProvider getVerifierProvider(SignatureAlgorithm alg) {
-    return map.get(alg);
-  }
+    /**
+     * Returns the {@link VerifierProvider} for the given {@link SignatureAlgorithm}.
+     */
+    public VerifierProvider getVerifierProvider(SignatureAlgorithm alg) {
+        return map.get(alg);
+    }
 }

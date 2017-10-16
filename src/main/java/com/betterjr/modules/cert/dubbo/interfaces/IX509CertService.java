@@ -27,6 +27,7 @@ public interface IX509CertService {
      * 分页查询证书信息
      */
     public String webQueryCertificateInfo(Map<String, Object> anParam, int anFlag, int anPageNum, int anPageSize);
+
     /**
      * 分页查询证书信息
      */

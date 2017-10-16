@@ -20,7 +20,7 @@ public final class TicketUtils {
     public static final String custTicketPrefix = "cust::ticket::";
 
     public static void putTicket(final String anTicket, final Map<String, String> anParam) {
-        final String result = JedisUtils.setObject(custTicketPrefix + anTicket, anParam, 30 * 60);//30 分钟有效
+        final String result = JedisUtils.setObject(custTicketPrefix + anTicket, anParam, 30 * 60);// 30 分钟有效
     }
 
     public static Map<String, String> getToken(final String anTicket) {

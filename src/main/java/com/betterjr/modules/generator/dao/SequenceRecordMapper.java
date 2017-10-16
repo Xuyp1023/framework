@@ -12,5 +12,6 @@ import com.betterjr.modules.generator.entity.SequenceRecord;
 public interface SequenceRecordMapper extends Mapper<SequenceRecord> {
     @Select("SELECT * FROM T_SYS_SEQ_RECORD WHERE C_SEQ_ID = #{seqId} AND C_OPERORG = #{operOrg} AND L_CUSTNO = #{custNo}  FOR UPDATE")
     @ResultType(SequenceRecord.class)
-    public SequenceRecord getAndLockSeqDef(@Param("seqId") String seqId, @Param("operOrg") String operOrg, @Param("custNo") long custNo);
+    public SequenceRecord getAndLockSeqDef(@Param("seqId") String seqId, @Param("operOrg") String operOrg,
+            @Param("custNo") long custNo);
 }

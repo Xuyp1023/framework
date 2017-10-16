@@ -1,6 +1,9 @@
 package com.betterjr.common.utils;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 查询条件生成器
@@ -12,15 +15,15 @@ public class QueryTermBuilder {
     private final Map<String, Object> map;
 
     public QueryTermBuilder put(String anKey, Object anValue) {
-        if (anValue != null){
-            if (anValue instanceof String){
-                if (BetterStringUtils.isBlank( (String) anValue )){
+        if (anValue != null) {
+            if (anValue instanceof String) {
+                if (StringUtils.isBlank((String) anValue)) {
                     return this;
                 }
             }
             map.put(anKey, anValue);
         }
-        
+
         return this;
     }
 
@@ -29,24 +32,24 @@ public class QueryTermBuilder {
         return map;
     }
 
-    public QueryTermBuilder addAll(Map<String, Object> anMap){        
+    public QueryTermBuilder addAll(Map<String, Object> anMap) {
         this.map.putAll(anMap);
-        
+
         return this;
     }
-    
-    public QueryTermBuilder remove(String anKey){
-       this.map.remove(anKey);
-       
-       return this;
+
+    public QueryTermBuilder remove(String anKey) {
+        this.map.remove(anKey);
+
+        return this;
     }
-    
-    public static Map<String, Object> buildSingle(String anKey, Object anValue){
-       Map<String, Object>  result = new HashMap();
-       result.put(anKey, anValue);
-       return result;
+
+    public static Map<String, Object> buildSingle(String anKey, Object anValue) {
+        Map<String, Object> result = new HashMap();
+        result.put(anKey, anValue);
+        return result;
     }
-    
+
     public static QueryTermBuilder newInstance(Map anMap) {
 
         return new QueryTermBuilder();
@@ -64,8 +67,7 @@ public class QueryTermBuilder {
     public QueryTermBuilder(Map anMap) {
         if (anMap == null) {
             map = new HashMap();
-        }
-        else {
+        } else {
             map = anMap;
         }
     }

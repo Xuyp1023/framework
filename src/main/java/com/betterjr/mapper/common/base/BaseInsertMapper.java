@@ -33,8 +33,6 @@ import com.betterjr.mapper.common.base.insert.InsertSelectiveMapper;
  * @param <T> 不能为空
  * @author liuzh
  */
-public interface BaseInsertMapper<T> extends
-        InsertMapper<T>,
-        InsertSelectiveMapper<T> {
+public interface BaseInsertMapper<T> extends InsertMapper<T>, InsertSelectiveMapper<T> {
 
 }

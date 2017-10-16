@@ -8,7 +8,7 @@ package com.betterjr.common.data;
 public final class NotificationAttachment {
     private String fileName;
     private String filePath;
-    
+
     public NotificationAttachment(String anFileName, String anFilePath) {
         this.fileName = anFileName;
         this.filePath = anFilePath;

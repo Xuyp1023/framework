@@ -4,7 +4,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.betterjr.mapper.entity.ReferClass;
-import com.betterjr.modules.sys.entity.DictInfo;
 
 @ReferClass(DictInfo.class)
 public class DictInfoTest implements java.io.Serializable {
@@ -14,7 +13,7 @@ public class DictInfoTest implements java.io.Serializable {
     private Integer id;
 
     @NotNull()
-    @Size(min=3, max=9)
+    @Size(min = 3, max = 9)
     private String sysNo;
 
     private String dictName;
@@ -36,7 +35,7 @@ public class DictInfoTest implements java.io.Serializable {
     }
 
     public String getSysName() {
-        return sysNo+"Test";
+        return sysNo + "Test";
     }
 
     public void setSysNo(String sysNo) {
@@ -66,6 +65,7 @@ public class DictInfoTest implements java.io.Serializable {
     public void setDictCode(String dictCode) {
         this.dictCode = dictCode;
     }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -75,7 +75,7 @@ public class DictInfoTest implements java.io.Serializable {
         sb.append(", id=").append(id);
         sb.append(", sysNo=").append(sysNo);
         sb.append(", dictName=").append(dictName);
-        sb.append(", groupNo=").append(groupNo); 
+        sb.append(", groupNo=").append(groupNo);
         sb.append(", dictCode=").append(dictCode);
         sb.append("]");
         return sb.toString();

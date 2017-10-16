@@ -39,10 +39,7 @@ import com.betterjr.mapper.common.base.BaseUpdateMapper;
  * @param <T> 不能为空
  * @author liuzh
  */
-public interface BaseMapper<T> extends
-        BaseSelectMapper<T>,
-        BaseInsertMapper<T>,
-        BaseUpdateMapper<T>,
-        BaseDeleteMapper<T> {
+public interface BaseMapper<T>
+        extends BaseSelectMapper<T>, BaseInsertMapper<T>, BaseUpdateMapper<T>, BaseDeleteMapper<T> {
 
 }

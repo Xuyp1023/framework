@@ -24,15 +24,15 @@
 
 package com.betterjr.mapper.pagehelper.parser;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.session.Configuration;
 
 import com.betterjr.mapper.pagehelper.Page;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * 处理SQL

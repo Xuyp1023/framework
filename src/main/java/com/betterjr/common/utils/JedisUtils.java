@@ -40,7 +40,7 @@ public class JedisUtils {
 
     public static Integer keysCount(final String keyPartten) {
         final Optional<Set<String>> keysOpt = Optional.ofNullable(keys(keyPartten));
-        final Optional<Integer> keysCount = keysOpt.map(keys->keys.size());
+        final Optional<Integer> keysCount = keysOpt.map(keys -> keys.size());
         return keysCount.orElse(0);
     }
 
@@ -60,67 +60,67 @@ public class JedisUtils {
         return keys;
     }
 
-
-	   /**
+    /**
     * checkBigThanAndSet
     * 确保写入redis的值是升序的，重试10次，如果写入不成功，则返回anValue+anIdGap
     * @param anKey
     * @param anValue
     * @return
     */
-   public static long checkBigThanAndSet(String anKey, long anValue,long anIdGap,int expireSeconds) {
-       
-       Jedis jedis = getResource();
-       try {
-           for (int index = 0; index < 10; index++) {
-               jedis.watch(anKey);
-               String valueStr = jedis.get(anKey);
-               if(valueStr==null){
-                   valueStr=String.valueOf(anValue);
-               }
-               Long redisOriValue = Long.valueOf(valueStr);
-               if (anValue < redisOriValue) {
-                   anValue = anValue + (redisOriValue - anValue) + anIdGap;
-               }
+    public static long checkBigThanAndSet(String anKey, long anValue, long anIdGap, int expireSeconds) {
 
-               Transaction tran = jedis.multi();
-               tran.set(anKey, String.valueOf(anValue));
-               List<Object> result = tran.exec();
-               if (result != null && result.size() > 0 && "OK".equals(result.get(0))) {
-                   if (expireSeconds != 0) {
-                       jedis.expire(anKey, expireSeconds);
-                   }
-                   return anValue;
-               }
-               
-               jedis.unwatch();
-               
-               try{
-                   int rad=new Random().nextInt(10);
-                   Thread.sleep(100*rad);
-               }catch(Exception ex){}
-           }
-       }
-       finally {
-           jedis.unwatch();
-           returnResource(jedis);
-       }
-       return anValue+anIdGap;
-   }
-   
-   
-   /**
+        Jedis jedis = getResource();
+        try {
+            for (int index = 0; index < 10; index++) {
+                jedis.watch(anKey);
+                String valueStr = jedis.get(anKey);
+                if (valueStr == null) {
+                    valueStr = String.valueOf(anValue);
+                }
+                Long redisOriValue = Long.valueOf(valueStr);
+                if (anValue < redisOriValue) {
+                    anValue = anValue + (redisOriValue - anValue) + anIdGap;
+                }
+
+                Transaction tran = jedis.multi();
+                tran.set(anKey, String.valueOf(anValue));
+                List<Object> result = tran.exec();
+                if (result != null && result.size() > 0 && "OK".equals(result.get(0))) {
+                    if (expireSeconds != 0) {
+                        jedis.expire(anKey, expireSeconds);
+                    }
+                    return anValue;
+                }
+
+                jedis.unwatch();
+
+                try {
+                    int rad = new Random().nextInt(10);
+                    Thread.sleep(100 * rad);
+                }
+                catch (Exception ex) {}
+            }
+        }
+        finally {
+            jedis.unwatch();
+            returnResource(jedis);
+        }
+        return anValue + anIdGap;
+    }
+
+    /**
     * incrby
     */
-   public static long incrby(String key, long step) {
-       Jedis jedis = getResource();
-       try {
-           return jedis.incrBy(key, step);
-       }
-       finally {
-           returnResource(jedis);
-       }
-   }
+    public static long incrby(String key, long step) {
+        Jedis jedis = getResource();
+        try {
+            return jedis.incrBy(key, step);
+        }
+        finally {
+            returnResource(jedis);
+        }
+    }
+
     /**
      * 获取缓存
      *
@@ -171,7 +171,7 @@ public class JedisUtils {
         finally {
             returnResource(jedis);
         }
-        return (T)value;
+        return (T) value;
     }
 
     /**
@@ -646,7 +646,7 @@ public class JedisUtils {
                 value = Maps.newHashMap();
                 final Map<byte[], byte[]> map = jedis.hgetAll(getBytesKey(key));
                 for (final Map.Entry<byte[], byte[]> e : map.entrySet()) {
-                    value.put(BetterStringUtils.toString(e.getKey()), (T)toObject(e.getValue()));
+                    value.put(BetterStringUtils.toString(e.getKey()), (T) toObject(e.getValue()));
                 }
                 logger.debug("getObjectMap {} = {}", key, value);
             }
@@ -659,7 +659,7 @@ public class JedisUtils {
         }
         return value;
     }
-    
+
     /**
      * 获取Map缓存
      *
@@ -667,19 +667,19 @@ public class JedisUtils {
      *           键
      * @return 值
      */
-    public static <T> T getObjectMapField(final String key,final String field) {
+    public static <T> T getObjectMapField(final String key, final String field) {
         T value = null;
         Jedis jedis = null;
         try {
             jedis = getResource();
             if (jedis.exists(getBytesKey(key))) {
-                final byte[] result = jedis.hget(getBytesKey(key),getBytesKey(field));
-                value=(T)toObject(result);
-                logger.debug("getObjectMapField {}.{} = {}", key,field, value);
+                final byte[] result = jedis.hget(getBytesKey(key), getBytesKey(field));
+                value = (T) toObject(result);
+                logger.debug("getObjectMapField {}.{} = {}", key, field, value);
             }
         }
         catch (final Exception e) {
-            logger.warn("getObjectMapField {}.{} = {}", key,field, value,e);
+            logger.warn("getObjectMapField {}.{} = {}", key, field, value, e);
         }
         finally {
             returnResource(jedis);
@@ -814,7 +814,7 @@ public class JedisUtils {
         }
         return result;
     }
-    
+
     /**
      * 向Map缓存中添加值
      *
@@ -824,12 +824,12 @@ public class JedisUtils {
      *           值
      * @return
      */
-    public static <T> String mapFieldObjectPut(final String key, final String field,final T value) {
+    public static <T> String mapFieldObjectPut(final String key, final String field, final T value) {
         Long result = null;
         Jedis jedis = null;
         try {
             jedis = getResource();
-            result = jedis.hset(getBytesKey(key), getBytesKey(field),getBytesKey(value));
+            result = jedis.hset(getBytesKey(key), getBytesKey(field), getBytesKey(value));
             logger.debug("mapObjectPut {} = {}", key, value);
         }
         catch (final Exception e) {
@@ -838,10 +838,8 @@ public class JedisUtils {
         finally {
             returnResource(jedis);
         }
-        return result==null?null:result.toString();
+        return result == null ? null : result.toString();
     }
-    
-    
 
     /**
      * 移除Map缓存中的值
@@ -962,8 +960,7 @@ public class JedisUtils {
             if (jedis.exists(key)) {
                 result = jedis.del(key);
                 logger.debug("del {}", key);
-            }
-            else {
+            } else {
                 logger.debug("del {} not exists", key);
             }
         }
@@ -991,8 +988,7 @@ public class JedisUtils {
             if (jedis.exists(getBytesKey(key))) {
                 result = jedis.del(getBytesKey(key));
                 logger.debug("delObject {}", key);
-            }
-            else {
+            } else {
                 logger.debug("delObject {} not exists", key);
             }
         }
@@ -1106,8 +1102,7 @@ public class JedisUtils {
     public static byte[] getBytesKey(final Object object) {
         if (object instanceof String) {
             return BetterStringUtils.getBytes((String) object);
-        }
-        else {
+        } else {
             return BTObjectUtils.serialize(object);
         }
     }

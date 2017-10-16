@@ -326,12 +326,13 @@ public class CustOptData implements java.io.Serializable {
 
     @Override
     public String toString() {
-        return "CustOperatorInfoRequest [id=" + id + ", contIdentType=" + contIdentType + ", name=" + name + ", contIdentNo=" + contIdentNo
-                + ", contCertValidDate=" + contCertValidDate + ", sex=" + sex + ", zipCode=" + zipCode + ", address=" + address + ", phone=" + phone
-                + ", faxNo=" + faxNo + ", mobileNo=" + mobileNo + ", email=" + email + ", identClass=" + identClass + ", transBusin=" + transBusin
-                + ", revokeBusin=" + revokeBusin + ", status=" + status + ", lastStatus=" + lastStatus + ", regDate=" + regDate + ", modiDate="
-                + modiDate + ", operCode=" + operCode + ", operOrg=" + operOrg + ", contactorSerial=" + contactorSerial + ", ruleList=" + ruleList
-                + "]";
+        return "CustOperatorInfoRequest [id=" + id + ", contIdentType=" + contIdentType + ", name=" + name
+                + ", contIdentNo=" + contIdentNo + ", contCertValidDate=" + contCertValidDate + ", sex=" + sex
+                + ", zipCode=" + zipCode + ", address=" + address + ", phone=" + phone + ", faxNo=" + faxNo
+                + ", mobileNo=" + mobileNo + ", email=" + email + ", identClass=" + identClass + ", transBusin="
+                + transBusin + ", revokeBusin=" + revokeBusin + ", status=" + status + ", lastStatus=" + lastStatus
+                + ", regDate=" + regDate + ", modiDate=" + modiDate + ", operCode=" + operCode + ", operOrg=" + operOrg
+                + ", contactorSerial=" + contactorSerial + ", ruleList=" + ruleList + "]";
     }
 
 }

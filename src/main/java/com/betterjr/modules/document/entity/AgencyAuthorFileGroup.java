@@ -1,11 +1,15 @@
 package com.betterjr.modules.document.entity;
 
-import com.betterjr.common.annotation.*;
-import com.betterjr.common.entity.BetterjrEntity;
-
 import java.io.File;
 
-import javax.persistence.*;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import com.betterjr.common.annotation.MetaData;
+import com.betterjr.common.entity.BetterjrEntity;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -15,50 +19,50 @@ public class AgencyAuthorFileGroup implements BetterjrEntity {
     /**
      * 销售人代码
      */
-    @Column(name = "C_AGENCYNO",  columnDefinition="VARCHAR" )
-    @MetaData( value="销售人代码", comments = "销售人代码")
+    @Column(name = "C_AGENCYNO", columnDefinition = "VARCHAR")
+    @MetaData(value = "销售人代码", comments = "销售人代码")
     private String agencyNo;
 
     /**
      * 业务代码
      */
-    @Column(name = "C_BUSINFLAG",  columnDefinition="VARCHAR" )
-    @MetaData( value="业务代码", comments = "业务代码；取文件的分割")
+    @Column(name = "C_BUSINFLAG", columnDefinition = "VARCHAR")
+    @MetaData(value = "业务代码", comments = "业务代码；取文件的分割")
     private String businFlag;
 
     /**
      * 文件信息类型
      */
-    @Column(name = "C_FILEINFOTYPE",  columnDefinition="VARCHAR" )
-    @MetaData( value="文件信息类型", comments = "文件信息类")
+    @Column(name = "C_FILEINFOTYPE", columnDefinition = "VARCHAR")
+    @MetaData(value = "文件信息类型", comments = "文件信息类")
     private String fileInfoType;
 
     /**
      * 业务描述
      */
-    @Column(name = "C_DESCRIPTION",  columnDefinition="VARCHAR" )
-    @MetaData( value="业务描述", comments = "业务描述")
+    @Column(name = "C_DESCRIPTION", columnDefinition = "VARCHAR")
+    @MetaData(value = "业务描述", comments = "业务描述")
     private String description;
-    
+
     /**
      * 登记日期
      */
-    @Column(name = "D_REGDATE",  columnDefinition="VARCHAR" )
-    @MetaData( value="登记日期", comments = "登记日期")
+    @Column(name = "D_REGDATE", columnDefinition = "VARCHAR")
+    @MetaData(value = "登记日期", comments = "登记日期")
     private String regDate;
 
     /**
      * 修改日期
      */
-    @Column(name = "D_MODIDATE",  columnDefinition="VARCHAR" )
-    @MetaData( value="修改日期", comments = "修改日期")
+    @Column(name = "D_MODIDATE", columnDefinition = "VARCHAR")
+    @MetaData(value = "修改日期", comments = "修改日期")
     private String modiDate;
 
     /**
      * 失效时间
      */
-    @Column(name = "N_INVALID_TIME",  columnDefinition="INTEGER" )
-    @MetaData( value="修改日期", comments = "修改日期")
+    @Column(name = "N_INVALID_TIME", columnDefinition = "INTEGER")
+    @MetaData(value = "修改日期", comments = "修改日期")
     private Integer invalidTime;
 
     /**
@@ -88,16 +92,17 @@ public class AgencyAuthorFileGroup implements BetterjrEntity {
     @Column(name = "c_temp_file_path", columnDefinition = "VARCHAR")
     @MetaData(value = "模板文件路径", comments = "模板文件路径")
     private String tempFilePath;
-    
+
     /**
      * 文件模板类型，0：业务表格文件，1：电子模板文件
      */
     @Column(name = "c_file_class", columnDefinition = "VARCHAR")
     @MetaData(value = "文件模板类型", comments = "文件模板类型，0：业务表格文件，1：电子模板文件")
     private String modeFileClass;
-    
+
     private static final long serialVersionUID = 1440667936389L;
-     public String getAgencyNo() {
+
+    public String getAgencyNo() {
         return agencyNo;
     }
 
@@ -173,11 +178,11 @@ public class AgencyAuthorFileGroup implements BetterjrEntity {
      * 获得组合的主键
      * @return
      */
-    public String findComposeKey(){
-        
+    public String findComposeKey() {
+
         return this.agencyNo.concat(",").concat(this.fileInfoType).concat(",").concat(businFlag);
     }
-    
+
     public String getDemoFilePath() {
         return this.demoFilePath;
     }
@@ -206,30 +211,28 @@ public class AgencyAuthorFileGroup implements BetterjrEntity {
      * 查找demo文件路径
      * @return
      */
-    public String findDemoPath(){
-        
+    public String findDemoPath() {
+
         return this.agencyNo.concat(File.separator).concat("demo").concat(this.fileInfoType);
     }
-    
+
     /**
      * 查找电子模板文件路径
      * @return
      */
-    public String findTempPath(){
-       if ("0".equals(this.modeFileClass) || "9".equals(this.modeFileClass)){           
-           if ("0".equals(this.modeFileClass)){
-               return this.agencyNo.concat(File.separator).concat("normalTemp").concat(this.fileInfoType);
-           }
-           else{
-               return "";
-           }
-       }
-       else{
-           
-           return this.agencyNo.concat(File.separator).concat("elecTemp").concat(this.fileInfoType);
-       }
+    public String findTempPath() {
+        if ("0".equals(this.modeFileClass) || "9".equals(this.modeFileClass)) {
+            if ("0".equals(this.modeFileClass)) {
+                return this.agencyNo.concat(File.separator).concat("normalTemp").concat(this.fileInfoType);
+            } else {
+                return "";
+            }
+        } else {
+
+            return this.agencyNo.concat(File.separator).concat("elecTemp").concat(this.fileInfoType);
+        }
     }
-    
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -263,18 +266,30 @@ public class AgencyAuthorFileGroup implements BetterjrEntity {
             return false;
         }
         AgencyAuthorFileGroup other = (AgencyAuthorFileGroup) that;
-        return (this.getFileInfoType() == null ? other.getFileInfoType() == null : this.getFileInfoType().equals(other.getFileInfoType()))
-            && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
-            && (this.getAgencyNo() == null ? other.getAgencyNo() == null : this.getAgencyNo().equals(other.getAgencyNo()))
-            && (this.getBusinFlag() == null ? other.getBusinFlag() == null : this.getBusinFlag().equals(other.getBusinFlag()))
-            && (this.getRegDate() == null ? other.getRegDate() == null : this.getRegDate().equals(other.getRegDate()))
-            && (this.getInvalidTime() == null ? other.getInvalidTime() == null : this.getInvalidTime().equals(other.getInvalidTime()))
-            && (this.getGroupStatus() == null ? other.getGroupStatus() == null : this.getGroupStatus().equals(other.getGroupStatus()))
-            && (this.getBusinClass() == null ? other.getBusinClass() == null : this.getBusinClass().equals(other.getBusinClass()))
-            && (this.getDemoFilePath() == null ? other.getDemoFilePath() == null : this.getDemoFilePath().equals(other.getDemoFilePath()))
-            && (this.getTempFilePath() == null ? other.getTempFilePath() == null : this.getTempFilePath().equals(other.getTempFilePath()))
-            && (this.getBusinClass() == null ? other.getBusinClass() == null : this.getBusinClass().equals(other.getBusinClass()))
-            && (this.getModiDate() == null ? other.getModiDate() == null : this.getModiDate().equals(other.getModiDate()));
+        return (this.getFileInfoType() == null ? other.getFileInfoType() == null
+                : this.getFileInfoType().equals(other.getFileInfoType()))
+                && (this.getDescription() == null ? other.getDescription() == null
+                        : this.getDescription().equals(other.getDescription()))
+                && (this.getAgencyNo() == null ? other.getAgencyNo() == null
+                        : this.getAgencyNo().equals(other.getAgencyNo()))
+                && (this.getBusinFlag() == null ? other.getBusinFlag() == null
+                        : this.getBusinFlag().equals(other.getBusinFlag()))
+                && (this.getRegDate() == null ? other.getRegDate() == null
+                        : this.getRegDate().equals(other.getRegDate()))
+                && (this.getInvalidTime() == null ? other.getInvalidTime() == null
+                        : this.getInvalidTime().equals(other.getInvalidTime()))
+                && (this.getGroupStatus() == null ? other.getGroupStatus() == null
+                        : this.getGroupStatus().equals(other.getGroupStatus()))
+                && (this.getBusinClass() == null ? other.getBusinClass() == null
+                        : this.getBusinClass().equals(other.getBusinClass()))
+                && (this.getDemoFilePath() == null ? other.getDemoFilePath() == null
+                        : this.getDemoFilePath().equals(other.getDemoFilePath()))
+                && (this.getTempFilePath() == null ? other.getTempFilePath() == null
+                        : this.getTempFilePath().equals(other.getTempFilePath()))
+                && (this.getBusinClass() == null ? other.getBusinClass() == null
+                        : this.getBusinClass().equals(other.getBusinClass()))
+                && (this.getModiDate() == null ? other.getModiDate() == null
+                        : this.getModiDate().equals(other.getModiDate()));
     }
 
     @Override

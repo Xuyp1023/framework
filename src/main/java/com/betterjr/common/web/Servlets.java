@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -96,7 +97,8 @@ public class Servlets {
      * @param lastModified
      *            内容的最后修改时间.
      */
-    public static boolean checkIfModifiedSince(final HttpServletRequest request, final HttpServletResponse response, final long lastModified) {
+    public static boolean checkIfModifiedSince(final HttpServletRequest request, final HttpServletResponse response,
+            final long lastModified) {
         final long ifModifiedSince = request.getDateHeader(HttpHeaders.IF_MODIFIED_SINCE);
         if ((ifModifiedSince != -1) && (lastModified < ifModifiedSince + 1000)) {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
@@ -113,7 +115,8 @@ public class Servlets {
      * @param etag
      *            内容的ETag.
      */
-    public static boolean checkIfNoneMatchEtag(final HttpServletRequest request, final HttpServletResponse response, final String etag) {
+    public static boolean checkIfNoneMatchEtag(final HttpServletRequest request, final HttpServletResponse response,
+            final String etag) {
         final String headerValue = request.getHeader(HttpHeaders.IF_NONE_MATCH);
         if (headerValue != null) {
             boolean conditionSatisfied = false;
@@ -126,8 +129,7 @@ public class Servlets {
                         conditionSatisfied = true;
                     }
                 }
-            }
-            else {
+            } else {
                 conditionSatisfied = true;
             }
 
@@ -179,14 +181,12 @@ public class Servlets {
                 if (values == null || values.length == 0) {
                     values = new String[] {};
                     // Do nothing, no values found at all.
-                }
-                else if (values.length > 1) {
+                } else if (values.length > 1) {
                     params.put(unprefixed, values);
-                }
-                else {
+                } else {
                     if (paramName.toUpperCase().contains("DATE")) {
                         final String tmpStr = values[0];
-                        if (BetterStringUtils.isNotBlank(tmpStr)) {
+                        if (StringUtils.isNotBlank(tmpStr)) {
                             values[0] = tmpStr.replace("-", "");
                         }
                     }
@@ -253,7 +253,8 @@ public class Servlets {
 
         // 如果是异步请求或是手机端，则直接返回信息
         return ((accept != null && accept.indexOf("application/json") != -1
-                || (xRequestedWith != null && xRequestedWith.indexOf("XMLHttpRequest") != -1) || (principal != null && principal.isMobileLogin())));
+                || (xRequestedWith != null && xRequestedWith.indexOf("XMLHttpRequest") != -1)
+                || (principal != null && principal.isMobileLogin())));
     }
 
     /**
@@ -282,12 +283,14 @@ public class Servlets {
     }
 
     public static Object getSessionValue(final String anKey) {
-        final HttpSession session = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession();
+        final HttpSession session = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                .getRequest().getSession();
         return session.getAttribute(anKey);
     }
 
     public static void putSessionValue(final String anKey, final Object anValue) {
-        final HttpSession session = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession();
+        final HttpSession session = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                .getRequest().getSession();
         session.setAttribute(anKey, anValue);
     }
 
@@ -312,8 +315,8 @@ public class Servlets {
         // !StringUtils.endsWithAny(uri, ".java")){
         // return true;
         // }
-        if (BetterStringUtils.endsWithAny(uri, staticFiles) && !BetterStringUtils.endsWithAny(uri, urlSuffix)
-                && !BetterStringUtils.endsWithAny(uri, ".jsp") && !BetterStringUtils.endsWithAny(uri, ".java")) {
+        if (StringUtils.endsWithAny(uri, staticFiles) && !StringUtils.endsWithAny(uri, urlSuffix)
+                && !StringUtils.endsWithAny(uri, ".jsp") && !StringUtils.endsWithAny(uri, ".java")) {
             return true;
         }
         return false;
@@ -326,8 +329,7 @@ public class Servlets {
         final String tmpIP = UserUtils.getRequestIp();
         if (tmpIP == null) {
             return getRemoteAddr(Servlets.getRequest());
-        }
-        else {
+        } else {
             return tmpIP;
         }
 
@@ -340,7 +342,7 @@ public class Servlets {
         String ip;
         for (final String tmpStr : new String[] { "X-Real-IP", "Proxy-Client-IP", "WL-Proxy-Client-IP" }) {
             ip = request.getHeader(tmpStr);
-            if (BetterStringUtils.isNotBlank(ip)) {
+            if (StringUtils.isNotBlank(ip)) {
                 return ip;
             }
         }
@@ -350,18 +352,19 @@ public class Servlets {
     /**
      * 获取数字证书
      */
-    public static X509Certificate findCertificate(final HttpServletRequest anRequest) throws ServletException, IOException {
+    public static X509Certificate findCertificate(final HttpServletRequest anRequest)
+            throws ServletException, IOException {
         final X509Certificate[] certs = (X509Certificate[]) anRequest.getAttribute(SecurityConstants.CERT_ATTR_CER);
         X509Certificate tmpCerts = null;
         if (certs == null) {
             final String tmpStr = anRequest.getHeader("X-SSL-Client-Cert");
-            if (BetterStringUtils.isNotBlank(tmpStr)) {
+            if (StringUtils.isNotBlank(tmpStr)) {
                 // log.info("the request Cert is :" + tmpStr);
-                tmpCerts = (X509Certificate) KeyReader.fromCerBase64String(
-                        tmpStr.replaceFirst("-----BEGIN CERTIFICATE-----", "").replaceFirst("-----END CERTIFICATE-----", "").replaceAll("\t", ""));
+                tmpCerts = (X509Certificate) KeyReader
+                        .fromCerBase64String(tmpStr.replaceFirst("-----BEGIN CERTIFICATE-----", "")
+                                .replaceFirst("-----END CERTIFICATE-----", "").replaceAll("\t", ""));
             }
-        }
-        else {
+        } else {
             tmpCerts = certs[0];
         }
 
@@ -381,7 +384,7 @@ public class Servlets {
             String value = "";
             if (paramName.toUpperCase().contains("DATE")) {
                 final String tmpStr = (String) entry.getValue();
-                if (BetterStringUtils.isNotBlank(tmpStr)) {
+                if (StringUtils.isNotBlank(tmpStr)) {
                     value = tmpStr.replace("-", "");
                 }
                 anParams.put(paramName, value);

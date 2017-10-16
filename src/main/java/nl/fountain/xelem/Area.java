@@ -24,27 +24,27 @@ package nl.fountain.xelem;
  * @since xelem.2.0
  */
 public class Area {
-    
+
     /**
      * The top-row of this Area.
      */
     protected int r1;
-    
+
     /**
      * The bottom-row of this Area.
      */
     protected int r2;
-    
+
     /**
      * The left-most column of this Area.
      */
     protected int c1;
-    
+
     /**
      * The right-most column of this Area.
      */
     protected int c2;
-    
+
     /**
      * Constructs a new Area.
      * @param row1		the index of the top row
@@ -55,7 +55,7 @@ public class Area {
     public Area(int row1, int column1, int row2, int column2) {
         setDimensions(row1, column1, row2, column2);
     }
-    
+
     /**
      * Constructs a new Area.
      * @param address1	the address in one corner of the area
@@ -64,7 +64,7 @@ public class Area {
     public Area(Address address1, Address address2) {
         setDimensions(address1.r, address1.c, address2.r, address2.c);
     }
-    
+
     /**
      * Constructs a new Area. This constructor takes an A1-reference string 
      * as a parameter. For instance "B4:E6" will construct an area delimmited
@@ -84,10 +84,10 @@ public class Area {
         if (ar.length < 2) {
             throw new IllegalArgumentException("use format 'A1:A1'.");
         }
-        setDimensions(Address.calculateRow(ar[0]), Address.calculateColumn(ar[0]),
-                Address.calculateRow(ar[1]), Address.calculateColumn(ar[1]));
+        setDimensions(Address.calculateRow(ar[0]), Address.calculateColumn(ar[0]), Address.calculateRow(ar[1]),
+                Address.calculateColumn(ar[1]));
     }
-    
+
     /**
      * Gets the index of the top row of this area.
      * @return	the index of the top row.
@@ -95,7 +95,7 @@ public class Area {
     public int getFirstRow() {
         return r1;
     }
-    
+
     /**
      * Gets the index of the bottom row of this area.
      * @return the index of the bottom row.
@@ -103,7 +103,7 @@ public class Area {
     public int getLastRow() {
         return r2;
     }
-    
+
     /**
      * Gets the index of the left-most column of this area.
      * @return the index of the left-most column.
@@ -111,7 +111,7 @@ public class Area {
     public int getFirstColumn() {
         return c1;
     }
-    
+
     /**
      * Gets the index of the right-most column of this area.
      * @return the index of the right-most column
@@ -119,7 +119,7 @@ public class Area {
     public int getLastColumn() {
         return c2;
     }
-    
+
     /**
      * Gets a string in A1-reference style denoting the range of this area.
      * @return a string in A1-reference style
@@ -133,7 +133,7 @@ public class Area {
         sb.append(r2);
         return sb.toString();
     }
-    
+
     /**
      * Gets a string in R1C1-reference style denoting the range of this area.
      * @return a string in R1C1-reference style
@@ -149,7 +149,7 @@ public class Area {
         sb.append(c2);
         return sb.toString();
     }
-    
+
     /**
      * Specifies whether the intersection of the given row and column index
      * is within this area.
@@ -159,10 +159,9 @@ public class Area {
      * 		<code>fals</code> otherwise.
      */
     public boolean isWithinArea(int rowIndex, int columnIndex) {
-        return rowIndex >= r1 && rowIndex <= r2 
-        	&& columnIndex >= c1 && columnIndex <= c2;
+        return rowIndex >= r1 && rowIndex <= r2 && columnIndex >= c1 && columnIndex <= c2;
     }
-    
+
     /**
      * Specifies whether the given address is within this area.
      * @param address the address to be investigated
@@ -172,7 +171,7 @@ public class Area {
     public boolean isWithinArea(Address address) {
         return isWithinArea(address.r, address.c);
     }
-    
+
     /**
      * Specifies whether the given row is within this area.
      * @param rowIndex	the rownumber
@@ -182,7 +181,7 @@ public class Area {
     public boolean isRowPartOfArea(int rowIndex) {
         return rowIndex >= r1 && rowIndex <= r2;
     }
-    
+
     /**
      * Specifies whether the given column is within this area.
      * @param columnIndex	the columnnumber
@@ -192,7 +191,6 @@ public class Area {
     public boolean isColumnPartOfArea(int columnIndex) {
         return columnIndex >= c1 && columnIndex <= c2;
     }
-    
 
     private void setDimensions(int row1, int column1, int row2, int column2) {
         if (row2 > row1) {
@@ -210,6 +208,5 @@ public class Area {
             c2 = column1;
         }
     }
-    
 
 }

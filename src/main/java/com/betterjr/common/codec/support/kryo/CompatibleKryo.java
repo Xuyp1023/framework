@@ -8,7 +8,6 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.serializers.JavaSerializer;
 
- 
 public class CompatibleKryo extends Kryo {
 
     private static final Logger logger = LoggerFactory.getLogger(CompatibleKryo.class);

@@ -25,6 +25,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.Attributes;
+
 import nl.fountain.xelem.Address;
 import nl.fountain.xelem.CellPointer;
 import nl.fountain.xelem.GIO;
@@ -39,10 +43,6 @@ import nl.fountain.xelem.excel.Worksheet;
 import nl.fountain.xelem.excel.WorksheetOptions;
 import nl.fountain.xelem.excel.x.XAutoFilter;
 import nl.fountain.xelem.excel.x.XWorksheetOptions;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.Attributes;
 
 /**
  * An implementation of the XLElement Worksheet.
@@ -62,7 +62,7 @@ import org.xml.sax.Attributes;
  * leave the cellPointer pointing to the next position.
  */
 public class SSWorksheet extends AbstractXLElement implements Worksheet {
-    
+
     private CellPointer cellPointer;
     private String name;
     private boolean protect;
@@ -71,7 +71,7 @@ public class SSWorksheet extends AbstractXLElement implements Worksheet {
     private Table table;
     private WorksheetOptions options;
     private AutoFilter autoFilter;
-    
+
     /**
      * Constructs a new SSWorksheet with the given name.
      * The worksheets cellpointer will be at position row 1, column 1.
@@ -83,43 +83,50 @@ public class SSWorksheet extends AbstractXLElement implements Worksheet {
         cellPointer = new CellPointer();
     }
 
+    @Override
     public String getName() {
         return name;
     }
-    
+
+    @Override
     public String getReferenceName() {
         if (name.indexOf(" ") > -1) {
             return "'" + name + "'";
         }
         return name;
     }
-    
+
+    @Override
     public void setProtected(boolean p) {
         protect = p;
     }
-    
+
     // method called by ExcelReader
     private void setProtected(String s) {
         protect = s.equals("1");
     }
-    
+
+    @Override
     public boolean isProtected() {
         return protect;
     }
-    
+
+    @Override
     public void setRightToLeft(boolean r) {
         righttoleft = r;
     }
-    
-    //  method called by ExcelReader
+
+    // method called by ExcelReader
     private void setRightToLeft(String s) {
         righttoleft = s.equals("1");
     }
-    
+
+    @Override
     public boolean isRightToLeft() {
         return righttoleft;
     }
-    
+
+    @Override
     public NamedRange addNamedRange(NamedRange nr) {
         if (namedRanges == null) {
             namedRanges = new HashMap<String, NamedRange>();
@@ -127,11 +134,13 @@ public class SSWorksheet extends AbstractXLElement implements Worksheet {
         namedRanges.put(nr.getName(), nr);
         return nr;
     }
-    
+
+    @Override
     public NamedRange addNamedRange(String name, String refersTo) {
         return addNamedRange(new SSNamedRange(name, refersTo));
     }
-    
+
+    @Override
     public Map<String, NamedRange> getNamedRanges() {
         if (namedRanges == null) {
             return Collections.emptyMap();
@@ -139,150 +148,175 @@ public class SSWorksheet extends AbstractXLElement implements Worksheet {
             return namedRanges;
         }
     }
-    
+
+    @Override
     public void setWorksheetOptions(WorksheetOptions wso) {
         options = wso;
     }
-    
+
+    @Override
     public boolean hasWorksheetOptions() {
         return options != null;
     }
 
+    @Override
     public WorksheetOptions getWorksheetOptions() {
         if (options == null) {
             options = new XWorksheetOptions();
         }
         return options;
     }
-    
+
+    @Override
     public void setTable(Table table) {
         this.table = table;
     }
-    
+
+    @Override
     public Table getTable() {
         if (table == null) {
             table = new SSTable();
         }
         return table;
     }
-    
+
+    @Override
     public boolean hasTable() {
         return table != null;
     }
-    
+
+    @Override
     public CellPointer getCellPointer() {
         return cellPointer;
     }
 
+    @Override
     public Cell addCell() {
         return addCell(new SSCell());
     }
-    
-    public Cell addCell(Cell cell) {       
+
+    @Override
+    public Cell addCell(Cell cell) {
         int prevRow = cellPointer.getRowIndex();
         int prevColumn = cellPointer.getColumnIndex();
         cellPointer.move();
         getTable().getRowAt(prevRow).addCellAt(prevColumn, cell);
         return cell;
     }
-    
+
+    @Override
     public Cell addCell(Object data) {
         Cell cell = addCell();
         cell.setData(data);
         return cell;
     }
-    
+
+    @Override
     public Cell addCell(Object data, String styleID) {
         Cell cell = addCell(data);
         cell.setStyleID(styleID);
         return cell;
     }
-    
+
+    @Override
     public Cell addCell(double data) {
         Cell cell = addCell();
         cell.setData(data);
         return cell;
     }
-    
+
+    @Override
     public Cell addCell(double data, String styleID) {
         Cell cell = addCell(data);
         cell.setStyleID(styleID);
         return cell;
     }
-    
+
+    @Override
     public Cell addCell(int data) {
         Cell cell = addCell();
         cell.setData(data);
         return cell;
     }
-    
+
+    @Override
     public Cell addCell(int data, String styleID) {
         Cell cell = addCell(data);
         cell.setStyleID(styleID);
         return cell;
     }
 
+    @Override
     public Cell addCellAt(Address address) {
         return addCellAt(address.getRowIndex(), address.getColumnIndex());
     }
-    
+
+    @Override
     public Cell addCellAt(int rowIndex, int columnIndex) {
         cellPointer.moveTo(rowIndex, columnIndex);
         return addCell();
     }
-    
+
+    @Override
     public Cell addCellAt(String a1_ref) {
-        return addCellAt(
-                Address.calculateRow(a1_ref), Address.calculateColumn(a1_ref));
+        return addCellAt(Address.calculateRow(a1_ref), Address.calculateColumn(a1_ref));
     }
-    
+
+    @Override
     public Cell addCellAt(Address address, Cell cell) {
         return addCellAt(address.getRowIndex(), address.getColumnIndex(), cell);
     }
-    
+
+    @Override
     public Cell addCellAt(int rowIndex, int columnIndex, Cell cell) {
         cellPointer.moveTo(rowIndex, columnIndex);
         return addCell(cell);
     }
-    
+
+    @Override
     public Cell addCellAt(String a1_ref, Cell cell) {
-        return addCellAt(
-                Address.calculateRow(a1_ref), Address.calculateColumn(a1_ref), cell);
+        return addCellAt(Address.calculateRow(a1_ref), Address.calculateColumn(a1_ref), cell);
     }
-    
+
+    @Override
     public Cell getCellAt(Address address) {
         return getCellAt(address.getRowIndex(), address.getColumnIndex());
     }
-    
+
+    @Override
     public Cell getCellAt(int rowIndex, int columnIndex) {
         Row row = getTable().getRowAt(rowIndex);
         return row.getCellAt(columnIndex);
     }
-    
+
+    @Override
     public Cell getCellAt(String a1_ref) {
-        return getCellAt(
-                Address.calculateRow(a1_ref), Address.calculateColumn(a1_ref));
+        return getCellAt(Address.calculateRow(a1_ref), Address.calculateColumn(a1_ref));
     }
-    
+
+    @Override
     public Cell removeCellAt(Address address) {
         return removeCellAt(address.getRowIndex(), address.getColumnIndex());
     }
-    
+
+    @Override
     public Cell removeCellAt(int rowIndex, int columnIndex) {
         Row row = getTable().getRowAt(rowIndex);
         if (row == null) return null;
         return row.removeCellAt(columnIndex);
     }
-    
+
+    @Override
     public Cell removeCellAt(String a1_ref) {
-        return removeCellAt(
-                Address.calculateRow(a1_ref), Address.calculateColumn(a1_ref));
+        return removeCellAt(Address.calculateRow(a1_ref), Address.calculateColumn(a1_ref));
     }
-    
+
+    @Override
     public boolean hasCellAt(Address address) {
         return hasCellAt(address.getRowIndex(), address.getColumnIndex());
     }
-    
+
+    @Override
     public boolean hasCellAt(int rowIndex, int columnIndex) {
         if (!hasTable()) {
             return false;
@@ -291,40 +325,48 @@ public class SSWorksheet extends AbstractXLElement implements Worksheet {
         }
         return getTable().getRowAt(rowIndex).getCellAt(columnIndex) != null;
     }
-    
+
+    @Override
     public boolean hasCellAt(String a1_ref) {
-        return hasCellAt(
-                Address.calculateRow(a1_ref), Address.calculateColumn(a1_ref));
+        return hasCellAt(Address.calculateRow(a1_ref), Address.calculateColumn(a1_ref));
     }
 
+    @Override
     public Row addRow() {
         return getTable().addRow();
     }
 
+    @Override
     public Row addRowAt(int rowIndex) {
         return getTable().addRowAt(rowIndex);
     }
 
+    @Override
     public Row addRow(Row row) {
         return getTable().addRow(row);
     }
-    
+
+    @Override
     public Row addRowAt(int index, Row row) {
         return getTable().addRowAt(index, row);
     }
 
+    @Override
     public Row removeRowAt(int rowIndex) {
         return getTable().removeRowAt(rowIndex);
     }
 
+    @Override
     public Collection<Row> getRows() {
         return getTable().getRows();
     }
 
+    @Override
     public Row getRowAt(int rowIndex) {
         return getTable().getRowAt(rowIndex);
     }
-    
+
+    @Override
     public boolean hasRowAt(int rowIndex) {
         if (!hasTable()) {
             return false;
@@ -332,51 +374,63 @@ public class SSWorksheet extends AbstractXLElement implements Worksheet {
             return getTable().hasRowAt(rowIndex);
         }
     }
-    
+
+    @Override
     public Column addColumn() {
         return getTable().addColumn();
     }
-    
+
+    @Override
     public Column addColumnAt(int index) {
         return getTable().addColumnAt(index);
     }
-    
+
+    @Override
     public Column addColumnAt(String label) {
         return getTable().addColumnAt(Address.calculateColumn(label));
     }
-    
+
+    @Override
     public Column addColumn(Column column) {
         return getTable().addColumn(column);
     }
-    
+
+    @Override
     public Column addColumnAt(int index, Column column) {
         return getTable().addColumnAt(index, column);
     }
-    
+
+    @Override
     public Column addColumnAt(String label, Column column) {
         return getTable().addColumnAt(Address.calculateColumn(label));
     }
-    
+
+    @Override
     public Column removeColumnAt(int columnIndex) {
         return getTable().removeColumnAt(columnIndex);
     }
-    
+
+    @Override
     public Column removeColumnAt(String label) {
         return getTable().removeColumnAt(Address.calculateColumn(label));
     }
-    
+
+    @Override
     public Collection<Column> getColumns() {
         return getTable().getColumns();
     }
-    
+
+    @Override
     public Column getColumnAt(int columnIndex) {
         return getTable().getColumnAt(columnIndex);
     }
-    
+
+    @Override
     public Column getColumnAt(String label) {
         return getTable().getColumnAt(Address.calculateColumn(label));
     }
-    
+
+    @Override
     public boolean hasColumnAt(int columnIndex) {
         if (!hasTable()) {
             return false;
@@ -384,61 +438,68 @@ public class SSWorksheet extends AbstractXLElement implements Worksheet {
             return getTable().hasColumnAt(columnIndex);
         }
     }
-    
+
+    @Override
     public boolean hasColumnAt(String label) {
         return getTable().hasColumnAt(Address.calculateColumn(label));
     }
-    
+
+    @Override
     public String getTagName() {
         return "Worksheet";
     }
-    
+
+    @Override
     public String getNameSpace() {
         return XMLNS_SS;
     }
-    
+
+    @Override
     public String getPrefix() {
         return PREFIX_SS;
     }
-    
+
+    @Override
     public void setAutoFilter(AutoFilter af) {
         autoFilter = af;
     }
-    
+
+    @Override
     public void setAutoFilter(String rcString) {
         autoFilter = new XAutoFilter();
         autoFilter.setRange(rcString);
     }
-    
+
+    @Override
     public boolean hasAutoFilter() {
         return autoFilter != null;
     }
-    
+
+    @Override
     public void removeAutoFilter() {
         autoFilter = null;
     }
-    
+
+    @Override
     public Element assemble(Element parent, GIO gio) {
         Document doc = parent.getOwnerDocument();
         Element wse = assemble(doc, gio);
-        
+
         wse.setAttributeNodeNS(createAttributeNS(doc, "Name", getName()));
-        if (protect) wse.setAttributeNodeNS(
-                createAttributeNS(doc, "Protected", "1"));
-        if (righttoleft) wse.setAttributeNodeNS(
-                createAttributeNS(doc, "RightToLeft", "1"));
-        
+        if (protect) wse.setAttributeNodeNS(createAttributeNS(doc, "Protected", "1"));
+        if (righttoleft) wse.setAttributeNodeNS(createAttributeNS(doc, "RightToLeft", "1"));
+
         parent.appendChild(wse);
-        
+
         // Names
         if (namedRanges != null) {
             Element names = doc.createElement("Names");
             wse.appendChild(names);
-            for (NamedRange nr : namedRanges.values()){
+            for (NamedRange nr : namedRanges.values()) {
                 nr.assemble(names, gio);
             }
         }
-        
+
         if (hasTable()) {
             getTable().assemble(wse, gio);
         }
@@ -450,22 +511,25 @@ public class SSWorksheet extends AbstractXLElement implements Worksheet {
         }
         return wse;
     }
-    
+
+    @Override
     public void setAttributes(Attributes attrs) {
         for (int i = 0; i < attrs.getLength(); i++) {
             invokeMethod(attrs.getLocalName(i), attrs.getValue(i));
         }
     }
-    
-	private void invokeMethod(String name, Object value) {
+
+    private void invokeMethod(String name, Object value) {
         Class[] types = new Class[] { value.getClass() };
         Method method = null;
         try {
             method = this.getClass().getDeclaredMethod("set" + name, types);
             method.invoke(this, new Object[] { value });
-        } catch (NoSuchMethodException e) {
+        }
+        catch (NoSuchMethodException e) {
             // no big deal
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }

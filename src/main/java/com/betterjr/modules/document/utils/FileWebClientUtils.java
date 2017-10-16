@@ -13,6 +13,7 @@ import java.util.zip.ZipOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,41 +38,40 @@ public class FileWebClientUtils {
      * @param response
      * @param anFileItem
      */
-    public static void fileDownload(DataStoreService anDataStoreService, final HttpServletResponse response, final CustFileItem anFileItem) {
+    public static void fileDownload(DataStoreService anDataStoreService, final HttpServletResponse response,
+            final CustFileItem anFileItem) {
 
         fileDownloadWithOpenType(anDataStoreService, response, anFileItem, null);
     }
 
-    
-    public static void fileDownloadWithOpenType(DataStoreService anDataStoreService, final HttpServletResponse response, final CustFileItem anFileItem, final String anOpenType) {
+    public static void fileDownloadWithOpenType(DataStoreService anDataStoreService, final HttpServletResponse response,
+            final CustFileItem anFileItem, final String anOpenType) {
         OutputStream os = null;
         String msg = null;
         try {
             if (anFileItem != null) {
-                 if (anDataStoreService.exists(anFileItem)) {
+                if (anDataStoreService.exists(anFileItem)) {
                     String openType = anOpenType;
-                    if (BetterStringUtils.isBlank(openType)) {
+                    if (StringUtils.isBlank(openType)) {
                         if (anFileItem.isInner(MimeTypesHelper.getMimeType(anFileItem.getFileType()))) {
                             openType = "inline";
-                        }
-                        else {
+                        } else {
                             openType = "attachment";
                         }
                     }
                     final String fileName = anFileItem.getFileName();
                     final StringBuilder sb = new StringBuilder(100);
-                    sb.append(openType).append("; ").append("filename=").append(java.net.URLEncoder.encode(fileName, "UTF-8"));
+                    sb.append(openType).append("; ").append("filename=")
+                            .append(java.net.URLEncoder.encode(fileName, "UTF-8"));
                     os = response.getOutputStream();
                     response.setHeader("Content-Disposition", sb.toString());
                     response.setContentType(anFileItem.getFileType());
                     IOUtils.copy(anDataStoreService.loadFromStore(anFileItem), os);
                     return;
-                }
-                else {
+                } else {
                     msg = "file does not exist";
                 }
-            }
-            else {
+            } else {
                 msg = "No information was obtained for the download file";
             }
         }
@@ -94,12 +94,14 @@ public class FileWebClientUtils {
         }
     }
 
-    public static void fileDownloadWithFileName(final HttpServletResponse anResponse, final byte[] anData, final String anFileName) {
+    public static void fileDownloadWithFileName(final HttpServletResponse anResponse, final byte[] anData,
+            final String anFileName) {
         String msg = null;
         OutputStream os = null;
         try (InputStream is = new ByteArrayInputStream(anData)) {
             final StringBuilder sb = new StringBuilder(100);
-            sb.append("attachment").append("; ").append("filename=").append(java.net.URLEncoder.encode(anFileName, "UTF-8"));
+            sb.append("attachment").append("; ").append("filename=")
+                    .append(java.net.URLEncoder.encode(anFileName, "UTF-8"));
             os = anResponse.getOutputStream();
             anResponse.setHeader("Content-Disposition", sb.toString());
             anResponse.setContentType("cer");
@@ -125,15 +127,16 @@ public class FileWebClientUtils {
         }
     }
 
-    public static void directExportPDF(final String anOutFileName, final Map<String, Object> anParam, final HttpServletResponse response,
-            final String anModeFile, final String anModeName) {
+    public static void directExportPDF(final String anOutFileName, final Map<String, Object> anParam,
+            final HttpServletResponse response, final String anModeFile, final String anModeName) {
         final FreemarkerService markerService = SpringContextHolder.getBean(FreemarkerService.class);
         final StringBuffer data = markerService.processTemplateByFileNameUnderModule(anModeFile, anParam, anModeName);
         String msg = null;
         try {
             response.reset();
             response.setContentType("application/pdf");
-            response.setHeader("Content-Disposition", "attachment; filename=" + java.net.URLEncoder.encode(anOutFileName, "UTF-8"));
+            response.setHeader("Content-Disposition",
+                    "attachment; filename=" + java.net.URLEncoder.encode(anOutFileName, "UTF-8"));
             CustFileUtils.exportPDF(data, response.getOutputStream());
         }
         catch (final IOException e) {
@@ -156,33 +159,36 @@ public class FileWebClientUtils {
         }
     }
 
-    public String createWebUploadFile(IAgencyAuthFileGroupService anFileGroupService, MultipartFile anMultFile, String anFileInfoType){
+    public String createWebUploadFile(IAgencyAuthFileGroupService anFileGroupService, MultipartFile anMultFile,
+            String anFileInfoType) {
         FileStoreType storeType = anFileGroupService.findFileStoreType(anFileInfoType);
         String tmpWorkPath = anFileGroupService.findCreateFilePath(anFileInfoType);
-        
+
         return tmpWorkPath;
     }
 
-
-    public static void fileMultipleDownload(DataStoreService anDataStoreService, HttpServletResponse anResponse, List<CustFileItem> anFileItemList, String anFileName) {
+    public static void fileMultipleDownload(DataStoreService anDataStoreService, HttpServletResponse anResponse,
+            List<CustFileItem> anFileItemList, String anFileName) {
         ZipOutputStream out = null;
         String msg = null;
-        //设置下载名称
-        if(BetterStringUtils.isBlank(anFileName)) {
+        // 设置下载名称
+        if (StringUtils.isBlank(anFileName)) {
             anFileName = "packedFile";
         }
         try {
-            //文件设置为下载保存
-            anResponse.setHeader("Content-Disposition", "attachment; filename="+java.net.URLEncoder.encode( anFileName + ".zip", "UTF-8"));
+            // 文件设置为下载保存
+            anResponse.setHeader("Content-Disposition",
+                    "attachment; filename=" + java.net.URLEncoder.encode(anFileName + ".zip", "UTF-8"));
             anResponse.setContentType("zip");
-            //建立zip
+            // 建立zip
             out = new ZipOutputStream(anResponse.getOutputStream(), Charset.forName("UTF-8"));
-            for(CustFileItem anFile : anFileItemList) {
-                if(anDataStoreService.exists(anFile)) {
-                    //放入压缩文件项,为避免文件名重复，后面加入随机串
+            for (CustFileItem anFile : anFileItemList) {
+                if (anDataStoreService.exists(anFile)) {
+                    // 放入压缩文件项,为避免文件名重复，后面加入随机串
                     String tmpFileName = anFile.getFileName().substring(0, anFile.getFileName().lastIndexOf("."));
-                    out.putNextEntry(new ZipEntry(tmpFileName + SerialGenerator.randomBase62(4) + "." + anFile.getFileType()));
-                    //写入数据
+                    out.putNextEntry(
+                            new ZipEntry(tmpFileName + SerialGenerator.randomBase62(4) + "." + anFile.getFileType()));
+                    // 写入数据
                     IOUtils.copy(anDataStoreService.loadFromStore(anFile), out);
                     out.closeEntry();
                 }
@@ -203,9 +209,9 @@ public class FileWebClientUtils {
                     e.printStackTrace();
                 }
             }
-            //关闭流
+            // 关闭流
             IOUtils.closeQuietly(out);
         }
-        
+
     }
 }

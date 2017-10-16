@@ -24,11 +24,11 @@
 
 package com.betterjr.mapper.common.condition;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.SelectProvider;
 
 import com.betterjr.mapper.provider.MapperProvider;
-
-import java.util.List;
 
 /**
  * 通用Mapper接口,Condition查询

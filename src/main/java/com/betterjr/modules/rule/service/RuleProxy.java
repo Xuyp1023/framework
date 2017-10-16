@@ -9,7 +9,8 @@ import java.util.List;
 
 import com.betterjr.common.annotation.AnnotRuleService;
 import com.betterjr.common.exception.BytterException;
-import com.betterjr.modules.rule.annotation.*;
+import com.betterjr.modules.rule.annotation.RuleAction;
+import com.betterjr.modules.rule.annotation.RuleCondition;
 import com.betterjr.modules.rule.entity.BaseRuleFace;
 import com.betterjr.modules.rule.entity.RuleFace;
 import com.betterjr.modules.rule.entity.RuleObjectFace;
@@ -37,11 +38,12 @@ class RuleProxy implements InvocationHandler, Cloneable {
         groupName = anGroupName;
     }
 
+    @Override
     public RuleProxy clone() {
         RuleProxy rp;
         try {
             rp = (RuleProxy) super.clone();
-            rp.target = (RuleObjectFace) this.target.clone();
+            rp.target = this.target.clone();
             return rp;
         }
         catch (CloneNotSupportedException e) {
@@ -81,17 +83,13 @@ class RuleProxy implements InvocationHandler, Cloneable {
     private Integer getValue(Object anObj) {
         if (anObj == null) {
             return new Integer(0);
-        }
-        else if (anObj instanceof Integer) {
+        } else if (anObj instanceof Integer) {
             return (Integer) anObj;
-        }
-        else if (anObj instanceof String) {
+        } else if (anObj instanceof String) {
             return new Integer((String) anObj);
-        }
-        else if (anObj.getClass() == int.class) {
+        } else if (anObj.getClass() == int.class) {
             return new Integer((int) anObj);
-        }
-        else {
+        } else {
             return new Integer(anObj.toString());
         }
     }
@@ -101,48 +99,37 @@ class RuleProxy implements InvocationHandler, Cloneable {
         if (method.getName().equals("getRuleNo")) {
 
             return this.ruleNo;
-        }
-        else if (method.getName().equals("getRuleName")) {
+        } else if (method.getName().equals("getRuleName")) {
 
             return this.ruleNo;
-        }
-        else if (method.getName().equals("getGroupName")) {
+        } else if (method.getName().equals("getGroupName")) {
 
             return this.groupName;
-        }
-        else if (method.getName().equals("setGroupName")) {
+        } else if (method.getName().equals("setGroupName")) {
 
             this.groupName = args[0].toString();
-        }
-        else if (method.getName().equals("setContext")) {
+        } else if (method.getName().equals("setContext")) {
 
             QLExpressContext context = (QLExpressContext) args[0];
             this.target.setContext(context);
-        }
-        else if (method.getName().equals("getContext")) {
+        } else if (method.getName().equals("getContext")) {
 
             return this.target.getContext();
-        }
-        else if (method.getName().equals("getDescription")) {
+        } else if (method.getName().equals("getDescription")) {
 
             return getRuleAnnotation().description();
-        }
-        else if (method.getName().equals("setRuleNo")) {
+        } else if (method.getName().equals("setRuleNo")) {
 
             this.ruleNo = args[0].toString();
-        }
-        else if (method.getName().equals("setPriority")) {
+        } else if (method.getName().equals("setPriority")) {
 
             this.priority = getValue(args[0]);
-        }
-        else if (method.getName().equals("getPriority")) {
+        } else if (method.getName().equals("getPriority")) {
             return getPriority();
-        }
-        else if (method.getName().equals("clone")) {
-            
+        } else if (method.getName().equals("clone")) {
+
             return this.cloneFace();
-        }
-        else if (method.getName().equals("evaluate")) {
+        } else if (method.getName().equals("evaluate")) {
             Boolean bb = null;
             for (ActionMethodOrderBean actionMethodBean : condList) {
                 bb = (Boolean) actionMethodBean.getMethod().invoke(target);
@@ -152,29 +139,23 @@ class RuleProxy implements InvocationHandler, Cloneable {
                 }
             }
             return Boolean.TRUE;
-        }
-        else if (method.getName().equals("execute")) {
+        } else if (method.getName().equals("execute")) {
             Object obj = null;
             for (ActionMethodOrderBean actionMethodBean : actionList) {
                 obj = actionMethodBean.getMethod().invoke(target);
             }
             return obj;
-        }
-        else if (method.getName().equals("equals")) {
+        } else if (method.getName().equals("equals")) {
             return target.equals(args[0]);
-        }
-        else if (method.getName().equals("hashCode")) {
+        } else if (method.getName().equals("hashCode")) {
             return target.hashCode();
-        }
-        else if (method.getName().equals("toString")) {
+        } else if (method.getName().equals("toString")) {
             return target.toString();
-        }
-        else if (method.getName().equals("compareTo")) {
+        } else if (method.getName().equals("compareTo")) {
             Method compareToMethod = getCompareToMethod();
             if (compareToMethod != null) {
                 return compareToMethod.invoke(target, args);
-            }
-            else {
+            } else {
                 RuleFace otherRule = (RuleFace) args[0];
                 return compareTo(otherRule);
             }
@@ -189,11 +170,9 @@ class RuleProxy implements InvocationHandler, Cloneable {
 
         if (priority < otherPriority) {
             return -1;
-        }
-        else if (priority > otherPriority) {
+        } else if (priority > otherPriority) {
             return 1;
-        }
-        else {
+        } else {
             return this.ruleNo.compareTo(otherName);
         }
     }

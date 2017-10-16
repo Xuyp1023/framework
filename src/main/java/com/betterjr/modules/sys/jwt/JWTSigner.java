@@ -57,15 +57,15 @@ public class JWTSigner {
      */
     public String sign(Map<String, Object> claims, Options options) {
         Algorithm algorithm = Algorithm.HS256;
-        if (options != null && options.algorithm != null)
-            algorithm = options.algorithm;
+        if (options != null && options.algorithm != null) algorithm = options.algorithm;
 
         List<String> segments = new ArrayList<String>();
         try {
             segments.add(encodedHeader(algorithm));
             segments.add(encodedPayload(claims, options));
             segments.add(encodedSignature(join(segments, "."), algorithm));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw (e instanceof RuntimeException) ? (RuntimeException) e : new RuntimeException(e);
         }
 
@@ -110,8 +110,7 @@ public class JWTSigner {
         enforceIntDate(claims, "iat");
         enforceString(claims, "jti");
 
-        if (options != null)
-            processPayloadOptions(claims, options);
+        if (options != null) processPayloadOptions(claims, options);
 
         String payload = new ObjectMapper().writeValueAsString(claims);
         return base64UrlEncode(payload.getBytes("UTF-8"));
@@ -119,22 +118,18 @@ public class JWTSigner {
 
     private void processPayloadOptions(Map<String, Object> claims, Options options) {
         long now = System.currentTimeMillis() / 1000l;
-        if (options.expirySeconds != null)
-            claims.put("exp", now + options.expirySeconds);
-        if (options.notValidBeforeLeeway != null)
-            claims.put("nbf", now - options.notValidBeforeLeeway);
-        if (options.isIssuedAt())
-            claims.put("iat", now);
-        if (options.isJwtId())
-            claims.put("jti", UUID.randomUUID().toString());
+        if (options.expirySeconds != null) claims.put("exp", now + options.expirySeconds);
+        if (options.notValidBeforeLeeway != null) claims.put("nbf", now - options.notValidBeforeLeeway);
+        if (options.isIssuedAt()) claims.put("iat", now);
+        if (options.isJwtId()) claims.put("jti", UUID.randomUUID().toString());
     }
 
     private void enforceIntDate(Map<String, Object> claims, String claimName) {
         Object value = handleNullValue(claims, claimName);
-        if (value == null)
-            return;
+        if (value == null) return;
         if (!(value instanceof Number)) {
-            throw new RuntimeException(String.format("Claim '%s' is invalid: must be an instance of Number", claimName));
+            throw new RuntimeException(
+                    String.format("Claim '%s' is invalid: must be an instance of Number", claimName));
         }
         long longValue = ((Number) value).longValue();
         if (longValue < 0)
@@ -144,8 +139,7 @@ public class JWTSigner {
 
     private void enforceStringOrURICollection(Map<String, Object> claims, String claimName) {
         Object values = handleNullValue(claims, claimName);
-        if (values == null)
-            return;
+        if (values == null) return;
         if (values instanceof Collection) {
             @SuppressWarnings({ "unchecked" })
             Iterator<Object> iterator = ((Collection<Object>) values).iterator();
@@ -162,24 +156,20 @@ public class JWTSigner {
 
     private void enforceStringOrURI(Map<String, Object> claims, String claimName) {
         Object value = handleNullValue(claims, claimName);
-        if (value == null)
-            return;
+        if (value == null) return;
         String error = checkStringOrURI(value);
-        if (error != null)
-            throw new RuntimeException(String.format("Claim '%s' is invalid: %s", claimName, error));
+        if (error != null) throw new RuntimeException(String.format("Claim '%s' is invalid: %s", claimName, error));
     }
 
     private void enforceString(Map<String, Object> claims, String claimName) {
         Object value = handleNullValue(claims, claimName);
-        if (value == null)
-            return;
+        if (value == null) return;
         if (!(value instanceof String))
             throw new RuntimeException(String.format("Claim '%s' is invalid: not a string", claimName));
     }
 
     private Object handleNullValue(Map<String, Object> claims, String claimName) {
-        if (! claims.containsKey(claimName))
-            return null;
+        if (!claims.containsKey(claimName)) return null;
         Object value = claims.get(claimName);
         if (value == null) {
             claims.remove(claimName);
@@ -189,14 +179,13 @@ public class JWTSigner {
     }
 
     private String checkStringOrURI(Object value) {
-        if (!(value instanceof String))
-            return "not a string";
+        if (!(value instanceof String)) return "not a string";
         String stringOrUri = (String) value;
-        if (!stringOrUri.contains(":"))
-            return null;
+        if (!stringOrUri.contains(":")) return null;
         try {
             new URI(stringOrUri);
-        } catch (URISyntaxException e) {
+        }
+        catch (URISyntaxException e) {
             return "not a valid URI";
         }
         return null;
@@ -272,6 +261,7 @@ public class JWTSigner {
         public Algorithm getAlgorithm() {
             return algorithm;
         }
+
         /**
          * Algorithm to sign JWT with. Default is <code>HS256</code>.
          */
@@ -280,10 +270,10 @@ public class JWTSigner {
             return this;
         }
 
-
         public Integer getExpirySeconds() {
             return expirySeconds;
         }
+
         /**
          * Set JWT claim "exp" to current timestamp plus this value.
          * Overrides content of <code>claims</code> in <code>sign()</code>.
@@ -296,6 +286,7 @@ public class JWTSigner {
         public Integer getNotValidBeforeLeeway() {
             return notValidBeforeLeeway;
         }
+
         /**
          * Set JWT claim "nbf" to current timestamp minus this value.
          * Overrides content of <code>claims</code> in <code>sign()</code>.
@@ -308,6 +299,7 @@ public class JWTSigner {
         public boolean isIssuedAt() {
             return issuedAt;
         }
+
         /**
          * Set JWT claim "iat" to current timestamp. Defaults to false.
          * Overrides content of <code>claims</code> in <code>sign()</code>.
@@ -320,6 +312,7 @@ public class JWTSigner {
         public boolean isJwtId() {
             return jwtId;
         }
+
         /**
          * Set JWT claim "jti" to a pseudo random unique value (type 4 UUID). Defaults to false.
          * Overrides content of <code>claims</code> in <code>sign()</code>.

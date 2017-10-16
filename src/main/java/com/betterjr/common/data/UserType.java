@@ -20,14 +20,11 @@ public enum UserType {
     public static String[] findUserRule(UserType anType) {
         if (anType == PERSON_USER) {
             return new String[] { PERSON_USER.name() };
-        }
-        else if (anType == ORG_USER) {
+        } else if (anType == ORG_USER) {
             return new String[] { ORG_USER.name() };
-        }
-        else if (anType == OPERATOR_USER) {
+        } else if (anType == OPERATOR_USER) {
             return new String[] { ORG_USER.name(), OPERATOR_USER.name() };
-        }
-        else if (anType == OPERATOR_ADMIN) {
+        } else if (anType == OPERATOR_ADMIN) {
             return new String[] { ORG_USER.name(), OPERATOR_ADMIN.name() };
         }
         return null;

@@ -12,7 +12,8 @@ import org.springframework.util.StringUtils;
 
 /**
  */
-public abstract class AbstractRocketMQListenerEndpoint implements RocketMQListenerEndpoint, BeanFactoryAware, InitializingBean {
+public abstract class AbstractRocketMQListenerEndpoint
+        implements RocketMQListenerEndpoint, BeanFactoryAware, InitializingBean {
 
     private String id;
 
@@ -86,7 +87,8 @@ public abstract class AbstractRocketMQListenerEndpoint implements RocketMQListen
 
     protected StringBuilder getEndpointDescription() {
         StringBuilder result = new StringBuilder();
-        return result.append(getClass().getSimpleName()).append("[").append(this.id).append("] topic=").append(this.topic);
+        return result.append(getClass().getSimpleName()).append("[").append(this.id).append("] topic=")
+                .append(this.topic);
     }
 
     @Override

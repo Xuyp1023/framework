@@ -26,8 +26,7 @@ public class SysParamItemService extends BaseService<SysParamItemMapper, SysPara
      * @return
      */
     public Collection<SysParamItem> queryParameterItemsByParameter(final SysParam anSysParameter) {
-        
-        
+
         return null;
     }
 }

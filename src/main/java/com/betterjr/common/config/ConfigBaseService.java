@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.LinkedCaseInsensitiveMap;
 
-import com.betterjr.common.config.ConfigFace;
 import com.betterjr.common.data.DataTypeInfo;
 import com.betterjr.common.exception.BytterClassNotFoundException;
 import com.betterjr.common.exception.BytterValidException;
@@ -39,8 +39,7 @@ public class ConfigBaseService implements java.io.Serializable {
             if (obj instanceof ConfigFace) {
                 face = (ConfigFace) obj;
                 configInfo.put(face.getItemName(), face);
-            }
-            else {
+            } else {
                 throw new BytterValidException(50001, "use ConfigService ConfigItem Must implements ConfigFace");
             }
         }
@@ -56,8 +55,7 @@ public class ConfigBaseService implements java.io.Serializable {
         for (Map.Entry<String, Object> ent : anValueMap.entrySet()) {
             if (ent.getValue() instanceof ConfigFace) {
                 configInfo.put(ent.getKey(), (ConfigFace) ent.getValue());
-            }
-            else {
+            } else {
                 throw new BytterValidException(50001, "use ConfigService ConfigItem Must implements ConfigFace");
             }
         }
@@ -92,20 +90,19 @@ public class ConfigBaseService implements java.io.Serializable {
     public Object getObject(String anKey) {
         Object obj = this.configCache.get(anKey);
         if (obj != null) {
-            
+
             return obj;
         }
-        
+
         ConfigFace value = configInfo.get(anKey);
         if (value != null) {
             String tmpMode = value.getSplit();
             Class cc = DataTypeInfo.getClass(value.getDataType());
-            if ("0".equals(tmpMode) || BetterStringUtils.isBlank(tmpMode)) {
+            if ("0".equals(tmpMode) || StringUtils.isBlank(tmpMode)) {
                 obj = value.getItemValue();
 
                 return DataTypeConvert.convert(obj, cc);
-            }
-            else if ("1".equals(tmpMode)) {
+            } else if ("1".equals(tmpMode)) {
                 obj = value.getListValue();
                 List result = new ArrayList();
                 for (String tmpStr : (List<String>) obj) {
@@ -113,26 +110,24 @@ public class ConfigBaseService implements java.io.Serializable {
                 }
                 this.configCache.put(anKey, result);
                 return result;
-            }
-            else if ("2".equals(tmpMode)) {
+            } else if ("2".equals(tmpMode)) {
                 Map<String, Object> map = new HashMap();
                 for (Map.Entry<String, String> ent : value.getMapValue().entrySet()) {
                     map.put(ent.getKey(), DataTypeConvert.convert(ent.getValue(), cc));
                 }
                 this.configCache.put(anKey, map);
                 return map;
-            }
-            else if ("3".equals(tmpMode)) {
+            } else if ("3".equals(tmpMode)) {
                 try {
                     obj = JsonMapper.getInstance().fromJson(value.getItemValue(), Class.forName(value.getClassType()));
                     this.configCache.put(anKey, obj);
                     return obj;
                 }
                 catch (ClassNotFoundException e) {
-                    throw new BytterClassNotFoundException(50003, "ConfigBaseServer getObject Not Find Declare ClassType ", e);
+                    throw new BytterClassNotFoundException(50003,
+                            "ConfigBaseServer getObject Not Find Declare ClassType ", e);
                 }
-            }
-            else {
+            } else {
                 throw new BytterValidException(50002, "use ConfigService ConfigItem Split Type Not implements ");
             }
         }
@@ -144,8 +139,7 @@ public class ConfigBaseService implements java.io.Serializable {
         if (value != null) {
 
             return JsonMapper.getInstance().fromJson(value.getItemValue(), anClass);
-        }
-        else {
+        } else {
             throw new BytterValidException(50002, "use ConfigService ConfigItem Must Define ");
         }
     }
@@ -248,8 +242,7 @@ public class ConfigBaseService implements java.io.Serializable {
         ConfigFace value = configInfo.get(anKey);
         if (value == null) {
             return new ArrayList();
-        }
-        else {
+        } else {
             return DictUtils.getDictList(value.getDictItem());
         }
     }

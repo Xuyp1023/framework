@@ -1,8 +1,14 @@
 package com.betterjr.modules.sys.entity;
 
-import com.betterjr.common.annotation.*;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.entity.BetterjrEntity;
-import javax.persistence.*;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -12,159 +18,159 @@ public class SysParamItem implements BetterjrEntity {
      * 编号
      */
     @Id
-    @Column(name = "ID",  columnDefinition="INTEGER" )
-    @MetaData( value="编号", comments = "编号")
+    @Column(name = "ID", columnDefinition = "INTEGER")
+    @MetaData(value = "编号", comments = "编号")
     private Long id;
 
     /**
      * 参数表关联编号
      */
-    @Column(name = "L_PARAM_ID",  columnDefinition="INTEGER" )
-    @MetaData( value="参数表关联编号", comments = "参数表关联编号")
+    @Column(name = "L_PARAM_ID", columnDefinition = "INTEGER")
+    @MetaData(value = "参数表关联编号", comments = "参数表关联编号")
     private Long paramId;
 
     /**
      * KEY值
      */
-    @Column(name = "C_KEY",  columnDefinition="VARCHAR" )
-    @MetaData( value="KEY值", comments = "KEY值")
+    @Column(name = "C_KEY", columnDefinition = "VARCHAR")
+    @MetaData(value = "KEY值", comments = "KEY值")
     private String key;
 
     /**
      * VALUE1
      */
-    @Column(name = "C_VALUE1",  columnDefinition="VARCHAR" )
-    @MetaData( value="VALUE1", comments = "VALUE1")
+    @Column(name = "C_VALUE1", columnDefinition = "VARCHAR")
+    @MetaData(value = "VALUE1", comments = "VALUE1")
     private String value1;
 
     /**
      * VALUE2
      */
-    @Column(name = "C_VALUE2",  columnDefinition="VARCHAR" )
-    @MetaData( value="VALUE2", comments = "VALUE2")
+    @Column(name = "C_VALUE2", columnDefinition = "VARCHAR")
+    @MetaData(value = "VALUE2", comments = "VALUE2")
     private String value2;
 
     /**
      * VALUE3
      */
-    @Column(name = "C_VALUE3",  columnDefinition="VARCHAR" )
-    @MetaData( value="VALUE3", comments = "VALUE3")
+    @Column(name = "C_VALUE3", columnDefinition = "VARCHAR")
+    @MetaData(value = "VALUE3", comments = "VALUE3")
     private String value3;
 
     /**
      * VALUE4
      */
-    @Column(name = "C_VALUE4",  columnDefinition="VARCHAR" )
-    @MetaData( value="VALUE4", comments = "VALUE4")
+    @Column(name = "C_VALUE4", columnDefinition = "VARCHAR")
+    @MetaData(value = "VALUE4", comments = "VALUE4")
     private String value4;
 
     /**
      * VALUE5
      */
-    @Column(name = "C_VALUE5",  columnDefinition="VARCHAR" )
-    @MetaData( value="VALUE5", comments = "VALUE5")
+    @Column(name = "C_VALUE5", columnDefinition = "VARCHAR")
+    @MetaData(value = "VALUE5", comments = "VALUE5")
     private String value5;
 
     /**
      * VALUE6
      */
-    @Column(name = "C_VALUE6",  columnDefinition="VARCHAR" )
-    @MetaData( value="VALUE6", comments = "VALUE6")
+    @Column(name = "C_VALUE6", columnDefinition = "VARCHAR")
+    @MetaData(value = "VALUE6", comments = "VALUE6")
     private String value6;
 
     /**
      * VALUE7
      */
-    @Column(name = "C_VALUE7",  columnDefinition="VARCHAR" )
-    @MetaData( value="VALUE7", comments = "VALUE7")
+    @Column(name = "C_VALUE7", columnDefinition = "VARCHAR")
+    @MetaData(value = "VALUE7", comments = "VALUE7")
     private String value7;
 
     /**
      * VALUE8
      */
-    @Column(name = "C_VALUE8",  columnDefinition="VARCHAR" )
-    @MetaData( value="VALUE8", comments = "VALUE8")
+    @Column(name = "C_VALUE8", columnDefinition = "VARCHAR")
+    @MetaData(value = "VALUE8", comments = "VALUE8")
     private String value8;
 
     /**
      * VALUE9
      */
-    @Column(name = "C_VALUE9",  columnDefinition="VARCHAR" )
-    @MetaData( value="VALUE9", comments = "VALUE9")
+    @Column(name = "C_VALUE9", columnDefinition = "VARCHAR")
+    @MetaData(value = "VALUE9", comments = "VALUE9")
     private String value9;
 
     /**
      * 创建人(操作员)ID号
      */
-    @Column(name = "L_REG_OPERID",  columnDefinition="INTEGER" )
-    @MetaData( value="创建人(操作员)ID号", comments = "创建人(操作员)ID号")
+    @Column(name = "L_REG_OPERID", columnDefinition = "INTEGER")
+    @MetaData(value = "创建人(操作员)ID号", comments = "创建人(操作员)ID号")
     private Long regOperId;
 
     /**
      * 创建人(操作员)姓名
      */
-    @Column(name = "C_REG_OPERNAME",  columnDefinition="VARCHAR" )
-    @MetaData( value="创建人(操作员)姓名", comments = "创建人(操作员)姓名")
+    @Column(name = "C_REG_OPERNAME", columnDefinition = "VARCHAR")
+    @MetaData(value = "创建人(操作员)姓名", comments = "创建人(操作员)姓名")
     private String regOperName;
 
     /**
      * 创建日期
      */
-    @Column(name = "D_REG_DATE",  columnDefinition="VARCHAR" )
-    @MetaData( value="创建日期", comments = "创建日期")
+    @Column(name = "D_REG_DATE", columnDefinition = "VARCHAR")
+    @MetaData(value = "创建日期", comments = "创建日期")
     private String regDate;
 
     /**
      * 创建时间
      */
-    @Column(name = "T_REG_TIME",  columnDefinition="VARCHAR" )
-    @MetaData( value="创建时间", comments = "创建时间")
+    @Column(name = "T_REG_TIME", columnDefinition = "VARCHAR")
+    @MetaData(value = "创建时间", comments = "创建时间")
     private String regTime;
 
     /**
      * 修改人(操作员)ID号
      */
-    @Column(name = "L_MODI_OPERID",  columnDefinition="INTEGER" )
-    @MetaData( value="修改人(操作员)ID号", comments = "修改人(操作员)ID号")
+    @Column(name = "L_MODI_OPERID", columnDefinition = "INTEGER")
+    @MetaData(value = "修改人(操作员)ID号", comments = "修改人(操作员)ID号")
     private Long modiOperId;
 
     /**
      * 修改人(操作员)姓名
      */
-    @Column(name = "C_MODI_OPERNAME",  columnDefinition="VARCHAR" )
-    @MetaData( value="修改人(操作员)姓名", comments = "修改人(操作员)姓名")
+    @Column(name = "C_MODI_OPERNAME", columnDefinition = "VARCHAR")
+    @MetaData(value = "修改人(操作员)姓名", comments = "修改人(操作员)姓名")
     private String modiOperName;
 
     /**
      * 修改日期
      */
-    @Column(name = "D_MODI_DATE",  columnDefinition="VARCHAR" )
-    @MetaData( value="修改日期", comments = "修改日期")
+    @Column(name = "D_MODI_DATE", columnDefinition = "VARCHAR")
+    @MetaData(value = "修改日期", comments = "修改日期")
     private String modifyDate;
 
     /**
      * 修改时间
      */
-    @Column(name = "T_MODI_TIME",  columnDefinition="VARCHAR" )
-    @MetaData( value="修改时间", comments = "修改时间")
+    @Column(name = "T_MODI_TIME", columnDefinition = "VARCHAR")
+    @MetaData(value = "修改时间", comments = "修改时间")
     private String modifyTime;
 
     /**
      * 操作机构
      */
-    @Column(name = "C_OPERORG",  columnDefinition="VARCHAR" )
-    @MetaData( value="操作机构", comments = "操作机构")
+    @Column(name = "C_OPERORG", columnDefinition = "VARCHAR")
+    @MetaData(value = "操作机构", comments = "操作机构")
     private String operOrg;
 
     /**
      * 状态
      */
-    @Column(name = "C_BUSIN_STATUS",  columnDefinition="CHAR" )
-    @MetaData( value="状态", comments = "状态")
+    @Column(name = "C_BUSIN_STATUS", columnDefinition = "CHAR")
+    @MetaData(value = "状态", comments = "状态")
     private String businStatus;
 
-    @Column(name = "C_LAST_STATUS",  columnDefinition="CHAR" )
-    @MetaData( value="", comments = "")
+    @Column(name = "C_LAST_STATUS", columnDefinition = "CHAR")
+    @MetaData(value = "", comments = "")
     private String lastStatus;
 
     private static final long serialVersionUID = 1473405744352L;
@@ -400,28 +406,40 @@ public class SysParamItem implements BetterjrEntity {
         }
         SysParamItem other = (SysParamItem) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getParamId() == null ? other.getParamId() == null : this.getParamId().equals(other.getParamId()))
-            && (this.getKey() == null ? other.getKey() == null : this.getKey().equals(other.getKey()))
-            && (this.getValue1() == null ? other.getValue1() == null : this.getValue1().equals(other.getValue1()))
-            && (this.getValue2() == null ? other.getValue2() == null : this.getValue2().equals(other.getValue2()))
-            && (this.getValue3() == null ? other.getValue3() == null : this.getValue3().equals(other.getValue3()))
-            && (this.getValue4() == null ? other.getValue4() == null : this.getValue4().equals(other.getValue4()))
-            && (this.getValue5() == null ? other.getValue5() == null : this.getValue5().equals(other.getValue5()))
-            && (this.getValue6() == null ? other.getValue6() == null : this.getValue6().equals(other.getValue6()))
-            && (this.getValue7() == null ? other.getValue7() == null : this.getValue7().equals(other.getValue7()))
-            && (this.getValue8() == null ? other.getValue8() == null : this.getValue8().equals(other.getValue8()))
-            && (this.getValue9() == null ? other.getValue9() == null : this.getValue9().equals(other.getValue9()))
-            && (this.getRegOperId() == null ? other.getRegOperId() == null : this.getRegOperId().equals(other.getRegOperId()))
-            && (this.getRegOperName() == null ? other.getRegOperName() == null : this.getRegOperName().equals(other.getRegOperName()))
-            && (this.getRegDate() == null ? other.getRegDate() == null : this.getRegDate().equals(other.getRegDate()))
-            && (this.getRegTime() == null ? other.getRegTime() == null : this.getRegTime().equals(other.getRegTime()))
-            && (this.getModiOperId() == null ? other.getModiOperId() == null : this.getModiOperId().equals(other.getModiOperId()))
-            && (this.getModiOperName() == null ? other.getModiOperName() == null : this.getModiOperName().equals(other.getModiOperName()))
-            && (this.getModifyDate() == null ? other.getModifyDate() == null : this.getModifyDate().equals(other.getModifyDate()))
-            && (this.getModifyTime() == null ? other.getModifyTime() == null : this.getModifyTime().equals(other.getModifyTime()))
-            && (this.getOperOrg() == null ? other.getOperOrg() == null : this.getOperOrg().equals(other.getOperOrg()))
-            && (this.getBusinStatus() == null ? other.getBusinStatus() == null : this.getBusinStatus().equals(other.getBusinStatus()))
-            && (this.getLastStatus() == null ? other.getLastStatus() == null : this.getLastStatus().equals(other.getLastStatus()));
+                && (this.getParamId() == null ? other.getParamId() == null
+                        : this.getParamId().equals(other.getParamId()))
+                && (this.getKey() == null ? other.getKey() == null : this.getKey().equals(other.getKey()))
+                && (this.getValue1() == null ? other.getValue1() == null : this.getValue1().equals(other.getValue1()))
+                && (this.getValue2() == null ? other.getValue2() == null : this.getValue2().equals(other.getValue2()))
+                && (this.getValue3() == null ? other.getValue3() == null : this.getValue3().equals(other.getValue3()))
+                && (this.getValue4() == null ? other.getValue4() == null : this.getValue4().equals(other.getValue4()))
+                && (this.getValue5() == null ? other.getValue5() == null : this.getValue5().equals(other.getValue5()))
+                && (this.getValue6() == null ? other.getValue6() == null : this.getValue6().equals(other.getValue6()))
+                && (this.getValue7() == null ? other.getValue7() == null : this.getValue7().equals(other.getValue7()))
+                && (this.getValue8() == null ? other.getValue8() == null : this.getValue8().equals(other.getValue8()))
+                && (this.getValue9() == null ? other.getValue9() == null : this.getValue9().equals(other.getValue9()))
+                && (this.getRegOperId() == null ? other.getRegOperId() == null
+                        : this.getRegOperId().equals(other.getRegOperId()))
+                && (this.getRegOperName() == null ? other.getRegOperName() == null
+                        : this.getRegOperName().equals(other.getRegOperName()))
+                && (this.getRegDate() == null ? other.getRegDate() == null
+                        : this.getRegDate().equals(other.getRegDate()))
+                && (this.getRegTime() == null ? other.getRegTime() == null
+                        : this.getRegTime().equals(other.getRegTime()))
+                && (this.getModiOperId() == null ? other.getModiOperId() == null
+                        : this.getModiOperId().equals(other.getModiOperId()))
+                && (this.getModiOperName() == null ? other.getModiOperName() == null
+                        : this.getModiOperName().equals(other.getModiOperName()))
+                && (this.getModifyDate() == null ? other.getModifyDate() == null
+                        : this.getModifyDate().equals(other.getModifyDate()))
+                && (this.getModifyTime() == null ? other.getModifyTime() == null
+                        : this.getModifyTime().equals(other.getModifyTime()))
+                && (this.getOperOrg() == null ? other.getOperOrg() == null
+                        : this.getOperOrg().equals(other.getOperOrg()))
+                && (this.getBusinStatus() == null ? other.getBusinStatus() == null
+                        : this.getBusinStatus().equals(other.getBusinStatus()))
+                && (this.getLastStatus() == null ? other.getLastStatus() == null
+                        : this.getLastStatus().equals(other.getLastStatus()));
     }
 
     @Override

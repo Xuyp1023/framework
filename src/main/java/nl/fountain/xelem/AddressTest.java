@@ -10,13 +10,12 @@ import java.util.Collection;
 import junit.framework.TestCase;
 import nl.fountain.xelem.excel.Worksheet;
 
-
 public class AddressTest extends TestCase {
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(AddressTest.class);
     }
-    
+
     public void testCalculateRow() {
         assertEquals(0, Address.calculateRow(""));
         assertEquals(1, Address.calculateRow("1"));
@@ -25,7 +24,7 @@ public class AddressTest extends TestCase {
         assertEquals(Integer.MAX_VALUE, Address.calculateRow("2.147;483&647"));
         assertEquals(0, Address.calculateRow("JAVA"));
     }
-    
+
     public void testCalculateColumn1() {
         assertEquals(0, Address.calculateColumn(""));
         assertEquals(1, Address.calculateColumn("A"));
@@ -35,7 +34,7 @@ public class AddressTest extends TestCase {
         assertEquals(Integer.MAX_VALUE, Address.calculateColumn("FXSHRXW"));
         assertEquals(177009, Address.calculateColumn("JAVA"));
     }
-    
+
     public void testCalculateColumn2() {
         for (int i = 0; i < 300; i++) {
             String column = Address.calculateColumn(i);
@@ -45,16 +44,16 @@ public class AddressTest extends TestCase {
         assertEquals("", Address.calculateColumn(0));
         assertEquals("JAVA", Address.calculateColumn(177009));
     }
-    
+
     public void testStringConstructor() {
         assertTrue(new Address("BQ65").equals(new Address("65bq")));
         assertTrue(new Address("BQ65").equals(new Address("6Bq5")));
-        
+
         Address adr = new Address("IV65536");
         assertEquals(65536, adr.getRowIndex());
         assertEquals(256, adr.getColumnIndex());
         assertEquals("IV65536", adr.getA1Reference());
-        
+
         adr = new Address("xelem.2.0");
         assertEquals(20, adr.getRowIndex());
         assertEquals(11063559, adr.getColumnIndex());
@@ -66,7 +65,7 @@ public class AddressTest extends TestCase {
         assertTrue(adr.isWithinSheet());
         adr = new Address(Worksheet.lastRow, Worksheet.lastColumn);
         assertTrue(adr.isWithinSheet());
-        adr = new Address(Worksheet.firstRow -1, Worksheet.firstColumn);
+        adr = new Address(Worksheet.firstRow - 1, Worksheet.firstColumn);
         assertTrue(!adr.isWithinSheet());
         adr = new Address(Worksheet.firstRow, Worksheet.firstColumn - 1);
         assertTrue(!adr.isWithinSheet());
@@ -88,7 +87,7 @@ public class AddressTest extends TestCase {
         assertEquals("R2C1:R5C3", adr.getAbsoluteRange(new Address(2, 1)));
         assertEquals("R5C3:R5C10", adr.getAbsoluteRange(new Address(5, 10)));
         assertEquals("R3C3:R5C10", adr.getAbsoluteRange(new Address(3, 10)));
-        
+
         CellPointer cp = new CellPointer();
         assertEquals("R1C1:R5C3", adr.getAbsoluteRange(cp));
     }
@@ -116,16 +115,17 @@ public class AddressTest extends TestCase {
         Address adr3 = new Address(1, 256);
         list.add(adr3);
         assertEquals("R1C256,R5C6,R5C7", Address.getAbsoluteRange(list));
-        
+
         CellPointer cp = new CellPointer();
         cp.moveTo(2, 10);
         list.add(cp);
         try {
             Address.getAbsoluteRange(list);
             fail("geen exceptie gegooid.");
-        } catch (ClassCastException e) {
+        }
+        catch (ClassCastException e) {
             //
-        } 
+        }
         list.remove(cp);
         list.add(cp.getAddress());
         assertEquals("R1C256,R2C10,R5C6,R5C7", Address.getAbsoluteRange(list));
@@ -154,7 +154,6 @@ public class AddressTest extends TestCase {
         assertEquals("R[4]C[-3]:R[-2]C[1]", adr.getRefTo(adr1, adr2));
     }
 
-
     public void testGetRefTointintintint() {
         Address adr = new Address(5, 7);
         assertEquals("RC", adr.getRefTo(5, 7, 5, 7));
@@ -163,12 +162,12 @@ public class AddressTest extends TestCase {
         assertEquals("R[-2]C[-3]:R[4]C[1]", adr.getRefTo(3, 4, 9, 8));
         assertEquals("R[4]C[-3]:R[-2]C[1]", adr.getRefTo(9, 4, 3, 8));
     }
-    
+
     public void testGetRefToArea() {
         Address adr = new Address(5, 7);
         Area area = new Area(2, 3, 9, 8);
         assertEquals("R[-3]C[-4]:R[4]C[1]", adr.getRefTo(area));
-        
+
         area = new Area(4, 6, 4, 6);
         assertEquals("R[-1]C[-1]", adr.getRefTo(area));
         area = new Area(5, 7, 5, 7);
@@ -182,7 +181,7 @@ public class AddressTest extends TestCase {
         Address adr = new Address(5, 7);
         Collection<Address> list = new ArrayList<Address>();
         assertNull(adr.getRefTo(list));
-        
+
         list.add(adr);
         assertEquals("RC", adr.getRefTo(list));
         list.add(new Address(7, 10));
@@ -194,7 +193,8 @@ public class AddressTest extends TestCase {
         try {
             adr.getRefTo(list);
             fail("geen exceptie gegooid.");
-        } catch (ClassCastException e) {
+        }
+        catch (ClassCastException e) {
             //
         }
         list.remove(cp);
@@ -222,7 +222,8 @@ public class AddressTest extends TestCase {
         try {
             adr.compareTo(cp);
             fail("geen exceptie gegooid.");
-        } catch (ClassCastException e) {
+        }
+        catch (ClassCastException e) {
             //
         }
         assertEquals(0, adr.compareTo(adr));
