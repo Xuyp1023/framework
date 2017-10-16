@@ -38,8 +38,7 @@ public class SimpleLock {
             logger.info("begin logck,lockKey={},timeoutMsecs={},expireMsecs={}", lockKey, timeoutMsecs, expireMsecs);
             if (jedisLock.acquire()) { // 启用锁
                 runnable.run();
-            }
-            else {
+            } else {
                 logger.info("The time wait for lock more than [{}] ms ", timeoutMsecs);
             }
         }
@@ -61,15 +60,13 @@ public class SimpleLock {
             try {
                 lock.release();// 解锁
             }
-            catch (final Exception e) {
-            }
+            catch (final Exception e) {}
         }
         if (jedis != null) {
             try {
                 jedisPool.returnResource(jedis);// 还到连接池里
             }
-            catch (final Exception e) {
-            }
+            catch (final Exception e) {}
         }
         logger.info("release logck,lockKey={},timeoutMsecs={},expireMsecs={}", lockKey, timeoutMsecs, expireMsecs);
     }

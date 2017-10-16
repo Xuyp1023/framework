@@ -1,6 +1,8 @@
 package com.betterjr.modules.sys.service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ public class DictService extends BaseService<DictInfoMapper, DictInfo> {
     @Autowired
     private DictItemService dictItemService;
 
+    @Override
     protected void preInsert(DictInfo anEntity) {
         // anEntity.setId(888888);
     }
@@ -41,8 +44,7 @@ public class DictService extends BaseService<DictInfoMapper, DictInfo> {
         List<DictInfo> data = this.selectByProperty("dictCode", anCode);
         if (data.size() == 1) {
             return Collections3.getFirst(data);
-        }
-        else {
+        } else {
             logger.warn("use dictCode is " + anCode + ", not find in define");
             return null;
         }

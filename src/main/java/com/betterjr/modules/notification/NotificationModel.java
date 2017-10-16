@@ -64,13 +64,15 @@ public class NotificationModel implements Serializable {
 
     private BetterjrEntity entity;
 
-    private NotificationModel(final String anProfileName, final CustInfo anSendCustomer, final CustOperatorInfo anSendOperator) {
+    private NotificationModel(final String anProfileName, final CustInfo anSendCustomer,
+            final CustOperatorInfo anSendOperator) {
         this.profileName = anProfileName;
         this.sendCustomer = anSendCustomer;
         this.sendOperator = anSendOperator;
     }
 
-    public static Builder newBuilder(final String anProfileName, final CustInfo anSendCustomer, final CustOperatorInfo anSendOperator) {
+    public static Builder newBuilder(final String anProfileName, final CustInfo anSendCustomer,
+            final CustOperatorInfo anSendOperator) {
         return new Builder(anProfileName, anSendCustomer, anSendOperator);
     }
 
@@ -80,7 +82,8 @@ public class NotificationModel implements Serializable {
     public static class Builder {
         private final NotificationModel model;
 
-        private Builder(final String anProfileName, final CustInfo anSendCustomer, final CustOperatorInfo anSendOperator) {
+        private Builder(final String anProfileName, final CustInfo anSendCustomer,
+                final CustOperatorInfo anSendOperator) {
             model = new NotificationModel(anProfileName, anSendCustomer, anSendOperator);
         }
 
@@ -123,8 +126,7 @@ public class NotificationModel implements Serializable {
             BTAssert.notNull(model.sendCustomer, "发送机构不允许为空！");
             BTAssert.notNull(model.sendOperator, "发送人不允许为空！");
 
-            if (Collections3.isEmpty(model.receivers)
-                    && Collections3.isEmpty(model.receiveEmails)
+            if (Collections3.isEmpty(model.receivers) && Collections3.isEmpty(model.receiveEmails)
                     && Collections3.isEmpty(model.receiveMobiles)) {
                 throw new BetterMqException("请指定接收人!");
             }

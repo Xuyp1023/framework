@@ -14,10 +14,10 @@ import com.betterjr.modules.account.entity.CustPassInfo;
 @Service
 public class CustPassDubboClientService implements ICustPassService {
 
-    @Reference(interfaceClass=ICustPassService.class)
+    @Reference(interfaceClass = ICustPassService.class)
     private ICustPassService custPassService;
 
-    @Reference(interfaceClass=ICustTradePassService.class)
+    @Reference(interfaceClass = ICustTradePassService.class)
     private ICustTradePassService custTradePassService;
 
     @Override

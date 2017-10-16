@@ -64,5 +64,5 @@ public interface ResultSetHelper {
      * @throws IOException - thrown by the ResultSet.
      */
     String[] getColumnValues(ResultSet rs, boolean trim, String dateFormatString, String timeFormatString)
-         throws SQLException, IOException;
+            throws SQLException, IOException;
 }

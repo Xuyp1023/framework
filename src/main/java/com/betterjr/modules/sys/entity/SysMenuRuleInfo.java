@@ -2,13 +2,19 @@ package com.betterjr.modules.sys.entity;
 
 import java.util.List;
 
-import com.betterjr.common.annotation.*;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.data.PlatformBaseRuleType;
 import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.common.selectkey.SerialGenerator;
 import com.betterjr.common.utils.BetterStringUtils;
-
-import javax.persistence.*;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -17,50 +23,50 @@ public class SysMenuRuleInfo implements BetterjrEntity {
     /**
      * 编号
      */
-    @Column(name = "ID",  columnDefinition="INTEGER" )
-    @MetaData( value="编号", comments = "编号")
+    @Column(name = "ID", columnDefinition = "INTEGER")
+    @MetaData(value = "编号", comments = "编号")
     private Integer id;
 
     /**
      * 角色编号
      */
-    @Column(name = "N_RULE_ID",  columnDefinition="VARCHAR" )
-    @MetaData( value="角色编号", comments = "角色编号")
+    @Column(name = "N_RULE_ID", columnDefinition = "VARCHAR")
+    @MetaData(value = "角色编号", comments = "角色编号")
     private String ruleId;
 
     /**
      * 角色名称
      */
-    @Column(name = "C_RULE_NAME",  columnDefinition="VARCHAR" )
-    @MetaData( value="角色名称", comments = "角色名称")
+    @Column(name = "C_RULE_NAME", columnDefinition = "VARCHAR")
+    @MetaData(value = "角色名称", comments = "角色名称")
     private String ruleName;
 
     /**
      * 菜单编号
      */
-    @Column(name = "N_MENU_ID",  columnDefinition="INTEGER" )
-    @MetaData( value="菜单编号", comments = "菜单编号")
+    @Column(name = "N_MENU_ID", columnDefinition = "INTEGER")
+    @MetaData(value = "菜单编号", comments = "菜单编号")
     private Integer menuId;
 
     /**
      * 菜单名称
      */
-    @Column(name = "C_MENU_NAME",  columnDefinition="VARCHAR" )
-    @MetaData( value="菜单名称", comments = "菜单名称")
+    @Column(name = "C_MENU_NAME", columnDefinition = "VARCHAR")
+    @MetaData(value = "菜单名称", comments = "菜单名称")
     private String menuName;
 
     /**
      * 状态，0 停用 1启用
      */
-    @Column(name = "C_STATUS",  columnDefinition="VARCHAR" )
-    @MetaData( value="状态", comments = "状态，0 停用 1启用")
+    @Column(name = "C_STATUS", columnDefinition = "VARCHAR")
+    @MetaData(value = "状态", comments = "状态，0 停用 1启用")
     private String status;
-    
+
     /**
      * 身份标识
      */
-    @Column(name = "c_shirouser_type",  columnDefinition="VARCHAR" )
-    @MetaData( value="身份标识", comments = "身份标识")
+    @Column(name = "c_shirouser_type", columnDefinition = "VARCHAR")
+    @MetaData(value = "身份标识", comments = "身份标识")
     private String shiroUserType;
 
     private static final long serialVersionUID = 1449457003176L;
@@ -152,11 +158,13 @@ public class SysMenuRuleInfo implements BetterjrEntity {
         }
         SysMenuRuleInfo other = (SysMenuRuleInfo) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getRuleId() == null ? other.getRuleId() == null : this.getRuleId().equals(other.getRuleId()))
-            && (this.getRuleName() == null ? other.getRuleName() == null : this.getRuleName().equals(other.getRuleName()))
-            && (this.getMenuId() == null ? other.getMenuId() == null : this.getMenuId().equals(other.getMenuId()))
-            && (this.getMenuName() == null ? other.getMenuName() == null : this.getMenuName().equals(other.getMenuName()))
-            && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()));
+                && (this.getRuleId() == null ? other.getRuleId() == null : this.getRuleId().equals(other.getRuleId()))
+                && (this.getRuleName() == null ? other.getRuleName() == null
+                        : this.getRuleName().equals(other.getRuleName()))
+                && (this.getMenuId() == null ? other.getMenuId() == null : this.getMenuId().equals(other.getMenuId()))
+                && (this.getMenuName() == null ? other.getMenuName() == null
+                        : this.getMenuName().equals(other.getMenuName()))
+                && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()));
     }
 
     @Override
@@ -171,30 +179,30 @@ public class SysMenuRuleInfo implements BetterjrEntity {
         result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
         return result;
     }
-    
-    public void initMenuRole(String roleId,String roleName,String menuId,String menuName,String anShiroUserType){
-        this.id=SerialGenerator.getIntValue("SysMenuRole.id");
-        this.ruleId=roleId;
-        this.ruleName=roleName;
-        this.menuId=Integer.parseInt(menuId);
-        this.menuName=menuName;
-        this.status="1";
-        this.shiroUserType=anShiroUserType;
+
+    public void initMenuRole(String roleId, String roleName, String menuId, String menuName, String anShiroUserType) {
+        this.id = SerialGenerator.getIntValue("SysMenuRole.id");
+        this.ruleId = roleId;
+        this.ruleName = roleName;
+        this.menuId = Integer.parseInt(menuId);
+        this.menuName = menuName;
+        this.status = "1";
+        this.shiroUserType = anShiroUserType;
     }
-    
-    public boolean hasValidMenu(List<PlatformBaseRuleType> anRules){
-        if (BetterStringUtils.isBlank(this.shiroUserType)){
+
+    public boolean hasValidMenu(List<PlatformBaseRuleType> anRules) {
+        if (StringUtils.isBlank(this.shiroUserType)) {
             return true;
         }
         PlatformBaseRuleType tmpInnerRule;
-        for(String tmpStr : BetterStringUtils.split(shiroUserType, ",|;")){
+        for (String tmpStr : StringUtils.split(shiroUserType, ",|;")) {
             tmpInnerRule = PlatformBaseRuleType.checking(tmpStr);
-            if (anRules.contains(tmpInnerRule)){
-                
+            if (anRules.contains(tmpInnerRule)) {
+
                 return true;
             }
         }
-        
+
         return false;
     }
 }

@@ -24,12 +24,12 @@
 
 package com.betterjr.mapper.common.rowbounds;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.session.RowBounds;
 
 import com.betterjr.mapper.provider.MapperProvider;
-
-import java.util.List;
 
 /**
  * 通用Mapper接口,Condition查询

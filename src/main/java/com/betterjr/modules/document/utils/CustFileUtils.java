@@ -58,14 +58,16 @@ public abstract class CustFileUtils {
      * @return
      */
 
-    public static CustFileItem createSignDocFileItem(final String anFilePath, final long anSize, final String anWorkType, final String anFileName) {
+    public static CustFileItem createSignDocFileItem(final String anFilePath, final long anSize,
+            final String anWorkType, final String anFileName) {
         final CustFileItem fileItem = createDefFileItem(anFilePath, anSize, anWorkType, anFileName);
         fileItem.setBatchNo(findBatchNo());
 
         return fileItem;
     }
 
-    private static CustFileItem createDefFileItem(final String anFilePath, final long anSize, final String anWorkType, final String anFileName) {
+    private static CustFileItem createDefFileItem(final String anFilePath, final long anSize, final String anWorkType,
+            final String anFileName) {
         final CustFileItem fileItem = new CustFileItem();
         fileItem.setId(SerialGenerator.getLongValue("CustFileItem.id"));
         fileItem.setFileLength(anSize);
@@ -78,8 +80,8 @@ public abstract class CustFileUtils {
         return fileItem;
     }
 
-    public static CustFileItem createDefFileItemForStore(final String filePath, final Long fileLength, final String anWorkType,
-            final String anFileName) {
+    public static CustFileItem createDefFileItemForStore(final String filePath, final Long fileLength,
+            final String anWorkType, final String anFileName) {
         final CustFileItem fileItem = new CustFileItem();
         fileItem.setId(SerialGenerator.getLongValue("CustFileItem.id"));
         fileItem.setFileLength(fileLength);
@@ -105,7 +107,8 @@ public abstract class CustFileUtils {
      *            文件类型
      * @return
      */
-    public static CustFileItem createUploadFileItem(final String anFilePath, final long anSize, final String anWorkType, final String anFileName) {
+    public static CustFileItem createUploadFileItem(final String anFilePath, final long anSize, final String anWorkType,
+            final String anFileName) {
         final CustFileItem fileItem = createDefFileItem(anFilePath, anSize, anWorkType, anFileName);
 
         return fileItem;
@@ -161,7 +164,8 @@ public abstract class CustFileUtils {
 
             htmlContext.setTagFactory(Tags.getHtmlTagProcessorFactory());
             final CSSResolver cssResolver = XMLWorkerHelper.getInstance().getDefaultCssResolver(true);
-            final Pipeline pipeline = new CssResolverPipeline(cssResolver, new HtmlPipeline(htmlContext, new PdfWriterPipeline(document, pdfwriter)));
+            final Pipeline pipeline = new CssResolverPipeline(cssResolver,
+                    new HtmlPipeline(htmlContext, new PdfWriterPipeline(document, pdfwriter)));
 
             final XMLWorker worker = new XMLWorker(pipeline, true);
             final XMLParser p = new XMLParser(worker);
@@ -179,13 +183,14 @@ public abstract class CustFileUtils {
         }
     }
 
-    public static DownloadFileInfo sendToDownloadFileService(final CustFileItem anFileItem, final Long anCustNo, final String anPartnerCode,
-            final String anBusingType) {
+    public static DownloadFileInfo sendToDownloadFileService(final CustFileItem anFileItem, final Long anCustNo,
+            final String anPartnerCode, final String anBusingType) {
         final DownloadFileInfo fileInfo = BeanMapper.map(anFileItem, DownloadFileInfo.class);
         fileInfo.setBusinType(anBusingType);
         fileInfo.setCustNo(anCustNo);
         fileInfo.setPartnerCode(anPartnerCode);
-        final String tmpToken = SerialGenerator.uuid().concat(Long.toHexString(System.currentTimeMillis())).concat(SerialGenerator.randomBase62(20));
+        final String tmpToken = SerialGenerator.uuid().concat(Long.toHexString(System.currentTimeMillis()))
+                .concat(SerialGenerator.randomBase62(20));
         fileInfo.setAccessToken(tmpToken);
         DownloadFileService.addDownloadFile(fileInfo);
         return fileInfo;
@@ -202,7 +207,8 @@ public abstract class CustFileUtils {
      *            旋转角度
      * @return
      */
-    public static List<File> pdfChangeToImage(final InputStream anPdfData, final float anScale, final float anRotation) {
+    public static List<File> pdfChangeToImage(final InputStream anPdfData, final float anScale,
+            final float anRotation) {
         final org.icepdf.core.pobjects.Document document = new org.icepdf.core.pobjects.Document();
         final List<File> resultList = new ArrayList();
         try {

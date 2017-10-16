@@ -32,9 +32,9 @@ import nl.fountain.xelem.excel.AutoFilter;
  * @see nl.fountain.xelem.excel.Worksheet#setAutoFilter(String)
  */
 public class XAutoFilter extends AbstractXLElement implements AutoFilter {
-    
+
     private String range;
-    
+
     /**
      * Constructs a new XAutoFilter.
      * 
@@ -42,33 +42,39 @@ public class XAutoFilter extends AbstractXLElement implements AutoFilter {
      */
     public XAutoFilter() {}
 
+    @Override
     public void setRange(String rcString) {
         range = rcString;
     }
-    
+
+    @Override
     public String getRange() {
         return range;
     }
 
+    @Override
     public String getTagName() {
         return "AutoFilter";
     }
 
+    @Override
     public String getNameSpace() {
         return XMLNS_X;
     }
 
+    @Override
     public String getPrefix() {
         return PREFIX_X;
     }
 
+    @Override
     public Element assemble(Element parent, GIO gio) {
         if (getRange() != null) {
             Document doc = parent.getOwnerDocument();
-	        Element afe = assemble(doc, gio);
-	        afe.setAttributeNodeNS(createAttributeNS(doc, "Range", getRange()));
-	        parent.appendChild(afe);
-	        return afe;
+            Element afe = assemble(doc, gio);
+            afe.setAttributeNodeNS(createAttributeNS(doc, "Range", getRange()));
+            parent.appendChild(afe);
+            return afe;
         } else {
             return null;
         }

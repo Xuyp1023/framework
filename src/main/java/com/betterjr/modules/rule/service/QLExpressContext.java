@@ -2,6 +2,7 @@ package com.betterjr.modules.rule.service;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.LinkedCaseInsensitiveMap;
 
@@ -55,6 +56,7 @@ public class QLExpressContext implements IExpressContext<String, Object> {
     /**
      * 抽象方法：根据名称从属性列表中提取属性值
      */
+    @Override
     public Object get(Object name) {
         Object result = null;
         result = map.get(name);
@@ -83,7 +85,7 @@ public class QLExpressContext implements IExpressContext<String, Object> {
     }
 
     public Object getBusinValue(String anName) {
-        if (BetterStringUtils.isBlank(anName)) {
+        if (StringUtils.isBlank(anName)) {
 
             return null;
         }
@@ -105,9 +107,9 @@ public class QLExpressContext implements IExpressContext<String, Object> {
             }
         }
         try {
-            if (result == null && this.context != null && this.context.containsBean((String) name)) {
+            if (result == null && this.context != null && this.context.containsBean(name)) {
                 // 如果在Spring容器中包含bean，则返回String的Bean
-                result = this.context.getBean((String) name);
+                result = this.context.getBean(name);
             }
         }
         catch (Exception e) {
@@ -116,21 +118,18 @@ public class QLExpressContext implements IExpressContext<String, Object> {
 
         // 如果还是没有值，从数据字典或者SelectKey中查找。
         if ("Dict".equalsIgnoreCase(name)) {
-            if (BetterStringUtils.isNotBlank(sde.getThree())) {
+            if (StringUtils.isNotBlank(sde.getThree())) {
 
                 return DictUtils.getDictItem(sde.getThree(), sde.getValue());
-            }
-            else {
+            } else {
 
                 return DictUtils.getDictList(sde.getName());
             }
-        }
-        else if ("selectKey".equalsIgnoreCase(name)) {
-            if (BetterStringUtils.isNotBlank(sde.getThree())) {
+        } else if ("selectKey".equalsIgnoreCase(name)) {
+            if (StringUtils.isNotBlank(sde.getThree())) {
 
                 return SelectKeyGenService.getValue(sde.getName(), sde.getThree());
-            }
-            else {
+            } else {
 
                 return SelectKeyGenService.getValue(sde.getName(), sde.getName());
             }
@@ -145,13 +144,11 @@ public class QLExpressContext implements IExpressContext<String, Object> {
         if (sde.onlyOne()) {
 
             return result;
-        }
-        else {
+        } else {
             if (result instanceof Map) {
                 return ((Map) result).get(sde.getName());
-            }
-            else {
-                if (BetterStringUtils.isNotBlank(sde.getThree())) {
+            } else {
+                if (StringUtils.isNotBlank(sde.getThree())) {
                     result = BeanMapperHelper.invokeGetterMethod(result, sde.getThree());
                 }
                 result = BeanMapperHelper.invokeGetterMethod(result, sde.getName());
@@ -164,7 +161,7 @@ public class QLExpressContext implements IExpressContext<String, Object> {
     public Object getObjValue(String anName) {
 
         // 无需取值，直接返回
-        if (BetterStringUtils.isBlank(anName) || "Void".equalsIgnoreCase(anName)) {
+        if (StringUtils.isBlank(anName) || "Void".equalsIgnoreCase(anName)) {
 
             return null;
         }
@@ -186,8 +183,7 @@ public class QLExpressContext implements IExpressContext<String, Object> {
 
                         // 属性不在对象中，继续处理！
                     }
-                }
-                else if (obj instanceof Map) {
+                } else if (obj instanceof Map) {
                     Map map = (Map) obj;
                     return map.get(anName);
                 }
@@ -202,6 +198,7 @@ public class QLExpressContext implements IExpressContext<String, Object> {
         return this.context.getBean(requiredType);
     }
 
+    @Override
     public Object put(String name, Object object) {
 
         return map.put(name, object);

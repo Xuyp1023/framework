@@ -45,7 +45,8 @@ public class DomainAttributeDubboService implements IDomainAttributeService {
      * @see com.betterjr.modules.config.dubbo.interfaces.IDomainAttributeService#saveString(java.lang.String, java.lang.Long, java.lang.String, java.lang.String)
      */
     @Override
-    public DomainAttribute saveString(final String anOperOrg, final Long anCustNo, final String anCode, final String anValue) {
+    public DomainAttribute saveString(final String anOperOrg, final Long anCustNo, final String anCode,
+            final String anValue) {
         return domainAttributeService.saveString(anOperOrg, anCustNo, anCode, anValue);
     }
 
@@ -69,7 +70,8 @@ public class DomainAttributeDubboService implements IDomainAttributeService {
      * @see com.betterjr.modules.config.dubbo.interfaces.IDomainAttributeService#saveNumber(java.lang.String, java.lang.Long, java.lang.String, java.lang.Long)
      */
     @Override
-    public DomainAttribute saveNumber(final String anOperOrg, final Long anCustNo, final String anCode, final Long anValue) {
+    public DomainAttribute saveNumber(final String anOperOrg, final Long anCustNo, final String anCode,
+            final Long anValue) {
         return domainAttributeService.saveNumber(anOperOrg, anCustNo, anCode, anValue);
     }
 
@@ -93,7 +95,8 @@ public class DomainAttributeDubboService implements IDomainAttributeService {
      * @see com.betterjr.modules.config.dubbo.interfaces.IDomainAttributeService#saveMoney(java.lang.String, java.lang.Long, java.lang.String, java.math.BigDecimal)
      */
     @Override
-    public DomainAttribute saveMoney(final String anOperOrg, final Long anCustNo, final String anCode, final BigDecimal anValue) {
+    public DomainAttribute saveMoney(final String anOperOrg, final Long anCustNo, final String anCode,
+            final BigDecimal anValue) {
         return domainAttributeService.saveMoney(anOperOrg, anCustNo, anCode, anValue);
     }
 
@@ -117,7 +120,8 @@ public class DomainAttributeDubboService implements IDomainAttributeService {
      * @see com.betterjr.modules.config.dubbo.interfaces.IDomainAttributeService#saveObject(java.lang.String, java.lang.Long, java.lang.String, java.lang.Object)
      */
     @Override
-    public DomainAttribute saveObject(final String anOperOrg, final Long anCustNo, final String anCode, final Object anValue) {
+    public DomainAttribute saveObject(final String anOperOrg, final Long anCustNo, final String anCode,
+            final Object anValue) {
         return domainAttributeService.saveObject(anOperOrg, anCustNo, anCode, anValue);
     }
 

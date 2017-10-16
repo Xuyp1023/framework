@@ -26,15 +26,15 @@ public class PatternSequenceGenerator extends SequenceGenerator {
 
     protected Map<String, Object> params;
 
-
     @Override
-    public Object getValue(final String anSeqId, final String anOperOrg, final Long anCustNo, final String anPattern, final String anCycle) throws BytterException {
+    public Object getValue(final String anSeqId, final String anOperOrg, final Long anCustNo, final String anPattern,
+            final String anCycle) throws BytterException {
         String result = anPattern;
-        //translate the sequence no. with left padding 0
+        // translate the sequence no. with left padding 0
         if (StringUtils.contains(anPattern, SEQ6_STRING)) {
             String seqNum = String.valueOf(super.getValue(anSeqId, anOperOrg, anCustNo, anPattern, anCycle));
-            final int seqLen = NumberUtils.toInt(StringUtils.substringBetween(anPattern,
-                    SEQ6_STRING, BRACKET_SUFFIX), 0);
+            final int seqLen = NumberUtils.toInt(StringUtils.substringBetween(anPattern, SEQ6_STRING, BRACKET_SUFFIX),
+                    0);
             if (seqLen > 0) {
                 seqNum = String.format(("%1$0" + seqLen + "d"), Integer.parseInt(seqNum));
                 result = StringUtils.replace(result, (SEQ6_STRING + seqLen + BRACKET_SUFFIX), seqNum);
@@ -43,13 +43,12 @@ public class PatternSequenceGenerator extends SequenceGenerator {
         // translate the system date field
         if (StringUtils.contains(anPattern, DATE_PREFIX)) {
             final String dateFormat = StringUtils.substringBetween(anPattern, DATE_PREFIX, BRACKET_SUFFIX);
-            final String dateTime = BetterDateUtils.formatDate(BetterDateUtils.getNow(),dateFormat);
+            final String dateTime = BetterDateUtils.formatDate(BetterDateUtils.getNow(), dateFormat);
             result = StringUtils.replace(result, (DATE_PREFIX + dateFormat + BRACKET_SUFFIX), dateTime);
         }
 
         return result;
     }
-
 
     @Override
     public void setParameters(final Map<String, Object> params) {

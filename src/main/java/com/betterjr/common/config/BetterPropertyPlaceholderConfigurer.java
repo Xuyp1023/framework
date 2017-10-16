@@ -8,6 +8,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+
 /**
  *
  * spring配置文件自定义加载器
@@ -36,8 +37,7 @@ public class BetterPropertyPlaceholderConfigurer extends PropertySourcesPlacehol
                     logger.fatal("配置文件加载错误!");
                 }
             }
-        }
-        else {
+        } else {
             for (final String betterLocation : betterLocations) {
                 try {
                     final Resource resource = new FileSystemResource(betterConfig + betterLocation);

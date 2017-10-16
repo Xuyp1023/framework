@@ -56,62 +56,48 @@ public class OperatorOfNumber {
     public static Number transfer(Number value, Class<?> type, boolean isForce) {
         if (isForce == true || value instanceof BigDecimal == false) {
             if (type.equals(byte.class) || type.equals(Byte.class)) {
-                return ((Number) value).byteValue();
-            }
-            else if (type.equals(short.class) || type.equals(Short.class)) {
-                return ((Number) value).shortValue();
-            }
-            else if (type.equals(int.class) || type.equals(Integer.class)) {
-                return ((Number) value).intValue();
-            }
-            else if (type.equals(long.class) || type.equals(Long.class)) {
-                return ((Number) value).longValue();
-            }
-            else if (type.equals(float.class) || type.equals(Float.class)) {
-                return ((Number) value).floatValue();
-            }
-            else if (type.equals(double.class) || type.equals(Double.class)) {
-                return ((Number) value).doubleValue();
-            }
-            else if (type.equals(BigDecimal.class)) {
+                return value.byteValue();
+            } else if (type.equals(short.class) || type.equals(Short.class)) {
+                return value.shortValue();
+            } else if (type.equals(int.class) || type.equals(Integer.class)) {
+                return value.intValue();
+            } else if (type.equals(long.class) || type.equals(Long.class)) {
+                return value.longValue();
+            } else if (type.equals(float.class) || type.equals(Float.class)) {
+                return value.floatValue();
+            } else if (type.equals(double.class) || type.equals(Double.class)) {
+                return value.doubleValue();
+            } else if (type.equals(BigDecimal.class)) {
                 return new BigDecimal(value.toString());
-            }
-            else {
+            } else {
                 throw new RuntimeException("没有处理的数据类型：" + type.getName());
             }
-        }
-        else {
+        } else {
             if (type.equals(byte.class) || type.equals(Byte.class)) {
                 if (((BigDecimal) value).scale() > 0) {
                     throw new RuntimeException("有小数位，不能转化为：" + type.getName());
                 }
-                return ((Number) value).byteValue();
-            }
-            else if (type.equals(short.class) || type.equals(Short.class)) {
+                return value.byteValue();
+            } else if (type.equals(short.class) || type.equals(Short.class)) {
                 if (((BigDecimal) value).scale() > 0) {
                     throw new RuntimeException("有小数位，不能转化为：" + type.getName());
                 }
-                return ((Number) value).shortValue();
-            }
-            else if (type.equals(int.class) || type.equals(Integer.class)) {
+                return value.shortValue();
+            } else if (type.equals(int.class) || type.equals(Integer.class)) {
                 if (((BigDecimal) value).scale() > 0) {
                     throw new RuntimeException("有小数位，不能转化为：" + type.getName());
                 }
-                return ((Number) value).intValue();
-            }
-            else if (type.equals(long.class) || type.equals(Long.class)) {
+                return value.intValue();
+            } else if (type.equals(long.class) || type.equals(Long.class)) {
                 if (((BigDecimal) value).scale() > 0) {
                     throw new RuntimeException("有小数位，不能转化为：" + type.getName());
                 }
-                return ((Number) value).longValue();
-            }
-            else if (type.equals(float.class) || type.equals(Float.class)) {
-                return ((Number) value).floatValue();
-            }
-            else if (type.equals(double.class) || type.equals(Double.class)) {
-                return ((Number) value).doubleValue();
-            }
-            else {
+                return value.longValue();
+            } else if (type.equals(float.class) || type.equals(Float.class)) {
+                return value.floatValue();
+            } else if (type.equals(double.class) || type.equals(Double.class)) {
+                return value.doubleValue();
+            } else {
                 throw new RuntimeException("没有处理的数据类型：" + type.getName());
             }
         }
@@ -122,43 +108,43 @@ public class OperatorOfNumber {
         int type2 = OperatorOfNumber.getSeq(op2.getClass());
         int type = type1 > type2 ? type1 : type2;
         if (type == 1) {
-            byte o1 = ((Number) op1).byteValue();
-            byte o2 = ((Number) op2).byteValue();
+            byte o1 = op1.byteValue();
+            byte o2 = op2.byteValue();
             if (o1 == o2) return 0;
             if (o1 < o2) return -1;
             return 1;
         }
         if (type == 2) {
-            short o1 = ((Number) op1).shortValue();
-            short o2 = ((Number) op2).shortValue();
+            short o1 = op1.shortValue();
+            short o2 = op2.shortValue();
             if (o1 == o2) return 0;
             if (o1 < o2) return -1;
             return 1;
         }
         if (type == 3) {
-            int o1 = ((Number) op1).intValue();
-            int o2 = ((Number) op2).intValue();
+            int o1 = op1.intValue();
+            int o2 = op2.intValue();
             if (o1 == o2) return 0;
             if (o1 < o2) return -1;
             return 1;
         }
         if (type == 4) {
-            long o1 = ((Number) op1).longValue();
-            long o2 = ((Number) op2).longValue();
+            long o1 = op1.longValue();
+            long o2 = op2.longValue();
             if (o1 == o2) return 0;
             if (o1 < o2) return -1;
             return 1;
         }
         if (type == 5) {
-            float o1 = ((Number) op1).floatValue();
-            float o2 = ((Number) op2).floatValue();
+            float o1 = op1.floatValue();
+            float o2 = op2.floatValue();
             if (o1 == o2) return 0;
             if (o1 < o2) return -1;
             return 1;
         }
         if (type == 6) {
-            double o1 = ((Number) op1).doubleValue();
-            double o2 = ((Number) op2).doubleValue();
+            double o1 = op1.doubleValue();
+            double o2 = op2.doubleValue();
             if (o1 == o2) return 0;
             if (o1 < o2) return -1;
             return 1;
@@ -184,8 +170,7 @@ public class OperatorOfNumber {
         }
         if (isPrecise == true) {
             return PreciseNumberOperator.addPrecise((Number) op1, (Number) op2);
-        }
-        else {
+        } else {
             return NormalNumberOperator.addNormal((Number) op1, (Number) op2);
         }
     }
@@ -193,8 +178,7 @@ public class OperatorOfNumber {
     public static Number subtract(Object op1, Object op2, boolean isPrecise) throws Exception {
         if (isPrecise == true) {
             return PreciseNumberOperator.subtractPrecise((Number) op1, (Number) op2);
-        }
-        else {
+        } else {
             return NormalNumberOperator.subtractNormal((Number) op1, (Number) op2);
         }
     }
@@ -202,8 +186,7 @@ public class OperatorOfNumber {
     public static Number multiply(Object op1, Object op2, boolean isPrecise) throws Exception {
         if (isPrecise == true) {
             return PreciseNumberOperator.multiplyPrecise((Number) op1, (Number) op2);
-        }
-        else {
+        } else {
             return NormalNumberOperator.multiplyNormal((Number) op1, (Number) op2);
         }
     }
@@ -211,8 +194,7 @@ public class OperatorOfNumber {
     public static Number divide(Object op1, Object op2, boolean isPrecise) throws Exception {
         if (isPrecise == true) {
             return PreciseNumberOperator.dividePrecise((Number) op1, (Number) op2);
-        }
-        else {
+        } else {
             return NormalNumberOperator.divideNormal((Number) op1, (Number) op2);
         }
     }
@@ -242,7 +224,8 @@ class NormalNumberOperator {
         if (type == NumberType.NUMBER_TYPE_LONG) return op1.longValue() + op2.longValue();
         if (type == NumberType.NUMBER_TYPE_FLOAT) return op1.floatValue() + op2.floatValue();
         if (type == NumberType.NUMBER_TYPE_DOUBLE) return op1.doubleValue() + op2.doubleValue();
-        if (type == NumberType.NUMBER_TYPE_BIGDECIMAL) return new BigDecimal(op1.toString()).add(new BigDecimal(op2.toString()));
+        if (type == NumberType.NUMBER_TYPE_BIGDECIMAL)
+            return new BigDecimal(op1.toString()).add(new BigDecimal(op2.toString()));
         throw new Exception("不支持的对象执行了\"+\"操作");
     }
 
@@ -256,7 +239,8 @@ class NormalNumberOperator {
         if (type == NumberType.NUMBER_TYPE_LONG) return op1.longValue() - op2.longValue();
         if (type == NumberType.NUMBER_TYPE_FLOAT) return op1.floatValue() - op2.floatValue();
         if (type == NumberType.NUMBER_TYPE_DOUBLE) return op1.doubleValue() - op2.doubleValue();
-        if (type == NumberType.NUMBER_TYPE_BIGDECIMAL) return new BigDecimal(op1.toString()).subtract(new BigDecimal(op2.toString()));
+        if (type == NumberType.NUMBER_TYPE_BIGDECIMAL)
+            return new BigDecimal(op1.toString()).subtract(new BigDecimal(op2.toString()));
         throw new Exception("不支持的对象执行了\"-\"操作");
     }
 
@@ -270,7 +254,8 @@ class NormalNumberOperator {
         if (type == NumberType.NUMBER_TYPE_LONG) return op1.longValue() * op2.longValue();
         if (type == NumberType.NUMBER_TYPE_FLOAT) return op1.floatValue() * op2.floatValue();
         if (type == NumberType.NUMBER_TYPE_DOUBLE) return op1.doubleValue() * op2.doubleValue();
-        if (type == NumberType.NUMBER_TYPE_BIGDECIMAL) return new BigDecimal(op1.toString()).multiply(new BigDecimal(op2.toString()));
+        if (type == NumberType.NUMBER_TYPE_BIGDECIMAL)
+            return new BigDecimal(op1.toString()).multiply(new BigDecimal(op2.toString()));
         throw new Exception("不支持的对象执行了\"*\"操作");
     }
 
@@ -315,16 +300,13 @@ class PreciseNumberOperator {
         if (op1 instanceof BigDecimal) {
             if (op2 instanceof BigDecimal) {
                 result = ((BigDecimal) op1).add((BigDecimal) op2);
-            }
-            else {
+            } else {
                 result = ((BigDecimal) op1).add(new BigDecimal(op2.toString()));
             }
-        }
-        else {
+        } else {
             if (op2 instanceof BigDecimal) {
                 result = new BigDecimal(op1.toString()).add((BigDecimal) op2);
-            }
-            else {
+            } else {
                 result = new BigDecimal(op1.toString()).add(new BigDecimal(op2.toString()));
             }
         }
@@ -332,12 +314,10 @@ class PreciseNumberOperator {
             long tempLong = result.longValue();
             if (tempLong <= Integer.MAX_VALUE && tempLong >= Integer.MIN_VALUE) {
                 return (int) tempLong;
-            }
-            else {
+            } else {
                 return tempLong;
             }
-        }
-        else {
+        } else {
             return result;
         }
 
@@ -348,16 +328,13 @@ class PreciseNumberOperator {
         if (op1 instanceof BigDecimal) {
             if (op2 instanceof BigDecimal) {
                 result = ((BigDecimal) op1).subtract((BigDecimal) op2);
-            }
-            else {
+            } else {
                 result = ((BigDecimal) op1).subtract(new BigDecimal(op2.toString()));
             }
-        }
-        else {
+        } else {
             if (op2 instanceof BigDecimal) {
                 result = new BigDecimal(op1.toString()).subtract((BigDecimal) op2);
-            }
-            else {
+            } else {
                 result = new BigDecimal(op1.toString()).subtract(new BigDecimal(op2.toString()));
             }
         }
@@ -365,12 +342,10 @@ class PreciseNumberOperator {
             long tempLong = result.longValue();
             if (tempLong <= Integer.MAX_VALUE && tempLong >= Integer.MIN_VALUE) {
                 return (int) tempLong;
-            }
-            else {
+            } else {
                 return tempLong;
             }
-        }
-        else {
+        } else {
             return result;
         }
     }
@@ -380,16 +355,13 @@ class PreciseNumberOperator {
         if (op1 instanceof BigDecimal) {
             if (op2 instanceof BigDecimal) {
                 result = ((BigDecimal) op1).multiply((BigDecimal) op2);
-            }
-            else {
+            } else {
                 result = ((BigDecimal) op1).multiply(new BigDecimal(op2.toString()));
             }
-        }
-        else {
+        } else {
             if (op2 instanceof BigDecimal) {
                 result = new BigDecimal(op1.toString()).multiply((BigDecimal) op2);
-            }
-            else {
+            } else {
                 result = new BigDecimal(op1.toString()).multiply(new BigDecimal(op2.toString()));
             }
         }
@@ -397,12 +369,10 @@ class PreciseNumberOperator {
             long tempLong = result.longValue();
             if (tempLong <= Integer.MAX_VALUE && tempLong >= Integer.MIN_VALUE) {
                 return (int) tempLong;
-            }
-            else {
+            } else {
                 return tempLong;
             }
-        }
-        else {
+        } else {
             return result;
         }
     }
@@ -412,29 +382,27 @@ class PreciseNumberOperator {
         if (op1 instanceof BigDecimal) {
             if (op2 instanceof BigDecimal) {
                 result = ((BigDecimal) op1).divide((BigDecimal) op2, DIVIDE_PRECISION, BigDecimal.ROUND_HALF_UP);
+            } else {
+                result = ((BigDecimal) op1).divide(new BigDecimal(op2.toString()), DIVIDE_PRECISION,
+                        BigDecimal.ROUND_HALF_UP);
             }
-            else {
-                result = ((BigDecimal) op1).divide(new BigDecimal(op2.toString()), DIVIDE_PRECISION, BigDecimal.ROUND_HALF_UP);
-            }
-        }
-        else {
+        } else {
             if (op2 instanceof BigDecimal) {
-                result = new BigDecimal(op1.toString()).divide((BigDecimal) op2, DIVIDE_PRECISION, BigDecimal.ROUND_HALF_UP);
-            }
-            else {
-                result = new BigDecimal(op1.toString()).divide(new BigDecimal(op2.toString()), DIVIDE_PRECISION, BigDecimal.ROUND_HALF_UP);
+                result = new BigDecimal(op1.toString()).divide((BigDecimal) op2, DIVIDE_PRECISION,
+                        BigDecimal.ROUND_HALF_UP);
+            } else {
+                result = new BigDecimal(op1.toString()).divide(new BigDecimal(op2.toString()), DIVIDE_PRECISION,
+                        BigDecimal.ROUND_HALF_UP);
             }
         }
         if (result.scale() == 0) {
             long tempLong = result.longValue();
             if (tempLong <= Integer.MAX_VALUE && tempLong >= Integer.MIN_VALUE) {
                 return (int) tempLong;
-            }
-            else {
+            } else {
                 return tempLong;
             }
-        }
-        else {
+        } else {
             return result;
         }
     }

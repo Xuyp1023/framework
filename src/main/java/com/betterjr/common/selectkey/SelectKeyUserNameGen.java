@@ -1,6 +1,6 @@
 package com.betterjr.common.selectkey;
 
- import com.betterjr.common.utils.UserUtils;
+import com.betterjr.common.utils.UserUtils;
 
 public class SelectKeyUserNameGen implements ISelectKeyGenFace {
     private static final long serialVersionUID = -3037670584051795787L;
@@ -14,6 +14,6 @@ public class SelectKeyUserNameGen implements ISelectKeyGenFace {
     public Object getValue(String anKey) {
 
         return UserUtils.getUser().getName();
- }
+    }
 
 }

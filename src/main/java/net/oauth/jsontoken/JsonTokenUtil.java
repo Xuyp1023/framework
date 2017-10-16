@@ -16,51 +16,52 @@
  */
 package net.oauth.jsontoken;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 
-import java.util.Map;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Some utility functions for {@link JsonToken}s.
  */
 public class JsonTokenUtil {
-  static ObjectMapper mapper = new ObjectMapper();
-  static public final String DELIMITER = ".";
+    static ObjectMapper mapper = new ObjectMapper();
+    static public final String DELIMITER = ".";
 
-  public static String toBase64(Map<String, Object> json) {
-    return convertToBase64(toJson(json));
-  }
+    public static String toBase64(Map<String, Object> json) {
+        return convertToBase64(toJson(json));
+    }
 
-  public static String toJson(Map<String, Object> json) {
-      String v = null;
-      try {
-          v = mapper.writeValueAsString(json);
-      } catch (Exception e) {
-          e.printStackTrace();
-      }
-      return v;
-  }
+    public static String toJson(Map<String, Object> json) {
+        String v = null;
+        try {
+            v = mapper.writeValueAsString(json);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return v;
+    }
 
-  public static String convertToBase64(String source) {
-    return Base64.encodeBase64URLSafeString(StringUtils.getBytesUtf8(source));
-  }
-  
-  public static String decodeFromBase64String(String encoded) {
-    return new String(Base64.decodeBase64(encoded));
-  }
-  
-  public static String fromBase64ToJsonString(String source) {
-    return StringUtils.newStringUtf8(Base64.decodeBase64(source));
-  }
-  
-/*
-  public static String toDotFormat(String... parts) {
+    public static String convertToBase64(String source) {
+        return Base64.encodeBase64URLSafeString(StringUtils.getBytesUtf8(source));
+    }
+
+    public static String decodeFromBase64String(String encoded) {
+        return new String(Base64.decodeBase64(encoded));
+    }
+
+    public static String fromBase64ToJsonString(String source) {
+        return StringUtils.newStringUtf8(Base64.decodeBase64(source));
+    }
+
+    /*
+      public static String toDotFormat(String... parts) {
     return Joiner.on('.').useForNull("").join(parts);
-  }
-*/
+      }
+    */
 
     public static String toDotFormat(String... parts) {
         StringBuilder sb = new StringBuilder();
@@ -68,12 +69,12 @@ public class JsonTokenUtil {
         for (String n : parts) {
             sb.append(prefix);
             prefix = ".";
-            if(n == null) {
+            if (n == null) {
                 n = "";
             }
             sb.append(n);
         }
-       return sb.toString();
+        return sb.toString();
     }
 
     /**
@@ -90,6 +91,7 @@ public class JsonTokenUtil {
         }
         return reference;
     }
+
     /**
      * Ensures that an object reference passed as a parameter to the calling
      * method is not null.
@@ -106,6 +108,7 @@ public class JsonTokenUtil {
         }
         return reference;
     }
+
     /**
      * Determines whether two possibly-null objects are equal. Returns:
      *
@@ -123,5 +126,5 @@ public class JsonTokenUtil {
         return a == b || (a != null && a.equals(b));
     }
 
-    private JsonTokenUtil() { }
+    private JsonTokenUtil() {}
 }

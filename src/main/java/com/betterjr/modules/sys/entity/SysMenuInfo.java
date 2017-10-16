@@ -2,12 +2,19 @@ package com.betterjr.modules.sys.entity;
 
 import java.util.List;
 
-import com.betterjr.common.annotation.*;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.data.PlatformBaseRuleType;
 import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.common.utils.BetterStringUtils;
-
-import javax.persistence.*;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -17,106 +24,106 @@ public class SysMenuInfo implements BetterjrEntity {
      * 菜单编号
      */
     @Id
-    @Column(name = "ID",  columnDefinition="INTEGER" )
-    @MetaData( value="菜单编号", comments = "菜单编号")
+    @Column(name = "ID", columnDefinition = "INTEGER")
+    @MetaData(value = "菜单编号", comments = "菜单编号")
     private Integer id;
 
     /**
      * 系统缩写
      */
-    @Column(name = "C_SYS",  columnDefinition="VARCHAR" )
-    @MetaData( value="系统缩写", comments = "系统缩写")
+    @Column(name = "C_SYS", columnDefinition = "VARCHAR")
+    @MetaData(value = "系统缩写", comments = "系统缩写")
     private String sysNo;
 
     /**
      * 菜单名称
      */
-    @Column(name = "C_NAME",  columnDefinition="VARCHAR" )
-    @MetaData( value="菜单名称", comments = "菜单名称")
+    @Column(name = "C_NAME", columnDefinition = "VARCHAR")
+    @MetaData(value = "菜单名称", comments = "菜单名称")
     private String menuName;
 
     /**
      * 菜单标题
      */
-    @Column(name = "C_TITLE",  columnDefinition="VARCHAR" )
-    @MetaData( value="菜单标题", comments = "菜单标题")
+    @Column(name = "C_TITLE", columnDefinition = "VARCHAR")
+    @MetaData(value = "菜单标题", comments = "菜单标题")
     private String menuTitle;
 
     /**
      * 访问URL地址
      */
-    @Column(name = "C_URL",  columnDefinition="VARCHAR" )
-    @MetaData( value="访问URL地址", comments = "访问URL地址")
+    @Column(name = "C_URL", columnDefinition = "VARCHAR")
+    @MetaData(value = "访问URL地址", comments = "访问URL地址")
     private String menuUrl;
 
     /**
      * 访问的目标区域
      */
-    @Column(name = "C_TARGET",  columnDefinition="VARCHAR" )
-    @MetaData( value="访问的目标区域", comments = "访问的目标区域")
+    @Column(name = "C_TARGET", columnDefinition = "VARCHAR")
+    @MetaData(value = "访问的目标区域", comments = "访问的目标区域")
     private String workTarget;
 
     /**
      * 父菜单编号，如果父菜单编号为0表示一级菜单
      */
-    @Column(name = "N_PARENT_ID",  columnDefinition="INTEGER" )
-    @MetaData( value="父菜单编号", comments = "父菜单编号，如果父菜单编号为0表示一级菜单")
+    @Column(name = "N_PARENT_ID", columnDefinition = "INTEGER")
+    @MetaData(value = "父菜单编号", comments = "父菜单编号，如果父菜单编号为0表示一级菜单")
     private Integer parentId;
 
     /**
      * 菜单序号，将按照该字段做排序
      */
-    @Column(name = "N_ORDER",  columnDefinition="INTEGER" )
-    @MetaData( value="菜单序号", comments = "菜单序号，将按照该字段做排序")
+    @Column(name = "N_ORDER", columnDefinition = "INTEGER")
+    @MetaData(value = "菜单序号", comments = "菜单序号，将按照该字段做排序")
     private Integer menuOrder;
 
     /**
      * 描述
      */
-    @Column(name = "C_DESCRIPTION",  columnDefinition="VARCHAR" )
-    @MetaData( value="描述", comments = "描述")
+    @Column(name = "C_DESCRIPTION", columnDefinition = "VARCHAR")
+    @MetaData(value = "描述", comments = "描述")
     private String description;
 
     /**
      * 状态，0 停用 1启用
      */
-    @Column(name = "C_STATUS",  columnDefinition="VARCHAR" )
-    @MetaData( value="状态", comments = "状态，0 停用 1启用")
+    @Column(name = "C_STATUS", columnDefinition = "VARCHAR")
+    @MetaData(value = "状态", comments = "状态，0 停用 1启用")
     private String status;
 
     /**
      * 登记日期
      */
-    @Column(name = "D_REGDATE",  columnDefinition="VARCHAR" )
-    @MetaData( value="登记日期", comments = "登记日期")
+    @Column(name = "D_REGDATE", columnDefinition = "VARCHAR")
+    @MetaData(value = "登记日期", comments = "登记日期")
     private String regDate;
 
     /**
      * 修改日期
      */
-    @Column(name = "D_MODIDATE",  columnDefinition="VARCHAR" )
-    @MetaData( value="修改日期", comments = "修改日期")
+    @Column(name = "D_MODIDATE", columnDefinition = "VARCHAR")
+    @MetaData(value = "修改日期", comments = "修改日期")
     private String modiDate;
 
     /**
      * 地址的访问方式
      */
-    @Column(name = "C_OPENMODE",  columnDefinition="VARCHAR" )
-    @MetaData( value="地址的访问方式", comments = "地址的访问方式")
+    @Column(name = "C_OPENMODE", columnDefinition = "VARCHAR")
+    @MetaData(value = "地址的访问方式", comments = "地址的访问方式")
     private String workOpenMode;
 
     /**
      * 是否是末端节点，0有字节点，1无子节点
      */
-    @Column(name = "C_ENDNODE",  columnDefinition="VARCHAR" )
-    @MetaData( value="是否是末端节点", comments = "是否是末端节点，0有字节点，1无子节点")
+    @Column(name = "C_ENDNODE", columnDefinition = "VARCHAR")
+    @MetaData(value = "是否是末端节点", comments = "是否是末端节点，0有字节点，1无子节点")
     private Boolean endNode;
 
     /**
      * 功能特殊角色
      */
-    @Column(name = "C_RULE_LIST",  columnDefinition="VARCHAR" )
-    @MetaData( value="功能特殊角色", comments = "功能特殊角色")
+    @Column(name = "C_RULE_LIST", columnDefinition = "VARCHAR")
+    @MetaData(value = "功能特殊角色", comments = "功能特殊角色")
     private String ruleList;
 
     private static final long serialVersionUID = -2555616939997634419L;
@@ -279,19 +286,30 @@ public class SysMenuInfo implements BetterjrEntity {
         }
         SysMenuInfo other = (SysMenuInfo) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getSysNo() == null ? other.getSysNo() == null : this.getSysNo().equals(other.getSysNo()))
-            && (this.getMenuName() == null ? other.getMenuName() == null : this.getMenuName().equals(other.getMenuName()))
-            && (this.getMenuTitle() == null ? other.getMenuTitle() == null : this.getMenuTitle().equals(other.getMenuTitle()))
-            && (this.getMenuUrl() == null ? other.getMenuUrl() == null : this.getMenuUrl().equals(other.getMenuUrl()))
-            && (this.getWorkTarget() == null ? other.getWorkTarget() == null : this.getWorkTarget().equals(other.getWorkTarget()))
-            && (this.getParentId() == null ? other.getParentId() == null : this.getParentId().equals(other.getParentId()))
-            && (this.getMenuOrder() == null ? other.getMenuOrder() == null : this.getMenuOrder().equals(other.getMenuOrder()))
-            && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
-            && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
-            && (this.getRegDate() == null ? other.getRegDate() == null : this.getRegDate().equals(other.getRegDate()))
-            && (this.getModiDate() == null ? other.getModiDate() == null : this.getModiDate().equals(other.getModiDate()))
-            && (this.getWorkOpenMode() == null ? other.getWorkOpenMode() == null : this.getWorkOpenMode().equals(other.getWorkOpenMode()))
-            && (this.getEndNode() == null ? other.getEndNode() == null : this.getEndNode().equals(other.getEndNode()));
+                && (this.getSysNo() == null ? other.getSysNo() == null : this.getSysNo().equals(other.getSysNo()))
+                && (this.getMenuName() == null ? other.getMenuName() == null
+                        : this.getMenuName().equals(other.getMenuName()))
+                && (this.getMenuTitle() == null ? other.getMenuTitle() == null
+                        : this.getMenuTitle().equals(other.getMenuTitle()))
+                && (this.getMenuUrl() == null ? other.getMenuUrl() == null
+                        : this.getMenuUrl().equals(other.getMenuUrl()))
+                && (this.getWorkTarget() == null ? other.getWorkTarget() == null
+                        : this.getWorkTarget().equals(other.getWorkTarget()))
+                && (this.getParentId() == null ? other.getParentId() == null
+                        : this.getParentId().equals(other.getParentId()))
+                && (this.getMenuOrder() == null ? other.getMenuOrder() == null
+                        : this.getMenuOrder().equals(other.getMenuOrder()))
+                && (this.getDescription() == null ? other.getDescription() == null
+                        : this.getDescription().equals(other.getDescription()))
+                && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
+                && (this.getRegDate() == null ? other.getRegDate() == null
+                        : this.getRegDate().equals(other.getRegDate()))
+                && (this.getModiDate() == null ? other.getModiDate() == null
+                        : this.getModiDate().equals(other.getModiDate()))
+                && (this.getWorkOpenMode() == null ? other.getWorkOpenMode() == null
+                        : this.getWorkOpenMode().equals(other.getWorkOpenMode()))
+                && (this.getEndNode() == null ? other.getEndNode() == null
+                        : this.getEndNode().equals(other.getEndNode()));
     }
 
     @Override
@@ -315,20 +333,20 @@ public class SysMenuInfo implements BetterjrEntity {
         return result;
     }
 
-    public boolean hasValidMenu(List<PlatformBaseRuleType> anRules){
-        if (BetterStringUtils.isBlank(this.ruleList)){
+    public boolean hasValidMenu(List<PlatformBaseRuleType> anRules) {
+        if (StringUtils.isBlank(this.ruleList)) {
             return true;
         }
         PlatformBaseRuleType tmpInnerRule;
-//        System.out.println("this SystemMenu use ruleList is " + this.ruleList);
-        for(String tmpStr : BetterStringUtils.split(ruleList, ",|;")){
+        // System.out.println("this SystemMenu use ruleList is " + this.ruleList);
+        for (String tmpStr : StringUtils.split(ruleList, ",|;")) {
             tmpInnerRule = PlatformBaseRuleType.checking(tmpStr);
-            if (anRules.contains(tmpInnerRule)){
-                
+            if (anRules.contains(tmpInnerRule)) {
+
                 return true;
             }
         }
-        
+
         return false;
     }
 }

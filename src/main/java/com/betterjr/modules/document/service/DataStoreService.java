@@ -82,8 +82,7 @@ public class DataStoreService {
         if (fileManager.save(filePath, anStream)) {
 
             return filePath;
-        }
-        else {
+        } else {
 
             return "";
         }
@@ -100,7 +99,8 @@ public class DataStoreService {
      *            文件名称
      * @return
      */
-    public CustFileItem saveFileToStoreWithBatchNo(final File anFile, final String anFileInfoType, final String anFileName) {
+    public CustFileItem saveFileToStoreWithBatchNo(final File anFile, final String anFileInfoType,
+            final String anFileName) {
 
         return subSaveFileToStore(anFile, anFileInfoType, anFileName, true);
     }
@@ -110,7 +110,8 @@ public class DataStoreService {
         return subSaveFileToStore(anFile, anFileInfoType, anFileName, false);
     }
 
-    public CustFileItem subSaveFileToStore(final File anFile, final String anFileInfoType, final String anFileName, final boolean anBatchNo) {
+    public CustFileItem subSaveFileToStore(final File anFile, final String anFileInfoType, final String anFileName,
+            final boolean anBatchNo) {
         InputStream inData = null;
         try {
             inData = new FileInputStream(anFile);
@@ -135,24 +136,27 @@ public class DataStoreService {
      *            文件名称
      * @return 文件信息
      */
-    public CustFileItem saveStreamToStoreWithBatchNo(final InputStream anStream, final String anFileInfoType, final String anFileName) {
+    public CustFileItem saveStreamToStoreWithBatchNo(final InputStream anStream, final String anFileInfoType,
+            final String anFileName) {
 
         return subSaveStreamToStore(anStream, anFileInfoType, anFileName, true);
     }
 
-    public CustFileItem saveStreamToStore(final InputStream anStream, final String anFileInfoType, final String anFileName) {
+    public CustFileItem saveStreamToStore(final InputStream anStream, final String anFileInfoType,
+            final String anFileName) {
 
         return subSaveStreamToStore(anStream, anFileInfoType, anFileName, false);
     }
 
-    private CustFileItem subSaveStreamToStore(final InputStream anStream, final String anFileInfoType, final String anFileName,
-            final boolean anWithBatchNo) {
+    private CustFileItem subSaveStreamToStore(final InputStream anStream, final String anFileInfoType,
+            final String anFileName, final boolean anWithBatchNo) {
         try {
             final FileStoreType storeType = this.fileGroupService.findFileStoreType(anFileInfoType);
             final String tmpExt = FileUtils.extractFileExt(anFileName);
             final CheckDataResult checkResult = this.fileGroupService.findFileTypePermit(anFileInfoType, tmpExt);
             if (checkResult.isOk() == false) {
-                throw new BytterTradeException(123456, "保存的文件类型是【" + tmpExt + "】, 系统允许的文件类型是【" + checkResult.getMessage() + "】， 请检查！");
+                throw new BytterTradeException(123456,
+                        "保存的文件类型是【" + tmpExt + "】, 系统允许的文件类型是【" + checkResult.getMessage() + "】， 请检查！");
             }
             final FileManager fileManager = FileManagerFactory.create(storeType, fileGroupService);
             final String tmpFilePath = this.fileGroupService.findCreateFilePath(anFileInfoType);
@@ -160,7 +164,8 @@ public class DataStoreService {
             if (fileManager.save(tmpFilePath, anStream)) {
                 logger.info("data store is storeType:" + storeType + ", tmpFilePath=" + tmpFilePath);
                 final long dataSize = fileManager.findSize(tmpFilePath);
-                return fileItemService.saveAndUpdateFileItem(tmpFilePath, dataSize, anFileInfoType, anFileName, storeType, anWithBatchNo);
+                return fileItemService.saveAndUpdateFileItem(tmpFilePath, dataSize, anFileInfoType, anFileName,
+                        storeType, anWithBatchNo);
             }
         }
         catch (final BytterTradeException ex) {
@@ -183,7 +188,8 @@ public class DataStoreService {
      *            文件名称
      * @return 直接返回WEB端使用的JSON格式内容
      */
-    public String webSaveStreamToStore(final InputStream anStream, final String anFileInfoType, final String anFileName) {
+    public String webSaveStreamToStore(final InputStream anStream, final String anFileInfoType,
+            final String anFileName) {
         final CustFileItem tmpFileItem = saveStreamToStore(anStream, anFileInfoType, anFileName);
         if (tmpFileItem != null) {
 
@@ -305,16 +311,14 @@ public class DataStoreService {
         byte[] bbs = null;
         if (anUserFileId) {
             inStream = loadFromStore(anFileId);
-        }
-        else {
+        } else {
             inStream = loadFromStoreByBatchNo(anFileId);
         }
         if (inStream != null) {
             try {
                 bbs = IOUtils.toByteArray(inStream);
             }
-            catch (final IOException ex) {
-            }
+            catch (final IOException ex) {}
             finally {
                 IOUtils.closeQuietly(inStream);
             }
@@ -358,7 +362,8 @@ public class DataStoreService {
             int index = 0;
             for (final File file : tmpList) {
                 tmpIn = new FileInputStream(file);
-                final CustFileItem tmpItem = saveStreamToStore(tmpIn, "otherFile", "image".concat(Integer.toString(index)).concat(".jpeg"));
+                final CustFileItem tmpItem = saveStreamToStore(tmpIn, "otherFile",
+                        "image".concat(Integer.toString(index)).concat(".jpeg"));
                 IOUtils.closeQuietly(tmpIn);
                 if (index > 0) {
                     sb.append(",");

@@ -2,7 +2,7 @@ package com.betterjr.modules.document.data;
 
 import com.betterjr.common.data.BaseRemoteEntity;
 
-public class AccountAduitData implements  BaseRemoteEntity, java.io.Serializable {
+public class AccountAduitData implements BaseRemoteEntity, java.io.Serializable {
 
     private static final long serialVersionUID = -3564038015203402834L;
 
@@ -42,6 +42,7 @@ public class AccountAduitData implements  BaseRemoteEntity, java.io.Serializable
     private String description;
 
     private String factorNo;
+
     public Long getCustNo() {
         return this.custNo;
     }
@@ -101,9 +102,11 @@ public class AccountAduitData implements  BaseRemoteEntity, java.io.Serializable
     public String getFactorNo() {
         return this.factorNo;
     }
+
     public void setFactorNo(String anFactorNo) {
         this.factorNo = anFactorNo;
     }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

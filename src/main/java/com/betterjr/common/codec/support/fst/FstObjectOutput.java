@@ -7,7 +7,6 @@ import com.betterjr.common.codec.BtObjectOutput;
 
 import de.ruedigermoeller.serialization.FSTObjectOutput;
 
-
 public class FstObjectOutput implements BtObjectOutput {
 
     private final FSTObjectOutput output;
@@ -69,7 +68,6 @@ public class FstObjectOutput implements BtObjectOutput {
             output.write(v, off, len);
         }
     }
-
 
     @Override
     public void writeUTF(final String v) throws IOException {

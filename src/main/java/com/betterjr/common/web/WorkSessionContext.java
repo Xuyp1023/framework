@@ -1,6 +1,6 @@
 package com.betterjr.common.web;
 
-import java.util.*;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpSession;
@@ -14,13 +14,13 @@ public class WorkSessionContext {
         }
     }
 
-    public  static void removeSession(HttpSession anSession) {
+    public static void removeSession(HttpSession anSession) {
         if (anSession != null) {
             workMap.remove(anSession.getId());
         }
     }
 
-    public  static HttpSession getSession(String anSessionId) {
+    public static HttpSession getSession(String anSessionId) {
         if (anSessionId == null) {
 
             return null;

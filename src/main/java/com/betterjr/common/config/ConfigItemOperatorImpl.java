@@ -9,20 +9,19 @@ import java.util.StringTokenizer;
 import com.betterjr.common.utils.XmlUtils;
 
 public abstract class ConfigItemOperatorImpl implements ConfigItemOpertor {
- 
+
     @Override
     public List<String> getListValue() {
         List<String> list;
 
         if ("1".equals(this.getSplit())) {
             list = XmlUtils.split(this.getItemValue());
-        }
-        else {
+        } else {
             list = new LinkedList<String>();
         }
         return list;
     }
-   
+
     @Override
     public Map<String, String> getMapValue() {
         Map<String, String> map = new LinkedHashMap<>();

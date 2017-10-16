@@ -50,14 +50,17 @@ public class ExpressUtil {
 
     public static Class<?>[][] classMatchs = new Class[][] {
             // 原始数据类型
-            { BigDecimal.class, double.class }, { BigDecimal.class, float.class }, { BigDecimal.class, long.class }, { BigDecimal.class, int.class },
-            { BigDecimal.class, short.class }, { BigDecimal.class, byte.class }, { double.class, float.class }, { double.class, long.class },
-            { double.class, int.class }, { double.class, short.class }, { double.class, byte.class }, { double.class, BigDecimal.class },
-            { float.class, long.class }, { float.class, int.class }, { float.class, short.class }, { float.class, byte.class },
-            { float.class, BigDecimal.class }, { long.class, int.class }, { long.class, short.class }, { long.class, byte.class },
-            { int.class, short.class }, { int.class, byte.class }, { short.class, byte.class },
+            { BigDecimal.class, double.class }, { BigDecimal.class, float.class }, { BigDecimal.class, long.class },
+            { BigDecimal.class, int.class }, { BigDecimal.class, short.class }, { BigDecimal.class, byte.class },
+            { double.class, float.class }, { double.class, long.class }, { double.class, int.class },
+            { double.class, short.class }, { double.class, byte.class }, { double.class, BigDecimal.class },
+            { float.class, long.class }, { float.class, int.class }, { float.class, short.class },
+            { float.class, byte.class }, { float.class, BigDecimal.class }, { long.class, int.class },
+            { long.class, short.class }, { long.class, byte.class }, { int.class, short.class },
+            { int.class, byte.class }, { short.class, byte.class },
             // ---------
-            { char.class, Character.class }, { Character.class, char.class }, { boolean.class, Boolean.class }, { Boolean.class, boolean.class } };
+            { char.class, Character.class }, { Character.class, char.class }, { boolean.class, Boolean.class },
+            { Boolean.class, boolean.class } };
 
     public static Class<?> getSimpleDataType(Class<?> aClass) {
         if (Integer.class.equals(aClass)) return Integer.TYPE;
@@ -129,23 +132,25 @@ public class ExpressUtil {
         if (lhsType.isPrimitive() && rhsType.isPrimitive()) {
             if (lhsType == rhsType) return true;
 
-            if ((rhsType == Byte.TYPE)
-                    && (lhsType == Short.TYPE || lhsType == Integer.TYPE || lhsType == Long.TYPE || lhsType == Float.TYPE || lhsType == Double.TYPE))
+            if ((rhsType == Byte.TYPE) && (lhsType == Short.TYPE || lhsType == Integer.TYPE || lhsType == Long.TYPE
+                    || lhsType == Float.TYPE || lhsType == Double.TYPE))
                 return true;
 
-            if ((rhsType == Short.TYPE) && (lhsType == Integer.TYPE || lhsType == Long.TYPE || lhsType == Float.TYPE || lhsType == Double.TYPE))
+            if ((rhsType == Short.TYPE) && (lhsType == Integer.TYPE || lhsType == Long.TYPE || lhsType == Float.TYPE
+                    || lhsType == Double.TYPE))
                 return true;
 
-            if ((rhsType == Character.TYPE) && (lhsType == Integer.TYPE || lhsType == Long.TYPE || lhsType == Float.TYPE || lhsType == Double.TYPE))
+            if ((rhsType == Character.TYPE) && (lhsType == Integer.TYPE || lhsType == Long.TYPE || lhsType == Float.TYPE
+                    || lhsType == Double.TYPE))
                 return true;
 
-            if ((rhsType == Integer.TYPE) && (lhsType == Long.TYPE || lhsType == Float.TYPE || lhsType == Double.TYPE)) return true;
+            if ((rhsType == Integer.TYPE) && (lhsType == Long.TYPE || lhsType == Float.TYPE || lhsType == Double.TYPE))
+                return true;
 
             if ((rhsType == Long.TYPE) && (lhsType == Float.TYPE || lhsType == Double.TYPE)) return true;
 
             if ((rhsType == Float.TYPE) && (lhsType == Double.TYPE)) return true;
-        }
-        else if (lhsType.isAssignableFrom(rhsType)) return true;
+        } else if (lhsType.isAssignableFrom(rhsType)) return true;
 
         return false;
     }
@@ -170,26 +175,24 @@ public class ExpressUtil {
         }
 
         if (bestMatch != null) return bestMatchIndex;
-        else
-            return -1;
+        else return -1;
     }
 
-    public static String createCacheKey(Class<?> aBaseClass, String aMethodName, Class<?>[] aTypes, boolean aPublicOnly, boolean aIsStatic) {
+    public static String createCacheKey(Class<?> aBaseClass, String aMethodName, Class<?>[] aTypes, boolean aPublicOnly,
+            boolean aIsStatic) {
         StringBuilder builder = new StringBuilder();
         builder.append(aPublicOnly).append("-").append(aIsStatic).append("-");
         builder.append(aBaseClass.getName()).append(".").append(aMethodName).append("(");
         if (aTypes == null) {
             builder.append("null");
-        }
-        else {
+        } else {
             for (int i = 0; i < aTypes.length; i++) {
                 if (i > 0) {
                     builder.append(",");
                 }
                 if (aTypes[i] == null) {
                     builder.append("null");
-                }
-                else {
+                } else {
                     builder.append(aTypes[i].getName());
                 }
             }
@@ -199,28 +202,29 @@ public class ExpressUtil {
 
     }
 
-    public static Method findMethodWithCache(Class<?> baseClass, String methodName, Class<?>[] types, boolean publicOnly, boolean isStatic) {
+    public static Method findMethodWithCache(Class<?> baseClass, String methodName, Class<?>[] types,
+            boolean publicOnly, boolean isStatic) {
         String key = createCacheKey(baseClass, methodName, types, publicOnly, isStatic);
         Object result = methodCache.get(key);
         if (result == null) {
             result = findMethod(baseClass, methodName, types, publicOnly, isStatic);
             if (result == null) {
                 methodCache.put(key, void.class);
-            }
-            else {
+            } else {
                 ((Method) result).setAccessible(true);
                 methodCache.put(key, result);
             }
-        }
-        else if (result == void.class) {
+        } else if (result == void.class) {
             result = null;
         }
         return (Method) result;
     }
 
-    public static Method findMethod(Class<?> baseClass, String methodName, Class<?>[] types, boolean publicOnly, boolean isStatic) {
-        List<Method> candidates = gatherMethodsRecursive(baseClass, methodName, types.length, publicOnly, isStatic, null /* candidates */);
-        Method method = findMostSpecificMethod(types, (Method[]) candidates.toArray(new Method[0]));
+    public static Method findMethod(Class<?> baseClass, String methodName, Class<?>[] types, boolean publicOnly,
+            boolean isStatic) {
+        List<Method> candidates = gatherMethodsRecursive(baseClass, methodName, types.length, publicOnly, isStatic,
+                null /* candidates */);
+        Method method = findMostSpecificMethod(types, candidates.toArray(new Method[0]));
         return method;
     }
 
@@ -235,7 +239,7 @@ public class ExpressUtil {
             }
         }
 
-        int match = findMostSpecificSignature(types, (Class[][]) listClass.toArray(new Class[0][]));
+        int match = findMostSpecificSignature(types, listClass.toArray(new Class[0][]));
         return match == -1 ? null : constructorList.get(match);
     }
 
@@ -249,8 +253,8 @@ public class ExpressUtil {
 
     }
 
-    private static List<Method> gatherMethodsRecursive(Class<?> baseClass, String methodName, int numArgs, boolean publicOnly, boolean isStatic,
-            List<Method> candidates) {
+    private static List<Method> gatherMethodsRecursive(Class<?> baseClass, String methodName, int numArgs,
+            boolean publicOnly, boolean isStatic, List<Method> candidates) {
         if (candidates == null) candidates = new ArrayList<Method>();
 
         addCandidates(baseClass.getDeclaredMethods(), methodName, numArgs, publicOnly, isStatic, candidates);
@@ -260,13 +264,14 @@ public class ExpressUtil {
             gatherMethodsRecursive(intfs[i], methodName, numArgs, publicOnly, isStatic, candidates);
 
         Class<?> superclass = baseClass.getSuperclass();
-        if (superclass != null) gatherMethodsRecursive(superclass, methodName, numArgs, publicOnly, isStatic, candidates);
+        if (superclass != null)
+            gatherMethodsRecursive(superclass, methodName, numArgs, publicOnly, isStatic, candidates);
 
         return candidates;
     }
 
-    private static List<Method> addCandidates(Method[] methods, String methodName, int numArgs, boolean publicOnly, boolean isStatic,
-            List<Method> candidates) {
+    private static List<Method> addCandidates(Method[] methods, String methodName, int numArgs, boolean publicOnly,
+            boolean isStatic, List<Method> candidates) {
         for (int i = 0; i < methods.length; i++) {
             Method m = methods[i];
             if (m.getName().equals(methodName) && (m.getParameterTypes().length == numArgs)
@@ -304,30 +309,22 @@ public class ExpressUtil {
             String baseName = "";
             if (baseClass.isPrimitive() == false) {
                 return loadClass(arrayString.toString() + "L" + baseClass.getName() + ";");
-            }
-            else {
+            } else {
                 if (baseClass.equals(boolean.class)) {
                     baseName = "Z";
-                }
-                else if (baseClass.equals(byte.class)) {
+                } else if (baseClass.equals(byte.class)) {
                     baseName = "B";
-                }
-                else if (baseClass.equals(char.class)) {
+                } else if (baseClass.equals(char.class)) {
                     baseName = "C";
-                }
-                else if (baseClass.equals(double.class)) {
+                } else if (baseClass.equals(double.class)) {
                     baseName = "D";
-                }
-                else if (baseClass.equals(float.class)) {
+                } else if (baseClass.equals(float.class)) {
                     baseName = "F";
-                }
-                else if (baseClass.equals(int.class)) {
+                } else if (baseClass.equals(int.class)) {
                     baseName = "I";
-                }
-                else if (baseClass.equals(long.class)) {
+                } else if (baseClass.equals(long.class)) {
                     baseName = "J";
-                }
-                else if (baseClass.equals(short.class)) {
+                } else if (baseClass.equals(short.class)) {
                     baseName = "S";
                 }
                 return loadClass(arrayString.toString() + baseName);
@@ -388,29 +385,21 @@ public class ExpressUtil {
             }
             if (name.charAt(point) == 'L') {
                 name = name.substring(point + 1, name.length() - 1);
-            }
-            else if (name.charAt(point) == 'Z') {
+            } else if (name.charAt(point) == 'Z') {
                 name = "boolean";
-            }
-            else if (name.charAt(point) == 'B') {
+            } else if (name.charAt(point) == 'B') {
                 name = "byte";
-            }
-            else if (name.charAt(point) == 'C') {
+            } else if (name.charAt(point) == 'C') {
                 name = "char";
-            }
-            else if (name.charAt(point) == 'D') {
+            } else if (name.charAt(point) == 'D') {
                 name = "double";
-            }
-            else if (name.charAt(point) == 'F') {
+            } else if (name.charAt(point) == 'F') {
                 name = "float";
-            }
-            else if (name.charAt(point) == 'I') {
+            } else if (name.charAt(point) == 'I') {
                 name = "int";
-            }
-            else if (name.charAt(point) == 'J') {
+            } else if (name.charAt(point) == 'J') {
                 name = "long";
-            }
-            else if (name.charAt(point) == 'S') {
+            } else if (name.charAt(point) == 'S') {
                 name = "short";
             }
         }
@@ -457,20 +446,16 @@ public class ExpressUtil {
         try {
             if (bean.getClass().isArray() && name.equals("length")) {
                 return Array.getLength(bean);
-            }
-            else if (bean instanceof Class) {
+            } else if (bean instanceof Class) {
                 if (name.equals("class")) {
                     return bean;
-                }
-                else {
+                } else {
                     Field f = ((Class<?>) bean).getDeclaredField(name.toString());
                     return f.get(null);
                 }
-            }
-            else if (bean instanceof Map) {
+            } else if (bean instanceof Map) {
                 return ((Map<?, ?>) bean).get(name);
-            }
-            else {
+            } else {
                 Object obj = PropertyUtils.getProperty(bean, name.toString());
                 return obj;
             }
@@ -484,26 +469,21 @@ public class ExpressUtil {
         try {
             if (bean.getClass().isArray() && name.equals("length")) {
                 return int.class;
-            }
-            else if (bean instanceof Class) {
+            } else if (bean instanceof Class) {
                 if (name.equals("class")) {
                     return Class.class;
-                }
-                else {
+                } else {
                     Field f = ((Class<?>) bean).getDeclaredField(name.toString());
                     return f.getType();
                 }
-            }
-            else if (bean instanceof Map) {
+            } else if (bean instanceof Map) {
                 Object o = ((Map<?, ?>) bean).get(name);
                 if (o == null) {
                     return null;
-                }
-                else {
+                } else {
                     return o.getClass();
                 }
-            }
-            else {
+            } else {
                 return PropertyUtils.getPropertyDescriptor(bean, name.toString()).getPropertyType();
             }
         }
@@ -517,11 +497,9 @@ public class ExpressUtil {
             if (bean instanceof Class) {
                 Field f = ((Class<?>) bean).getDeclaredField(name.toString());
                 f.set(null, value);
-            }
-            else if (bean instanceof Map) {
+            } else if (bean instanceof Map) {
                 ((Map<Object, Object>) bean).put(name, value);
-            }
-            else {
+            } else {
                 Class<?> filedClass = PropertyUtils.getPropertyType(bean, name.toString());
                 PropertyUtils.setProperty(bean, name.toString(), ExpressUtil.castObject(value, filedClass, false));
             }
@@ -555,8 +533,7 @@ public class ExpressUtil {
         }
         if (value instanceof Number && (type.isPrimitive() || Number.class.isAssignableFrom(type))) {
             return OperatorOfNumber.transfer((Number) value, type, isForce);
-        }
-        else {
+        } else {
             return value;
         }
     }

@@ -16,7 +16,6 @@
  */
 package net.oauth.signatures;
 
-
 import java.net.URI;
 import java.security.SignatureException;
 import java.util.Map;
@@ -30,38 +29,36 @@ import net.oauth.jsontoken.JsonTokenUtil;
  */
 public class SignedJsonAssertionAudienceChecker implements Checker {
 
-  // URI that the client is accessing, as seen by the server
-  private final String tokenEndpointUri;
+    // URI that the client is accessing, as seen by the server
+    private final String tokenEndpointUri;
 
-  /**
-   * Public constructor.
-   * @param uri the URI against which the signed OAuth token was exercised.
-   */
-  public SignedJsonAssertionAudienceChecker(String uri) {
-    this.tokenEndpointUri = uri;
-  }
-
-  /**
-   * @see net.oauth.jsontoken.Checker#check(java.util.Map)
-   */
-  @Override
-  public void check(Map<String, Object> payload) throws SignatureException {
-    checkUri(tokenEndpointUri,
-            JsonTokenUtil.checkNotNull(
-                (String) payload.get(JsonToken.AUDIENCE),
-                "Audience cannot be null!"));
-  }
-
-  private static void checkUri(String ourUriString, String tokenUriString) throws SignatureException {
-    URI ourUri = URI.create(ourUriString);
-    URI tokenUri = URI.create(tokenUriString);
-
-    if (!ourUri.getScheme().equalsIgnoreCase(tokenUri.getScheme())) {
-      throw new SignatureException("scheme in token URI (" + tokenUri.getScheme() + ") is wrong");
+    /**
+     * Public constructor.
+     * @param uri the URI against which the signed OAuth token was exercised.
+     */
+    public SignedJsonAssertionAudienceChecker(String uri) {
+        this.tokenEndpointUri = uri;
     }
 
-    if (!ourUri.getAuthority().equalsIgnoreCase(tokenUri.getAuthority())) {
-      throw new SignatureException("authority in token URI (" + tokenUri.getAuthority() + ") is wrong");
+    /**
+     * @see net.oauth.jsontoken.Checker#check(java.util.Map)
+     */
+    @Override
+    public void check(Map<String, Object> payload) throws SignatureException {
+        checkUri(tokenEndpointUri,
+                JsonTokenUtil.checkNotNull((String) payload.get(JsonToken.AUDIENCE), "Audience cannot be null!"));
     }
-  }
+
+    private static void checkUri(String ourUriString, String tokenUriString) throws SignatureException {
+        URI ourUri = URI.create(ourUriString);
+        URI tokenUri = URI.create(tokenUriString);
+
+        if (!ourUri.getScheme().equalsIgnoreCase(tokenUri.getScheme())) {
+            throw new SignatureException("scheme in token URI (" + tokenUri.getScheme() + ") is wrong");
+        }
+
+        if (!ourUri.getAuthority().equalsIgnoreCase(tokenUri.getAuthority())) {
+            throw new SignatureException("authority in token URI (" + tokenUri.getAuthority() + ") is wrong");
+        }
+    }
 }

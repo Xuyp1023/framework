@@ -2,6 +2,8 @@ package com.betterjr.common.utils;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.betterjr.common.data.DataTypeInfo;
 
 public class MathExtend {
@@ -92,8 +94,7 @@ public class MathExtend {
     public static Double getDoubeValue(BigDecimal anBD) {
         if (anBD == null) {
             return null;
-        }
-        else {
+        } else {
             return new Double(anBD.doubleValue());
         }
     }
@@ -277,8 +278,7 @@ public class MathExtend {
     public static BigDecimal round(BigDecimal v, int scale) {
         if (v != null) {
             return v.setScale(scale, BigDecimal.ROUND_HALF_EVEN);
-        }
-        else {
+        } else {
             return v;
         }
     }
@@ -359,7 +359,7 @@ public class MathExtend {
     }
 
     public static String convertToPercent(String anValue, int anScale) {
-        if (BetterStringUtils.isBlank(anValue)) {
+        if (StringUtils.isBlank(anValue)) {
             return "";
         }
 
@@ -393,8 +393,7 @@ public class MathExtend {
     public static BigDecimal defaultValue(BigDecimal anValue, BigDecimal anDef) {
         if (anValue == null) {
             return anDef;
-        }
-        else {
+        } else {
             return anValue;
         }
     }
@@ -443,12 +442,11 @@ public class MathExtend {
     public static Long defaultLongValue(Long anValue, Long anDefValue) {
         if (anValue == null) {
             return anDefValue;
-        }
-        else {
+        } else {
             return anValue;
         }
     }
-    
+
     public static boolean smallValue(Number anValue) {
 
         return smallValue(anValue, 10);
@@ -456,15 +454,15 @@ public class MathExtend {
 
     public static boolean smallValue(Number anValue, int anCompValue) {
         if (anValue == null) {
-            
+
             return true;
         }
-        
-        if (anValue.longValue() < anCompValue){
-            
+
+        if (anValue.longValue() < anCompValue) {
+
             return true;
         }
-        
+
         return false;
     }
 }

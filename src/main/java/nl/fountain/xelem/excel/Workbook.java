@@ -24,9 +24,9 @@ import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import nl.fountain.xelem.UnsupportedStyleException;
-
 import org.w3c.dom.Document;
+
+import nl.fountain.xelem.UnsupportedStyleException;
 
 /**
  * Represents the Workbook element, the root of a SpreadsheetML document.
@@ -48,29 +48,29 @@ import org.w3c.dom.Document;
  * @see <a href="../../../../overview-summary.html#overview_description">overview</a>
  */
 public interface Workbook extends XLElement {
-    
+
     /**
      * Sets the name of this Workbook.
      */
     void setName(String name);
-    
+
     /**
      * Gets the name of this Workbook.
      */
     String getName();
-    
+
     /**
      * Sets the filename of this Workbook. 
      */
     void setFileName(String filename);
-    
+
     /**
      * Gets the filename of this Workbook. If no filename was supplied with
      * {@link #setFileName(String)} the name of the workbook is returned
      * with the extension '.xls'.
      */
     String getFileName();
-    
+
     /**
      * Merges two SpreadsheetML Style elements.
      * 
@@ -83,9 +83,8 @@ public interface Workbook extends XLElement {
      * 
      * @see nl.fountain.xelem.XFactory#mergeStyles(String, String, String)
      */
-    void mergeStyles(String newID, String id1, String id2) 
-    	throws UnsupportedStyleException;
-    
+    void mergeStyles(String newID, String id1, String id2) throws UnsupportedStyleException;
+
     /**
      * Sets whether this Workbook's {@link #createDocument()}-method
      * will print comments which were set with
@@ -96,13 +95,13 @@ public interface Workbook extends XLElement {
      * @see nl.fountain.xelem.excel.XLElement#addElementComment(String)
      */
     void setPrintElementComments(boolean print);
-    
+
     /**
      * Specifies whether this Workbook's {@link #createDocument()}-method
      * will include comments.
      */
     boolean isPrintingElementComments();
-    
+
     /**
      * Sets whether this Workbook's {@link #createDocument()}-method
      * will include docComments. DocComments are the comments that will 
@@ -117,19 +116,19 @@ public interface Workbook extends XLElement {
      * @see nl.fountain.xelem.XFactory#getDocComments()
      */
     void setPrintDocComments(boolean print);
-    
+
     /**
      * Specifies whether this Workbook's {@link #createDocument()}-method
      * will include docComments. 
      */
     boolean isPrintingDocComments();
-    
+
     /**
      * Appends a Worksheet with general information to this Workbook. 
      * The infoSheet is allways displayed as the last worksheet.
      */
     void appendInfoSheet();
-    
+
     /**
      * Set the DocumentProperties of this workbook or, if this workbook
      * allready had DocumentProperties, replace it.
@@ -137,19 +136,19 @@ public interface Workbook extends XLElement {
      * @param docProps	the DocumentProperties for this workbook
      */
     void setDocumentProperties(DocumentProperties docProps);
-    
+
     /**
      * Gets the DocumentProperties of this workbook. 
      * 
      * @return The DocumentProperties of this workbook. Never <code>null</code>.
      */
     DocumentProperties getDocumentProperties();
-    
+
     /**
      * Specifies whether this workbook has DocumentProperties.
      */
     boolean hasDocumentProperties();
-    
+
     /**
      * Set the ExcelWorkbook of this workbook or, if this workbook allready had
      * an ExcelWorkbook, replace it.
@@ -157,19 +156,19 @@ public interface Workbook extends XLElement {
      * @param excelWb	The ExcelWorkbook for this workbook
      */
     void setExcelWorkbook(ExcelWorkbook excelWb);
-    
+
     /**
      * Gets the ExcelWorkbook of this workbook. 
      * 
      * @return The ExcelWorkbook of this workbook. Never <code>null</code>.
      */
     ExcelWorkbook getExcelWorkbook();
-    
+
     /**
      * Specifies whether this workbook has an ExcelWorkbook.
      */
     boolean hasExcelWorkbook();
-    
+
     /**
      * Adds a new NamedRange to this workbook. Named ranges are usefull when
      * working with formulas. 
@@ -185,7 +184,7 @@ public interface Workbook extends XLElement {
      * @return New NamedRange.
      */
     NamedRange addNamedRange(String name, String refersTo);
-    
+
     /**
      * Adds a new NamedRange to this workbook. 
      * If this workbook allready contained a NamedRange with an equal name,
@@ -195,14 +194,14 @@ public interface Workbook extends XLElement {
      * @return	the given NamedRange
      */
     NamedRange addNamedRange(NamedRange namedRange);
-    
+
     /**
      * Gets all the NamedRanges that were added to this workbook. The map-keys
      * are equal to their names.
      * @return 	a map with NamedRanges
      */
     Map<String, NamedRange> getNamedRanges();
-    
+
     /**
      * Adds a new Worksheet to this workbook. The new sheet will have 
      * the name "Sheet[x]", where [x] is 
@@ -212,7 +211,7 @@ public interface Workbook extends XLElement {
      * @return A new Worksheet.
      */
     Worksheet addSheet();
-    
+
     /**
      * Adds a new Worksheet to this workbook with the given name as name.
      * The worksheets cellpointer will be at position row 1, column 1.
@@ -225,7 +224,7 @@ public interface Workbook extends XLElement {
      * 			present in this workbook.
      */
     Worksheet addSheet(String name);
-    
+
     /**
      * Adds the given Worksheet to this workbook.
      * 
@@ -236,8 +235,8 @@ public interface Workbook extends XLElement {
      * @throws DuplicateNameException if a sheet with such a name is allready 
      * 			present in this workbook.
      */
-    Worksheet addSheet(Worksheet sheet); 
-    
+    Worksheet addSheet(Worksheet sheet);
+
     /**
      * Removes the sheet with the given name.
      * 
@@ -246,15 +245,15 @@ public interface Workbook extends XLElement {
      * @return The removed worksheet or <code>null</code> if a worksheet with
      * 			the given name was not in this workbook.
      */
-    Worksheet removeSheet(String name); 
-    
+    Worksheet removeSheet(String name);
+
     /**
      * Gets a list of all the worksheets in this workbook in display order.
      * 
      * @return A list of worksheets.
      */
     List<Worksheet> getWorksheets();
-    
+
     /**
      * Gets a list of all the names of worksheets in this workbook in
      * display order. This list may be used to manipulate the display
@@ -269,7 +268,7 @@ public interface Workbook extends XLElement {
      * @return A list of sheet names.
      */
     List<String> getSheetNames();
-    
+
     /**
      * Gets the worksheet with the given name.
      * 
@@ -279,7 +278,7 @@ public interface Workbook extends XLElement {
      * 			no worksheet with that name was in this workbook.
      */
     Worksheet getWorksheet(String name);
-    
+
     /**
      * Gets the worksheet at the given index. The worksheet index is 0-based.
      * 
@@ -288,7 +287,7 @@ public interface Workbook extends XLElement {
      * 			no worksheet was at that index
      */
     Worksheet getWorksheetAt(int index);
-    
+
     /**
      * Creates a {@link org.w3c.dom.Document}, the structure that holds this Workbook
      * and all of it's children. 
@@ -316,7 +315,7 @@ public interface Workbook extends XLElement {
      * @throws ParserConfigurationException if the document could not be created.
      */
     Document createDocument() throws ParserConfigurationException;
-    
+
     /**
      * Gets a list of warnings (Strings) that were registered during assembly
      * of this workbook after a call to {@link #createDocument()}.
@@ -325,6 +324,5 @@ public interface Workbook extends XLElement {
      * 			generated.
      */
     List<String> getWarnings();
-    
 
 }

@@ -1,5 +1,7 @@
 package com.betterjr.modules.rule.validator;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.betterjr.common.exception.BytterDeclareException;
 import com.betterjr.common.utils.AreaUtils;
 import com.betterjr.common.utils.BetterStringUtils;
@@ -18,34 +20,34 @@ import com.betterjr.modules.rule.service.QLExpressContext;
 public class DictDataValidator extends BaseDataValidator {
 
     @Override
-    public boolean evaluate(WorkRuleValidator anValidator, QLExpressContext anContext, RuleCheckResult anResult, RuleBusiness anRuleBusin,
-            Object anValue, Object anBusinValue, String anMessage) {
+    public boolean evaluate(WorkRuleValidator anValidator, QLExpressContext anContext, RuleCheckResult anResult,
+            RuleBusiness anRuleBusin, Object anValue, Object anBusinValue, String anMessage) {
         if (anValue == null) {
 
             return true;
         }
 
         String workType = anValidator.getWorkPattern();
-        if (BetterStringUtils.isBlank(workType)) {
+        if (StringUtils.isBlank(workType)) {
             throw new BytterDeclareException(60002, "Base Dict Validator, Must Declare T_RULE_VALIDATOR.C_PATTERN");
         }
 
         boolean bb = false;
         if (workType.equalsIgnoreCase(AreaUtils.CACHE_AREA_MAP)) {
-            
+
             bb = AreaUtils.checkExists(anValue.toString());
-        }
-        else {
+        } else {
             bb = DictUtils.isDictValue(workType, anValue.toString());
         }
         String msg = anMessage;
-        if (BetterStringUtils.isBlank(msg)) {
+        if (StringUtils.isBlank(msg)) {
             msg = anValidator.dictMessage();
         }
 
         return returnValue(bb, anResult, msg);
     }
 
+    @Override
     public String getValidatorName() {
         return "dictValid";
     }

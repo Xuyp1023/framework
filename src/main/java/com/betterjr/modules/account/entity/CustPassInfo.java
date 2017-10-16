@@ -111,10 +111,9 @@ public class CustPassInfo implements BetterjrEntity {
     @Transient
     private String confirmation;
 
-    public CustPassInfo() {
-    }
+    public CustPassInfo() {}
 
-    public void modifyPassword(final String anSalt, final String anPassword){
+    public void modifyPassword(final String anSalt, final String anPassword) {
         this.passwd = anPassword;
         this.passSalt = anSalt;
         this.setModiDate(BetterDateUtils.getNumDateTime());
@@ -134,7 +133,8 @@ public class CustPassInfo implements BetterjrEntity {
         this.setEndDate("20501231");
     }
 
-    public CustPassInfo(final CustPasswordType anPassType, final int anYear, final Long anUserNo, final String anSalt, final String anPassword) {
+    public CustPassInfo(final CustPasswordType anPassType, final int anYear, final Long anUserNo, final String anSalt,
+            final String anPassword) {
         this.setPassType(anPassType.getPassType());
         this.setCustNo(anUserNo);
         this.setPasswd(anPassword);
@@ -143,7 +143,7 @@ public class CustPassInfo implements BetterjrEntity {
         this.setLockStatus("0");
         this.setOperWay("0");
         this.setModiDate(BetterDateUtils.getNumDateTime());
-        this.setEndDate(BetterDateUtils.formatNumberDate(DateUtils.addYears(new Date() , anYear)) );
+        this.setEndDate(BetterDateUtils.formatNumberDate(DateUtils.addYears(new Date(), anYear)));
     }
 
     public String getConfirmation() {
@@ -253,14 +253,12 @@ public class CustPassInfo implements BetterjrEntity {
         if (this.lockStatus.equals("0")) {
 
             return false;
-        }
-        else if (this.lockStatus.equals("1")) {
+        } else if (this.lockStatus.equals("1")) {
             final long lockTime = PropertiesHolder.getLong("operator.lockTime", 2 * 3600 * 1000);
             final long workTime = BetterDateUtils.parseDate(this.getLockDate() + " " + this.getLockTime()).getTime();
 
             return (lockTime + workTime) > System.currentTimeMillis();
-        }
-        else {
+        } else {
 
             return true;
         }
@@ -303,17 +301,27 @@ public class CustPassInfo implements BetterjrEntity {
         }
         final CustPassInfo other = (CustPassInfo) that;
         return (this.getCustNo() == null ? other.getCustNo() == null : this.getCustNo().equals(other.getCustNo()))
-                && (this.getErrCount() == null ? other.getErrCount() == null : this.getErrCount().equals(other.getErrCount()))
-                && (this.getPassType() == null ? other.getPassType() == null : this.getPassType().equals(other.getPassType()))
+                && (this.getErrCount() == null ? other.getErrCount() == null
+                        : this.getErrCount().equals(other.getErrCount()))
+                && (this.getPassType() == null ? other.getPassType() == null
+                        : this.getPassType().equals(other.getPassType()))
                 && (this.getPasswd() == null ? other.getPasswd() == null : this.getPasswd().equals(other.getPasswd()))
-                && (this.getConfirmation() == null ? other.getConfirmation() == null : this.getConfirmation().equals(other.getConfirmation()))
-                && (this.getPassSalt() == null ? other.getPassSalt() == null : this.getPassSalt().equals(other.getPassSalt()))
-                && (this.getLockStatus() == null ? other.getLockStatus() == null : this.getLockStatus().equals(other.getLockStatus()))
-                && (this.getOperWay() == null ? other.getOperWay() == null : this.getOperWay().equals(other.getOperWay()))
-                && (this.getLockDate() == null ? other.getLockDate() == null : this.getLockDate().equals(other.getLockDate()))
-                && (this.getLockTime() == null ? other.getLockTime() == null : this.getLockTime().equals(other.getLockTime()))
-                && (this.getEndDate() == null ? other.getEndDate() == null : this.getEndDate().equals(other.getEndDate()))
-                && (this.getModiDate() == null ? other.getModiDate() == null : this.getModiDate().equals(other.getModiDate()));
+                && (this.getConfirmation() == null ? other.getConfirmation() == null
+                        : this.getConfirmation().equals(other.getConfirmation()))
+                && (this.getPassSalt() == null ? other.getPassSalt() == null
+                        : this.getPassSalt().equals(other.getPassSalt()))
+                && (this.getLockStatus() == null ? other.getLockStatus() == null
+                        : this.getLockStatus().equals(other.getLockStatus()))
+                && (this.getOperWay() == null ? other.getOperWay() == null
+                        : this.getOperWay().equals(other.getOperWay()))
+                && (this.getLockDate() == null ? other.getLockDate() == null
+                        : this.getLockDate().equals(other.getLockDate()))
+                && (this.getLockTime() == null ? other.getLockTime() == null
+                        : this.getLockTime().equals(other.getLockTime()))
+                && (this.getEndDate() == null ? other.getEndDate() == null
+                        : this.getEndDate().equals(other.getEndDate()))
+                && (this.getModiDate() == null ? other.getModiDate() == null
+                        : this.getModiDate().equals(other.getModiDate()));
     }
 
     @Override

@@ -24,11 +24,11 @@
 
 package com.betterjr.mapper.other;
 
-import com.betterjr.mapper.other.mapper.CommonMapper;
+import java.util.List;
+
 import com.betterjr.mapper.entity.Example;
 import com.betterjr.mapper.mapperhelper.EntityHelper;
-
-import java.util.List;
+import com.betterjr.mapper.other.mapper.CommonMapper;
 
 /**
  * 封装的CommonMapper,实际上只对select方法做了处理<br>
@@ -39,7 +39,7 @@ import java.util.List;
  */
 public class EntityMapper {
 
-    //需要注入该类，可以构造参数注入 -- 注意这里
+    // 需要注入该类，可以构造参数注入 -- 注意这里
     private CommonMapper commonMapper;
 
     public EntityMapper(CommonMapper commonMapper) {
@@ -248,7 +248,8 @@ public class EntityMapper {
         if (example == null) {
             throw new NullPointerException("example参数不能为空!");
         }
-        return (List<T>) EntityHelper.maplist2BeanList(commonMapper.selectByExample(example.getEntityClass(), example), example.getEntityClass());
+        return (List<T>) EntityHelper.maplist2BeanList(commonMapper.selectByExample(example.getEntityClass(), example),
+                example.getEntityClass());
     }
 
     /**

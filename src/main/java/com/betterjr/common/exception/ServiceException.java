@@ -8,25 +8,25 @@ package com.betterjr.common.exception;
  */
 public class ServiceException extends BytterException {
 
-	private static final long serialVersionUID = 3583566093089790852L;
+    private static final long serialVersionUID = 3583566093089790852L;
 
-	public ServiceException() {
-		super();
-	}
+    public ServiceException() {
+        super();
+    }
 
     public ServiceException(int anCode, String message) {
         super(anCode, message);
     }
 
-	public ServiceException(String message) {
-		super(message);
-	}
+    public ServiceException(String message) {
+        super(message);
+    }
 
-	public ServiceException(Throwable cause) {
-		super(cause);
-	}
+    public ServiceException(Throwable cause) {
+        super(cause);
+    }
 
-	public ServiceException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public ServiceException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

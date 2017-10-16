@@ -1,10 +1,15 @@
 package com.betterjr.common.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.betterjr.common.data.SimpleDataEntity;
 import com.betterjr.common.service.SpringContextHolder;
 import com.betterjr.modules.sys.entity.AreaInfo;
 import com.betterjr.modules.sys.service.AreaInfoService;
-import java.util.*;
 
 /**
  * 行政区划工具类， 省/市-市/区-县/区 /市 三级行政区划  
@@ -37,7 +42,7 @@ public class AreaUtils {
      */
     public static List<SimpleDataEntity> findAreaList(String anProv) {
         List<SimpleDataEntity> list = new ArrayList();
-        if (BetterStringUtils.isBlank(anProv) || anProv.trim().length() != 6) {
+        if (StringUtils.isBlank(anProv) || anProv.trim().length() != 6) {
             return list;
         }
         anProv = anProv.substring(0, 2);
@@ -59,27 +64,26 @@ public class AreaUtils {
      * @param anAreaCode
      * @return
      */
-    public static boolean checkExists(String anAreaCode){
+    public static boolean checkExists(String anAreaCode) {
         String tmpStr = findAreaName(anAreaCode);
-        
+
         return tmpStr.equals(anAreaCode) == false;
     }
-    
+
     /**
      * 查找区域代码对应的名称
      * @param anAreaCode
      * @return
      */
     public static String findAreaName(String anAreaCode) {
-        if (BetterStringUtils.isBlank(anAreaCode)) {
-            
+        if (StringUtils.isBlank(anAreaCode)) {
+
             return "";
-        }
-        else if(anAreaCode.trim().length() != 6){
-            
+        } else if (anAreaCode.trim().length() != 6) {
+
             return anAreaCode;
         }
-        
+
         Map<String, AreaInfo> map = findMap();
         String prov;
         AreaInfo area;
@@ -92,8 +96,7 @@ public class AreaUtils {
                 if (i == k) {
                     return area.getAreaName();
                 }
-            }
-            else {
+            } else {
                 return anAreaCode;
             }
             map = area.getCityMap();

@@ -21,7 +21,6 @@ import com.betterjr.modules.rule.entity.RuleFuncType;
 @AnnotRuleService("accessWebServiceDubboService")
 public interface IAccessWebService {
 
-
     /**
      * 获取ticket
      *
@@ -30,7 +29,6 @@ public interface IAccessWebService {
     @SuppressWarnings("rawtypes")
     @AnnotRuleFunc(name = "accessTicket", fundType = RuleFuncType.OBJECT)
     public String ticket(Map anMap/*String anToken, String anSign*/);
-
 
     /**
      * 首次登陆

@@ -1,6 +1,5 @@
 package com.betterjr.mapper.mapperhelper;
 
- 
 import com.betterjr.mapper.entity.Example;
 
 /**
@@ -35,5 +34,5 @@ public abstract class OGNL {
     public static boolean hasNoSelectColumns(Object parameter) {
         return !hasSelectColumns(parameter);
     }
- 
+
 }

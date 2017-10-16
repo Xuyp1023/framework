@@ -17,6 +17,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.namespace.QName;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.util.Assert;
 
@@ -35,138 +36,138 @@ import com.betterjr.common.utils.reflection.ReflectionUtils;
 @SuppressWarnings("rawtypes")
 public class JaxbMapper {
 
-   private static ConcurrentMap<Class, JAXBContext> jaxbContexts = new ConcurrentHashMap<Class, JAXBContext>();
+    private static ConcurrentMap<Class, JAXBContext> jaxbContexts = new ConcurrentHashMap<Class, JAXBContext>();
 
-   /**
+    /**
     * Java Object->Xml without encoding.
     */
-   public static String toXml(Object root) {
-      Class clazz = ReflectionUtils.getUserClass(root);
-      return toXml(root, clazz, null);
-   }
+    public static String toXml(Object root) {
+        Class clazz = ReflectionUtils.getUserClass(root);
+        return toXml(root, clazz, null);
+    }
 
-   /**
+    /**
     * Java Object->Xml with encoding.
     */
-   public static String toXml(Object root, String encoding) {
-      Class clazz = ReflectionUtils.getUserClass(root);
-      return toXml(root, clazz, encoding);
-   }
+    public static String toXml(Object root, String encoding) {
+        Class clazz = ReflectionUtils.getUserClass(root);
+        return toXml(root, clazz, encoding);
+    }
 
-   /**
+    /**
     * Java Object->Xml with encoding.
     */
-   public static String toXml(Object root, Class clazz, String encoding) {
-      try {
-         StringWriter writer = new StringWriter();
-         createMarshaller(clazz, encoding).marshal(root, writer);
-         return writer.toString();
-      }
-      catch (JAXBException e) {
-         throw BytterException.unchecked(e);
-      }
-   }
+    public static String toXml(Object root, Class clazz, String encoding) {
+        try {
+            StringWriter writer = new StringWriter();
+            createMarshaller(clazz, encoding).marshal(root, writer);
+            return writer.toString();
+        }
+        catch (JAXBException e) {
+            throw BytterException.unchecked(e);
+        }
+    }
 
-   /**
+    /**
     * Java Collection->Xml without encoding, 特别支持Root Element是Collection的情形.
     */
-   public static String toXml(Collection<?> root, String rootName, Class clazz) {
-      return toXml(root, rootName, clazz, null);
-   }
+    public static String toXml(Collection<?> root, String rootName, Class clazz) {
+        return toXml(root, rootName, clazz, null);
+    }
 
-   /**
+    /**
     * Java Collection->Xml with encoding, 特别支持Root Element是Collection的情形.
     */
-   public static String toXml(Collection<?> root, String rootName, Class clazz, String encoding) {
-      try {
-         CollectionWrapper wrapper = new CollectionWrapper();
-         wrapper.collection = root;
+    public static String toXml(Collection<?> root, String rootName, Class clazz, String encoding) {
+        try {
+            CollectionWrapper wrapper = new CollectionWrapper();
+            wrapper.collection = root;
 
-         JAXBElement<CollectionWrapper> wrapperElement = new JAXBElement<CollectionWrapper>(new QName(rootName),
-               CollectionWrapper.class, wrapper);
+            JAXBElement<CollectionWrapper> wrapperElement = new JAXBElement<CollectionWrapper>(new QName(rootName),
+                    CollectionWrapper.class, wrapper);
 
-         StringWriter writer = new StringWriter();
-         createMarshaller(clazz, encoding).marshal(wrapperElement, writer);
+            StringWriter writer = new StringWriter();
+            createMarshaller(clazz, encoding).marshal(wrapperElement, writer);
 
-         return writer.toString();
-      }
-      catch (JAXBException e) {
-         throw BytterException.unchecked(e);
-      }
-   }
+            return writer.toString();
+        }
+        catch (JAXBException e) {
+            throw BytterException.unchecked(e);
+        }
+    }
 
-   /**
+    /**
     * Xml->Java Object.
     */
-   @SuppressWarnings("unchecked")
-   public static <T> T fromXml(String xml, Class<T> clazz) {
-      try {
-         StringReader reader = new StringReader(xml);
-         return (T) createUnmarshaller(clazz).unmarshal(reader);
-      }
-      catch (JAXBException e) {
-         throw BytterException.unchecked(e);
-      }
-   }
+    @SuppressWarnings("unchecked")
+    public static <T> T fromXml(String xml, Class<T> clazz) {
+        try {
+            StringReader reader = new StringReader(xml);
+            return (T) createUnmarshaller(clazz).unmarshal(reader);
+        }
+        catch (JAXBException e) {
+            throw BytterException.unchecked(e);
+        }
+    }
 
-   /**
+    /**
     * 创建Marshaller并设定encoding(可为null). 线程不安全，需要每次创建或pooling。
     */
-   public static Marshaller createMarshaller(Class clazz, String encoding) {
-      try {
-         JAXBContext jaxbContext = getJaxbContext(clazz);
+    public static Marshaller createMarshaller(Class clazz, String encoding) {
+        try {
+            JAXBContext jaxbContext = getJaxbContext(clazz);
 
-         Marshaller marshaller = jaxbContext.createMarshaller();
+            Marshaller marshaller = jaxbContext.createMarshaller();
 
-         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
-         if (BetterStringUtils.isNotBlank(encoding)) {
-            marshaller.setProperty(Marshaller.JAXB_ENCODING, encoding);
-         }
+            if (StringUtils.isNotBlank(encoding)) {
+                marshaller.setProperty(Marshaller.JAXB_ENCODING, encoding);
+            }
 
-         return marshaller;
-      }
-      catch (JAXBException e) {
-         throw BytterException.unchecked(e);
-      }
-   }
+            return marshaller;
+        }
+        catch (JAXBException e) {
+            throw BytterException.unchecked(e);
+        }
+    }
 
-   /**
+    /**
     * 创建UnMarshaller. 线程不安全，需要每次创建或pooling。
     */
-   public static Unmarshaller createUnmarshaller(Class clazz) {
-      try {
-         JAXBContext jaxbContext = getJaxbContext(clazz);
-         return jaxbContext.createUnmarshaller();
-      }
-      catch (JAXBException e) {
-         throw BytterException.unchecked(e);
-      }
-   }
+    public static Unmarshaller createUnmarshaller(Class clazz) {
+        try {
+            JAXBContext jaxbContext = getJaxbContext(clazz);
+            return jaxbContext.createUnmarshaller();
+        }
+        catch (JAXBException e) {
+            throw BytterException.unchecked(e);
+        }
+    }
 
-   protected static JAXBContext getJaxbContext(Class clazz) {
-      Assert.notNull(clazz, "'clazz' must not be null");
-      JAXBContext jaxbContext = jaxbContexts.get(clazz);
-      if (jaxbContext == null) {
-         try {
-            jaxbContext = JAXBContext.newInstance(clazz, CollectionWrapper.class);
-            jaxbContexts.putIfAbsent(clazz, jaxbContext);
-         }
-         catch (JAXBException ex) {
-            throw new HttpMessageConversionException(
-                  "Could not instantiate JAXBContext for class [" + clazz + "]: " + ex.getMessage(), ex);
-         }
-      }
-      return jaxbContext;
-   }
+    protected static JAXBContext getJaxbContext(Class clazz) {
+        Assert.notNull(clazz, "'clazz' must not be null");
+        JAXBContext jaxbContext = jaxbContexts.get(clazz);
+        if (jaxbContext == null) {
+            try {
+                jaxbContext = JAXBContext.newInstance(clazz, CollectionWrapper.class);
+                jaxbContexts.putIfAbsent(clazz, jaxbContext);
+            }
+            catch (JAXBException ex) {
+                throw new HttpMessageConversionException(
+                        "Could not instantiate JAXBContext for class [" + clazz + "]: " + ex.getMessage(), ex);
+            }
+        }
+        return jaxbContext;
+    }
 
-   /**
+    /**
     * 封装Root Element 是 Collection的情况.
     */
-   public static class CollectionWrapper {
+    public static class CollectionWrapper {
 
-      @XmlAnyElement
-      protected Collection<?> collection;
-   }
+        @XmlAnyElement
+        protected Collection<?> collection;
+    }
 
 }

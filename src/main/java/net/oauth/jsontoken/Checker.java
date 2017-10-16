@@ -24,12 +24,12 @@ import java.util.Map;
  */
 public interface Checker {
 
-  /**
-   * Checks that the given payload satisfies this token verifier.
-   *
-   * @param payload the payload component of a JsonToken (JWT)
-   * @throws SignatureException if the audience doesn't match.
-   */
-  public void check(Map<String, Object> payload) throws SignatureException;
+    /**
+     * Checks that the given payload satisfies this token verifier.
+     *
+     * @param payload the payload component of a JsonToken (JWT)
+     * @throws SignatureException if the audience doesn't match.
+     */
+    public void check(Map<String, Object> payload) throws SignatureException;
 
 }

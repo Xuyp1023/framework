@@ -24,35 +24,35 @@ import org.apache.commons.lang3.StringUtils;
  * @author zhoucy
   */
 public class DateConvertEditor extends PropertyEditorSupport {
-	private DateFormat format;
+    private DateFormat format;
 
-	public DateConvertEditor() {
-		this.format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	}
+    public DateConvertEditor() {
+        this.format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    }
 
-	public DateConvertEditor(String format) {
-		this.format = new SimpleDateFormat(format);
-	}
+    public DateConvertEditor(String format) {
+        this.format = new SimpleDateFormat(format);
+    }
 
-	/** Date -> String */
-	@Override
-	public String getAsText() {
-		if (getValue() == null)
-			return "";
-		return this.format.format(getValue());
-	}
+    /** Date -> String */
+    @Override
+    public String getAsText() {
+        if (getValue() == null) return "";
+        return this.format.format(getValue());
+    }
 
-	/** String -> Date */
-	@Override
-	public void setAsText(String text) throws IllegalArgumentException {
-		if (!StringUtils.isNotBlank(text)) {
-			setValue(null);
-		} else {
-			try {
-				setValue(this.format.parse(text));
-			} catch (ParseException e) {
-				throw new IllegalArgumentException("不能被转换的日期字符串，请检查!", e);
-			}
-		}
-	}
+    /** String -> Date */
+    @Override
+    public void setAsText(String text) throws IllegalArgumentException {
+        if (!StringUtils.isNotBlank(text)) {
+            setValue(null);
+        } else {
+            try {
+                setValue(this.format.parse(text));
+            }
+            catch (ParseException e) {
+                throw new IllegalArgumentException("不能被转换的日期字符串，请检查!", e);
+            }
+        }
+    }
 }

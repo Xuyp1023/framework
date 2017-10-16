@@ -37,8 +37,6 @@ import com.betterjr.mapper.common.rowbounds.SelectRowBoundsMapper;
  * @param <T> 不能为空
  * @author liuzh
  */
-public interface RowBoundsMapper<T> extends
-        SelectByExampleRowBoundsMapper<T>,
-        SelectRowBoundsMapper<T> {
+public interface RowBoundsMapper<T> extends SelectByExampleRowBoundsMapper<T>, SelectRowBoundsMapper<T> {
 
 }

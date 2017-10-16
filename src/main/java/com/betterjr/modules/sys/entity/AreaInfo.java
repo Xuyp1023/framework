@@ -1,11 +1,18 @@
 package com.betterjr.modules.sys.entity;
 
-import com.betterjr.common.annotation.*;
-import com.betterjr.common.entity.BetterjrEntity;
-
 import java.util.Map;
 
-import javax.persistence.*;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.betterjr.common.annotation.MetaData;
+import com.betterjr.common.entity.BetterjrEntity;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -15,16 +22,16 @@ public class AreaInfo implements BetterjrEntity {
      * 区域代码
      */
     @Id
-    @Column(name = "C_CODE",  columnDefinition="VARCHAR" )
-    @MetaData( value="区域代码", comments = "区域代码")
+    @Column(name = "C_CODE", columnDefinition = "VARCHAR")
+    @MetaData(value = "区域代码", comments = "区域代码")
     @OrderBy
     private String areaCode;
 
     /**
      * 区域名称
      */
-    @Column(name = "C_NAME",  columnDefinition="VARCHAR" )
-    @MetaData( value="区域名称", comments = "区域名称")
+    @Column(name = "C_NAME", columnDefinition = "VARCHAR")
+    @MetaData(value = "区域名称", comments = "区域名称")
     private String areaName;
 
     /**
@@ -161,23 +168,27 @@ public class AreaInfo implements BetterjrEntity {
             return false;
         }
         AreaInfo other = (AreaInfo) that;
-        return (this.getAreaCode() == null ? other.getAreaCode() == null : this.getAreaCode().equals(other.getAreaCode()))
-                && (this.getAreaName() == null ? other.getAreaName() == null : this.getAreaName().equals(other.getAreaName()))
-                && (this.getProvCode() == null ? other.getProvCode() == null : this.getProvCode().equals(other.getProvCode()))
+        return (this.getAreaCode() == null ? other.getAreaCode() == null
+                : this.getAreaCode().equals(other.getAreaCode()))
+                && (this.getAreaName() == null ? other.getAreaName() == null
+                        : this.getAreaName().equals(other.getAreaName()))
+                && (this.getProvCode() == null ? other.getProvCode() == null
+                        : this.getProvCode().equals(other.getProvCode()))
                 && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
-                && (this.getRegDate() == null ? other.getRegDate() == null : this.getRegDate().equals(other.getRegDate()))
-                && (this.getModiDate() == null ? other.getModiDate() == null : this.getModiDate().equals(other.getModiDate()))
-                && (this.getSignStatus() == null ? other.getSignStatus() == null : this.getSignStatus().equals(other.getSignStatus()));
+                && (this.getRegDate() == null ? other.getRegDate() == null
+                        : this.getRegDate().equals(other.getRegDate()))
+                && (this.getModiDate() == null ? other.getModiDate() == null
+                        : this.getModiDate().equals(other.getModiDate()))
+                && (this.getSignStatus() == null ? other.getSignStatus() == null
+                        : this.getSignStatus().equals(other.getSignStatus()));
     }
 
     public static int findLevel(String anAreaCode) {
         if (anAreaCode.endsWith("0000")) {
             return 1;
-        }
-        else if (anAreaCode.endsWith("00")) {
+        } else if (anAreaCode.endsWith("00")) {
             return 2;
-        }
-        else {
+        } else {
             return 3;
         }
     }

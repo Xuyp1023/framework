@@ -1,5 +1,7 @@
 package com.betterjr.common.data;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.betterjr.common.utils.BetterStringUtils;
 
 /**
@@ -18,7 +20,7 @@ public enum AccetMethodInfo {
 
     public static AccetMethodInfo checking(String anWorkType) {
         try {
-            if (BetterStringUtils.isNotBlank(anWorkType)) {
+            if (StringUtils.isNotBlank(anWorkType)) {
                 for (AccetMethodInfo mm : AccetMethodInfo.values()) {
                     if (mm.value.equals(anWorkType)) {
                         return mm;

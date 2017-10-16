@@ -172,14 +172,21 @@ public class SequenceRecord implements BetterjrEntity {
         }
         final SequenceRecord other = (SequenceRecord) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-                && (this.getVersion() == null ? other.getVersion() == null : this.getVersion().equals(other.getVersion()))
+                && (this.getVersion() == null ? other.getVersion() == null
+                        : this.getVersion().equals(other.getVersion()))
                 && (this.getCycle() == null ? other.getCycle() == null : this.getCycle().equals(other.getCycle()))
-                && (this.getCycleStartDate() == null ? other.getCycleStartDate() == null : this.getCycleStartDate().equals(other.getCycleStartDate()))
-                && (this.getNextValue() == null ? other.getNextValue() == null : this.getNextValue().equals(other.getNextValue()))
-                && (this.getIncrementStep() == null ? other.getIncrementStep() == null : this.getIncrementStep().equals(other.getIncrementStep()))
-                && (this.getStartValue() == null ? other.getStartValue() == null : this.getStartValue().equals(other.getStartValue()))
-                && (this.getMaximumValue() == null ? other.getMaximumValue() == null : this.getMaximumValue().equals(other.getMaximumValue()))
-                && (this.getOperOrg() == null ? other.getOperOrg() == null : this.getOperOrg().equals(other.getOperOrg()))
+                && (this.getCycleStartDate() == null ? other.getCycleStartDate() == null
+                        : this.getCycleStartDate().equals(other.getCycleStartDate()))
+                && (this.getNextValue() == null ? other.getNextValue() == null
+                        : this.getNextValue().equals(other.getNextValue()))
+                && (this.getIncrementStep() == null ? other.getIncrementStep() == null
+                        : this.getIncrementStep().equals(other.getIncrementStep()))
+                && (this.getStartValue() == null ? other.getStartValue() == null
+                        : this.getStartValue().equals(other.getStartValue()))
+                && (this.getMaximumValue() == null ? other.getMaximumValue() == null
+                        : this.getMaximumValue().equals(other.getMaximumValue()))
+                && (this.getOperOrg() == null ? other.getOperOrg() == null
+                        : this.getOperOrg().equals(other.getOperOrg()))
                 && (this.getCustNo() == null ? other.getCustNo() == null : this.getCustNo().equals(other.getCustNo()))
                 && (this.getSeqId() == null ? other.getSeqId() == null : this.getSeqId().equals(other.getSeqId()));
     }

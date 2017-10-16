@@ -6,8 +6,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import com.betterjr.common.data.UserType;
+
 import com.betterjr.common.annotation.MetaData;
+import com.betterjr.common.data.UserType;
+import com.betterjr.common.data.WorkUserInfo;
 import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.common.mapper.BeanMapper;
 import com.betterjr.common.mapper.CustDateJsonSerializer;
@@ -15,7 +17,6 @@ import com.betterjr.common.selectkey.SerialGenerator;
 import com.betterjr.common.utils.BetterDateUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.betterjr.common.data.WorkUserInfo;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -26,133 +27,133 @@ public class CustInfo implements BetterjrEntity, WorkUserInfo {
      * 客户编号
      */
     @Id
-    @Column(name = "L_CUSTNO",  columnDefinition="INTEGER" )
-    @MetaData( value="客户编号", comments = "客户编号")
+    @Column(name = "L_CUSTNO", columnDefinition = "INTEGER")
+    @MetaData(value = "客户编号", comments = "客户编号")
     private Long custNo;
 
     /**
      * 数据版本号
      */
     @JsonIgnore
-    @Column(name = "N_VERSION",  columnDefinition="INTEGER" )
-    @MetaData( value="数据版本号", comments = "数据版本号")
+    @Column(name = "N_VERSION", columnDefinition = "INTEGER")
+    @MetaData(value = "数据版本号", comments = "数据版本号")
     private Long version;
 
     /**
      * 客户类型：0：机构；1：个人
      */
-    @Column(name = "C_CUSTTYPE",  columnDefinition="CHAR" )
-    @MetaData( value="客户类型：0：机构", comments = "客户类型：0：机构；1：个人")
+    @Column(name = "C_CUSTTYPE", columnDefinition = "CHAR")
+    @MetaData(value = "客户类型：0：机构", comments = "客户类型：0：机构；1：个人")
     private String custType;
 
     /**
      * 客户全称
      */
-    @Column(name = "C_CUSTNAME",  columnDefinition="VARCHAR" )
-    @MetaData( value="客户全称", comments = "客户全称")
+    @Column(name = "C_CUSTNAME", columnDefinition = "VARCHAR")
+    @MetaData(value = "客户全称", comments = "客户全称")
     private String custName;
 
     /**
      * 客户简称
      */
-    @Column(name = "C_SHORTNAME",  columnDefinition="VARCHAR" )
-    @MetaData( value="客户简称", comments = "客户简称")
+    @Column(name = "C_SHORTNAME", columnDefinition = "VARCHAR")
+    @MetaData(value = "客户简称", comments = "客户简称")
     private String shortName;
 
     /**
      * 客户昵称
      */
-    @Column(name = "C_NICKNAME",  columnDefinition="VARCHAR" )
-    @MetaData( value="客户昵称", comments = "客户昵称")
+    @Column(name = "C_NICKNAME", columnDefinition = "VARCHAR")
+    @MetaData(value = "客户昵称", comments = "客户昵称")
     private String nickName;
 
     /**
      * 客户证件类型，个人证件类型0-身份证，1-护照，2-军官证，3-士兵证，4-回乡证，5-户口本，6-外国护照； 机构证件类型 0-技术监督局代码，1-营业执照，2-行政机关，3-社会团体，4-军队，5-武警，6-下属机构（具有主管单位批文号），7-基金会
      */
-    @Column(name = "C_IDENTTYPE",  columnDefinition="CHAR" )
-    @MetaData( value="客户证件类型", comments = "客户证件类型，个人证件类型0-身份证，1-护照，2-军官证，3-士兵证，4-回乡证，5-户口本，6-外国护照； 机构证件类型 0-技术监督局代码，1-营业执照，2-行政机关，3-社会团体，4-军队，5-武警，6-下属机构（具有主管单位批文号），7-基金会")
+    @Column(name = "C_IDENTTYPE", columnDefinition = "CHAR")
+    @MetaData(value = "客户证件类型", comments = "客户证件类型，个人证件类型0-身份证，1-护照，2-军官证，3-士兵证，4-回乡证，5-户口本，6-外国护照； 机构证件类型 0-技术监督局代码，1-营业执照，2-行政机关，3-社会团体，4-军队，5-武警，6-下属机构（具有主管单位批文号），7-基金会")
     private String identType;
 
     /**
      * 证件有效期
      */
-    @Column(name = "D_VAILDDATE",  columnDefinition="VARCHAR" )
-    @MetaData( value="证件有效期", comments = "证件有效期")
+    @Column(name = "D_VAILDDATE", columnDefinition = "VARCHAR")
+    @MetaData(value = "证件有效期", comments = "证件有效期")
     @JsonSerialize(using = CustDateJsonSerializer.class)
     private String validDate;
 
     /**
      * 国籍或地区
      */
-    @Column(name = "C_NATIONAL",  columnDefinition="VARCHAR" )
-    @MetaData( value="国籍或地区", comments = "国籍或地区")
+    @Column(name = "C_NATIONAL", columnDefinition = "VARCHAR")
+    @MetaData(value = "国籍或地区", comments = "国籍或地区")
     private String national;
 
     /**
      * 身份证明文件注册地址
      */
-    @Column(name = "C_REGADDR",  columnDefinition="VARCHAR" )
-    @MetaData( value="身份证明文件注册地址", comments = "身份证明文件注册地址")
+    @Column(name = "C_REGADDR", columnDefinition = "VARCHAR")
+    @MetaData(value = "身份证明文件注册地址", comments = "身份证明文件注册地址")
     private String regAddr;
 
     /**
      * 用户类型
      */
-    @Column(name = "C_USER_TYPE",  columnDefinition="CHAR" )
-    @MetaData( value="用户类型", comments = "用户类型")
+    @Column(name = "C_USER_TYPE", columnDefinition = "CHAR")
+    @MetaData(value = "用户类型", comments = "用户类型")
     private String userType;
 
     /**
      * 客户证件号码
      */
-    @Column(name = "C_IDENTNO",  columnDefinition="VARCHAR" )
-    @MetaData( value="客户证件号码", comments = "客户证件号码")
+    @Column(name = "C_IDENTNO", columnDefinition = "VARCHAR")
+    @MetaData(value = "客户证件号码", comments = "客户证件号码")
     private String identNo;
 
     /**
      * 实名验证，0匿名客户，1实名客户
      */
-    @Column(name = "C_IDENTVALID",  columnDefinition="CHAR" )
-    @MetaData( value="实名验证", comments = "实名验证，0匿名客户，1实名客户")
+    @Column(name = "C_IDENTVALID", columnDefinition = "CHAR")
+    @MetaData(value = "实名验证", comments = "实名验证，0匿名客户，1实名客户")
     private Boolean identValid;
 
     /**
      * 审批级别，0不审批，1复核，2 复核+审批
      */
     @JsonIgnore
-    @Column(name = "C_ADUIT_LEVELS",  columnDefinition="CHAR" )
-    @MetaData( value="审批级别", comments = "审批级别，0不审批，1复核，2 复核+审批")
+    @Column(name = "C_ADUIT_LEVELS", columnDefinition = "CHAR")
+    @MetaData(value = "审批级别", comments = "审批级别，0不审批，1复核，2 复核+审批")
     private String aduitLevels;
 
     /**
      * 附件信息
      */
     @JsonIgnore
-    @Column(name = "N_BATCHNO",  columnDefinition="INTEGER" )
-    @MetaData( value="附件信息", comments = "附件信息")
+    @Column(name = "N_BATCHNO", columnDefinition = "INTEGER")
+    @MetaData(value = "附件信息", comments = "附件信息")
     private Long batchNo;
 
     /**
      * 创建人(操作员)ID号
      */
     @JsonIgnore
-    @Column(name = "L_REG_OPERID",  columnDefinition="INTEGER" )
-    @MetaData( value="创建人(操作员)ID号", comments = "创建人(操作员)ID号")
+    @Column(name = "L_REG_OPERID", columnDefinition = "INTEGER")
+    @MetaData(value = "创建人(操作员)ID号", comments = "创建人(操作员)ID号")
     private Long regOperId;
 
     /**
      * 创建人(操作员)姓名
      */
     @JsonIgnore
-    @Column(name = "C_REG_OPERNAME",  columnDefinition="VARCHAR" )
-    @MetaData( value="创建人(操作员)姓名", comments = "创建人(操作员)姓名")
+    @Column(name = "C_REG_OPERNAME", columnDefinition = "VARCHAR")
+    @MetaData(value = "创建人(操作员)姓名", comments = "创建人(操作员)姓名")
     private String regOperName;
 
     /**
      * 创建日期
      */
-    @Column(name = "D_REG_DATE",  columnDefinition="VARCHAR" )
-    @MetaData( value="创建日期", comments = "创建日期")
+    @Column(name = "D_REG_DATE", columnDefinition = "VARCHAR")
+    @MetaData(value = "创建日期", comments = "创建日期")
     @JsonSerialize(using = CustDateJsonSerializer.class)
     private String regDate;
 
@@ -160,63 +161,63 @@ public class CustInfo implements BetterjrEntity, WorkUserInfo {
      * 创建时间
      */
     @JsonIgnore
-    @Column(name = "T_REG_TIME",  columnDefinition="VARCHAR" )
-    @MetaData( value="创建时间", comments = "创建时间")
+    @Column(name = "T_REG_TIME", columnDefinition = "VARCHAR")
+    @MetaData(value = "创建时间", comments = "创建时间")
     private String regTime;
 
     /**
      * 修改人(操作员)ID号
      */
     @JsonIgnore
-    @Column(name = "L_MODI_OPERID",  columnDefinition="INTEGER" )
-    @MetaData( value="修改人(操作员)ID号", comments = "修改人(操作员)ID号")
+    @Column(name = "L_MODI_OPERID", columnDefinition = "INTEGER")
+    @MetaData(value = "修改人(操作员)ID号", comments = "修改人(操作员)ID号")
     private Long modiOperId;
 
     /**
      * 修改人(操作员)姓名
      */
     @JsonIgnore
-    @Column(name = "C_MODI_OPERNAME",  columnDefinition="VARCHAR" )
-    @MetaData( value="修改人(操作员)姓名", comments = "修改人(操作员)姓名")
+    @Column(name = "C_MODI_OPERNAME", columnDefinition = "VARCHAR")
+    @MetaData(value = "修改人(操作员)姓名", comments = "修改人(操作员)姓名")
     private String modiOperName;
 
     /**
      * 修改日期
      */
     @JsonIgnore
-    @Column(name = "D_MODI_DATE",  columnDefinition="VARCHAR" )
-    @MetaData( value="修改日期", comments = "修改日期")
+    @Column(name = "D_MODI_DATE", columnDefinition = "VARCHAR")
+    @MetaData(value = "修改日期", comments = "修改日期")
     private String modiDate;
 
     /**
      * 修改时间
      */
     @JsonIgnore
-    @Column(name = "T_MODI_TIME",  columnDefinition="VARCHAR" )
-    @MetaData( value="修改时间", comments = "修改时间")
+    @Column(name = "T_MODI_TIME", columnDefinition = "VARCHAR")
+    @MetaData(value = "修改时间", comments = "修改时间")
     private String modiTime;
 
     /**
      * 操作机构
      */
     @JsonIgnore
-    @Column(name = "C_OPERORG",  columnDefinition="VARCHAR" )
-    @MetaData( value="操作机构", comments = "操作机构")
+    @Column(name = "C_OPERORG", columnDefinition = "VARCHAR")
+    @MetaData(value = "操作机构", comments = "操作机构")
     private String operOrg;
 
     /**
      * 客户状态；0正常，1冻结，9销户
      */
-    @Column(name = "C_BUSIN_STATUS",  columnDefinition="CHAR" )
-    @MetaData( value="客户状态", comments = "客户状态；0正常，1冻结，9销户")
+    @Column(name = "C_BUSIN_STATUS", columnDefinition = "CHAR")
+    @MetaData(value = "客户状态", comments = "客户状态；0正常，1冻结，9销户")
     private String businStatus;
 
     /**
      * 最后更新状态
      */
     @JsonIgnore
-    @Column(name = "C_LAST_STATUS",  columnDefinition="CHAR" )
-    @MetaData( value="最后更新状态", comments = "最后更新状态")
+    @Column(name = "C_LAST_STATUS", columnDefinition = "CHAR")
+    @MetaData(value = "最后更新状态", comments = "最后更新状态")
     private String lastStatus;
 
     private static final long serialVersionUID = 1468216953792L;
@@ -225,10 +226,12 @@ public class CustInfo implements BetterjrEntity, WorkUserInfo {
         return custNo;
     }
 
+    @Override
     public Long getId() {
 
         return this.custNo;
     }
+
     public void setCustNo(Long custNo) {
         this.custNo = custNo;
     }
@@ -265,6 +268,7 @@ public class CustInfo implements BetterjrEntity, WorkUserInfo {
         this.shortName = shortName == null ? null : shortName.trim();
     }
 
+    @Override
     public String getNickName() {
         return nickName;
     }
@@ -273,6 +277,7 @@ public class CustInfo implements BetterjrEntity, WorkUserInfo {
         this.nickName = nickName == null ? null : nickName.trim();
     }
 
+    @Override
     public String getIdentType() {
         return identType;
     }
@@ -281,6 +286,7 @@ public class CustInfo implements BetterjrEntity, WorkUserInfo {
         this.identType = identType == null ? null : identType.trim();
     }
 
+    @Override
     public String getValidDate() {
         return validDate;
     }
@@ -313,6 +319,7 @@ public class CustInfo implements BetterjrEntity, WorkUserInfo {
         this.userType = userType == null ? null : userType.trim();
     }
 
+    @Override
     public String getIdentNo() {
         return identNo;
     }
@@ -329,11 +336,12 @@ public class CustInfo implements BetterjrEntity, WorkUserInfo {
         this.identValid = identValid;
     }
 
+    @Override
     public String getRuleList() {
 
         return UserType.PERSON_USER.name();
     }
-	
+
     public String getAduitLevels() {
         return aduitLevels;
     }
@@ -488,31 +496,56 @@ public class CustInfo implements BetterjrEntity, WorkUserInfo {
         }
         CustInfo other = (CustInfo) that;
         return (this.getCustNo() == null ? other.getCustNo() == null : this.getCustNo().equals(other.getCustNo()))
-            && (this.getVersion() == null ? other.getVersion() == null : this.getVersion().equals(other.getVersion()))
-            && (this.getCustType() == null ? other.getCustType() == null : this.getCustType().equals(other.getCustType()))
-            && (this.getCustName() == null ? other.getCustName() == null : this.getCustName().equals(other.getCustName()))
-            && (this.getShortName() == null ? other.getShortName() == null : this.getShortName().equals(other.getShortName()))
-            && (this.getNickName() == null ? other.getNickName() == null : this.getNickName().equals(other.getNickName()))
-            && (this.getIdentType() == null ? other.getIdentType() == null : this.getIdentType().equals(other.getIdentType()))
-            && (this.getValidDate() == null ? other.getValidDate() == null : this.getValidDate().equals(other.getValidDate()))
-            && (this.getNational() == null ? other.getNational() == null : this.getNational().equals(other.getNational()))
-            && (this.getRegAddr() == null ? other.getRegAddr() == null : this.getRegAddr().equals(other.getRegAddr()))
-            && (this.getUserType() == null ? other.getUserType() == null : this.getUserType().equals(other.getUserType()))
-            && (this.getIdentNo() == null ? other.getIdentNo() == null : this.getIdentNo().equals(other.getIdentNo()))
-            && (this.getIdentValid() == null ? other.getIdentValid() == null : this.getIdentValid().equals(other.getIdentValid()))
-            && (this.getAduitLevels() == null ? other.getAduitLevels() == null : this.getAduitLevels().equals(other.getAduitLevels()))
-            && (this.getBatchNo() == null ? other.getBatchNo() == null : this.getBatchNo().equals(other.getBatchNo()))
-            && (this.getRegOperId() == null ? other.getRegOperId() == null : this.getRegOperId().equals(other.getRegOperId()))
-            && (this.getRegOperName() == null ? other.getRegOperName() == null : this.getRegOperName().equals(other.getRegOperName()))
-            && (this.getRegDate() == null ? other.getRegDate() == null : this.getRegDate().equals(other.getRegDate()))
-            && (this.getRegTime() == null ? other.getRegTime() == null : this.getRegTime().equals(other.getRegTime()))
-            && (this.getModiOperId() == null ? other.getModiOperId() == null : this.getModiOperId().equals(other.getModiOperId()))
-            && (this.getModiOperName() == null ? other.getModiOperName() == null : this.getModiOperName().equals(other.getModiOperName()))
-            && (this.getModiDate() == null ? other.getModiDate() == null : this.getModiDate().equals(other.getModiDate()))
-            && (this.getModiTime() == null ? other.getModiTime() == null : this.getModiTime().equals(other.getModiTime()))
-            && (this.getOperOrg() == null ? other.getOperOrg() == null : this.getOperOrg().equals(other.getOperOrg()))
-            && (this.getBusinStatus() == null ? other.getBusinStatus() == null : this.getBusinStatus().equals(other.getBusinStatus()))
-            && (this.getLastStatus() == null ? other.getLastStatus() == null : this.getLastStatus().equals(other.getLastStatus()));
+                && (this.getVersion() == null ? other.getVersion() == null
+                        : this.getVersion().equals(other.getVersion()))
+                && (this.getCustType() == null ? other.getCustType() == null
+                        : this.getCustType().equals(other.getCustType()))
+                && (this.getCustName() == null ? other.getCustName() == null
+                        : this.getCustName().equals(other.getCustName()))
+                && (this.getShortName() == null ? other.getShortName() == null
+                        : this.getShortName().equals(other.getShortName()))
+                && (this.getNickName() == null ? other.getNickName() == null
+                        : this.getNickName().equals(other.getNickName()))
+                && (this.getIdentType() == null ? other.getIdentType() == null
+                        : this.getIdentType().equals(other.getIdentType()))
+                && (this.getValidDate() == null ? other.getValidDate() == null
+                        : this.getValidDate().equals(other.getValidDate()))
+                && (this.getNational() == null ? other.getNational() == null
+                        : this.getNational().equals(other.getNational()))
+                && (this.getRegAddr() == null ? other.getRegAddr() == null
+                        : this.getRegAddr().equals(other.getRegAddr()))
+                && (this.getUserType() == null ? other.getUserType() == null
+                        : this.getUserType().equals(other.getUserType()))
+                && (this.getIdentNo() == null ? other.getIdentNo() == null
+                        : this.getIdentNo().equals(other.getIdentNo()))
+                && (this.getIdentValid() == null ? other.getIdentValid() == null
+                        : this.getIdentValid().equals(other.getIdentValid()))
+                && (this.getAduitLevels() == null ? other.getAduitLevels() == null
+                        : this.getAduitLevels().equals(other.getAduitLevels()))
+                && (this.getBatchNo() == null ? other.getBatchNo() == null
+                        : this.getBatchNo().equals(other.getBatchNo()))
+                && (this.getRegOperId() == null ? other.getRegOperId() == null
+                        : this.getRegOperId().equals(other.getRegOperId()))
+                && (this.getRegOperName() == null ? other.getRegOperName() == null
+                        : this.getRegOperName().equals(other.getRegOperName()))
+                && (this.getRegDate() == null ? other.getRegDate() == null
+                        : this.getRegDate().equals(other.getRegDate()))
+                && (this.getRegTime() == null ? other.getRegTime() == null
+                        : this.getRegTime().equals(other.getRegTime()))
+                && (this.getModiOperId() == null ? other.getModiOperId() == null
+                        : this.getModiOperId().equals(other.getModiOperId()))
+                && (this.getModiOperName() == null ? other.getModiOperName() == null
+                        : this.getModiOperName().equals(other.getModiOperName()))
+                && (this.getModiDate() == null ? other.getModiDate() == null
+                        : this.getModiDate().equals(other.getModiDate()))
+                && (this.getModiTime() == null ? other.getModiTime() == null
+                        : this.getModiTime().equals(other.getModiTime()))
+                && (this.getOperOrg() == null ? other.getOperOrg() == null
+                        : this.getOperOrg().equals(other.getOperOrg()))
+                && (this.getBusinStatus() == null ? other.getBusinStatus() == null
+                        : this.getBusinStatus().equals(other.getBusinStatus()))
+                && (this.getLastStatus() == null ? other.getLastStatus() == null
+                        : this.getLastStatus().equals(other.getLastStatus()));
     }
 
     @Override
@@ -547,7 +580,6 @@ public class CustInfo implements BetterjrEntity, WorkUserInfo {
         result = prime * result + ((getLastStatus() == null) ? 0 : getLastStatus().hashCode());
         return result;
     }
-    
 
     public CustInfo() {
 
@@ -568,7 +600,7 @@ public class CustInfo implements BetterjrEntity, WorkUserInfo {
 
     @Override
     public String getName() {
-        
+
         return this.custName;
     }
 }

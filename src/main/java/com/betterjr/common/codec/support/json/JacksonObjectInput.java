@@ -1,17 +1,17 @@
 package com.betterjr.common.codec.support.json;
 
-import com.betterjr.common.codec.BtObjectInput;
-import com.betterjr.common.mapper.JsonMapper;
-import com.betterjr.common.utils.reflection.ReflectionUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.betterjr.common.codec.BtObjectInput;
+import com.betterjr.common.mapper.JsonMapper;
+import com.betterjr.common.utils.reflection.ReflectionUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JacksonObjectInput implements BtObjectInput {
     private static Logger logger = LoggerFactory.getLogger(JacksonObjectInput.class);
@@ -33,6 +33,7 @@ public class JacksonObjectInput implements BtObjectInput {
         }
     }
 
+    @Override
     public boolean readBool() throws IOException {
         try {
             return readObject(Boolean.class);
@@ -42,6 +43,7 @@ public class JacksonObjectInput implements BtObjectInput {
         }
     }
 
+    @Override
     public byte readByte() throws IOException {
         try {
             return readObject(Byte.class);
@@ -51,6 +53,7 @@ public class JacksonObjectInput implements BtObjectInput {
         }
     }
 
+    @Override
     public short readShort() throws IOException {
         try {
             return readObject(Short.class);
@@ -60,6 +63,7 @@ public class JacksonObjectInput implements BtObjectInput {
         }
     }
 
+    @Override
     public int readInt() throws IOException {
         try {
             return readObject(Integer.class);
@@ -69,6 +73,7 @@ public class JacksonObjectInput implements BtObjectInput {
         }
     }
 
+    @Override
     public long readLong() throws IOException {
         try {
             return readObject(Long.class);
@@ -78,6 +83,7 @@ public class JacksonObjectInput implements BtObjectInput {
         }
     }
 
+    @Override
     public float readFloat() throws IOException {
         try {
             return readObject(Float.class);
@@ -87,6 +93,7 @@ public class JacksonObjectInput implements BtObjectInput {
         }
     }
 
+    @Override
     public double readDouble() throws IOException {
         try {
             return readObject(Double.class);
@@ -96,6 +103,7 @@ public class JacksonObjectInput implements BtObjectInput {
         }
     }
 
+    @Override
     public String readUTF() throws IOException {
         try {
             return readObject(String.class);
@@ -105,10 +113,12 @@ public class JacksonObjectInput implements BtObjectInput {
         }
     }
 
+    @Override
     public byte[] readBytes() throws IOException {
         return readUTF().getBytes();
     }
 
+    @Override
     public Object readObject() throws IOException, ClassNotFoundException {
 
         try {
@@ -119,6 +129,7 @@ public class JacksonObjectInput implements BtObjectInput {
         }
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T readObject(Class<T> cls) throws IOException, ClassNotFoundException {
         String json = this.data.get(KEY_PREFIX + (++index));
@@ -127,8 +138,7 @@ public class JacksonObjectInput implements BtObjectInput {
             Class clazz = ReflectionUtils.desc2class(dataType);
             if (cls.isAssignableFrom(clazz)) {
                 cls = clazz;
-            }
-            else {
+            } else {
                 throw new IllegalArgumentException("Class \"" + clazz + "\" is not inherited from \"" + cls + "\"");
             }
         }
@@ -136,9 +146,10 @@ public class JacksonObjectInput implements BtObjectInput {
         return objectMapper.readValue(json, cls);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T readObject(Class<T> cls, Type type) throws IOException, ClassNotFoundException {
-         return readObject(cls);
+        return readObject(cls);
     }
 
 }

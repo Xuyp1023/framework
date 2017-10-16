@@ -12,10 +12,10 @@ import com.betterjr.modules.account.entity.CustOperatorInfo;
 @Service
 public class CustOperatorDubboClientService implements ICustOperatorService {
 
-    @Reference(interfaceClass=ICustOperatorService.class)
+    @Reference(interfaceClass = ICustOperatorService.class)
     private ICustOperatorService custOperatorService;
 
-    @Reference(interfaceClass=ICustInfoService.class)
+    @Reference(interfaceClass = ICustInfoService.class)
     private ICustInfoService custInfoService;
 
     @Override
@@ -24,7 +24,7 @@ public class CustOperatorDubboClientService implements ICustOperatorService {
         return custOperatorService.findCustOperatorByOperCode(anOperOrg, anOperCode);
     }
 
-    public Long findCustNo(){
+    public Long findCustNo() {
         return custInfoService.findCustNo();
     }
 

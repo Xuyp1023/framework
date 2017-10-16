@@ -1,8 +1,14 @@
 package com.betterjr.modules.account.entity;
 
-import com.betterjr.common.annotation.*;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.entity.BetterjrEntity;
-import javax.persistence.*;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -12,43 +18,43 @@ public class CustPassProtectedInfo implements BetterjrEntity {
      * 客户编号
      */
     @Id
-    @Column(name = "L_CUSTNO",  columnDefinition="INTEGER" )
-    @MetaData( value="客户编号", comments = "客户编号")
+    @Column(name = "L_CUSTNO", columnDefinition = "INTEGER")
+    @MetaData(value = "客户编号", comments = "客户编号")
     private Long custNo;
 
     /**
      * 问题
      */
-    @Column(name = "C_QUESTION",  columnDefinition="INTEGER" )
-    @MetaData( value="问题", comments = "问题")
+    @Column(name = "C_QUESTION", columnDefinition = "INTEGER")
+    @MetaData(value = "问题", comments = "问题")
     private String question;
 
     /**
      * 答案
      */
-    @Column(name = "C_ANSWER",  columnDefinition="VARCHAR" )
-    @MetaData( value="答案", comments = "答案")
+    @Column(name = "C_ANSWER", columnDefinition = "VARCHAR")
+    @MetaData(value = "答案", comments = "答案")
     private String answer;
 
     /**
      * 录入系统日期(物理日期)
      */
-    @Column(name = "D_OPERDATE",  columnDefinition="VARCHAR" )
-    @MetaData( value="录入系统日期(物理日期)", comments = "录入系统日期(物理日期)")
+    @Column(name = "D_OPERDATE", columnDefinition = "VARCHAR")
+    @MetaData(value = "录入系统日期(物理日期)", comments = "录入系统日期(物理日期)")
     private String operDate;
 
     /**
      * 录入系统时间(物理时间)
      */
-    @Column(name = "T_OPERTIME",  columnDefinition="VARCHAR" )
-    @MetaData( value="录入系统时间(物理时间)", comments = "录入系统时间(物理时间)")
+    @Column(name = "T_OPERTIME", columnDefinition = "VARCHAR")
+    @MetaData(value = "录入系统时间(物理时间)", comments = "录入系统时间(物理时间)")
     private String operTime;
 
     /**
      * IP地址
      */
-    @Column(name = "C_IPADDR",  columnDefinition="VARCHAR" )
-    @MetaData( value="IP地址", comments = "IP地址")
+    @Column(name = "C_IPADDR", columnDefinition = "VARCHAR")
+    @MetaData(value = "IP地址", comments = "IP地址")
     private String ipaddr;
 
     private static final long serialVersionUID = 1439797394185L;
@@ -131,11 +137,14 @@ public class CustPassProtectedInfo implements BetterjrEntity {
         }
         CustPassProtectedInfo other = (CustPassProtectedInfo) that;
         return (this.getCustNo() == null ? other.getCustNo() == null : this.getCustNo().equals(other.getCustNo()))
-            && (this.getQuestion() == null ? other.getQuestion() == null : this.getQuestion().equals(other.getQuestion()))
-            && (this.getAnswer() == null ? other.getAnswer() == null : this.getAnswer().equals(other.getAnswer()))
-            && (this.getOperDate() == null ? other.getOperDate() == null : this.getOperDate().equals(other.getOperDate()))
-            && (this.getOperTime() == null ? other.getOperTime() == null : this.getOperTime().equals(other.getOperTime()))
-            && (this.getIpaddr() == null ? other.getIpaddr() == null : this.getIpaddr().equals(other.getIpaddr()));
+                && (this.getQuestion() == null ? other.getQuestion() == null
+                        : this.getQuestion().equals(other.getQuestion()))
+                && (this.getAnswer() == null ? other.getAnswer() == null : this.getAnswer().equals(other.getAnswer()))
+                && (this.getOperDate() == null ? other.getOperDate() == null
+                        : this.getOperDate().equals(other.getOperDate()))
+                && (this.getOperTime() == null ? other.getOperTime() == null
+                        : this.getOperTime().equals(other.getOperTime()))
+                && (this.getIpaddr() == null ? other.getIpaddr() == null : this.getIpaddr().equals(other.getIpaddr()));
     }
 
     @Override

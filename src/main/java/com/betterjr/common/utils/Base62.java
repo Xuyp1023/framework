@@ -13,8 +13,7 @@ public class Base62 {
     public static final String BASE62_ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     /** default constructor prevents util class from being created. */
-    private Base62() {
-    }
+    private Base62() {}
 
     /**
      * 生成base62编码字符串
@@ -35,12 +34,10 @@ public class Base62 {
             if ((read[0] >> 1) == 0x1f) { // first 5-bit is 11111
                 sb.append(Base62CodingSpace.charAt(61));
                 stream.seekBit(-1);
-            }
-            else if ((read[0] >> 1) == 0x1e) { // first 5-bit is 11110
+            } else if ((read[0] >> 1) == 0x1e) { // first 5-bit is 11110
                 sb.append(Base62CodingSpace.charAt(60));
                 stream.seekBit(-1);
-            }
-            else {
+            } else {
                 sb.append(Base62CodingSpace.charAt(read[0]));
             }
         }
@@ -65,15 +62,12 @@ public class Base62 {
                 if (mod != 0) {
                     out.writeBits(index, 8 - mod);
                 }
-            }
-            else {
+            } else {
                 if (index == 60) {
                     out.writeBits(0x1e, 5);
-                }
-                else if (index == 61) {
+                } else if (index == 61) {
                     out.writeBits(0xf8, 5);
-                }
-                else {
+                } else {
                     out.writeBits(index, 6);
                 }
             }

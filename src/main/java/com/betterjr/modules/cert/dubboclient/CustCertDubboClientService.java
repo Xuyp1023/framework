@@ -25,7 +25,6 @@ public class CustCertDubboClientService {
     @Reference(interfaceClass = ICustCertService.class)
     private ICustCertService custCertService;
 
-
     public CustCertInfo checkValidity(final X509Certificate anX509) {
         return custCertService.checkValidity(anX509);
     }
@@ -46,7 +45,8 @@ public class CustCertDubboClientService {
         return custCertService.webQueryCustCertRoleList(anSerialNo);
     }
 
-    public String queryCustCertificate(final Map<String, Object> anParam, final int anFlag, final int anPageNum, final int anPageSize) {
+    public String queryCustCertificate(final Map<String, Object> anParam, final int anFlag, final int anPageNum,
+            final int anPageSize) {
         return custCertService.webQueryCustCertificate(anParam, anFlag, anPageNum, anPageSize);
     }
 
@@ -58,7 +58,8 @@ public class CustCertDubboClientService {
         return custCertService.webSaveCustCertificate(anSerialNo, anParam);
     }
 
-    public String modifyWechatCustCertificate(final String anSerialNo, final String anOrginSerialNo, final Map<String, Object> anParam) {
+    public String modifyWechatCustCertificate(final String anSerialNo, final String anOrginSerialNo,
+            final Map<String, Object> anParam) {
         return custCertService.webSaveCustCertificate(anSerialNo, anOrginSerialNo, anParam);
     }
 
@@ -81,12 +82,14 @@ public class CustCertDubboClientService {
         }
     }
 
-    public void fileDownloadWithFileName(final HttpServletResponse anResponse, final  byte[] anData, final String anFileName) {
+    public void fileDownloadWithFileName(final HttpServletResponse anResponse, final byte[] anData,
+            final String anFileName) {
         String msg = null;
         OutputStream os = null;
-        try (InputStream is = new ByteArrayInputStream(anData)){
+        try (InputStream is = new ByteArrayInputStream(anData)) {
             final StringBuilder sb = new StringBuilder(100);
-            sb.append("attachment").append("; ").append("filename=").append(java.net.URLEncoder.encode(anFileName, "UTF-8"));
+            sb.append("attachment").append("; ").append("filename=")
+                    .append(java.net.URLEncoder.encode(anFileName, "UTF-8"));
             os = anResponse.getOutputStream();
             anResponse.setHeader("Content-Disposition", sb.toString());
             anResponse.setContentType("application/x-pkcs12");
@@ -111,6 +114,5 @@ public class CustCertDubboClientService {
             IOUtils.closeQuietly(os);
         }
     }
-
 
 }

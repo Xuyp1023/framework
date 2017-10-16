@@ -22,6 +22,7 @@ public class DefaultBaseRule extends BasicRule {
         return new Object();
     }
 
+    @Override
     public RuleObjectFace clone() {
         DefaultBaseRule obj = (DefaultBaseRule) super.clone();
 

@@ -1,23 +1,21 @@
 package com.betterjr.common.mq.core;
 
-import com.alibaba.rocketmq.common.message.MessageExt;
-import com.alibaba.rocketmq.common.protocol.heartbeat.MessageModel;
-import com.alibaba.rocketmq.common.consumer.ConsumeFromWhere;
-import com.alibaba.rocketmq.client.consumer.DefaultMQPushConsumer;
-import com.alibaba.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
-import com.alibaba.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
-import com.alibaba.rocketmq.client.consumer.listener.MessageListenerConcurrently;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.util.StringUtils;
-
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.util.StringUtils;
+
+import com.alibaba.rocketmq.client.consumer.DefaultMQPushConsumer;
+import com.alibaba.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
+import com.alibaba.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
+import com.alibaba.rocketmq.client.consumer.listener.MessageListenerConcurrently;
+import com.alibaba.rocketmq.common.consumer.ConsumeFromWhere;
+import com.alibaba.rocketmq.common.message.MessageExt;
 
 /**
  * Created by liuwl on 2016/6/13.
@@ -69,7 +67,7 @@ public class RocketMQConsumer implements ApplicationListener<ContextRefreshedEve
 
         consumer = new DefaultMQPushConsumer(consumerGroupName);
         consumer.setNamesrvAddr(namesrvAddr);
-//        consumer.setMessageModel(MessageModel.CLUSTERING);
+        // consumer.setMessageModel(MessageModel.CLUSTERING);
         consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_LAST_OFFSET);
         consumer.setConsumeThreadMin(DEFAULT_CONSUME_THREAD_MIN);
         consumer.setConsumeThreadMax(DEFAULT_CONSUME_THREAD_MAX);
@@ -82,7 +80,8 @@ public class RocketMQConsumer implements ApplicationListener<ContextRefreshedEve
         }
         consumer.registerMessageListener(new MessageListenerConcurrently() {
             @Override
-            public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> anMsgs, ConsumeConcurrentlyContext anContext) {
+            public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> anMsgs,
+                    ConsumeConcurrentlyContext anContext) {
                 MessageExt msgExt = anMsgs.get(0);
                 return messageListeners.get(msgExt.getTopic()).consumeMessage(anMsgs, anContext);
             }
@@ -101,6 +100,7 @@ public class RocketMQConsumer implements ApplicationListener<ContextRefreshedEve
 
     public void shutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
             public void run() {
                 shutdown();
             }

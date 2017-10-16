@@ -51,14 +51,15 @@ import com.betterjr.mapper.orderbyhelper.OrderByHelper;
  * @version 3.3.0
  *          项目地址 : http://git.oschina.net/free/Mybatis_PageHelper
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
-@Intercepts(@Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class}))
+@SuppressWarnings({ "rawtypes", "unchecked" })
+@Intercepts(@Signature(type = Executor.class, method = "query", args = { MappedStatement.class, Object.class,
+        RowBounds.class, ResultHandler.class }))
 public class PageHelper implements Interceptor {
-    //sql工具类
+    // sql工具类
     private SqlUtil sqlUtil;
-    //属性参数信息
+    // 属性参数信息
     private Properties properties;
-    //自动获取dialect
+    // 自动获取dialect
     private Boolean autoDialect;
 
     /**
@@ -119,7 +120,8 @@ public class PageHelper implements Interceptor {
      * @param reasonable   分页合理化,null时用默认配置
      * @param pageSizeZero true且pageSize=0时返回全部结果，false时分页,null时用默认配置
      */
-    public static Page startPage(final int pageNum, final int pageSize, final boolean count, final Boolean reasonable, final Boolean pageSizeZero) {
+    public static Page startPage(final int pageNum, final int pageSize, final boolean count, final Boolean reasonable,
+            final Boolean pageSizeZero) {
         final Page page = new Page(pageNum, pageSize, count);
         page.setReasonable(reasonable);
         page.setPageSizeZero(pageSizeZero);
@@ -182,7 +184,8 @@ public class PageHelper implements Interceptor {
                 final MetaObject msObject = SystemMetaObject.forObject(ms);
                 final DataSource dataSource = (DataSource) msObject.getValue("configuration.environment.dataSource");
                 url = dataSource.getConnection().getMetaData().getURL();
-            } catch (final SQLException e) {
+            }
+            catch (final SQLException e) {
                 throw new RuntimeException("分页插件初始化异常:" + e.getMessage());
             }
             if (url == null || url.length() == 0) {
@@ -221,13 +224,14 @@ public class PageHelper implements Interceptor {
      */
     @Override
     public void setProperties(final Properties p) {
-        //MyBatis3.2.0版本校验
+        // MyBatis3.2.0版本校验
         try {
-            Class.forName("org.apache.ibatis.scripting.xmltags.SqlNode");//SqlNode是3.2.0之后新增的类
-        } catch (final ClassNotFoundException e) {
+            Class.forName("org.apache.ibatis.scripting.xmltags.SqlNode");// SqlNode是3.2.0之后新增的类
+        }
+        catch (final ClassNotFoundException e) {
             throw new RuntimeException("您使用的MyBatis版本太低，MyBatis分页插件PageHelper支持MyBatis3.2.0及以上版本!");
         }
-        //数据库方言
+        // 数据库方言
         final String dialect = p.getProperty("dialect");
         if (dialect == null || dialect.length() == 0) {
             autoDialect = true;

@@ -30,7 +30,7 @@ import nl.fountain.xelem.CellPointer;
  * 
  */
 public interface Worksheet extends XLElement {
-    
+
     /**
      * The left-most limit of the worksheets columns.
      */
@@ -47,42 +47,42 @@ public interface Worksheet extends XLElement {
      * The bottom row of the worksheet.
      */
     public static int lastRow = 65536;
-    
+
     /**
      * Returns the name of this worksheet.
      * @return the name of this worksheet
      */
     String getName();
-    
+
     /**
      * Returns the name of this worksheet for purposes of reference.
      * @return the name of this worksheet or, if there are spaces in the name,
      * 		the name of this worksheet between single quoutes ('...')
      */
     String getReferenceName();
-    
+
     /**
      * Sets whether protection will be applied to this worksheet.
      */
     void setProtected(boolean p);
-    
+
     /**
      * Specifies whether protection is applied to this worksheet.
      * @return <code>true</code> if this worksheet is protected
      */
     boolean isProtected();
-    
+
     /**
      * Sets whether this worksheet will be displayed from right to left.
      */
     void setRightToLeft(boolean r);
-    
+
     /**
      * Specifies whether this worksheet is displayed from right to left.
      * @return <code>true</code> if this worksheet is displayed from right to left
      */
     boolean isRightToLeft();
-    
+
     /**
      * Adds a new NamedRange to this worksheet. Named ranges are usefull when
      * working with formulas. If this workbook allready contained a NamedRange
@@ -102,7 +102,7 @@ public interface Worksheet extends XLElement {
      * @return New NamedRange.
      */
     NamedRange addNamedRange(String name, String refersTo);
-    
+
     /**
      * Adds a new NamedRange to this worksheet.
      * If this workbook allready contained a NamedRange
@@ -116,7 +116,7 @@ public interface Worksheet extends XLElement {
      * @return the given NamedRange
      */
     NamedRange addNamedRange(NamedRange namedRange);
-    
+
     /**
      * Gets all the NamedRanges that were added to this worksheet. The map-keys
      * are equal to their names.
@@ -124,52 +124,52 @@ public interface Worksheet extends XLElement {
      * @return a map with NamedRanges
      */
     Map<String, NamedRange> getNamedRanges();
-    
+
     /**
      * Sets the given worksheetOptions as the worksheetOptions of this worksheet.
      * @param wso the worksheetOptions to be set on this worksheet
      */
     void setWorksheetOptions(WorksheetOptions wso);
-    
+
     /**
      * Indicates whether WorksheetOptions was added to this worksheet.
      * 
      * @return <code>true</code> if this worksheet has WorksheetOptions.
      */
     boolean hasWorksheetOptions();
-    
+
     /**
      * Gets the WorksheetOptions of this worksheet.
      * 
      * @return The WorksheetOptions of this worksheet. Never <code>null</code>.
      */
     WorksheetOptions getWorksheetOptions();
-    
+
     /**
      * Sets the given table as the table of this worksheet.
      * @param table the table to be set on this worksheet
      */
     void setTable(Table table);
-    
+
     /**
      * Gets the table of this worksheet.
      * 
      * @return The table of this worksheet. Never <code>null</code>.
      */
     Table getTable();
-    
+
     /**
      * Indicates whether this worksheet has a table.
      */
     boolean hasTable();
-    
+
     /**
      * Gets the cellpointer of this worksheet.
      * 
      * @return This worksheets cellpointer.
      */
     CellPointer getCellPointer();
-       
+
     /**
      * Adds a new cell at the current position of the worksheets
      * {@link nl.fountain.xelem.CellPointer} and moves the cellpointer.
@@ -186,7 +186,7 @@ public interface Worksheet extends XLElement {
      * @see nl.fountain.xelem.CellPointer#move()
      */
     Cell addCell();
-    
+
     /**
      * Adds the given cell at the current position of the worksheets
      * {@link nl.fountain.xelem.CellPointer} and moves the cellpointer.
@@ -202,7 +202,7 @@ public interface Worksheet extends XLElement {
      * @see nl.fountain.xelem.CellPointer#move()
      */
     Cell addCell(Cell cell);
-    
+
     /**
      * Adds a new cell at the current position of the worksheets
      * {@link nl.fountain.xelem.CellPointer} and moves the cellpointer.
@@ -223,7 +223,7 @@ public interface Worksheet extends XLElement {
      * @see nl.fountain.xelem.CellPointer#move()
      */
     Cell addCell(Object data);
-    
+
     /**
      * Adds a new cell at the current position of the worksheets
      * {@link nl.fountain.xelem.CellPointer} and moves the cellpointer.
@@ -247,7 +247,7 @@ public interface Worksheet extends XLElement {
      * @see nl.fountain.xelem.CellPointer#move()
      */
     Cell addCell(Object data, String styleID);
-    
+
     /**
      * Adds a new cell at the current position of the worksheets
      * {@link nl.fountain.xelem.CellPointer} and moves the cellpointer.
@@ -266,7 +266,7 @@ public interface Worksheet extends XLElement {
      * @see nl.fountain.xelem.CellPointer#move()
      */
     Cell addCell(double data);
-    
+
     /**
      * Adds a new cell at the current position of the worksheets
      * {@link nl.fountain.xelem.CellPointer} and moves the cellpointer.
@@ -288,7 +288,7 @@ public interface Worksheet extends XLElement {
      * @see nl.fountain.xelem.CellPointer#move()
      */
     Cell addCell(double data, String styleID);
-    
+
     /**
      * Adds a new cell at the current position of the worksheets
      * {@link nl.fountain.xelem.CellPointer} and moves the cellpointer.
@@ -306,7 +306,7 @@ public interface Worksheet extends XLElement {
      * @see nl.fountain.xelem.CellPointer#move()
      */
     Cell addCell(int data);
-    
+
     /**
      * Adds a new cell at the current position of the worksheets
      * {@link nl.fountain.xelem.CellPointer} and moves the cellpointer.
@@ -326,7 +326,7 @@ public interface Worksheet extends XLElement {
      * @see nl.fountain.xelem.CellPointer#move
      */
     Cell addCell(int data, String styleID);
-    
+
     /**
      * Adds a new cell at the given address. If this worksheet
      * didn't have a row at the row index of the given address, 
@@ -347,7 +347,7 @@ public interface Worksheet extends XLElement {
      * @see nl.fountain.xelem.CellPointer#move()
      */
     Cell addCellAt(Address address);
-    
+
     /**
      * Adds a new cell at the given row and column index. If this worksheet
      * didn't have a row at the given index, a new row will be added. If the
@@ -370,7 +370,7 @@ public interface Worksheet extends XLElement {
      * @see nl.fountain.xelem.CellPointer#move()
      */
     Cell addCellAt(int rowIndex, int columnIndex);
-    
+
     /**
      * Adds a new cell at the address specified by the A1-reference string. 
      * If this worksheet
@@ -393,7 +393,7 @@ public interface Worksheet extends XLElement {
      * @see nl.fountain.xelem.CellPointer#move()
      */
     Cell addCellAt(String a1_ref);
-    
+
     /**
      * Adds the given cell at the given address. If this worksheet
      * didn't have a row at the row index of the given address, 
@@ -414,7 +414,7 @@ public interface Worksheet extends XLElement {
      * @see nl.fountain.xelem.CellPointer#move()
      */
     Cell addCellAt(Address address, Cell cell);
-    
+
     /**
      * Adds the given cell at the given row and column index. If this worksheet
      * didn't have a row at the given index, a new row will be added. If the
@@ -437,7 +437,7 @@ public interface Worksheet extends XLElement {
      * @see nl.fountain.xelem.CellPointer#move()
      */
     Cell addCellAt(int rowIndex, int columnIndex, Cell cell);
-    
+
     /**
      * Adds the given cell at the address specified by the A1-reference string.
      * If this worksheet
@@ -460,7 +460,7 @@ public interface Worksheet extends XLElement {
      * @see nl.fountain.xelem.CellPointer#move()
      */
     Cell addCellAt(String a1_ref, Cell cell);
-    
+
     /**
      * Removes the cell at the given address.
      * 
@@ -468,7 +468,7 @@ public interface Worksheet extends XLElement {
      * @return The removed cell or <code>null</code>.
      */
     Cell removeCellAt(Address address);
-    
+
     /**
      * Removes the cell at the given coordinates.
      * 
@@ -478,7 +478,7 @@ public interface Worksheet extends XLElement {
      * @return The removed cell or <code>null</code>.
      */
     Cell removeCellAt(int rowIndex, int columnIndex);
-    
+
     /**
      * Removes the cell at the address specified by the A1-reference string.
      * 
@@ -487,7 +487,7 @@ public interface Worksheet extends XLElement {
      * @return The removed cell or <code>null</code>.
      */
     Cell removeCellAt(String a1_ref);
-    
+
     /**
      * Gets the cell at the given address.
      * 
@@ -495,7 +495,7 @@ public interface Worksheet extends XLElement {
      * @return The cell at the given address. Never <code>null</code> 
      */
     Cell getCellAt(Address address);
-    
+
     /**
      * Gets the cell at the given coordinates.
      * 
@@ -505,7 +505,7 @@ public interface Worksheet extends XLElement {
      * @return The cell at the given coordinates. Never <code>null</code> 
      */
     Cell getCellAt(int rowIndex, int columnIndex);
-    
+
     /**
      * Gets the cell at address specified by the given string in A1-reference style.
      * 
@@ -514,24 +514,24 @@ public interface Worksheet extends XLElement {
      * @return The cell at the given coordinates. Never <code>null</code>
      */
     Cell getCellAt(String a1_ref);
-    
+
     /**
      * Specifies whether there is a cell at the given address.
      */
     boolean hasCellAt(Address address);
-    
+
     /**
      * Specifies whether there is a cell at the intersection of the given
      * row and column index.
      */
     boolean hasCellAt(int rowIndex, int columnIndex);
-    
+
     /**
      * Specifies whether there is a cell at the address specified by the 
      * given string in A1-reference style.
      */
     boolean hasCellAt(String a1_ref);
-    
+
     /**
      * Adds a new Row to this worksheet. If no rows were previously added
      * the row will be added at index 1. Otherwise the row will be added at 
@@ -544,7 +544,7 @@ public interface Worksheet extends XLElement {
      * 			then {@link #lastRow}.
      */
     Row addRow();
-    
+
     /**
      * Adds a new Row at the given index to this worksheet. If the index 
      * was allready occupied by another row, replaces this row.
@@ -556,7 +556,7 @@ public interface Worksheet extends XLElement {
      * 			then {@link #lastRow}.
      */
     Row addRowAt(int index);
-    
+
     /**
      * Adds the given row to this worksheet. If no rows were previously added
      * the row will be added at index 1. Otherwise the row will be added at
@@ -570,7 +570,7 @@ public interface Worksheet extends XLElement {
      * 			then {@link #lastRow}.
      */
     Row addRow(Row row);
-    
+
     /**
      * Adds the given Row at the given index to this worksheet. If the index 
      * was allready occupied by another row, replaces this row.
@@ -583,7 +583,7 @@ public interface Worksheet extends XLElement {
      * 			then {@link #lastRow}.
      */
     Row addRowAt(int index, Row row);
-    
+
     /**
      * Removes the row at the given index.
      * 
@@ -593,14 +593,14 @@ public interface Worksheet extends XLElement {
      * 			by a row.
      */
     Row removeRowAt(int rowIndex);
-    
+
     /**
      * Gets all the rows of this worksheet in the order of their index.
      * 
      * @return A collection of rows.
      */
     Collection<Row> getRows();
-    
+
     /**
      * Gets the row at the given index.
      * 
@@ -612,12 +612,12 @@ public interface Worksheet extends XLElement {
      * 			then {@link #lastRow}.
      */
     Row getRowAt(int rowIndex);
-    
+
     /**
      * Specifies whether there is a row at the given row index.
      */
     boolean hasRowAt(int rowIndex);
-    
+
     /**
      * Adds a new Column to this worksheet. If no columns were previously added
      * the column will be added at index 1. Otherwise the column will be added at 
@@ -630,7 +630,7 @@ public interface Worksheet extends XLElement {
      * 			then {@link #lastColumn}.
      */
     Column addColumn();
-    
+
     /**
      * Adds a new Column at the given index to this worksheet. If the index 
      * was allready occupied by another column, replaces this column.
@@ -642,7 +642,7 @@ public interface Worksheet extends XLElement {
      * 			then {@link #lastColumn}.
      */
     Column addColumnAt(int index);
-    
+
     /**
      * Adds a new Column at the index specified by the given label.
      * If the index 
@@ -656,7 +656,7 @@ public interface Worksheet extends XLElement {
      * 			then {@link #lastColumn}.
      */
     Column addColumnAt(String label);
-    
+
     /**
      * Adds the given column to this worksheet. If no columns were previously added
      * the column will be added at index 1. Otherwise the ccolumn will be added at 
@@ -670,7 +670,7 @@ public interface Worksheet extends XLElement {
      * 			then {@link #lastColumn}.
      */
     Column addColumn(Column column);
-    
+
     /**
      * Adds the given Column at the given index to this worksheet. If the index 
      * was allready occupied by another column, replaces this column.
@@ -683,7 +683,7 @@ public interface Worksheet extends XLElement {
      * 			then {@link #lastColumn}.
      */
     Column addColumnAt(int index, Column column);
-    
+
     /**
      * Adds the given Column at the given index specified by the given label.
      * If the index 
@@ -698,7 +698,7 @@ public interface Worksheet extends XLElement {
      * 			then {@link #lastColumn}.
      */
     Column addColumnAt(String label, Column column);
-    
+
     /**
      * Removes the column at the given index.
      * 
@@ -708,7 +708,7 @@ public interface Worksheet extends XLElement {
      * 			by a column.
      */
     Column removeColumnAt(int columnIndex);
-    
+
     /**
      * Removes the column at the index specified by the given label.
      * 
@@ -719,14 +719,14 @@ public interface Worksheet extends XLElement {
      * 			by a column.
      */
     Column removeColumnAt(String label);
-    
+
     /**
      * Gets all the columns of this worksheet in the order of their index.
      * 
      * @return A collection of columns.
      */
     Collection<Column> getColumns();
-    
+
     /**
      * Gets the column at the given index. If no column was at the given index,
      * returns a new column.
@@ -739,7 +739,7 @@ public interface Worksheet extends XLElement {
      * 			then {@link #lastColumn}.
      */
     Column getColumnAt(int columnIndex);
-    
+
     /**
      * Gets the column at the index specified by the given label. 
      * If no column was at the index,
@@ -754,12 +754,12 @@ public interface Worksheet extends XLElement {
      * 			then {@link #lastColumn}.
      */
     Column getColumnAt(String label);
-    
+
     /**
      * Specifies whether there is a column at the given column index.
      */
     boolean hasColumnAt(int columnIndex);
-    
+
     /**
      * Specifies whether there is a column at the index specified by the given label.
      * 
@@ -767,7 +767,7 @@ public interface Worksheet extends XLElement {
      * 					corresponding to the column index
      */
     boolean hasColumnAt(String label);
-    
+
     /**
      * Sets the AutoFilter-option on the specified range.
      * <P>
@@ -798,13 +798,13 @@ public interface Worksheet extends XLElement {
      * @param rcString	A String of R1C1 reference style.
      */
     void setAutoFilter(String rcString);
-    
+
     /**
      * Sets the AutoFilter on this worksheet.
      * @param af the AutoFilter to be set on this worksheet.
      */
     void setAutoFilter(AutoFilter af);
-    
+
     /**
      * Specifies whether the {@link #setAutoFilter(String) setAutoFilter}-method 
      * was applied on this worksheet.
@@ -813,15 +813,15 @@ public interface Worksheet extends XLElement {
      * 				was applied on this worksheet, false otherwise.
      */
     boolean hasAutoFilter();
-    
+
     /**
      * Removes the Autofilter on this worksheet.
      * 
      * @since xelem.2.1
      */
     void removeAutoFilter();
-    
-    //int rowCount();
-    //int columnCount();
-    
+
+    // int rowCount();
+    // int columnCount();
+
 }

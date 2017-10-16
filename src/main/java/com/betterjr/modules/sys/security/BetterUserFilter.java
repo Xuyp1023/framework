@@ -30,7 +30,8 @@ public class BetterUserFilter extends UserFilter {
      * 拒绝访问的情况下，返回401
      */
     @Override
-    protected boolean onAccessDenied(final ServletRequest anRequest, final ServletResponse anResponse) throws Exception {
+    protected boolean onAccessDenied(final ServletRequest anRequest, final ServletResponse anResponse)
+            throws Exception {
         final HttpServletRequest request = WebUtils.toHttp(anRequest);
         logger.info("AccessDenied:" + request.getRequestURI());
         if (!isLoginRequest(anRequest, anResponse)) {

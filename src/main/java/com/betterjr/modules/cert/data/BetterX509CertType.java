@@ -2,10 +2,13 @@ package com.betterjr.modules.cert.data;
 
 import java.security.cert.X509Certificate;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.betterjr.common.utils.BetterStringUtils;
 
 public enum BetterX509CertType {
-    ROOT_CA("0", "根证书"), MIDDLE_CA("1", "中级证书"), SSL_CERT("2", "SSL证书"), END_CERT("3", "最终用户证书"), PRIV_KEY("5", "简单的密钥私钥"), PUB_KEY("6", "简单的密钥公钥");
+    ROOT_CA("0", "根证书"), MIDDLE_CA("1", "中级证书"), SSL_CERT("2", "SSL证书"), END_CERT("3", "最终用户证书"), PRIV_KEY("5",
+            "简单的密钥私钥"), PUB_KEY("6", "简单的密钥公钥");
     private final String name;
     private final String value;
 
@@ -27,8 +30,7 @@ public enum BetterX509CertType {
         if (kk > 0) {
             if (anCert.getIssuerDN().equals(anCert.getSubjectDN())) {
                 return ROOT_CA;
-            }
-            else {
+            } else {
                 return MIDDLE_CA;
             }
         }
@@ -37,7 +39,7 @@ public enum BetterX509CertType {
 
     public static BetterX509CertType checking(String anWorkType) {
         try {
-            if (BetterStringUtils.isNotBlank(anWorkType)) {
+            if (StringUtils.isNotBlank(anWorkType)) {
                 for (BetterX509CertType mm : BetterX509CertType.values()) {
                     if (mm.value.equalsIgnoreCase(anWorkType)) {
 

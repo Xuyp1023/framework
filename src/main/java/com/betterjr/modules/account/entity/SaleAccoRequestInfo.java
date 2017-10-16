@@ -3,17 +3,25 @@ package com.betterjr.modules.account.entity;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import com.betterjr.common.annotation.*;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.LinkedCaseInsensitiveMap;
+
+import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.config.ParamNames;
 import com.betterjr.common.data.AttachDataFace;
 import com.betterjr.common.data.BaseRemoteEntity;
 import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.modules.account.data.SaleRequestFace;
-
-import javax.persistence.*;
-
-import org.springframework.util.LinkedCaseInsensitiveMap;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -881,10 +889,11 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
     private String isThreeInOne;
     @Transient
     private String lawCertValidForever;
-    
+
     @Transient
     private Map<String, String> attach;
 
+    @Override
     public Map<String, String> getAttach() {
         return this.attach;
     }
@@ -908,7 +917,7 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
     private String busiLicence;
 
     private String coreList;
-    
+
     public String getCoreList() {
         return this.coreList;
     }
@@ -938,82 +947,102 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
         return "";
     }
 
+    @Override
     public String getRequestNo() {
         return requestNo;
     }
 
+    @Override
     public void setRequestNo(String requestNo) {
         this.requestNo = requestNo == null ? null : requestNo.trim();
     }
 
+    @Override
     public Long getCustNo() {
         return custNo;
     }
 
+    @Override
     public void setCustNo(Long custNo) {
         this.custNo = custNo;
     }
 
+    @Override
     public String getTano() {
         return tano;
     }
 
+    @Override
     public void setTano(String tano) {
         this.tano = tano == null ? null : tano.trim();
     }
 
+    @Override
     public String getTradeAccount() {
         return tradeAccount;
     }
 
+    @Override
     public void setTradeAccount(String tradeAccount) {
         this.tradeAccount = tradeAccount == null ? null : tradeAccount.trim();
     }
 
+    @Override
     public String getFundAccount() {
         return fundAccount;
     }
 
+    @Override
     public void setFundAccount(String fundAccount) {
         this.fundAccount = fundAccount == null ? null : fundAccount.trim();
     }
 
+    @Override
     public String getAgencyNo() {
         return agencyNo;
     }
 
+    @Override
     public void setAgencyNo(String agencyNo) {
         this.agencyNo = agencyNo == null ? null : agencyNo.trim();
     }
 
+    @Override
     public String getPayCenterNo() {
         return payCenterNo;
     }
 
+    @Override
     public void setPayCenterNo(String payCenterNo) {
         this.payCenterNo = payCenterNo == null ? null : payCenterNo.trim();
     }
 
+    @Override
     public String getNetNo() {
         return netNo;
     }
 
+    @Override
     public void setNetNo(String netNo) {
         this.netNo = netNo == null ? null : netNo.trim();
     }
 
+    @Override
     public String getBusinFlag() {
         return businFlag;
     }
 
+    @Override
     public void setBusinFlag(String businFlag) {
         this.businFlag = businFlag == null ? null : businFlag.trim();
     }
 
+    @Override
     public String getCustType() {
         return custType;
     }
 
+    @Override
     public void setCustType(String custType) {
         this.custType = custType == null ? null : custType.trim();
     }
@@ -1154,10 +1183,12 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
         this.custSex = custSex == null ? null : custSex.trim();
     }
 
+    @Override
     public String getCityNo() {
         return cityNo;
     }
 
+    @Override
     public void setCityNo(String cityNo) {
         this.cityNo = cityNo == null ? null : cityNo.trim();
     }
@@ -1178,6 +1209,7 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
         this.bankNo = bankNo == null ? null : bankNo.trim();
     }
 
+    @Override
     public String getBankAccount() {
         return bankAccount;
     }
@@ -1202,26 +1234,32 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
         this.bankAcountName = bankAcountName == null ? null : bankAcountName.trim();
     }
 
+    @Override
     public String getPreStatus() {
         return preStatus;
     }
 
+    @Override
     public void setPreStatus(String preStatus) {
         this.preStatus = preStatus == null ? null : preStatus.trim();
     }
 
+    @Override
     public String getTradeStatus() {
         return tradeStatus;
     }
 
+    @Override
     public void setTradeStatus(String tradeStatus) {
         this.tradeStatus = tradeStatus == null ? null : tradeStatus.trim();
     }
 
+    @Override
     public String getLastTradeStatus() {
         return lastTradeStatus;
     }
 
+    @Override
     public void setLastTradeStatus(String lastTradeStatus) {
         this.lastTradeStatus = lastTradeStatus == null ? null : lastTradeStatus.trim();
     }
@@ -1314,34 +1352,42 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
         this.shAccount = shAccount == null ? null : shAccount.trim();
     }
 
+    @Override
     public String getTradeDate() {
         return tradeDate;
     }
 
+    @Override
     public void setTradeDate(String tradeDate) {
         this.tradeDate = tradeDate == null ? null : tradeDate.trim();
     }
 
+    @Override
     public String getTradeTime() {
         return tradeTime;
     }
 
+    @Override
     public void setTradeTime(String tradeTime) {
         this.tradeTime = tradeTime == null ? null : tradeTime.trim();
     }
 
+    @Override
     public String getOperDate() {
         return operDate;
     }
 
+    @Override
     public void setOperDate(String operDate) {
         this.operDate = operDate == null ? null : operDate.trim();
     }
 
+    @Override
     public String getOperTime() {
         return operTime;
     }
 
+    @Override
     public void setOperTime(String operTime) {
         this.operTime = operTime == null ? null : operTime.trim();
     }
@@ -1362,26 +1408,32 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
         this.cipherText = cipherText == null ? null : cipherText.trim();
     }
 
+    @Override
     public String getIpaddr() {
         return ipaddr;
     }
 
+    @Override
     public void setIpaddr(String ipaddr) {
         this.ipaddr = ipaddr == null ? null : ipaddr.trim();
     }
 
+    @Override
     public String getOperNo() {
         return operNo;
     }
 
+    @Override
     public void setOperNo(String operNo) {
         this.operNo = operNo == null ? null : operNo.trim();
     }
 
+    @Override
     public String getCheckerNo() {
         return checkerNo;
     }
 
+    @Override
     public void setCheckerNo(String checkerNo) {
         this.checkerNo = checkerNo == null ? null : checkerNo.trim();
     }
@@ -1418,10 +1470,12 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
         this.contIdentifyType = contIdentifyType == null ? null : contIdentifyType.trim();
     }
 
+    @Override
     public String getContName() {
         return contName;
     }
 
+    @Override
     public void setContName(String contName) {
         this.contName = contName == null ? null : contName.trim();
     }
@@ -1458,10 +1512,12 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
         this.instType = instType == null ? null : instType.trim();
     }
 
+    @Override
     public String getPromotion() {
         return promotion;
     }
 
+    @Override
     public void setPromotion(String promotion) {
         this.promotion = promotion == null ? null : promotion.trim();
     }
@@ -1514,18 +1570,22 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
         this.muiltAcco = muiltAcco;
     }
 
+    @Override
     public String getCanceled() {
         return canceled;
     }
 
+    @Override
     public void setCanceled(String canceled) {
         this.canceled = canceled == null ? null : canceled.trim();
     }
 
+    @Override
     public String getOrderWay() {
         return orderWay;
     }
 
+    @Override
     public void setOrderWay(String orderWay) {
         this.orderWay = orderWay == null ? null : orderWay.trim();
     }
@@ -1538,10 +1598,12 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
         this.signStatus = signStatus;
     }
 
+    @Override
     public String getOperOrg() {
         return operOrg;
     }
 
+    @Override
     public void setOperOrg(String operOrg) {
         this.operOrg = operOrg == null ? null : operOrg.trim();
     }
@@ -1570,42 +1632,52 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
         this.minorId = minorId == null ? null : minorId.trim();
     }
 
+    @Override
     public String getBroker() {
         return broker;
     }
 
+    @Override
     public void setBroker(String broker) {
         this.broker = broker == null ? null : broker.trim();
     }
 
+    @Override
     public String getCustManager() {
         return custManager;
     }
 
+    @Override
     public void setCustManager(String custManager) {
         this.custManager = custManager == null ? null : custManager.trim();
     }
 
+    @Override
     public String getReferral() {
         return referral;
     }
 
+    @Override
     public void setReferral(String referral) {
         this.referral = referral == null ? null : referral.trim();
     }
 
+    @Override
     public String getReferralMobile() {
         return referralMobile;
     }
 
+    @Override
     public void setReferralMobile(String referralMobile) {
         this.referralMobile = referralMobile == null ? null : referralMobile.trim();
     }
 
+    @Override
     public String getAcceptMode() {
         return acceptMode;
     }
 
+    @Override
     public void setAcceptMode(String acceptMode) {
         this.acceptMode = acceptMode == null ? null : acceptMode.trim();
     }
@@ -1658,74 +1730,92 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
         this.riskNo = riskNo == null ? null : riskNo.trim();
     }
 
+    @Override
     public String getSourceKey() {
         return sourceKey;
     }
 
+    @Override
     public void setSourceKey(String sourceKey) {
         this.sourceKey = sourceKey == null ? null : sourceKey.trim();
     }
 
+    @Override
     public String getOperWay() {
         return operWay;
     }
 
+    @Override
     public void setOperWay(String operWay) {
         this.operWay = operWay == null ? null : operWay.trim();
     }
 
+    @Override
     public Long getMoneyAccount() {
         return moneyAccount;
     }
 
+    @Override
     public void setMoneyAccount(Long moneyAccount) {
         this.moneyAccount = moneyAccount;
     }
 
+    @Override
     public String getConfirmDate() {
         return confirmDate;
     }
 
+    @Override
     public void setConfirmDate(String confirmDate) {
         this.confirmDate = confirmDate == null ? null : confirmDate.trim();
     }
 
+    @Override
     public String getErrCode() {
         return errCode;
     }
 
+    @Override
     public void setErrCode(String errCode) {
         this.errCode = errCode == null ? null : errCode.trim();
     }
 
+    @Override
     public String getErrDetail() {
         return errDetail;
     }
 
+    @Override
     public void setErrDetail(String errDetail) {
         this.errDetail = errDetail == null ? null : errDetail.trim();
     }
 
+    @Override
     public String getConfirmCause() {
         return confirmCause;
     }
 
+    @Override
     public void setConfirmCause(String confirmCause) {
         this.confirmCause = confirmCause == null ? null : confirmCause.trim();
     }
 
+    @Override
     public String getConfirmSerialno() {
         return confirmSerialno;
     }
 
+    @Override
     public void setConfirmSerialno(String confirmSerialno) {
         this.confirmSerialno = confirmSerialno == null ? null : confirmSerialno.trim();
     }
 
+    @Override
     public String getTagetTradeAccount() {
         return tagetTradeAccount;
     }
 
+    @Override
     public void setTagetTradeAccount(String tagetTradeAccount) {
         this.tagetTradeAccount = tagetTradeAccount == null ? null : tagetTradeAccount.trim();
     }
@@ -1738,82 +1828,102 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
         this.accountCardNo = accountCardNo == null ? null : accountCardNo.trim();
     }
 
+    @Override
     public String getSpecification() {
         return specification;
     }
 
+    @Override
     public void setSpecification(String specification) {
         this.specification = specification == null ? null : specification.trim();
     }
 
+    @Override
     public String getFrozenEndLine() {
         return frozenEndLine;
     }
 
+    @Override
     public void setFrozenEndLine(String frozenEndLine) {
         this.frozenEndLine = frozenEndLine == null ? null : frozenEndLine.trim();
     }
 
+    @Override
     public String getFrozenCause() {
         return frozenCause;
     }
 
+    @Override
     public void setFrozenCause(String frozenCause) {
         this.frozenCause = frozenCause == null ? null : frozenCause.trim();
     }
 
+    @Override
     public String getOriginConfirmNo() {
         return originConfirmNo;
     }
 
+    @Override
     public void setOriginConfirmNo(String originConfirmNo) {
         this.originConfirmNo = originConfirmNo == null ? null : originConfirmNo.trim();
     }
 
+    @Override
     public String getOriginRequestNo() {
         return originRequestNo;
     }
 
+    @Override
     public void setOriginRequestNo(String originRequestNo) {
         this.originRequestNo = originRequestNo == null ? null : originRequestNo.trim();
     }
 
+    @Override
     public String getOriginConfirmDate() {
         return originConfirmDate;
     }
 
+    @Override
     public void setOriginConfirmDate(String originConfirmDate) {
         this.originConfirmDate = originConfirmDate == null ? null : originConfirmDate.trim();
     }
 
+    @Override
     public String getChecker() {
         return checker;
     }
 
+    @Override
     public void setChecker(String checker) {
         this.checker = checker == null ? null : checker.trim();
     }
 
+    @Override
     public String getSaleCustNo() {
         return saleCustNo;
     }
 
+    @Override
     public void setSaleCustNo(String saleCustNo) {
         this.saleCustNo = saleCustNo == null ? null : saleCustNo.trim();
     }
 
+    @Override
     public String getSaleRequestNo() {
         return saleRequestNo;
     }
 
+    @Override
     public void setSaleRequestNo(String saleRequestNo) {
         this.saleRequestNo = saleRequestNo == null ? null : saleRequestNo.trim();
     }
 
+    @Override
     public Long getContactor() {
         return contactor;
     }
 
+    @Override
     public void setContactor(Long contactor) {
         this.contactor = contactor;
     }
@@ -1834,34 +1944,42 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
         this.contactorSerial = anContactorSerial;
     }
 
+    @Override
     public String getSaleNetNo() {
         return this.saleNetNo;
     }
 
+    @Override
     public void setSaleNetNo(String anSaleNetNo) {
         this.saleNetNo = anSaleNetNo;
     }
 
+    @Override
     public String getSalePayCenterNo() {
         return this.salePayCenterNo;
     }
 
+    @Override
     public void setSalePayCenterNo(String anSalePayCenterNo) {
         this.salePayCenterNo = anSalePayCenterNo;
     }
 
+    @Override
     public String getSaleTradeAccount() {
         return this.saleTradeAccount;
     }
 
+    @Override
     public void setSaleTradeAccount(String anSaleTradeAccount) {
         this.saleTradeAccount = anSaleTradeAccount;
     }
 
+    @Override
     public String getDealFlag() {
         return this.dealFlag;
     }
 
+    @Override
     public void setDealFlag(String anDealFlag) {
         this.dealFlag = anDealFlag;
     }
@@ -1882,18 +2000,22 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
         this.contFax = anContFax;
     }
 
+    @Override
     public String getAduitFlag() {
         return this.aduitFlag;
     }
 
+    @Override
     public void setAduitFlag(String anAduitFlag) {
         this.aduitFlag = anAduitFlag;
     }
 
+    @Override
     public String getSaleMoneyAccount() {
         return this.saleMoneyAccount;
     }
 
+    @Override
     public void setSaleMoneyAccount(String anSaleMoneyAccount) {
         this.saleMoneyAccount = anSaleMoneyAccount;
     }
@@ -1984,7 +2106,7 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
 
     public void setValidDate(String anValidDate) {
         this.validDate = anValidDate;
-        if (BetterStringUtils.isBlank(certValidDate)){
+        if (StringUtils.isBlank(certValidDate)) {
             this.certValidDate = anValidDate;
         }
     }
@@ -2149,7 +2271,7 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
         sb.append(", setupDate=").append(setupDate);
         sb.append(", regAddr=").append(regAddr);
         sb.append(", validDate=").append(validDate);
-       sb.append("]");
+        sb.append("]");
         return sb.toString();
     }
 
@@ -2165,136 +2287,222 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
             return false;
         }
         SaleAccoRequestInfo other = (SaleAccoRequestInfo) that;
-        return (this.getRequestNo() == null ? other.getRequestNo() == null : this.getRequestNo().equals(other.getRequestNo()))
+        return (this.getRequestNo() == null ? other.getRequestNo() == null
+                : this.getRequestNo().equals(other.getRequestNo()))
                 && (this.getCustNo() == null ? other.getCustNo() == null : this.getCustNo().equals(other.getCustNo()))
                 && (this.getTano() == null ? other.getTano() == null : this.getTano().equals(other.getTano()))
-                && (this.getTradeAccount() == null ? other.getTradeAccount() == null : this.getTradeAccount().equals(other.getTradeAccount()))
-                && (this.getFundAccount() == null ? other.getFundAccount() == null : this.getFundAccount().equals(other.getFundAccount()))
-                && (this.getAgencyNo() == null ? other.getAgencyNo() == null : this.getAgencyNo().equals(other.getAgencyNo()))
-                && (this.getPayCenterNo() == null ? other.getPayCenterNo() == null : this.getPayCenterNo().equals(other.getPayCenterNo()))
+                && (this.getTradeAccount() == null ? other.getTradeAccount() == null
+                        : this.getTradeAccount().equals(other.getTradeAccount()))
+                && (this.getFundAccount() == null ? other.getFundAccount() == null
+                        : this.getFundAccount().equals(other.getFundAccount()))
+                && (this.getAgencyNo() == null ? other.getAgencyNo() == null
+                        : this.getAgencyNo().equals(other.getAgencyNo()))
+                && (this.getPayCenterNo() == null ? other.getPayCenterNo() == null
+                        : this.getPayCenterNo().equals(other.getPayCenterNo()))
                 && (this.getNetNo() == null ? other.getNetNo() == null : this.getNetNo().equals(other.getNetNo()))
-                && (this.getBusinFlag() == null ? other.getBusinFlag() == null : this.getBusinFlag().equals(other.getBusinFlag()))
-                && (this.getCustType() == null ? other.getCustType() == null : this.getCustType().equals(other.getCustType()))
-                && (this.getCustName() == null ? other.getCustName() == null : this.getCustName().equals(other.getCustName()))
-                && (this.getNickName() == null ? other.getNickName() == null : this.getNickName().equals(other.getNickName()))
-                && (this.getShortName() == null ? other.getShortName() == null : this.getShortName().equals(other.getShortName()))
-                && (this.getIdentType() == null ? other.getIdentType() == null : this.getIdentType().equals(other.getIdentType()))
-                && (this.getIdentNo() == null ? other.getIdentNo() == null : this.getIdentNo().equals(other.getIdentNo()))
-                && (this.getZipCode() == null ? other.getZipCode() == null : this.getZipCode().equals(other.getZipCode()))
-                && (this.getAddress() == null ? other.getAddress() == null : this.getAddress().equals(other.getAddress()))
+                && (this.getBusinFlag() == null ? other.getBusinFlag() == null
+                        : this.getBusinFlag().equals(other.getBusinFlag()))
+                && (this.getCustType() == null ? other.getCustType() == null
+                        : this.getCustType().equals(other.getCustType()))
+                && (this.getCustName() == null ? other.getCustName() == null
+                        : this.getCustName().equals(other.getCustName()))
+                && (this.getNickName() == null ? other.getNickName() == null
+                        : this.getNickName().equals(other.getNickName()))
+                && (this.getShortName() == null ? other.getShortName() == null
+                        : this.getShortName().equals(other.getShortName()))
+                && (this.getIdentType() == null ? other.getIdentType() == null
+                        : this.getIdentType().equals(other.getIdentType()))
+                && (this.getIdentNo() == null ? other.getIdentNo() == null
+                        : this.getIdentNo().equals(other.getIdentNo()))
+                && (this.getZipCode() == null ? other.getZipCode() == null
+                        : this.getZipCode().equals(other.getZipCode()))
+                && (this.getAddress() == null ? other.getAddress() == null
+                        : this.getAddress().equals(other.getAddress()))
                 && (this.getPhone() == null ? other.getPhone() == null : this.getPhone().equals(other.getPhone()))
-                && (this.getHomePhone() == null ? other.getHomePhone() == null : this.getHomePhone().equals(other.getHomePhone()))
-                && (this.getOfficePhone() == null ? other.getOfficePhone() == null : this.getOfficePhone().equals(other.getOfficePhone()))
+                && (this.getHomePhone() == null ? other.getHomePhone() == null
+                        : this.getHomePhone().equals(other.getHomePhone()))
+                && (this.getOfficePhone() == null ? other.getOfficePhone() == null
+                        : this.getOfficePhone().equals(other.getOfficePhone()))
                 && (this.getFaxNo() == null ? other.getFaxNo() == null : this.getFaxNo().equals(other.getFaxNo()))
-                && (this.getMobileNo() == null ? other.getMobileNo() == null : this.getMobileNo().equals(other.getMobileNo()))
+                && (this.getMobileNo() == null ? other.getMobileNo() == null
+                        : this.getMobileNo().equals(other.getMobileNo()))
                 && (this.getEmail() == null ? other.getEmail() == null : this.getEmail().equals(other.getEmail()))
                 && (this.getWeiXin() == null ? other.getWeiXin() == null : this.getWeiXin().equals(other.getWeiXin()))
                 && (this.getWeibo() == null ? other.getWeibo() == null : this.getWeibo().equals(other.getWeibo()))
                 && (this.getQq() == null ? other.getQq() == null : this.getQq().equals(other.getQq()))
-                && (this.getCustSex() == null ? other.getCustSex() == null : this.getCustSex().equals(other.getCustSex()))
+                && (this.getCustSex() == null ? other.getCustSex() == null
+                        : this.getCustSex().equals(other.getCustSex()))
                 && (this.getCityNo() == null ? other.getCityNo() == null : this.getCityNo().equals(other.getCityNo()))
                 && (this.getCounty() == null ? other.getCounty() == null : this.getCounty().equals(other.getCounty()))
                 && (this.getBankNo() == null ? other.getBankNo() == null : this.getBankNo().equals(other.getBankNo()))
-                && (this.getBankAccount() == null ? other.getBankAccount() == null : this.getBankAccount().equals(other.getBankAccount()))
-                && (this.getBankName() == null ? other.getBankName() == null : this.getBankName().equals(other.getBankName()))
-                && (this.getBankAcountName() == null ? other.getBankAcountName() == null : this.getBankAcountName().equals(other.getBankAcountName()))
-                && (this.getPreStatus() == null ? other.getPreStatus() == null : this.getPreStatus().equals(other.getPreStatus()))
-                && (this.getTradeStatus() == null ? other.getTradeStatus() == null : this.getTradeStatus().equals(other.getTradeStatus()))
-                && (this.getLastTradeStatus() == null ? other.getLastTradeStatus() == null : this.getLastTradeStatus().equals(
-                        other.getLastTradeStatus()))
-                && (this.getBirthDay() == null ? other.getBirthDay() == null : this.getBirthDay().equals(other.getBirthDay()))
-                && (this.getVocation() == null ? other.getVocation() == null : this.getVocation().equals(other.getVocation()))
-                && (this.getEducation() == null ? other.getEducation() == null : this.getEducation().equals(other.getEducation()))
-                && (this.getIncoming() == null ? other.getIncoming() == null : this.getIncoming().equals(other.getIncoming()))
-                && (this.getCorpVocate() == null ? other.getCorpVocate() == null : this.getCorpVocate().equals(other.getCorpVocate()))
-                && (this.getCorpProperty() == null ? other.getCorpProperty() == null : this.getCorpProperty().equals(other.getCorpProperty()))
-                && (this.getRegCapital() == null ? other.getRegCapital() == null : this.getRegCapital().equals(other.getRegCapital()))
-                && (this.getNational() == null ? other.getNational() == null : this.getNational().equals(other.getNational()))
-                && (this.getInvestType() == null ? other.getInvestType() == null : this.getInvestType().equals(other.getInvestType()))
-                && (this.getSzAccount() == null ? other.getSzAccount() == null : this.getSzAccount().equals(other.getSzAccount()))
-                && (this.getShAccount() == null ? other.getShAccount() == null : this.getShAccount().equals(other.getShAccount()))
-                && (this.getTradeDate() == null ? other.getTradeDate() == null : this.getTradeDate().equals(other.getTradeDate()))
-                && (this.getTradeTime() == null ? other.getTradeTime() == null : this.getTradeTime().equals(other.getTradeTime()))
-                && (this.getOperDate() == null ? other.getOperDate() == null : this.getOperDate().equals(other.getOperDate()))
-                && (this.getOperTime() == null ? other.getOperTime() == null : this.getOperTime().equals(other.getOperTime()))
-                && (this.getVoucherNo() == null ? other.getVoucherNo() == null : this.getVoucherNo().equals(other.getVoucherNo()))
-                && (this.getCipherText() == null ? other.getCipherText() == null : this.getCipherText().equals(other.getCipherText()))
+                && (this.getBankAccount() == null ? other.getBankAccount() == null
+                        : this.getBankAccount().equals(other.getBankAccount()))
+                && (this.getBankName() == null ? other.getBankName() == null
+                        : this.getBankName().equals(other.getBankName()))
+                && (this.getBankAcountName() == null ? other.getBankAcountName() == null
+                        : this.getBankAcountName().equals(other.getBankAcountName()))
+                && (this.getPreStatus() == null ? other.getPreStatus() == null
+                        : this.getPreStatus().equals(other.getPreStatus()))
+                && (this.getTradeStatus() == null ? other.getTradeStatus() == null
+                        : this.getTradeStatus().equals(other.getTradeStatus()))
+                && (this.getLastTradeStatus() == null ? other.getLastTradeStatus() == null
+                        : this.getLastTradeStatus().equals(other.getLastTradeStatus()))
+                && (this.getBirthDay() == null ? other.getBirthDay() == null
+                        : this.getBirthDay().equals(other.getBirthDay()))
+                && (this.getVocation() == null ? other.getVocation() == null
+                        : this.getVocation().equals(other.getVocation()))
+                && (this.getEducation() == null ? other.getEducation() == null
+                        : this.getEducation().equals(other.getEducation()))
+                && (this.getIncoming() == null ? other.getIncoming() == null
+                        : this.getIncoming().equals(other.getIncoming()))
+                && (this.getCorpVocate() == null ? other.getCorpVocate() == null
+                        : this.getCorpVocate().equals(other.getCorpVocate()))
+                && (this.getCorpProperty() == null ? other.getCorpProperty() == null
+                        : this.getCorpProperty().equals(other.getCorpProperty()))
+                && (this.getRegCapital() == null ? other.getRegCapital() == null
+                        : this.getRegCapital().equals(other.getRegCapital()))
+                && (this.getNational() == null ? other.getNational() == null
+                        : this.getNational().equals(other.getNational()))
+                && (this.getInvestType() == null ? other.getInvestType() == null
+                        : this.getInvestType().equals(other.getInvestType()))
+                && (this.getSzAccount() == null ? other.getSzAccount() == null
+                        : this.getSzAccount().equals(other.getSzAccount()))
+                && (this.getShAccount() == null ? other.getShAccount() == null
+                        : this.getShAccount().equals(other.getShAccount()))
+                && (this.getTradeDate() == null ? other.getTradeDate() == null
+                        : this.getTradeDate().equals(other.getTradeDate()))
+                && (this.getTradeTime() == null ? other.getTradeTime() == null
+                        : this.getTradeTime().equals(other.getTradeTime()))
+                && (this.getOperDate() == null ? other.getOperDate() == null
+                        : this.getOperDate().equals(other.getOperDate()))
+                && (this.getOperTime() == null ? other.getOperTime() == null
+                        : this.getOperTime().equals(other.getOperTime()))
+                && (this.getVoucherNo() == null ? other.getVoucherNo() == null
+                        : this.getVoucherNo().equals(other.getVoucherNo()))
+                && (this.getCipherText() == null ? other.getCipherText() == null
+                        : this.getCipherText().equals(other.getCipherText()))
                 && (this.getIpaddr() == null ? other.getIpaddr() == null : this.getIpaddr().equals(other.getIpaddr()))
                 && (this.getOperNo() == null ? other.getOperNo() == null : this.getOperNo().equals(other.getOperNo()))
-                && (this.getCheckerNo() == null ? other.getCheckerNo() == null : this.getCheckerNo().equals(other.getCheckerNo()))
-                && (this.getLawName() == null ? other.getLawName() == null : this.getLawName().equals(other.getLawName()))
-                && (this.getLawIdentType() == null ? other.getLawIdentType() == null : this.getLawIdentType().equals(other.getLawIdentType()))
-                && (this.getLawIdentNo() == null ? other.getLawIdentNo() == null : this.getLawIdentNo().equals(other.getLawIdentNo()))
-                && (this.getContIdentifyType() == null ? other.getContIdentifyType() == null : this.getContIdentifyType().equals(
-                        other.getContIdentifyType()))
-                && (this.getContName() == null ? other.getContName() == null : this.getContName().equals(other.getContName()))
-                && (this.getContIdentType() == null ? other.getContIdentType() == null : this.getContIdentType().equals(other.getContIdentType()))
-                && (this.getContIdentNo() == null ? other.getContIdentNo() == null : this.getContIdentNo().equals(other.getContIdentNo()))
-                && (this.getContPhone() == null ? other.getContPhone() == null : this.getContPhone().equals(other.getContPhone()))
-                && (this.getInstType() == null ? other.getInstType() == null : this.getInstType().equals(other.getInstType()))
-                && (this.getPromotion() == null ? other.getPromotion() == null : this.getPromotion().equals(other.getPromotion()))
-                && (this.getCustGroup() == null ? other.getCustGroup() == null : this.getCustGroup().equals(other.getCustGroup()))
-                && (this.getBranchBank() == null ? other.getBranchBank() == null : this.getBranchBank().equals(other.getBranchBank()))
-                && (this.getDeliverWay() == null ? other.getDeliverWay() == null : this.getDeliverWay().equals(other.getDeliverWay()))
-                && (this.getDeliverType() == null ? other.getDeliverType() == null : this.getDeliverType().equals(other.getDeliverType()))
-                && (this.getTradeMethod() == null ? other.getTradeMethod() == null : this.getTradeMethod().equals(other.getTradeMethod()))
-                && (this.getMuiltAcco() == null ? other.getMuiltAcco() == null : this.getMuiltAcco().equals(other.getMuiltAcco()))
-                && (this.getCanceled() == null ? other.getCanceled() == null : this.getCanceled().equals(other.getCanceled()))
-                && (this.getOrderWay() == null ? other.getOrderWay() == null : this.getOrderWay().equals(other.getOrderWay()))
-                && (this.getSignStatus() == null ? other.getSignStatus() == null : this.getSignStatus().equals(other.getSignStatus()))
-                && (this.getOperOrg() == null ? other.getOperOrg() == null : this.getOperOrg().equals(other.getOperOrg()))
-                && (this.getCustClass() == null ? other.getCustClass() == null : this.getCustClass().equals(other.getCustClass()))
+                && (this.getCheckerNo() == null ? other.getCheckerNo() == null
+                        : this.getCheckerNo().equals(other.getCheckerNo()))
+                && (this.getLawName() == null ? other.getLawName() == null
+                        : this.getLawName().equals(other.getLawName()))
+                && (this.getLawIdentType() == null ? other.getLawIdentType() == null
+                        : this.getLawIdentType().equals(other.getLawIdentType()))
+                && (this.getLawIdentNo() == null ? other.getLawIdentNo() == null
+                        : this.getLawIdentNo().equals(other.getLawIdentNo()))
+                && (this.getContIdentifyType() == null ? other.getContIdentifyType() == null
+                        : this.getContIdentifyType().equals(other.getContIdentifyType()))
+                && (this.getContName() == null ? other.getContName() == null
+                        : this.getContName().equals(other.getContName()))
+                && (this.getContIdentType() == null ? other.getContIdentType() == null
+                        : this.getContIdentType().equals(other.getContIdentType()))
+                && (this.getContIdentNo() == null ? other.getContIdentNo() == null
+                        : this.getContIdentNo().equals(other.getContIdentNo()))
+                && (this.getContPhone() == null ? other.getContPhone() == null
+                        : this.getContPhone().equals(other.getContPhone()))
+                && (this.getInstType() == null ? other.getInstType() == null
+                        : this.getInstType().equals(other.getInstType()))
+                && (this.getPromotion() == null ? other.getPromotion() == null
+                        : this.getPromotion().equals(other.getPromotion()))
+                && (this.getCustGroup() == null ? other.getCustGroup() == null
+                        : this.getCustGroup().equals(other.getCustGroup()))
+                && (this.getBranchBank() == null ? other.getBranchBank() == null
+                        : this.getBranchBank().equals(other.getBranchBank()))
+                && (this.getDeliverWay() == null ? other.getDeliverWay() == null
+                        : this.getDeliverWay().equals(other.getDeliverWay()))
+                && (this.getDeliverType() == null ? other.getDeliverType() == null
+                        : this.getDeliverType().equals(other.getDeliverType()))
+                && (this.getTradeMethod() == null ? other.getTradeMethod() == null
+                        : this.getTradeMethod().equals(other.getTradeMethod()))
+                && (this.getMuiltAcco() == null ? other.getMuiltAcco() == null
+                        : this.getMuiltAcco().equals(other.getMuiltAcco()))
+                && (this.getCanceled() == null ? other.getCanceled() == null
+                        : this.getCanceled().equals(other.getCanceled()))
+                && (this.getOrderWay() == null ? other.getOrderWay() == null
+                        : this.getOrderWay().equals(other.getOrderWay()))
+                && (this.getSignStatus() == null ? other.getSignStatus() == null
+                        : this.getSignStatus().equals(other.getSignStatus()))
+                && (this.getOperOrg() == null ? other.getOperOrg() == null
+                        : this.getOperOrg().equals(other.getOperOrg()))
+                && (this.getCustClass() == null ? other.getCustClass() == null
+                        : this.getCustClass().equals(other.getCustClass()))
                 && (this.getMinor() == null ? other.getMinor() == null : this.getMinor().equals(other.getMinor()))
-                && (this.getMinorId() == null ? other.getMinorId() == null : this.getMinorId().equals(other.getMinorId()))
+                && (this.getMinorId() == null ? other.getMinorId() == null
+                        : this.getMinorId().equals(other.getMinorId()))
                 && (this.getBroker() == null ? other.getBroker() == null : this.getBroker().equals(other.getBroker()))
-                && (this.getCustManager() == null ? other.getCustManager() == null : this.getCustManager().equals(other.getCustManager()))
-                && (this.getReferral() == null ? other.getReferral() == null : this.getReferral().equals(other.getReferral()))
-                && (this.getReferralMobile() == null ? other.getReferralMobile() == null : this.getReferralMobile().equals(other.getReferralMobile()))
-                && (this.getAcceptMode() == null ? other.getAcceptMode() == null : this.getAcceptMode().equals(other.getAcceptMode()))
-                && (this.getContMobileNo() == null ? other.getContMobileNo() == null : this.getContMobileNo().equals(other.getContMobileNo()))
-                && (this.getCertValidDate() == null ? other.getCertValidDate() == null : this.getCertValidDate().equals(other.getCertValidDate()))
-                && (this.getContCertValidDate() == null ? other.getContCertValidDate() == null : this.getContCertValidDate().equals(
-                        other.getContCertValidDate()))
-                && (this.getLawCertValidDate() == null ? other.getLawCertValidDate() == null : this.getLawCertValidDate().equals(
-                        other.getLawCertValidDate()))
-                && (this.getCorpName() == null ? other.getCorpName() == null : this.getCorpName().equals(other.getCorpName()))
+                && (this.getCustManager() == null ? other.getCustManager() == null
+                        : this.getCustManager().equals(other.getCustManager()))
+                && (this.getReferral() == null ? other.getReferral() == null
+                        : this.getReferral().equals(other.getReferral()))
+                && (this.getReferralMobile() == null ? other.getReferralMobile() == null
+                        : this.getReferralMobile().equals(other.getReferralMobile()))
+                && (this.getAcceptMode() == null ? other.getAcceptMode() == null
+                        : this.getAcceptMode().equals(other.getAcceptMode()))
+                && (this.getContMobileNo() == null ? other.getContMobileNo() == null
+                        : this.getContMobileNo().equals(other.getContMobileNo()))
+                && (this.getCertValidDate() == null ? other.getCertValidDate() == null
+                        : this.getCertValidDate().equals(other.getCertValidDate()))
+                && (this.getContCertValidDate() == null ? other.getContCertValidDate() == null
+                        : this.getContCertValidDate().equals(other.getContCertValidDate()))
+                && (this.getLawCertValidDate() == null ? other.getLawCertValidDate() == null
+                        : this.getLawCertValidDate().equals(other.getLawCertValidDate()))
+                && (this.getCorpName() == null ? other.getCorpName() == null
+                        : this.getCorpName().equals(other.getCorpName()))
                 && (this.getRiskNo() == null ? other.getRiskNo() == null : this.getRiskNo().equals(other.getRiskNo()))
-                && (this.getSourceKey() == null ? other.getSourceKey() == null : this.getSourceKey().equals(other.getSourceKey()))
-                && (this.getOperWay() == null ? other.getOperWay() == null : this.getOperWay().equals(other.getOperWay()))
-                && (this.getMoneyAccount() == null ? other.getMoneyAccount() == null : this.getMoneyAccount().equals(other.getMoneyAccount()))
-                && (this.getConfirmDate() == null ? other.getConfirmDate() == null : this.getConfirmDate().equals(other.getConfirmDate()))
-                && (this.getErrCode() == null ? other.getErrCode() == null : this.getErrCode().equals(other.getErrCode()))
-                && (this.getErrDetail() == null ? other.getErrDetail() == null : this.getErrDetail().equals(other.getErrDetail()))
-                && (this.getConfirmCause() == null ? other.getConfirmCause() == null : this.getConfirmCause().equals(other.getConfirmCause()))
-                && (this.getConfirmSerialno() == null ? other.getConfirmSerialno() == null : this.getConfirmSerialno().equals(
-                        other.getConfirmSerialno()))
-                && (this.getTagetTradeAccount() == null ? other.getTagetTradeAccount() == null : this.getTagetTradeAccount().equals(
-                        other.getTagetTradeAccount()))
-                && (this.getAccountCardNo() == null ? other.getAccountCardNo() == null : this.getAccountCardNo().equals(other.getAccountCardNo()))
-                && (this.getSpecification() == null ? other.getSpecification() == null : this.getSpecification().equals(other.getSpecification()))
-                && (this.getFrozenEndLine() == null ? other.getFrozenEndLine() == null : this.getFrozenEndLine().equals(other.getFrozenEndLine()))
-                && (this.getFrozenCause() == null ? other.getFrozenCause() == null : this.getFrozenCause().equals(other.getFrozenCause()))
-                && (this.getOriginConfirmNo() == null ? other.getOriginConfirmNo() == null : this.getOriginConfirmNo().equals(
-                        other.getOriginConfirmNo()))
-                && (this.getOriginRequestNo() == null ? other.getOriginRequestNo() == null : this.getOriginRequestNo().equals(
-                        other.getOriginRequestNo()))
-                && (this.getOriginConfirmDate() == null ? other.getOriginConfirmDate() == null : this.getOriginConfirmDate().equals(
-                        other.getOriginConfirmDate()))
-                && (this.getChecker() == null ? other.getChecker() == null : this.getChecker().equals(other.getChecker()))
-                && (this.getSaleCustNo() == null ? other.getSaleCustNo() == null : this.getSaleCustNo().equals(other.getSaleCustNo()))
-                && (this.getSaleRequestNo() == null ? other.getSaleRequestNo() == null : this.getSaleRequestNo().equals(other.getSaleRequestNo()))
-                && (this.getContactorSerial() == null ? other.getContactorSerial() == null : this.getContactorSerial().equals(
-                        other.getContactorSerial()))
-                && (this.getSalePayCenterNo() == null ? other.getSalePayCenterNo() == null : this.getSalePayCenterNo().equals(
-                        other.getSalePayCenterNo()))
-                && (this.getSaleNetNo() == null ? other.getSaleNetNo() == null : this.getSaleNetNo().equals(other.getSaleNetNo()))
-                && (this.getSaleTradeAccount() == null ? other.getSaleTradeAccount() == null : this.getSaleTradeAccount().equals(
-                        other.getSaleTradeAccount()))
-                && (this.getSaleMoneyAccount() == null ? other.getSaleMoneyAccount() == null : this.getSaleMoneyAccount().equals(
-                        other.getSaleMoneyAccount()))
-                && (this.getDealFlag() == null ? other.getDealFlag() == null : this.getDealFlag().equals(other.getDealFlag()))
-        && (this.getBusiLicence() == null ? other.getBusiLicence() == null : this.getBusiLicence().equals(other.getBusiLicence()));
-        
+                && (this.getSourceKey() == null ? other.getSourceKey() == null
+                        : this.getSourceKey().equals(other.getSourceKey()))
+                && (this.getOperWay() == null ? other.getOperWay() == null
+                        : this.getOperWay().equals(other.getOperWay()))
+                && (this.getMoneyAccount() == null ? other.getMoneyAccount() == null
+                        : this.getMoneyAccount().equals(other.getMoneyAccount()))
+                && (this.getConfirmDate() == null ? other.getConfirmDate() == null
+                        : this.getConfirmDate().equals(other.getConfirmDate()))
+                && (this.getErrCode() == null ? other.getErrCode() == null
+                        : this.getErrCode().equals(other.getErrCode()))
+                && (this.getErrDetail() == null ? other.getErrDetail() == null
+                        : this.getErrDetail().equals(other.getErrDetail()))
+                && (this.getConfirmCause() == null ? other.getConfirmCause() == null
+                        : this.getConfirmCause().equals(other.getConfirmCause()))
+                && (this.getConfirmSerialno() == null ? other.getConfirmSerialno() == null
+                        : this.getConfirmSerialno().equals(other.getConfirmSerialno()))
+                && (this.getTagetTradeAccount() == null ? other.getTagetTradeAccount() == null
+                        : this.getTagetTradeAccount().equals(other.getTagetTradeAccount()))
+                && (this.getAccountCardNo() == null ? other.getAccountCardNo() == null
+                        : this.getAccountCardNo().equals(other.getAccountCardNo()))
+                && (this.getSpecification() == null ? other.getSpecification() == null
+                        : this.getSpecification().equals(other.getSpecification()))
+                && (this.getFrozenEndLine() == null ? other.getFrozenEndLine() == null
+                        : this.getFrozenEndLine().equals(other.getFrozenEndLine()))
+                && (this.getFrozenCause() == null ? other.getFrozenCause() == null
+                        : this.getFrozenCause().equals(other.getFrozenCause()))
+                && (this.getOriginConfirmNo() == null ? other.getOriginConfirmNo() == null
+                        : this.getOriginConfirmNo().equals(other.getOriginConfirmNo()))
+                && (this.getOriginRequestNo() == null ? other.getOriginRequestNo() == null
+                        : this.getOriginRequestNo().equals(other.getOriginRequestNo()))
+                && (this.getOriginConfirmDate() == null ? other.getOriginConfirmDate() == null
+                        : this.getOriginConfirmDate().equals(other.getOriginConfirmDate()))
+                && (this.getChecker() == null ? other.getChecker() == null
+                        : this.getChecker().equals(other.getChecker()))
+                && (this.getSaleCustNo() == null ? other.getSaleCustNo() == null
+                        : this.getSaleCustNo().equals(other.getSaleCustNo()))
+                && (this.getSaleRequestNo() == null ? other.getSaleRequestNo() == null
+                        : this.getSaleRequestNo().equals(other.getSaleRequestNo()))
+                && (this.getContactorSerial() == null ? other.getContactorSerial() == null
+                        : this.getContactorSerial().equals(other.getContactorSerial()))
+                && (this.getSalePayCenterNo() == null ? other.getSalePayCenterNo() == null
+                        : this.getSalePayCenterNo().equals(other.getSalePayCenterNo()))
+                && (this.getSaleNetNo() == null ? other.getSaleNetNo() == null
+                        : this.getSaleNetNo().equals(other.getSaleNetNo()))
+                && (this.getSaleTradeAccount() == null ? other.getSaleTradeAccount() == null
+                        : this.getSaleTradeAccount().equals(other.getSaleTradeAccount()))
+                && (this.getSaleMoneyAccount() == null ? other.getSaleMoneyAccount() == null
+                        : this.getSaleMoneyAccount().equals(other.getSaleMoneyAccount()))
+                && (this.getDealFlag() == null ? other.getDealFlag() == null
+                        : this.getDealFlag().equals(other.getDealFlag()))
+                && (this.getBusiLicence() == null ? other.getBusiLicence() == null
+                        : this.getBusiLicence().equals(other.getBusiLicence()));
+
     }
 
     @Override
@@ -2421,10 +2629,12 @@ public class SaleAccoRequestInfo implements BetterjrEntity, SaleRequestFace, Bas
         return result;
     }
 
+    @Override
     public void setFundCode(String anStr) {
 
     }
 
+    @Override
     public String getFundCode() {
 
         return ParamNames.IGNORE_FUNDCODE;

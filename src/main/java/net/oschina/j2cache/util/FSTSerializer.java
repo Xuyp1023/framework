@@ -11,7 +11,6 @@ import de.ruedigermoeller.serialization.FSTObjectInput;
 import de.ruedigermoeller.serialization.FSTObjectOutput;
 import net.sf.ehcache.CacheException;
 
-
 /**
  * 使用 FST 实现序列化
  * @author winterlau
@@ -32,31 +31,36 @@ public class FSTSerializer implements Serializer {
             fout = new FSTObjectOutput(out);
             fout.writeObject(obj);
             return out.toByteArray();
-        } finally {
-            if(fout != null) {
+        }
+        finally {
+            if (fout != null) {
                 try {
                     fout.close();
-                } catch (final IOException e) {}
+                }
+                catch (final IOException e) {}
             }
         }
     }
 
     @Override
     public Object deserialize(final byte[] bytes) throws IOException {
-        if(bytes == null || bytes.length == 0) {
+        if (bytes == null || bytes.length == 0) {
             return null;
         }
         FSTObjectInput in = null;
         try {
             in = new FSTObjectInput(new ByteArrayInputStream(bytes));
             return in.readObject();
-        } catch (final ClassNotFoundException e) {
+        }
+        catch (final ClassNotFoundException e) {
             throw new CacheException(e);
-        } finally {
-            if(in != null) {
+        }
+        finally {
+            if (in != null) {
                 try {
                     in.close();
-                } catch (final IOException e) {}
+                }
+                catch (final IOException e) {}
             }
         }
     }

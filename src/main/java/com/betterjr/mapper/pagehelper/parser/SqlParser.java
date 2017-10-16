@@ -24,18 +24,30 @@
 
 package com.betterjr.mapper.pagehelper.parser;
 
-import net.sf.jsqlparser.JSQLParserException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Function;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.Statement;
-import net.sf.jsqlparser.statement.select.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import net.sf.jsqlparser.statement.select.FromItem;
+import net.sf.jsqlparser.statement.select.Join;
+import net.sf.jsqlparser.statement.select.LateralSubSelect;
+import net.sf.jsqlparser.statement.select.OrderByElement;
+import net.sf.jsqlparser.statement.select.PlainSelect;
+import net.sf.jsqlparser.statement.select.Select;
+import net.sf.jsqlparser.statement.select.SelectBody;
+import net.sf.jsqlparser.statement.select.SelectExpressionItem;
+import net.sf.jsqlparser.statement.select.SelectItem;
+import net.sf.jsqlparser.statement.select.SetOperationList;
+import net.sf.jsqlparser.statement.select.SubJoin;
+import net.sf.jsqlparser.statement.select.SubSelect;
+import net.sf.jsqlparser.statement.select.ValuesList;
+import net.sf.jsqlparser.statement.select.WithItem;
 
 /**
  * sql解析类，提供更智能的count查询sql
@@ -55,7 +67,7 @@ public class SqlParser {
         TABLE_ALIAS.setUseAs(false);
     }
 
-    //缓存已经修改过的sql
+    // 缓存已经修改过的sql
     private Map<String, String> CACHE = new ConcurrentHashMap<String, String>();
 
     public void isSupportedSql(String sql) {
@@ -71,28 +83,29 @@ public class SqlParser {
      * @return
      */
     public String getSmartCountSql(String sql) {
-        //校验是否支持该sql
+        // 校验是否支持该sql
         isSupportedSql(sql);
         if (CACHE.get(sql) != null) {
             return CACHE.get(sql);
         }
-        //解析SQL
+        // 解析SQL
         Statement stmt = null;
         try {
             stmt = CCJSqlParserUtil.parse(sql);
-        } catch (Throwable e) {
-            //无法解析的用一般方法返回count语句
+        }
+        catch (Throwable e) {
+            // 无法解析的用一般方法返回count语句
             String countSql = getSimpleCountSql(sql);
             CACHE.put(sql, countSql);
             return countSql;
         }
         Select select = (Select) stmt;
         SelectBody selectBody = select.getSelectBody();
-        //处理body-去order by
+        // 处理body-去order by
         processSelectBody(selectBody);
-        //处理with-去order by
+        // 处理with-去order by
         processWithItemsList(select.getWithItemsList());
-        //处理为count查询
+        // 处理为count查询
         sqlToCount(select);
         String result = select.toString();
         CACHE.put(sql, result);
@@ -142,20 +155,20 @@ public class SqlParser {
      * @return
      */
     public boolean isSimpleCount(PlainSelect select) {
-        //包含group by的时候不可以
+        // 包含group by的时候不可以
         if (select.getGroupByColumnReferences() != null) {
             return false;
         }
-        //包含distinct的时候不可以
+        // 包含distinct的时候不可以
         if (select.getDistinct() != null) {
             return false;
         }
         for (SelectItem item : select.getSelectItems()) {
-            //select列中包含参数的时候不可以，否则会引起参数个数错误
+            // select列中包含参数的时候不可以，否则会引起参数个数错误
             if (item.toString().contains("?")) {
                 return false;
             }
-            //如果查询列中包含函数，也不可以，函数可能会聚合列
+            // 如果查询列中包含函数，也不可以，函数可能会聚合列
             if (item instanceof SelectExpressionItem) {
                 if (((SelectExpressionItem) item).getExpression() instanceof Function) {
                     return false;
@@ -183,7 +196,7 @@ public class SqlParser {
             if (operationList.getSelects() != null && operationList.getSelects().size() > 0) {
                 List<SelectBody> plainSelects = operationList.getSelects();
                 for (SelectBody plainSelect : plainSelects) {
-                    processPlainSelect((PlainSelect)plainSelect);
+                    processPlainSelect((PlainSelect) plainSelect);
                 }
             }
             if (!orderByHashParameters(operationList.getOrderByElements())) {
@@ -259,7 +272,7 @@ public class SqlParser {
                 }
             }
         }
-        //Table时不用处理
+        // Table时不用处理
     }
 
     /**

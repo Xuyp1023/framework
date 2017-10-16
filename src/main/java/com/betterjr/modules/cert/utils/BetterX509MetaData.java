@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
@@ -79,8 +80,7 @@ public class BetterX509MetaData {
         BetterX509CertStore certStore = null;
         if (anParent instanceof BetterX509CertFileStore) {
             certStore = new BetterX509CertFileStore(anParent, anStoreFile, this.password, findCertAlias());
-        }
-        else {
+        } else {
             certStore = new BetterX509CertStreamStore(anParent, null, this.password, findCertAlias(), this.certType);
         }
         return certStore;
@@ -91,12 +91,12 @@ public class BetterX509MetaData {
         return BetterX509Utils.newRsaKeyPair(this.keySize);
     }
 
-
-    private static void setOID(X500NameBuilder anDnBuilder, BetterX509MetaData anMetadata, String anOid, String anDefaultValue) {
+    private static void setOID(X500NameBuilder anDnBuilder, BetterX509MetaData anMetadata, String anOid,
+            String anDefaultValue) {
 
         String value = anMetadata.findOID(anOid, anDefaultValue);
 
-        if (BetterStringUtils.isNotBlank(value)) {
+        if (StringUtils.isNotBlank(value)) {
             try {
                 Field field = BCStyle.class.getField(anOid);
                 ASN1ObjectIdentifier objectId = (ASN1ObjectIdentifier) field.get(null);
@@ -127,11 +127,10 @@ public class BetterX509MetaData {
     }
 
     public String findCertAlias() {
-        if (BetterStringUtils.isBlank(certAlias)) {
+        if (StringUtils.isBlank(certAlias)) {
 
             return commonName;
-        }
-        else {
+        } else {
 
             return certAlias;
         }
@@ -147,39 +146,42 @@ public class BetterX509MetaData {
      * @param anYear
      *            数字证书期限（年）
      */
-    public BetterX509MetaData(String anCommName, String anPassword){
+    public BetterX509MetaData(String anCommName, String anPassword) {
         BTAssert.isNotShorString(anCommName, 5, "数字证书的名称不能少于5个字符");
         BTAssert.isNotShorString(anPassword, 6, "数字证书的密码不能少于6个字符");
         commonName = anCommName;
         password = anPassword;
         oids = new HashMap<String, String>();
     }
-    
-    public BetterX509MetaData(String anCommName, String anPassword, int anYear){
+
+    public BetterX509MetaData(String anCommName, String anPassword, int anYear) {
         this(anCommName, anPassword);
         notBefore = BetterDateUtils.parseDate(BetterDateUtils.getDate());
-        notAfter = BetterDateUtils.addDays(BetterDateUtils.addYears(notBefore, anYear), 10);
+        notAfter = DateUtils.addDays(DateUtils.addYears(notBefore, anYear), 10);
     }
 
-    public void saveX509Extent(X509v3CertificateBuilder anCertBuilder, X509Certificate anCaCert, PublicKey anPubKey, JcaX509ExtensionUtils anExtUtils)
-            throws CertIOException, NoSuchAlgorithmException {
-        anCertBuilder.addExtension(Extension.basicConstraints, true, new BasicConstraints(BetterX509CertType.hasCA(this.certType)));
-        anCertBuilder.addExtension(Extension.subjectKeyIdentifier, false, anExtUtils.createSubjectKeyIdentifier(anPubKey));
+    public void saveX509Extent(X509v3CertificateBuilder anCertBuilder, X509Certificate anCaCert, PublicKey anPubKey,
+            JcaX509ExtensionUtils anExtUtils) throws CertIOException, NoSuchAlgorithmException {
+        anCertBuilder.addExtension(Extension.basicConstraints, true,
+                new BasicConstraints(BetterX509CertType.hasCA(this.certType)));
+        anCertBuilder.addExtension(Extension.subjectKeyIdentifier, false,
+                anExtUtils.createSubjectKeyIdentifier(anPubKey));
         if (BetterX509CertType.ROOT_CA == this.certType) {
-            anCertBuilder.addExtension(Extension.authorityKeyIdentifier, false, anExtUtils.createAuthorityKeyIdentifier(anPubKey));
-        }
-        else {
-            anCertBuilder.addExtension(Extension.authorityKeyIdentifier, false, anExtUtils.createAuthorityKeyIdentifier(anCaCert.getPublicKey()));
+            anCertBuilder.addExtension(Extension.authorityKeyIdentifier, false,
+                    anExtUtils.createAuthorityKeyIdentifier(anPubKey));
+        } else {
+            anCertBuilder.addExtension(Extension.authorityKeyIdentifier, false,
+                    anExtUtils.createAuthorityKeyIdentifier(anCaCert.getPublicKey()));
         }
 
         // CA证书的用途，数字签名、签发数字证书、回收数字证书
         if (BetterX509CertType.hasCA(this.certType)) {
-            anCertBuilder.addExtension(Extension.keyUsage, true, new KeyUsage(KeyUsage.digitalSignature | KeyUsage.keyCertSign | KeyUsage.cRLSign));
-        }
-        else {
-            // 最终用户的普通证书包括数字签名、秘钥处理等
             anCertBuilder.addExtension(Extension.keyUsage, true,
-                    new KeyUsage(KeyUsage.keyEncipherment | KeyUsage.keyAgreement | KeyUsage.dataEncipherment | KeyUsage.digitalSignature));
+                    new KeyUsage(KeyUsage.digitalSignature | KeyUsage.keyCertSign | KeyUsage.cRLSign));
+        } else {
+            // 最终用户的普通证书包括数字签名、秘钥处理等
+            anCertBuilder.addExtension(Extension.keyUsage, true, new KeyUsage(KeyUsage.keyEncipherment
+                    | KeyUsage.keyAgreement | KeyUsage.dataEncipherment | KeyUsage.digitalSignature));
         }
 
         List<GeneralName> altNames = new ArrayList<GeneralName>();
@@ -219,14 +221,15 @@ public class BetterX509MetaData {
 
         return clone;
     }
-    
-    public void addData(Map<String, String> anData, String anEmail, String anNotBefore, String anNotAfter, String anSerialNumber) {
-       this.addOids(anData, anEmail);
-       this.notBefore = BetterDateUtils.parseDate(anNotBefore);
-       this.notAfter = BetterDateUtils.addDays(BetterDateUtils.parseDate(anNotAfter), 10);
-       this.serialNumber = anSerialNumber;
+
+    public void addData(Map<String, String> anData, String anEmail, String anNotBefore, String anNotAfter,
+            String anSerialNumber) {
+        this.addOids(anData, anEmail);
+        this.notBefore = BetterDateUtils.parseDate(anNotBefore);
+        this.notAfter = DateUtils.addDays(BetterDateUtils.parseDate(anNotAfter), 10);
+        this.serialNumber = anSerialNumber;
     }
-    
+
     public void addOids(Map<String, String> anData, String anEmail) {
         this.oids.putAll(anData);
         this.email = anEmail;
@@ -272,16 +275,16 @@ public class BetterX509MetaData {
     public String putOID(String anOid, String anValue) {
         if (StringUtils.isBlank(anValue)) {
             return oids.remove(anOid);
-        }
-        else {
+        } else {
             oids.put(anOid, anValue);
             return anValue;
         }
     }
 
     public String findSerialNumber() {
-        if (BetterStringUtils.isBlank(this.serialNumber)) {
-            this.serialNumber = Long.toUnsignedString(System.currentTimeMillis() * 10000 + SerialGenerator.randomInt(10000));
+        if (StringUtils.isBlank(this.serialNumber)) {
+            this.serialNumber = Long
+                    .toUnsignedString(System.currentTimeMillis() * 10000 + SerialGenerator.randomInt(10000));
         }
         logger.info("work serialNumber :" + serialNumber);
         // this.serialNumber = Long.toString(System.currentTimeMillis());

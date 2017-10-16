@@ -3,7 +3,11 @@ package com.betterjr.common.security;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import javax.xml.parsers.*;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.xmlbeans.impl.soap.Node;
@@ -18,8 +22,7 @@ public class DocumentUtil {
 
     private final static String[] ids = new String[] { "id", "Id", "ID" };
 
-    public DocumentUtil() {
-    }
+    public DocumentUtil() {}
 
     public static Document getDocFromInputStream(InputStream is) {
         try {
@@ -68,7 +71,7 @@ public class DocumentUtil {
         NodeList nodes = anParent.getChildNodes();
         Element node = null;
         for (int i = 0, k = nodes.getLength(); i < k; i++) {
-            if (nodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
+            if (nodes.item(i).getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
                 node = (Element) nodes.item(i);
                 for (int j = 0; j < 3; j++) {
                     String tmpStr = node.getAttribute(ids[j]);

@@ -23,85 +23,86 @@ import com.betterjr.modules.role.service.RoleService;
  *
  */
 @Service
-public class SysOperatorRoleRelationService extends BaseService<SysOperatorRoleRelationMapper, SysOperatorRoleRelation> {
+public class SysOperatorRoleRelationService
+        extends BaseService<SysOperatorRoleRelationMapper, SysOperatorRoleRelation> {
 
     private static final Logger logger = LoggerFactory.getLogger(SysOperatorRoleRelationService.class);
-    
+
     @Autowired
     private RoleService roleService;
-    
-    
+
     /***
      * 根据操作员编号查询对应的角色信息
      * @param operatorId 角色编号 
      * @return 逗号分隔的角色名称
      */
-    public String findSysRoleByOperatorId(Long anOperatorId){
-       StringBuffer sb=new StringBuffer();
-       Map<String, Object> map=new HashMap<String, Object>();
-       map.put("operId", anOperatorId);
-       List<SysOperatorRoleRelation> relationList=this.selectByProperty(map);
-       logger.info("relationList:"+relationList);
-       for(int i=0;i<relationList.size();i++){
-           SysOperatorRoleRelation roleRelation=relationList.get(i);
-           if(i==0){
-               sb.append(roleRelation.getRoleId());
-           }else{
-               sb.append(",").append(roleRelation.getRoleId());
-           }
-       }   
-       return sb.toString();
+    public String findSysRoleByOperatorId(Long anOperatorId) {
+        StringBuffer sb = new StringBuffer();
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("operId", anOperatorId);
+        List<SysOperatorRoleRelation> relationList = this.selectByProperty(map);
+        logger.info("relationList:" + relationList);
+        for (int i = 0; i < relationList.size(); i++) {
+            SysOperatorRoleRelation roleRelation = relationList.get(i);
+            if (i == 0) {
+                sb.append(roleRelation.getRoleId());
+            } else {
+                sb.append(",").append(roleRelation.getRoleId());
+            }
+        }
+        return sb.toString();
     }
-    
+
     /**
      * 查询角色列表
      * @param anOperatorId
      * @return
      */
-    public List<Role> findRoleByOperId(Long anOperatorId){
-        List<Role> roleList=new ArrayList<Role>();
-        Map<String, Object> map=new HashMap<String, Object>();
+    public List<Role> findRoleByOperId(Long anOperatorId) {
+        List<Role> roleList = new ArrayList<Role>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("operId", anOperatorId);
-        List<SysOperatorRoleRelation> relationList=this.selectByProperty(map);
-        for(int i=0;i<relationList.size();i++){
-            SysOperatorRoleRelation roleRelation=relationList.get(i);
-            Role role=roleService.selectByPrimaryKey(roleRelation.getRoleId());
+        List<SysOperatorRoleRelation> relationList = this.selectByProperty(map);
+        for (int i = 0; i < relationList.size(); i++) {
+            SysOperatorRoleRelation roleRelation = relationList.get(i);
+            Role role = roleService.selectByPrimaryKey(roleRelation.getRoleId());
             roleList.add(role);
-        }   
+        }
         return roleList;
     }
-    
+
     /***
      * 修改角色信息
      * @param anOperatorId
      * @param ruleList
      * @return
      */
-    public void saveSysOperatorRoleRelation(Long anOperatorId,String ruleList){        
-       // 删除原来的角色信息
-       this.deleteByProperty("operId", anOperatorId);
-       
-       logger.info("ruleList:"+ruleList);
-       String[] ruleArr=ruleList.split(",");
-       for(int i=0;i<ruleArr.length;i++){
-           Long roleId=Long.parseLong(ruleArr[i]);
-           Role role=roleService.findRoleById(roleId);
-           if(role==null){
-               throw new BytterTradeException("角色信息未找到");
-           }
-           SysOperatorRoleRelation roleRelation=new SysOperatorRoleRelation(role.getId(), anOperatorId, role.getRoleName());
-           this.insert(roleRelation);
-       }
+    public void saveSysOperatorRoleRelation(Long anOperatorId, String ruleList) {
+        // 删除原来的角色信息
+        this.deleteByProperty("operId", anOperatorId);
+
+        logger.info("ruleList:" + ruleList);
+        String[] ruleArr = ruleList.split(",");
+        for (int i = 0; i < ruleArr.length; i++) {
+            Long roleId = Long.parseLong(ruleArr[i]);
+            Role role = roleService.findRoleById(roleId);
+            if (role == null) {
+                throw new BytterTradeException("角色信息未找到");
+            }
+            SysOperatorRoleRelation roleRelation = new SysOperatorRoleRelation(role.getId(), anOperatorId,
+                    role.getRoleName());
+            this.insert(roleRelation);
+        }
     }
-    
+
     /***
      * 根据角色删除关系表
      * @param anRoleId
      * @param anRoleName
      * @return
      */
-    public boolean delSysOperatorRole(Long anRoleId){
-        return this.deleteByProperty("roleId", anRoleId)>0;
+    public boolean delSysOperatorRole(Long anRoleId) {
+        return this.deleteByProperty("roleId", anRoleId) > 0;
     }
-    
+
 }

@@ -1,5 +1,7 @@
 package com.betterjr.common.utils;
 
+import java.io.IOException;
+
 /**
  * Base62工具类用到的针对bit操作的InputStream
  *
@@ -39,8 +41,7 @@ public class BitInputStream {
         int nbyte = (bitOffset + pos) / 8;
         int nbit = (bitOffset + pos) % 8;
 
-        if (nbit < 0 || (byteOffset + nbyte) < 0
-                || (((byteOffset + nbyte) * 8) + nbit) > (length * 8)) {
+        if (nbit < 0 || (byteOffset + nbyte) < 0 || (((byteOffset + nbyte) * 8) + nbit) > (length * 8)) {
             throw new IndexOutOfBoundsException();
         }
 
@@ -73,8 +74,7 @@ public class BitInputStream {
      * @throws IOException
      */
     synchronized public int readBits(byte[] out, int offset, int length) {
-        if (offset < 0 || (out.length - offset) * 8 < length
-                || out.length * 8 < length || length >= 32) {
+        if (offset < 0 || (out.length - offset) * 8 < length || out.length * 8 < length || length >= 32) {
             throw new IndexOutOfBoundsException();
         }
 
@@ -98,7 +98,8 @@ public class BitInputStream {
                 count++;
                 bitCount++;
                 i--;
-            } while (i >= 0 && count < 8);
+            }
+            while (i >= 0 && count < 8);
 
             out[byteIndex++] = (byte) (value & 0xff);
         }

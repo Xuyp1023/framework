@@ -16,15 +16,16 @@
  */
 package net.oauth.jsontoken;
 
-import net.oauth.jsontoken.crypto.AsciiStringSigner;
-import net.oauth.jsontoken.crypto.SignatureAlgorithm;
-import net.oauth.jsontoken.crypto.Signer;
-import org.apache.commons.codec.binary.Base64;
-
 import java.security.SignatureException;
 import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import org.apache.commons.codec.binary.Base64;
+
+import net.oauth.jsontoken.crypto.AsciiStringSigner;
+import net.oauth.jsontoken.crypto.SignatureAlgorithm;
+import net.oauth.jsontoken.crypto.Signer;
 
 /**
  * Created by steve on 12/09/14.
@@ -46,7 +47,6 @@ public class JsonToken {
 
     public final static int DEFAULT_LIFETIME_IN_MINS = 2;
 
-
     private Map<String, Object> header;
     private SignatureAlgorithm sigAlg;
 
@@ -58,7 +58,6 @@ public class JsonToken {
     private final Signer signer;
     private String signature;
     private String baseString;
-
 
     /**
      * Public constructor, use empty data type.
@@ -101,8 +100,7 @@ public class JsonToken {
      *   of the token, if not explicitly set.
      * @param tokenString The original token string we parsed to get this payload.
      */
-    public JsonToken(Map<String, Object> header, Map<String, Object> payload, Clock clock,
-                     String tokenString) {
+    public JsonToken(Map<String, Object> header, Map<String, Object> payload, Clock clock, String tokenString) {
         this.payload = payload;
         this.clock = clock;
         this.baseString = null;
@@ -217,7 +215,6 @@ public class JsonToken {
         payload.put(name, value);
     }
 
-
     public Map<String, Object> getPayload() {
         return payload;
     }
@@ -231,10 +228,10 @@ public class JsonToken {
             if (header == null) {
                 throw new IllegalStateException("JWT has no algorithm or header");
             }
-            String algorithmName = (String)header.get(JsonToken.ALGORITHM_HEADER);
+            String algorithmName = (String) header.get(JsonToken.ALGORITHM_HEADER);
             if (algorithmName == null) {
-                throw new IllegalStateException("JWT header is missing the required '" +
-                        JsonToken.ALGORITHM_HEADER + "' parameter");
+                throw new IllegalStateException(
+                        "JWT header is missing the required '" + JsonToken.ALGORITHM_HEADER + "' parameter");
             }
             sigAlg = SignatureAlgorithm.getFromJsonName(algorithmName);
         }
@@ -253,12 +250,12 @@ public class JsonToken {
     }
 
     public String getParamAsString(String param) {
-        return (String)payload.get(param);
+        return (String) payload.get(param);
     }
 
     public Long getParamAsLong(String param) {
-        Number number = (Number)payload.get(param);
-        if(number == null) {
+        Number number = (Number) payload.get(param);
+        if (number == null) {
             return null;
         } else {
             return Long.valueOf(number.longValue());
@@ -269,10 +266,7 @@ public class JsonToken {
         if (baseString != null && !baseString.isEmpty()) {
             return baseString;
         }
-        baseString = JsonTokenUtil.toDotFormat(
-                JsonTokenUtil.toBase64(getHeader()),
-                JsonTokenUtil.toBase64(payload)
-        );
+        baseString = JsonTokenUtil.toDotFormat(JsonTokenUtil.toBase64(getHeader()), JsonTokenUtil.toBase64(payload));
         return baseString;
     }
 

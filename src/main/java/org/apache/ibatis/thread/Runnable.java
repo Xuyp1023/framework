@@ -61,7 +61,9 @@ public class Runnable implements java.lang.Runnable {
 
     @Override
     public void run() {
-        location = location != null ? location.substring("file [".length(), location.lastIndexOf(mappingPath) + mappingPath.length()) : null;;
+        location = location != null
+                ? location.substring("file [".length(), location.lastIndexOf(mappingPath) + mappingPath.length())
+                : null;;
         beforeTime = System.currentTimeMillis();
 
         log.debug("[location] " + location);
@@ -163,13 +165,11 @@ public class Runnable implements java.lang.Runnable {
         for (final File file : files) {
             if (file.isDirectory()) {
                 refreshs.addAll(this.getRefreshFile(file, beforeTime));
-            }
-            else if (file.isFile()) {
+            } else if (file.isFile()) {
                 if (this.check(file, beforeTime)) {
                     refreshs.add(file);
                 }
-            }
-            else {
+            } else {
                 System.out.println("error file." + file.getName());
             }
         }

@@ -13,6 +13,7 @@ import java.util.StringTokenizer;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
 
 /**
  * 将XML的结构转换为 MAP结构
@@ -39,8 +40,7 @@ public class XmlUtils {
             List list = e.elements();
             if (list.size() > 0) {
                 map.put(e.getName(), dom2Map(e));
-            }
-            else {
+            } else {
                 map.put(e.getName(), e.getText());
             }
         }
@@ -61,12 +61,11 @@ public class XmlUtils {
         Element element = null;
         for (int i = 0, k = emList.size(); i < k; i++) {
             element = (Element) emList.get(i);
-            if (element.getNodeType() == Element.ELEMENT_NODE) {
+            if (element.getNodeType() == Node.ELEMENT_NODE) {
                 if (workNodeName.equalsIgnoreCase(element.getName())) {
                     if (sk.size() == 0) {
                         return element;
-                    }
-                    else {
+                    } else {
                         return findElement(element, sk);
                     }
                 }
@@ -82,11 +81,11 @@ public class XmlUtils {
 
     public static List<String> split(String anStr, String anTag) {
         List<String> list = new LinkedList();
-        if (BetterStringUtils.isBlank(anStr)){
-            
+        if (StringUtils.isBlank(anStr)) {
+
             return list;
         }
-        
+
         StringTokenizer tokenizer = new StringTokenizer(anStr, anTag);
         while (tokenizer.hasMoreTokens()) {
             list.add(tokenizer.nextToken());
@@ -135,8 +134,7 @@ public class XmlUtils {
         if (anMap == null) {
             map = new LinkedHashMap();
             anMap = map;
-        }
-        else {
+        } else {
             map = anMap;
         }
         List<String> list = split(anNodeStr);
@@ -190,8 +188,7 @@ public class XmlUtils {
         List<String> list = split(workNodeName);
         if (list.size() == 1) {
             return findElementNode(root, workNodeName);
-        }
-        else {
+        } else {
             return findElement(root, list);
         }
     }
@@ -204,11 +201,10 @@ public class XmlUtils {
         Element element = null;
         for (int i = 0, k = emList.size(); i < k; i++) {
             element = (Element) emList.get(i);
-            if (element.getNodeType() == Element.ELEMENT_NODE) {
+            if (element.getNodeType() == Node.ELEMENT_NODE) {
                 if (workNodeName.equalsIgnoreCase(element.getName())) {
                     return element;
-                }
-                else {
+                } else {
                     element = findElementNode(element, workNodeName);
                     if (element != null) {
                         return element;
@@ -228,8 +224,7 @@ public class XmlUtils {
             if (obj instanceof Collection) {
                 ccList = (Collection) obj;
                 ccList.add(tmpStr);
-            }
-            else if (obj instanceof Map) {
+            } else if (obj instanceof Map) {
                 ccList = new ArrayList();
                 ccList.add(obj);
                 ccList.add(tmpStr);
@@ -253,50 +248,43 @@ public class XmlUtils {
                     if (obj != null) {
                         if (obj instanceof List) {
                             mapList = (List) obj;
-                        }
-                        else {
+                        } else {
                             mapList = new ArrayList();
                             mapList.add(obj);
                             map.put(iter.getName(), mapList);
                         }
                         mapList.add(m);
-                    }
-                    else {
+                    } else {
                         map.put(iter.getName(), m);
                     }
-                    processText(iter,
-                            map);/*
-                                  * String tmpStr = iter.getText(); if
-                                  * (StringUtils.isNotBlank(tmpStr)) { obj =
-                                  * map.get(iter.getName()); Collection ccList;
-                                  * if (obj instanceof Collection) { ccList =
-                                  * (Collection) obj; ccList.add(tmpStr); } else
-                                  * if (obj instanceof Map) { ccList = new
-                                  * ArrayList(); ccList.add(obj);
-                                  * ccList.add(tmpStr); map.put(iter.getName(),
-                                  * ccList); } }
-                                  */
-                }
-                else {
+                    processText(iter, map);/*
+                                            * String tmpStr = iter.getText(); if
+                                            * (StringUtils.isNotBlank(tmpStr)) { obj =
+                                            * map.get(iter.getName()); Collection ccList;
+                                            * if (obj instanceof Collection) { ccList =
+                                            * (Collection) obj; ccList.add(tmpStr); } else
+                                            * if (obj instanceof Map) { ccList = new
+                                            * ArrayList(); ccList.add(obj);
+                                            * ccList.add(tmpStr); map.put(iter.getName(),
+                                            * ccList); } }
+                                            */
+                } else {
                     if (obj != null) {
                         if (obj instanceof List) {
                             mapList = (List) obj;
-                        }
-                        else {
+                        } else {
                             mapList = new ArrayList();
                             mapList.add(obj);
                         }
                         mapList.add(XML_SALT_FLAG + iter.getText());
                         map.put(iter.getName(), mapList);
-                    }
-                    else {
+                    } else {
                         map.put(iter.getName(), iter.getText());
                     }
                 }
 
             }
-        }
-        else {
+        } else {
             map.put(e.getName(), e.getText());
         }
         return map;
@@ -316,14 +304,15 @@ public class XmlUtils {
         }
         java.io.StringReader reader = new java.io.StringReader(doc.asXML());
         org.xml.sax.InputSource source = new org.xml.sax.InputSource(reader);
-        javax.xml.parsers.DocumentBuilderFactory documentBuilderFactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
+        javax.xml.parsers.DocumentBuilderFactory documentBuilderFactory = javax.xml.parsers.DocumentBuilderFactory
+                .newInstance();
         documentBuilderFactory.setNamespaceAware(true);
         javax.xml.parsers.DocumentBuilder documentBuilder;
         try {
             documentBuilder = documentBuilderFactory.newDocumentBuilder();
             org.w3c.dom.Document ddx = documentBuilder.parse(source);
- //           System.out.println("this pase :"+ddx);
-            return  ddx ;
+            // System.out.println("this pase :"+ddx);
+            return ddx;
         }
         catch (Exception e) {
             e.printStackTrace();

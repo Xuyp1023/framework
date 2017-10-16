@@ -5,5 +5,4 @@ import com.betterjr.mapper.common.Mapper;
 import com.betterjr.modules.sys.entity.AreaInfo;
 
 @BetterjrMapper
-public interface AreaInfoMapper extends Mapper<AreaInfo> {
-}
+public interface AreaInfoMapper extends Mapper<AreaInfo> {}

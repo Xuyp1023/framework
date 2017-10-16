@@ -10,6 +10,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.JedisUtils;
 
@@ -23,19 +25,19 @@ public class DoubleCheckServletFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest anRequest, ServletResponse anResponse, FilterChain anChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest anRequest, ServletResponse anResponse, FilterChain anChain)
+            throws IOException, ServletException {
         String tmpAjaxToken = anRequest.getParameter("AjaxToken");
-        HttpServletRequest request = (HttpServletRequest)anRequest; 
-        if (BetterStringUtils.isNotBlank(tmpAjaxToken)) {
+        HttpServletRequest request = (HttpServletRequest) anRequest;
+        if (StringUtils.isNotBlank(tmpAjaxToken)) {
             tmpAjaxToken = request.getRequestURI().concat("@****@").concat(tmpAjaxToken);
             String tmpValue = JedisUtils.get(WEB_AJAX_TOKEN_KEY.concat(tmpAjaxToken));
-            if (BetterStringUtils.isNotBlank(tmpValue)) {
+            if (StringUtils.isNotBlank(tmpValue)) {
                 anResponse.setCharacterEncoding("UTF-8");
                 anResponse.setContentType("application/json");
                 anResponse.getWriter().write(new AjaxObject(204, "请求太频繁").toJson());
                 return;
-            }
-            else {
+            } else {
                 JedisUtils.set(WEB_AJAX_TOKEN_KEY.concat(tmpAjaxToken), tmpAjaxToken, 30);
             }
         }

@@ -1,11 +1,17 @@
 package com.betterjr.mapper.orderbyhelper;
 
+import java.util.Properties;
+
 import org.apache.ibatis.builder.StaticSqlSource;
 import org.apache.ibatis.builder.annotation.ProviderSqlSource;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlSource;
-import org.apache.ibatis.plugin.*;
+import org.apache.ibatis.plugin.Interceptor;
+import org.apache.ibatis.plugin.Intercepts;
+import org.apache.ibatis.plugin.Invocation;
+import org.apache.ibatis.plugin.Plugin;
+import org.apache.ibatis.plugin.Signature;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.scripting.defaults.RawSqlSource;
@@ -13,9 +19,11 @@ import org.apache.ibatis.scripting.xmltags.DynamicSqlSource;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
-import com.betterjr.mapper.orderbyhelper.sqlsource.*;
-
-import java.util.Properties;
+import com.betterjr.mapper.orderbyhelper.sqlsource.OrderByDynamicSqlSource;
+import com.betterjr.mapper.orderbyhelper.sqlsource.OrderByProviderSqlSource;
+import com.betterjr.mapper.orderbyhelper.sqlsource.OrderByRawSqlSource;
+import com.betterjr.mapper.orderbyhelper.sqlsource.OrderBySqlSource;
+import com.betterjr.mapper.orderbyhelper.sqlsource.OrderByStaticSqlSource;
 
 /**
  * 排序辅助类
@@ -23,8 +31,9 @@ import java.util.Properties;
  * @author liuzh
  * @since 2015-06-26
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
-@Intercepts(@Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class}))
+@SuppressWarnings({ "rawtypes", "unchecked" })
+@Intercepts(@Signature(type = Executor.class, method = "query", args = { MappedStatement.class, Object.class,
+        RowBounds.class, ResultHandler.class }))
 public class OrderByHelper implements Interceptor {
     private static final ThreadLocal<String> ORDER_BY = new ThreadLocal<String>();
 
@@ -76,7 +85,7 @@ public class OrderByHelper implements Interceptor {
         MappedStatement ms = (MappedStatement) args[0];
         if (!hasOrderBy(ms)) {
             MetaObject msObject = SystemMetaObject.forObject(ms);
-            //判断是否自带order by，自带的情况下作为默认排序
+            // 判断是否自带order by，自带的情况下作为默认排序
             SqlSource sqlSource = ms.getSqlSource();
             if (sqlSource instanceof StaticSqlSource) {
                 msObject.setValue("sqlSource", new OrderByStaticSqlSource((StaticSqlSource) sqlSource));
@@ -99,7 +108,8 @@ public class OrderByHelper implements Interceptor {
                 processIntercept(invocation);
             }
             return invocation.proceed();
-        } finally {
+        }
+        finally {
             clear();
         }
     }

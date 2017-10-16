@@ -33,8 +33,6 @@ import com.betterjr.mapper.common.base.update.UpdateByPrimaryKeySelectiveMapper;
  * @param <T> 不能为空
  * @author liuzh
  */
-public interface BaseUpdateMapper<T> extends
-        UpdateByPrimaryKeyMapper<T>,
-        UpdateByPrimaryKeySelectiveMapper<T> {
+public interface BaseUpdateMapper<T> extends UpdateByPrimaryKeyMapper<T>, UpdateByPrimaryKeySelectiveMapper<T> {
 
 }

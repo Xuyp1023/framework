@@ -1,6 +1,5 @@
 package com.betterjr.modules.operator.service;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.betterjr.common.service.BaseService;
 import com.betterjr.common.utils.BetterStringUtils;
+import com.betterjr.common.utils.UserUtils;
 import com.betterjr.modules.account.dao.CustOperatorInfoMapper;
 import com.betterjr.modules.account.data.CustContextInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfo;
@@ -20,7 +20,6 @@ import com.betterjr.modules.account.entity.CustPassInfo;
 import com.betterjr.modules.account.service.CustAndOperatorRelaService;
 import com.betterjr.modules.account.service.CustOperatorHelper;
 import com.betterjr.modules.account.service.CustPassService;
-import com.betterjr.common.utils.UserUtils;
 
 @Service
 public class OperatorService extends BaseService<CustOperatorInfoMapper, CustOperatorInfo> {
@@ -44,31 +43,28 @@ public class OperatorService extends BaseService<CustOperatorInfoMapper, CustOpe
         CustOperatorInfo custOper = this.selectByPrimaryKey(anOperID);
         if (custOper != null && custOper.getDefOper() != null) {
             return custOper.getDefOper();
-        }
-        else {
+        } else {
             return false;
         }
     }
 
     public static Object workForCustNo(String anValue) {
-        if (BetterStringUtils.isNotBlank(anValue)) {
+        if (StringUtils.isNotBlank(anValue)) {
             return new Long(anValue);
-        }
-        else {
+        } else {
             return findCustNoList();
         }
     }
 
     public static List findCustNoList() {
         CustContextInfo contextInfo = UserUtils.getOperatorContextInfo();
-        List custList; 
+        List custList;
         if (contextInfo == null) {
             custList = new ArrayList(1);
-        }
-        else {
+        } else {
             custList = contextInfo.findCustList();
         }
-        if (custList.size() == 0){
+        if (custList.size() == 0) {
             custList.add(-1L);
         }
         return custList;
@@ -107,8 +103,8 @@ public class OperatorService extends BaseService<CustOperatorInfoMapper, CustOpe
         // 操作员角色信息绑定修改
         operatorRoleRelationService.saveSysOperatorRoleRelation(operator.getId(), operator.getRuleList());
         this.custPassService.insert(custPassInfo);
-        if(StringUtils.isNotBlank(request.getCustList())){
-            custAndOpService.addCustOperatorRelation(operator.getId(),operator.getOperOrg(),request.getCustList());// 添加客户绑定操作员关系
+        if (StringUtils.isNotBlank(request.getCustList())) {
+            custAndOpService.addCustOperatorRelation(operator.getId(), operator.getOperOrg(), request.getCustList());// 添加客户绑定操作员关系
         }
         operator.setRuleList("");
         return this.insert(operator);
@@ -126,7 +122,7 @@ public class OperatorService extends BaseService<CustOperatorInfoMapper, CustOpe
     }
 
     public boolean checkOperatorExists(String identType, String identNo) {
-        if (BetterStringUtils.isNotBlank(identType) && BetterStringUtils.isNotBlank(identType)) {
+        if (StringUtils.isNotBlank(identType) && StringUtils.isNotBlank(identType)) {
             Map<String, Object> map = new HashMap();
             map.put("identType", identType);
             map.put("identNo", identNo);
@@ -139,7 +135,7 @@ public class OperatorService extends BaseService<CustOperatorInfoMapper, CustOpe
     }
 
     public boolean checkExistsByOperCodeAndOperOrg(String operCode, String operOrg) {
-        if (BetterStringUtils.isNotBlank(operCode) && BetterStringUtils.isNotBlank(operOrg)) {
+        if (StringUtils.isNotBlank(operCode) && StringUtils.isNotBlank(operOrg)) {
             Map<String, Object> map = new HashMap();
             map.put("operCode", operCode);
             map.put("operOrg", operOrg);
@@ -150,15 +146,13 @@ public class OperatorService extends BaseService<CustOperatorInfoMapper, CustOpe
 
         return false;
     }
-    
+
     public boolean checkExistsByMap(Map<String, Object> anMap) {
         List list = this.selectByProperty(anMap);
         return list.size() > 0;
     }
-    
-    
-    public CustOperatorInfo queryCustOperatorInfo(Long operId){
+
+    public CustOperatorInfo queryCustOperatorInfo(Long operId) {
         return this.selectByPrimaryKey(operId);
     }
 }
-

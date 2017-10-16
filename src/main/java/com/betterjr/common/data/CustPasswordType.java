@@ -16,14 +16,12 @@ public enum CustPasswordType {
 
     public CustPasswordType exchangeTrade() {
         if (this == PERSON) {
-            
+
             return PERSON_TRADE;
-        }
-        else if (this == ORG) {
-            
+        } else if (this == ORG) {
+
             return ORG_TRADE;
-        }
-        else {
+        } else {
             return this;
         }
     }

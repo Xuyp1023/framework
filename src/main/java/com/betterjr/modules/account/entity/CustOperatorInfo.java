@@ -550,30 +550,47 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         final CustOperatorInfo other = (CustOperatorInfo) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
                 && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
-                && (this.getIdentType() == null ? other.getIdentType() == null : this.getIdentType().equals(other.getIdentType()))
-                && (this.getIdentNo() == null ? other.getIdentNo() == null : this.getIdentNo().equals(other.getIdentNo()))
-                && (this.getValidDate() == null ? other.getValidDate() == null : this.getValidDate().equals(other.getValidDate()))
+                && (this.getIdentType() == null ? other.getIdentType() == null
+                        : this.getIdentType().equals(other.getIdentType()))
+                && (this.getIdentNo() == null ? other.getIdentNo() == null
+                        : this.getIdentNo().equals(other.getIdentNo()))
+                && (this.getValidDate() == null ? other.getValidDate() == null
+                        : this.getValidDate().equals(other.getValidDate()))
                 && (this.getSex() == null ? other.getSex() == null : this.getSex().equals(other.getSex()))
-                && (this.getZipCode() == null ? other.getZipCode() == null : this.getZipCode().equals(other.getZipCode()))
-                && (this.getAddress() == null ? other.getAddress() == null : this.getAddress().equals(other.getAddress()))
+                && (this.getZipCode() == null ? other.getZipCode() == null
+                        : this.getZipCode().equals(other.getZipCode()))
+                && (this.getAddress() == null ? other.getAddress() == null
+                        : this.getAddress().equals(other.getAddress()))
                 && (this.getPhone() == null ? other.getPhone() == null : this.getPhone().equals(other.getPhone()))
                 && (this.getFaxNo() == null ? other.getFaxNo() == null : this.getFaxNo().equals(other.getFaxNo()))
-                && (this.getMobileNo() == null ? other.getMobileNo() == null : this.getMobileNo().equals(other.getMobileNo()))
+                && (this.getMobileNo() == null ? other.getMobileNo() == null
+                        : this.getMobileNo().equals(other.getMobileNo()))
                 && (this.getEmail() == null ? other.getEmail() == null : this.getEmail().equals(other.getEmail()))
-                && (this.getIdentClass() == null ? other.getIdentClass() == null : this.getIdentClass().equals(other.getIdentClass()))
-                && (this.getTransBusin() == null ? other.getTransBusin() == null : this.getTransBusin().equals(other.getTransBusin()))
-                && (this.getRevokeBusin() == null ? other.getRevokeBusin() == null : this.getRevokeBusin().equals(other.getRevokeBusin()))
-                && (this.getDefOper() == null ? other.getDefOper() == null : this.getDefOper().equals(other.getDefOper()))
+                && (this.getIdentClass() == null ? other.getIdentClass() == null
+                        : this.getIdentClass().equals(other.getIdentClass()))
+                && (this.getTransBusin() == null ? other.getTransBusin() == null
+                        : this.getTransBusin().equals(other.getTransBusin()))
+                && (this.getRevokeBusin() == null ? other.getRevokeBusin() == null
+                        : this.getRevokeBusin().equals(other.getRevokeBusin()))
+                && (this.getDefOper() == null ? other.getDefOper() == null
+                        : this.getDefOper().equals(other.getDefOper()))
                 && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
-                && (this.getLastStatus() == null ? other.getLastStatus() == null : this.getLastStatus().equals(other.getLastStatus()))
-                && (this.getRegDate() == null ? other.getRegDate() == null : this.getRegDate().equals(other.getRegDate()))
-                && (this.getModiDate() == null ? other.getModiDate() == null : this.getModiDate().equals(other.getModiDate()))
-                && (this.getOperCode() == null ? other.getOperCode() == null : this.getOperCode().equals(other.getOperCode()))
-                && (this.getOperOrg() == null ? other.getOperOrg() == null : this.getOperOrg().equals(other.getOperOrg()))
+                && (this.getLastStatus() == null ? other.getLastStatus() == null
+                        : this.getLastStatus().equals(other.getLastStatus()))
+                && (this.getRegDate() == null ? other.getRegDate() == null
+                        : this.getRegDate().equals(other.getRegDate()))
+                && (this.getModiDate() == null ? other.getModiDate() == null
+                        : this.getModiDate().equals(other.getModiDate()))
+                && (this.getOperCode() == null ? other.getOperCode() == null
+                        : this.getOperCode().equals(other.getOperCode()))
+                && (this.getOperOrg() == null ? other.getOperOrg() == null
+                        : this.getOperOrg().equals(other.getOperOrg()))
                 && (this.getContactorSerial() == null ? other.getContactorSerial() == null
                         : this.getContactorSerial().equals(other.getContactorSerial()))
-                && (this.getRuleList() == null ? other.getRuleList() == null : this.getRuleList().equals(other.getRuleList()))
-                && (this.getBatchNo() == null ? other.getBatchNo() == null : this.getBatchNo().equals(other.getBatchNo()));
+                && (this.getRuleList() == null ? other.getRuleList() == null
+                        : this.getRuleList().equals(other.getRuleList()))
+                && (this.getBatchNo() == null ? other.getBatchNo() == null
+                        : this.getBatchNo().equals(other.getBatchNo()));
     }
 
     @Override

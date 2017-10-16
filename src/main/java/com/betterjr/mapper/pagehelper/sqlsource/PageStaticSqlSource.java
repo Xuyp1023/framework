@@ -1,5 +1,7 @@
 package com.betterjr.mapper.pagehelper.sqlsource;
 
+import java.util.List;
+
 import org.apache.ibatis.builder.StaticSqlSource;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.ParameterMapping;
@@ -12,8 +14,6 @@ import com.betterjr.mapper.orderbyhelper.OrderByHelper;
 import com.betterjr.mapper.orderbyhelper.OrderByParser;
 import com.betterjr.mapper.orderbyhelper.sqlsource.OrderBySqlSource;
 import com.betterjr.mapper.pagehelper.parser.Parser;
-
-import java.util.List;
 
 /**
  * 支持orderby和分页
@@ -60,9 +60,11 @@ public class PageStaticSqlSource extends PageSqlSource implements OrderBySqlSour
             tempSql = OrderByParser.converToOrderBySql(sql, orderBy);
         }
         tempSql = parser.getPageSql(tempSql);
-        return new BoundSql(configuration, tempSql, parser.getPageParameterMapping(configuration, original.getBoundSql(parameterObject)), parameterObject);
+        return new BoundSql(configuration, tempSql,
+                parser.getPageParameterMapping(configuration, original.getBoundSql(parameterObject)), parameterObject);
     }
 
+    @Override
     public SqlSource getOriginal() {
         return original;
     }

@@ -20,20 +20,19 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import junit.framework.TestCase;
-
-import nl.fountain.xelem.GIO;
-
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import junit.framework.TestCase;
+import nl.fountain.xelem.GIO;
+
 /**
  *
  */
 public abstract class XLElementTest extends TestCase {
-    
+
     protected Document getDoc() throws ParserConfigurationException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
@@ -48,8 +47,9 @@ public abstract class XLElementTest extends TestCase {
         root.setAttribute("xmlns:html", XLElement.XMLNS_HTML);
         return doc;
     }
-    
-    private void transform(Document doc, Result result) throws TransformerFactoryConfigurationError, TransformerConfigurationException, TransformerException {       
+
+    private void transform(Document doc, Result result)
+            throws TransformerFactoryConfigurationError, TransformerConfigurationException, TransformerException {
         TransformerFactory tFactory = TransformerFactory.newInstance();
         Transformer xformer = tFactory.newTransformer();
         xformer.setOutputProperty(OutputKeys.METHOD, "xml");
@@ -57,14 +57,15 @@ public abstract class XLElementTest extends TestCase {
         Source source = new DOMSource(doc);
         xformer.transform(source, result);
     }
-    
-    private String xmlToString(Document doc) throws TransformerConfigurationException, TransformerFactoryConfigurationError, TransformerException {
+
+    private String xmlToString(Document doc)
+            throws TransformerConfigurationException, TransformerFactoryConfigurationError, TransformerException {
         StringWriter sw = new StringWriter();
         Result result = new StreamResult(sw);
         transform(doc, result);
         return sw.toString();
     }
-    
+
     protected String xmlToString(XLElement xle, GIO gio) {
         String xml = null;
         try {
@@ -72,39 +73,48 @@ public abstract class XLElementTest extends TestCase {
             Element parent = doc.getDocumentElement();
             xle.assemble(parent, gio);
             xml = xmlToString(doc);
-        } catch (TransformerConfigurationException e) {
+        }
+        catch (TransformerConfigurationException e) {
             e.printStackTrace();
-        } catch (ParserConfigurationException e) {
+        }
+        catch (ParserConfigurationException e) {
             e.printStackTrace();
-        } catch (TransformerFactoryConfigurationError e) {
+        }
+        catch (TransformerFactoryConfigurationError e) {
             e.printStackTrace();
-        } catch (TransformerException e) {
+        }
+        catch (TransformerException e) {
             e.printStackTrace();
-        } catch (SecurityException e) {
+        }
+        catch (SecurityException e) {
             e.printStackTrace();
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
         return xml;
     }
-    
+
     protected String xmlToString(Node n) {
         String xml = null;
         try {
             Document doc = getDoc();
             doc.getDocumentElement().appendChild(doc.importNode(n, true));
             xml = xmlToString(doc);
-        } catch (ParserConfigurationException e) {
+        }
+        catch (ParserConfigurationException e) {
             e.printStackTrace();
-        } catch (TransformerConfigurationException e) {
+        }
+        catch (TransformerConfigurationException e) {
             e.printStackTrace();
-        } catch (TransformerFactoryConfigurationError e) {
+        }
+        catch (TransformerFactoryConfigurationError e) {
             e.printStackTrace();
-        } catch (TransformerException e) {
+        }
+        catch (TransformerException e) {
             e.printStackTrace();
         }
         return xml;
     }
-    
 
 }

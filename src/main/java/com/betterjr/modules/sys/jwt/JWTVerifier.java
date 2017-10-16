@@ -50,7 +50,7 @@ public class JWTVerifier {
             throw new IllegalArgumentException("Secret cannot be null or empty");
         }
 
-    	mapper = new ObjectMapper();
+        mapper = new ObjectMapper();
 
         algorithms = new HashMap<String, String>();
         algorithms.put("HS256", "HmacSHA256");
@@ -78,9 +78,8 @@ public class JWTVerifier {
      * @throws JWTVerifyException    when expiration, issuer or audience are invalid
      * @throws IllegalStateException when token's structure is invalid
      */
-    public Map<String, Object> verify(String token)
-            throws NoSuchAlgorithmException, InvalidKeyException, IllegalStateException,
-            IOException, SignatureException, JWTVerifyException {
+    public Map<String, Object> verify(String token) throws NoSuchAlgorithmException, InvalidKeyException,
+            IllegalStateException, IOException, SignatureException, JWTVerifyException {
         if (token == null || "".equals(token)) {
             throw new IllegalStateException("token not set");
         }
@@ -111,7 +110,8 @@ public class JWTVerifier {
         return mapper.treeToValue(jwtPayload, Map.class);
     }
 
-    void verifySignature(String[] pieces, String algorithm) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+    void verifySignature(String[] pieces, String algorithm)
+            throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         Mac hmac = Mac.getInstance(algorithm);
         hmac.init(new SecretKeySpec(secret, algorithm));
         byte[] sig = hmac.doFinal(new StringBuilder(pieces[0]).append(".").append(pieces[1]).toString().getBytes());
@@ -138,19 +138,15 @@ public class JWTVerifier {
     }
 
     void verifyAudience(JsonNode jwtClaims) throws JWTAudienceException {
-        if (audience == null)
-            return;
+        if (audience == null) return;
         JsonNode audNode = jwtClaims.get("aud");
-        if (audNode == null)
-            return;
+        if (audNode == null) return;
         if (audNode.isArray()) {
             for (JsonNode jsonNode : audNode) {
-                if (audience.equals(jsonNode.textValue()))
-                    return;
+                if (audience.equals(jsonNode.textValue())) return;
             }
         } else if (audNode.isTextual()) {
-            if (audience.equals(audNode.textValue()))
-                return;
+            if (audience.equals(audNode.textValue())) return;
         }
         throw new JWTAudienceException("jwt audience invalid", audNode);
     }

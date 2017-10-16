@@ -37,7 +37,8 @@ public class MailUtils {
     private static String username = "admin@qiejf.com";
     private static String password = "admin@qiejf";
 
-    public MailUtils(final String form, final String host, final String port, final String username, final String password) {
+    public MailUtils(final String form, final String host, final String port, final String username,
+            final String password) {
         MailUtils.from = form;
         MailUtils.host = host;
         MailUtils.port = port;
@@ -45,7 +46,8 @@ public class MailUtils {
         MailUtils.password = password;
     }
 
-    public static MimeMessage createMessage(final Session anSession, final String anSubject, final String anContent, final Collection<NotificationAttachment> anAttachments) {
+    public static MimeMessage createMessage(final Session anSession, final String anSubject, final String anContent,
+            final Collection<NotificationAttachment> anAttachments) {
         try {
             final MimeMessage mimeMessage = new MimeMessage(anSession);
             mimeMessage.setFrom(new InternetAddress(from));
@@ -127,7 +129,8 @@ public class MailUtils {
     /**
      * 发送邮件
      */
-    public static boolean sendMail(final String anTo, final String anSubject, final String anContent, final Collection<NotificationAttachment> anAttachments) {
+    public static boolean sendMail(final String anTo, final String anSubject, final String anContent,
+            final Collection<NotificationAttachment> anAttachments) {
         final Session session = createSession();
 
         try {

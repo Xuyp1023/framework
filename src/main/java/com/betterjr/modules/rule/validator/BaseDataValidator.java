@@ -13,14 +13,14 @@ import com.betterjr.modules.rule.service.QLExpressContext;
 public abstract class BaseDataValidator implements DataValidatorFace {
 
     @Override
-    public abstract boolean evaluate(WorkRuleValidator anValidator, QLExpressContext anContext, RuleCheckResult anResult, RuleBusiness anRuleBusin,
-            Object anValue, Object anBusinValue, String anMessage);
+    public abstract boolean evaluate(WorkRuleValidator anValidator, QLExpressContext anContext,
+            RuleCheckResult anResult, RuleBusiness anRuleBusin, Object anValue, Object anBusinValue, String anMessage);
 
     public boolean returnValue(boolean anOk, RuleCheckResult anResult, String anMessage) {
         if (anOk == false) {
             anResult.addMessage(anMessage);
         }
-        
+
         return anOk;
     }
 }

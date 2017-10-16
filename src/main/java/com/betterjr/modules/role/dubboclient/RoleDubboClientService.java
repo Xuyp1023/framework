@@ -6,12 +6,13 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.betterjr.modules.role.dubbo.IRoleService;
+
 @Service
 public class RoleDubboClientService implements IRoleService {
 
-    @Reference(interfaceClass=IRoleService.class)
+    @Reference(interfaceClass = IRoleService.class)
     private IRoleService roleService;
-    
+
     @Override
     public String webAddRole(String anRoleName, String anRoleType, String anBusinStatus) {
         return roleService.webAddRole(anRoleName, anRoleType, anBusinStatus);

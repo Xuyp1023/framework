@@ -10,7 +10,6 @@ class ActionMethodOrderBean implements Comparable<ActionMethodOrderBean> {
 
     private final String desc;
 
-
     ActionMethodOrderBean(final Method method, final int order, String anDesc) {
         this.method = method;
         this.order = order;
@@ -20,7 +19,7 @@ class ActionMethodOrderBean implements Comparable<ActionMethodOrderBean> {
     public String getDesc() {
         return desc;
     }
-    
+
     public int getOrder() {
         return order;
     }
@@ -33,11 +32,9 @@ class ActionMethodOrderBean implements Comparable<ActionMethodOrderBean> {
     public int compareTo(final ActionMethodOrderBean actionMethodOrderBean) {
         if (order < actionMethodOrderBean.getOrder()) {
             return -1;
-        }
-        else if (order > actionMethodOrderBean.getOrder()) {
+        } else if (order > actionMethodOrderBean.getOrder()) {
             return 1;
-        }
-        else {
+        } else {
             return method.equals(actionMethodOrderBean.getMethod()) ? 0 : 1;
         }
     }

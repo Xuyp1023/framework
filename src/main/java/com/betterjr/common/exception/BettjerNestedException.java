@@ -11,7 +11,7 @@ public class BettjerNestedException extends BytterException {
     public BettjerNestedException(int anCode, String message) {
         super(anCode, message);
     }
-    
+
     public static RuntimeException wrap(Throwable t) {
         if (t instanceof RuntimeException) return (RuntimeException) t;
         return new BettjerNestedException(30000, "", t);

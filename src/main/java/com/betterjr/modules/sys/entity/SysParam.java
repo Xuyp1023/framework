@@ -1,11 +1,17 @@
 package com.betterjr.modules.sys.entity;
 
-import com.betterjr.common.annotation.*;
-import com.betterjr.common.entity.BetterjrEntity;
-
 import java.util.Collection;
 
-import javax.persistence.*;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.betterjr.common.annotation.MetaData;
+import com.betterjr.common.entity.BetterjrEntity;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -15,140 +21,140 @@ public class SysParam implements BetterjrEntity {
      * 编号
      */
     @Id
-    @Column(name = "ID",  columnDefinition="INTEGER" )
-    @MetaData( value="编号", comments = "编号")
+    @Column(name = "ID", columnDefinition = "INTEGER")
+    @MetaData(value = "编号", comments = "编号")
     private Long id;
 
     /**
      * 参数名
      */
-    @Column(name = "C_NAME",  columnDefinition="VARCHAR" )
-    @MetaData( value="参数名", comments = "参数名")
+    @Column(name = "C_NAME", columnDefinition = "VARCHAR")
+    @MetaData(value = "参数名", comments = "参数名")
     private String name;
 
     /**
      * 显示名称
      */
-    @Column(name = "C_DISPLAY_NAME",  columnDefinition="VARCHAR" )
-    @MetaData( value="显示名称", comments = "显示名称")
+    @Column(name = "C_DISPLAY_NAME", columnDefinition = "VARCHAR")
+    @MetaData(value = "显示名称", comments = "显示名称")
     private String displayName;
 
     /**
      * 0:普通参数 1:列表参数
      */
-    @Column(name = "C_TYPE",  columnDefinition="CHAR" )
-    @MetaData( value="0:普通参数 1:列表参数", comments = "0:普通参数 1:列表参数")
+    @Column(name = "C_TYPE", columnDefinition = "CHAR")
+    @MetaData(value = "0:普通参数 1:列表参数", comments = "0:普通参数 1:列表参数")
     private String type;
 
     /**
      * 参数所属公司
      */
-    @Column(name = "L_CUSTNO",  columnDefinition="INTEGER" )
-    @MetaData( value="参数所属公司", comments = "参数所属公司")
+    @Column(name = "L_CUSTNO", columnDefinition = "INTEGER")
+    @MetaData(value = "参数所属公司", comments = "参数所属公司")
     private Long custNo;
 
     /**
      * 参数所属公司名称
      */
-    @Column(name = "C_CUSTNAME",  columnDefinition="VARCHAR" )
-    @MetaData( value="参数所属公司名称", comments = "参数所属公司名称")
+    @Column(name = "C_CUSTNAME", columnDefinition = "VARCHAR")
+    @MetaData(value = "参数所属公司名称", comments = "参数所属公司名称")
     private String custName;
 
     /**
      * 参数所属经办人
      */
-    @Column(name = "L_OPERID",  columnDefinition="INTEGER" )
-    @MetaData( value="参数所属经办人", comments = "参数所属经办人")
+    @Column(name = "L_OPERID", columnDefinition = "INTEGER")
+    @MetaData(value = "参数所属经办人", comments = "参数所属经办人")
     private Long operId;
 
     /**
      * 参数所属经办人名称
      */
-    @Column(name = "L_OPERNAME",  columnDefinition="VARCHAR" )
-    @MetaData( value="参数所属经办人名称", comments = "参数所属经办人名称")
+    @Column(name = "L_OPERNAME", columnDefinition = "VARCHAR")
+    @MetaData(value = "参数所属经办人名称", comments = "参数所属经办人名称")
     private String operName;
 
     /**
      * 描述
      */
-    @Column(name = "C_DESCRIPTION",  columnDefinition="VARCHAR" )
-    @MetaData( value="描述", comments = "描述")
+    @Column(name = "C_DESCRIPTION", columnDefinition = "VARCHAR")
+    @MetaData(value = "描述", comments = "描述")
     private String cDescription;
 
     /**
      * 创建人(操作员)ID号
      */
-    @Column(name = "L_REG_OPERID",  columnDefinition="INTEGER" )
-    @MetaData( value="创建人(操作员)ID号", comments = "创建人(操作员)ID号")
+    @Column(name = "L_REG_OPERID", columnDefinition = "INTEGER")
+    @MetaData(value = "创建人(操作员)ID号", comments = "创建人(操作员)ID号")
     private Long regOperId;
 
     /**
      * 创建人(操作员)姓名
      */
-    @Column(name = "C_REG_OPERNAME",  columnDefinition="VARCHAR" )
-    @MetaData( value="创建人(操作员)姓名", comments = "创建人(操作员)姓名")
+    @Column(name = "C_REG_OPERNAME", columnDefinition = "VARCHAR")
+    @MetaData(value = "创建人(操作员)姓名", comments = "创建人(操作员)姓名")
     private String regOperName;
 
     /**
      * 创建日期
      */
-    @Column(name = "D_REG_DATE",  columnDefinition="VARCHAR" )
-    @MetaData( value="创建日期", comments = "创建日期")
+    @Column(name = "D_REG_DATE", columnDefinition = "VARCHAR")
+    @MetaData(value = "创建日期", comments = "创建日期")
     private String regDate;
 
     /**
      * 创建时间
      */
-    @Column(name = "T_REG_TIME",  columnDefinition="VARCHAR" )
-    @MetaData( value="创建时间", comments = "创建时间")
+    @Column(name = "T_REG_TIME", columnDefinition = "VARCHAR")
+    @MetaData(value = "创建时间", comments = "创建时间")
     private String regTime;
 
     /**
      * 修改人(操作员)姓名
      */
-    @Column(name = "C_MODI_OPERNAME",  columnDefinition="VARCHAR" )
-    @MetaData( value="修改人(操作员)姓名", comments = "修改人(操作员)姓名")
+    @Column(name = "C_MODI_OPERNAME", columnDefinition = "VARCHAR")
+    @MetaData(value = "修改人(操作员)姓名", comments = "修改人(操作员)姓名")
     private String modiOperName;
 
     /**
      * 修改人(操作员)ID号
      */
-    @Column(name = "L_MODI_OPERID",  columnDefinition="INTEGER" )
-    @MetaData( value="修改人(操作员)ID号", comments = "修改人(操作员)ID号")
+    @Column(name = "L_MODI_OPERID", columnDefinition = "INTEGER")
+    @MetaData(value = "修改人(操作员)ID号", comments = "修改人(操作员)ID号")
     private Long modiOperId;
 
     /**
      * 修改日期
      */
-    @Column(name = "D_MODI_DATE",  columnDefinition="VARCHAR" )
-    @MetaData( value="修改日期", comments = "修改日期")
+    @Column(name = "D_MODI_DATE", columnDefinition = "VARCHAR")
+    @MetaData(value = "修改日期", comments = "修改日期")
     private String modifyDate;
 
     /**
      * 修改时间
      */
-    @Column(name = "T_MODI_TIME",  columnDefinition="VARCHAR" )
-    @MetaData( value="修改时间", comments = "修改时间")
+    @Column(name = "T_MODI_TIME", columnDefinition = "VARCHAR")
+    @MetaData(value = "修改时间", comments = "修改时间")
     private String modifyTime;
 
     /**
      * 操作机构
      */
-    @Column(name = "C_OPERORG",  columnDefinition="VARCHAR" )
-    @MetaData( value="操作机构", comments = "操作机构")
+    @Column(name = "C_OPERORG", columnDefinition = "VARCHAR")
+    @MetaData(value = "操作机构", comments = "操作机构")
     private String operOrg;
 
     /**
      * 状态
      */
-    @Column(name = "C_BUSIN_STATUS",  columnDefinition="CHAR" )
-    @MetaData( value="状态", comments = "状态")
+    @Column(name = "C_BUSIN_STATUS", columnDefinition = "CHAR")
+    @MetaData(value = "状态", comments = "状态")
     private String businStatus;
 
-    @Column(name = "C_LAST_STATUS",  columnDefinition="CHAR" )
-    @MetaData( value="", comments = "")
+    @Column(name = "C_LAST_STATUS", columnDefinition = "CHAR")
+    @MetaData(value = "", comments = "")
     private String lastStatus;
-    
+
     @Transient
     private Collection<SysParamItem> parameterItems;
 
@@ -313,7 +319,7 @@ public class SysParam implements BetterjrEntity {
     public void setLastStatus(String lastStatus) {
         this.lastStatus = lastStatus == null ? null : lastStatus.trim();
     }
-    
+
     public Collection<SysParamItem> getParameterItems() {
         return parameterItems;
     }
@@ -366,25 +372,40 @@ public class SysParam implements BetterjrEntity {
         }
         SysParam other = (SysParam) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
-            && (this.getDisplayName() == null ? other.getDisplayName() == null : this.getDisplayName().equals(other.getDisplayName()))
-            && (this.getType() == null ? other.getType() == null : this.getType().equals(other.getType()))
-            && (this.getCustNo() == null ? other.getCustNo() == null : this.getCustNo().equals(other.getCustNo()))
-            && (this.getCustName() == null ? other.getCustName() == null : this.getCustName().equals(other.getCustName()))
-            && (this.getOperId() == null ? other.getOperId() == null : this.getOperId().equals(other.getOperId()))
-            && (this.getOperName() == null ? other.getOperName() == null : this.getOperName().equals(other.getOperName()))
-            && (this.getcDescription() == null ? other.getcDescription() == null : this.getcDescription().equals(other.getcDescription()))
-            && (this.getRegOperId() == null ? other.getRegOperId() == null : this.getRegOperId().equals(other.getRegOperId()))
-            && (this.getRegOperName() == null ? other.getRegOperName() == null : this.getRegOperName().equals(other.getRegOperName()))
-            && (this.getRegDate() == null ? other.getRegDate() == null : this.getRegDate().equals(other.getRegDate()))
-            && (this.getRegTime() == null ? other.getRegTime() == null : this.getRegTime().equals(other.getRegTime()))
-            && (this.getModiOperName() == null ? other.getModiOperName() == null : this.getModiOperName().equals(other.getModiOperName()))
-            && (this.getModiOperId() == null ? other.getModiOperId() == null : this.getModiOperId().equals(other.getModiOperId()))
-            && (this.getModifyDate() == null ? other.getModifyDate() == null : this.getModifyDate().equals(other.getModifyDate()))
-            && (this.getModifyTime() == null ? other.getModifyTime() == null : this.getModifyTime().equals(other.getModifyTime()))
-            && (this.getOperOrg() == null ? other.getOperOrg() == null : this.getOperOrg().equals(other.getOperOrg()))
-            && (this.getBusinStatus() == null ? other.getBusinStatus() == null : this.getBusinStatus().equals(other.getBusinStatus()))
-            && (this.getLastStatus() == null ? other.getLastStatus() == null : this.getLastStatus().equals(other.getLastStatus()));
+                && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
+                && (this.getDisplayName() == null ? other.getDisplayName() == null
+                        : this.getDisplayName().equals(other.getDisplayName()))
+                && (this.getType() == null ? other.getType() == null : this.getType().equals(other.getType()))
+                && (this.getCustNo() == null ? other.getCustNo() == null : this.getCustNo().equals(other.getCustNo()))
+                && (this.getCustName() == null ? other.getCustName() == null
+                        : this.getCustName().equals(other.getCustName()))
+                && (this.getOperId() == null ? other.getOperId() == null : this.getOperId().equals(other.getOperId()))
+                && (this.getOperName() == null ? other.getOperName() == null
+                        : this.getOperName().equals(other.getOperName()))
+                && (this.getcDescription() == null ? other.getcDescription() == null
+                        : this.getcDescription().equals(other.getcDescription()))
+                && (this.getRegOperId() == null ? other.getRegOperId() == null
+                        : this.getRegOperId().equals(other.getRegOperId()))
+                && (this.getRegOperName() == null ? other.getRegOperName() == null
+                        : this.getRegOperName().equals(other.getRegOperName()))
+                && (this.getRegDate() == null ? other.getRegDate() == null
+                        : this.getRegDate().equals(other.getRegDate()))
+                && (this.getRegTime() == null ? other.getRegTime() == null
+                        : this.getRegTime().equals(other.getRegTime()))
+                && (this.getModiOperName() == null ? other.getModiOperName() == null
+                        : this.getModiOperName().equals(other.getModiOperName()))
+                && (this.getModiOperId() == null ? other.getModiOperId() == null
+                        : this.getModiOperId().equals(other.getModiOperId()))
+                && (this.getModifyDate() == null ? other.getModifyDate() == null
+                        : this.getModifyDate().equals(other.getModifyDate()))
+                && (this.getModifyTime() == null ? other.getModifyTime() == null
+                        : this.getModifyTime().equals(other.getModifyTime()))
+                && (this.getOperOrg() == null ? other.getOperOrg() == null
+                        : this.getOperOrg().equals(other.getOperOrg()))
+                && (this.getBusinStatus() == null ? other.getBusinStatus() == null
+                        : this.getBusinStatus().equals(other.getBusinStatus()))
+                && (this.getLastStatus() == null ? other.getLastStatus() == null
+                        : this.getLastStatus().equals(other.getLastStatus()));
     }
 
     @Override

@@ -59,7 +59,7 @@ package com.opencsv.bean;
  */
 public interface CsvToBeanFilter {
 
-   /**
+    /**
     * Determines if a line from the CSV file will be included in the
     * output of {@link CsvToBean}.  If the CSV file has a header row, it
     * may be useful for implementations to call
@@ -70,6 +70,6 @@ public interface CsvToBeanFilter {
     * @return true if the line is to be included in the output.  Otherwise,
     * false.
     */
-   boolean allowLine(String[] line);
+    boolean allowLine(String[] line);
 
 }

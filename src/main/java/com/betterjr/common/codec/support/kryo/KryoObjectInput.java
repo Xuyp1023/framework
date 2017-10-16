@@ -1,5 +1,7 @@
 package com.betterjr.common.codec.support.kryo;
- import java.io.*;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Type;
 
 import com.betterjr.common.codec.BtObjectInput;
@@ -16,6 +18,7 @@ public class KryoObjectInput implements BtObjectInput {
         input = new Input(inputStream);
     }
 
+    @Override
     public boolean readBool() throws IOException {
         try {
             return input.readBoolean();
@@ -25,6 +28,7 @@ public class KryoObjectInput implements BtObjectInput {
         }
     }
 
+    @Override
     public byte readByte() throws IOException {
         try {
             return input.readByte();
@@ -34,6 +38,7 @@ public class KryoObjectInput implements BtObjectInput {
         }
     }
 
+    @Override
     public short readShort() throws IOException {
         try {
             return input.readShort();
@@ -43,6 +48,7 @@ public class KryoObjectInput implements BtObjectInput {
         }
     }
 
+    @Override
     public int readInt() throws IOException {
         try {
             return input.readInt();
@@ -52,6 +58,7 @@ public class KryoObjectInput implements BtObjectInput {
         }
     }
 
+    @Override
     public long readLong() throws IOException {
         try {
             return input.readLong();
@@ -61,6 +68,7 @@ public class KryoObjectInput implements BtObjectInput {
         }
     }
 
+    @Override
     public float readFloat() throws IOException {
         try {
             return input.readFloat();
@@ -70,6 +78,7 @@ public class KryoObjectInput implements BtObjectInput {
         }
     }
 
+    @Override
     public double readDouble() throws IOException {
         try {
             return input.readDouble();
@@ -79,16 +88,15 @@ public class KryoObjectInput implements BtObjectInput {
         }
     }
 
+    @Override
     public byte[] readBytes() throws IOException {
         try {
             int len = input.readInt();
             if (len < 0) {
                 return null;
-            }
-            else if (len == 0) {
+            } else if (len == 0) {
                 return new byte[] {};
-            }
-            else {
+            } else {
                 return input.readBytes(len);
             }
         }
@@ -97,6 +105,7 @@ public class KryoObjectInput implements BtObjectInput {
         }
     }
 
+    @Override
     public String readUTF() throws IOException {
         try {
             return input.readString();
@@ -106,6 +115,7 @@ public class KryoObjectInput implements BtObjectInput {
         }
     }
 
+    @Override
     public Object readObject() throws IOException, ClassNotFoundException {
         try {
             return kryo.readClassAndObject(input);
@@ -115,16 +125,18 @@ public class KryoObjectInput implements BtObjectInput {
         }
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T readObject(Class<T> clazz) throws IOException, ClassNotFoundException {
 
         return (T) readObject();
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T readObject(Class<T> clazz, Type type) throws IOException, ClassNotFoundException {
 
-        return (T) readObject(clazz);
+        return readObject(clazz);
     }
 
 }

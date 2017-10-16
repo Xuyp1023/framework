@@ -46,12 +46,14 @@ public class SelectKeyGenerator implements KeyGenerator {
         this.keyStatement = keyStatement;
     }
 
+    @Override
     public void processBefore(Executor executor, MappedStatement ms, Statement stmt, Object parameter) {
         if (executeBefore) {
             processGeneratedKeys(executor, ms, parameter);
         }
     }
 
+    @Override
     public void processAfter(Executor executor, MappedStatement ms, Statement stmt, Object parameter) {
         if (!executeBefore) {
             processGeneratedKeys(executor, ms, parameter);
@@ -106,24 +108,23 @@ public class SelectKeyGenerator implements KeyGenerator {
                     pos = tmpStr.indexOf("=");
                     String workField = tmpStr.substring(0, pos);
                     String workMode = tmpStr.substring(pos + 2);
-                //    System.out.println(workField +" = " +workMode);
+                    // System.out.println(workField +" = " +workMode);
                     Object obj = SelectKeyGenService.getValue(workMode, modeName.concat(".").concat(workField));
-                    Class cc =  anMetaParam.getSetterType(workField);
-                 //   System.out.println(cc +", " + obj.getClass());
-                    if (Number.class.isAssignableFrom(cc)){
-                        if (obj instanceof String){
-                            obj = Integer.parseInt((String)obj);
+                    Class cc = anMetaParam.getSetterType(workField);
+                    // System.out.println(cc +", " + obj.getClass());
+                    if (Number.class.isAssignableFrom(cc)) {
+                        if (obj instanceof String) {
+                            obj = Integer.parseInt((String) obj);
                         }
                         if ((obj instanceof Long) && Integer.class.isAssignableFrom(cc)) {
-                        	obj =new Integer(((Long)obj).intValue());
+                            obj = new Integer(((Long) obj).intValue());
                         }
-                    }
-                    else if (String.class.isAssignableFrom(cc)){
-                        if (obj instanceof Number){
+                    } else if (String.class.isAssignableFrom(cc)) {
+                        if (obj instanceof Number) {
                             obj = obj.toString();
                         }
                     }
-                    
+
                     fieldMap.put(workField, obj);
                 }
                 String keyProperties[] = fieldMap.keySet().toArray(new String[fieldMap.size()]);
@@ -142,7 +143,8 @@ public class SelectKeyGenerator implements KeyGenerator {
                 final Configuration configuration = ms.getConfiguration();
                 final MetaObject metaParam = configuration.newMetaObject(parameter);
                 if (keyProperties != null) {
-                    if (checkKeyGenerator(this.keyStatement.getBoundSql(parameter).getSql(), metaParam, configuration, parameter)) {
+                    if (checkKeyGenerator(this.keyStatement.getBoundSql(parameter).getSql(), metaParam, configuration,
+                            parameter)) {
 
                         return;
                     }
@@ -150,27 +152,24 @@ public class SelectKeyGenerator implements KeyGenerator {
                     // Do not close keyExecutor.
                     // The transaction will be closed by parent executor.
                     Executor keyExecutor = configuration.newExecutor(executor.getTransaction(), ExecutorType.SIMPLE);
-                    List<Object> values = keyExecutor.query(keyStatement, parameter, RowBounds.DEFAULT, Executor.NO_RESULT_HANDLER);
+                    List<Object> values = keyExecutor.query(keyStatement, parameter, RowBounds.DEFAULT,
+                            Executor.NO_RESULT_HANDLER);
                     if (values.size() == 0) {
                         throw new ExecutorException("SelectKey returned no data.");
-                    }
-                    else if (values.size() > 1) {
+                    } else if (values.size() > 1) {
                         throw new ExecutorException("SelectKey returned more than one value.");
-                    }
-                    else {
+                    } else {
                         MetaObject metaResult = configuration.newMetaObject(values.get(0));
                         if (keyProperties.length == 1) {
                             if (metaResult.hasGetter(keyProperties[0])) {
                                 setValue(metaParam, keyProperties[0], metaResult.getValue(keyProperties[0]));
-                            }
-                            else {
+                            } else {
                                 // no getter for the property - maybe just a
                                 // single value object
                                 // so try that
                                 setValue(metaParam, keyProperties[0], values.get(0));
                             }
-                        }
-                        else {
+                        } else {
                             handleMultipleProperties(keyProperties, metaParam, metaResult);
                         }
                     }
@@ -193,10 +192,10 @@ public class SelectKeyGenerator implements KeyGenerator {
             for (int i = 0; i < keyProperties.length; i++) {
                 setValue(metaParam, keyProperties[i], metaResult.getValue(keyProperties[i]));
             }
-        }
-        else {
+        } else {
             if (keyColumns.length != keyProperties.length) {
-                throw new ExecutorException("If SelectKey has key columns, the number must match the number of key properties.");
+                throw new ExecutorException(
+                        "If SelectKey has key columns, the number must match the number of key properties.");
             }
             for (int i = 0; i < keyProperties.length; i++) {
                 setValue(metaParam, keyProperties[i], metaResult.getValue(keyColumns[i]));
@@ -207,10 +206,9 @@ public class SelectKeyGenerator implements KeyGenerator {
     private void setValue(MetaObject metaParam, String property, Object value) {
         if (metaParam.hasSetter(property)) {
             metaParam.setValue(property, value);
-        }
-        else {
-            throw new ExecutorException(
-                    "No setter found for the keyProperty '" + property + "' in " + metaParam.getOriginalObject().getClass().getName() + ".");
+        } else {
+            throw new ExecutorException("No setter found for the keyProperty '" + property + "' in "
+                    + metaParam.getOriginalObject().getClass().getName() + ".");
         }
     }
 }

@@ -1,25 +1,13 @@
 package com.betterjr.modules.document.utils;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
-import org.apache.commons.io.IOUtils;
-
-import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.PutObjectRequest;
 import com.aliyun.oss.model.SimplifiedObjectMeta;
-import com.betterjr.common.config.ParamNames;
-import com.betterjr.common.mapper.JsonMapper;
-import com.betterjr.common.utils.Cryptos;
 import com.betterjr.modules.document.IAgencyAuthFileGroupService;
 import com.betterjr.modules.document.data.OSSConfigInfo;
-import com.betterjr.modules.document.entity.CustFileItem;
-import com.betterjr.modules.sys.service.SysConfigService;
 
 public class OSSFileManager implements FileManager {
     private static OSSConfigInfo configInfo = null;
@@ -80,7 +68,8 @@ public class OSSFileManager implements FileManager {
         }
         if (ossClient == null) {
 
-            ossClient = new OSSClient(configInfo.getEndPoint(), configInfo.getAccessKeyId(), configInfo.getAccessKeySecret());
+            ossClient = new OSSClient(configInfo.getEndPoint(), configInfo.getAccessKeyId(),
+                    configInfo.getAccessKeySecret());
         }
     }
 
@@ -99,7 +88,7 @@ public class OSSFileManager implements FileManager {
             return ccs.getSize();
         }
         catch (Exception ex) {
-            
+
         }
         return -1;
     }

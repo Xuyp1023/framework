@@ -5,5 +5,4 @@ import com.betterjr.mapper.common.Mapper;
 import com.betterjr.modules.sys.entity.SysParamItem;
 
 @BetterjrMapper
-public interface SysParamItemMapper extends Mapper<SysParamItem> {
-}
+public interface SysParamItemMapper extends Mapper<SysParamItem> {}

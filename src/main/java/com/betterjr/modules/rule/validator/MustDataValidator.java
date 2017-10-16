@@ -13,18 +13,19 @@ import com.betterjr.modules.rule.service.QLExpressContext;
 public class MustDataValidator extends BaseDataValidator implements DataValidatorFace {
 
     @Override
-    public boolean evaluate(WorkRuleValidator anValidator, QLExpressContext anContext, RuleCheckResult anResult, RuleBusiness anRuleBusin,
-            Object anValue, Object anBusinValue, String anMessage) {
+    public boolean evaluate(WorkRuleValidator anValidator, QLExpressContext anContext, RuleCheckResult anResult,
+            RuleBusiness anRuleBusin, Object anValue, Object anBusinValue, String anMessage) {
         boolean bb = true;
         if (anValidator.isMustItem() && (anValue == null)) {
             bb = false;
         }
-        
+
         return returnValue(bb, anResult, anValidator.dataFormatMessage());
     }
-    
-    public String getValidatorName(){
-        
+
+    @Override
+    public String getValidatorName() {
+
         return "mustValid";
     }
 }

@@ -42,8 +42,7 @@ public class RocketMQProducer implements ApplicationListener<ContextRefreshedEve
         start();
     }
 
-    public SendResult sendMessage(final MQMessage anMessage)
-            throws Exception {
+    public SendResult sendMessage(final MQMessage anMessage) throws Exception {
         final Message message = MQCodecUtils.wrap(anMessage);
         if (message == null) {
             throw new BytterException("包装消息出错！");
@@ -62,6 +61,7 @@ public class RocketMQProducer implements ApplicationListener<ContextRefreshedEve
 
     public void shutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
             public void run() {
                 shutdown();
             }

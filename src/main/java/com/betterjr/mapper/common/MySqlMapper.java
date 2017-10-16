@@ -33,8 +33,6 @@ import com.betterjr.mapper.common.special.InsertUseGeneratedKeysMapper;
  * @param <T> 不能为空
  * @author liuzh
  */
-public interface MySqlMapper<T> extends
-        InsertListMapper<T>,
-        InsertUseGeneratedKeysMapper<T> {
+public interface MySqlMapper<T> extends InsertListMapper<T>, InsertUseGeneratedKeysMapper<T> {
 
 }

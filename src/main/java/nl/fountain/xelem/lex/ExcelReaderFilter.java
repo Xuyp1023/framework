@@ -31,20 +31,20 @@ import java.util.List;
  * 
  */
 public interface ExcelReaderFilter extends ExcelReaderListener {
-    
+
     /**
      * Gets a list of registered listeners.
      * 
      * @return a list of registered listeners
      */
     List<ExcelReaderListener> getListeners();
-    
+
     /**
      * Registers the given listener.
      * @param listener the listener to be registered
      */
     void addExcelReaderListener(ExcelReaderListener listener);
-    
+
     /**
      * Remove the specified listener.
      * @param listener the listener to be removed
@@ -52,7 +52,7 @@ public interface ExcelReaderFilter extends ExcelReaderListener {
      * 		with this ExcelReaderFilter, <code>false</code> otherwise.
      */
     boolean removeExcelReaderListener(ExcelReaderListener listener);
-    
+
     /**
      * Remove all registered listeners.
      *

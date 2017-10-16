@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,8 +58,9 @@ public class RoleService extends BaseService<RoleMapper, Role> {
      * @param role
      * @return
      */
-    public boolean updateRole(final String anRoleId, final String anRoleName, final String anRoleType, final String anBusinStatus) {
-        if (BetterStringUtils.isBlank(anRoleId)) {
+    public boolean updateRole(final String anRoleId, final String anRoleName, final String anRoleType,
+            final String anBusinStatus) {
+        if (StringUtils.isBlank(anRoleId)) {
             throw new BytterDeclareException("要修改的角色ID不存在");
         }
         final CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();
@@ -106,7 +108,7 @@ public class RoleService extends BaseService<RoleMapper, Role> {
         final Map<String, Object> map = new HashMap<String, Object>();
         final CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();
         map.put("operOrg", custOperator.getOperOrg());
-        if (BetterStringUtils.isNotBlank((String) anMap.get("roleName"))) {
+        if (StringUtils.isNotBlank((String) anMap.get("roleName"))) {
             map.put("roleName", anMap.get("roleName"));
         }
 
@@ -171,8 +173,8 @@ public class RoleService extends BaseService<RoleMapper, Role> {
         final List<Role> roleList = this.selectByProperty(anMap);
         if (roleList.size() <= 0) {
             // 默认添加三个角色信息，管理员，审批员，复核员，经办员
-            //            Role anRole = new Role("", "管理员", "OPERATOR_ADMIN", "1", anOperOrg, "0");
-            //            this.insert(anRole);
+            // Role anRole = new Role("", "管理员", "OPERATOR_ADMIN", "1", anOperOrg, "0");
+            // this.insert(anRole);
             Role anRole = new Role("", "审批员", "OPERATOR_ADUIT", "1", anOperOrg, "0");
             this.insert(anRole);
             anRole = new Role("", "复核员", "OPERATOR_CHECKER", "1", anOperOrg, "0");
@@ -180,8 +182,7 @@ public class RoleService extends BaseService<RoleMapper, Role> {
             anRole = new Role("", "经办员", "OPERATOR_USER", "1", anOperOrg, "0");
             this.insert(anRole);
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -191,10 +192,10 @@ public class RoleService extends BaseService<RoleMapper, Role> {
      * @return
      */
     public String findRoleName(final String anRoleList) {
-        BTAssert.isTrue(BetterStringUtils.isNotBlank(anRoleList), "角色列表不能为空.");
+        BTAssert.isTrue(StringUtils.isNotBlank(anRoleList), "角色列表不能为空.");
         final String[] roles = anRoleList.split(",");
         final StringBuilder roleName = new StringBuilder();
-        for (final String roleId: roles) {
+        for (final String roleId : roles) {
             roleName.append(this.findRoleById(Long.valueOf(roleId)).getRoleName()).append(",");
         }
         roleName.deleteCharAt(roleName.length() - 1);

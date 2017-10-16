@@ -40,8 +40,8 @@ public class CustInfoDubboService implements ICustInfoService {
 
     @Override
     public Collection<CustInfo> queryCustInfo() {
-        final Collection<CustInfo> custInfos = custAccountService.findCustInfoByOperator(UserUtils.getOperatorInfo().getId(),
-                UserUtils.getOperatorInfo().getOperOrg());
+        final Collection<CustInfo> custInfos = custAccountService
+                .findCustInfoByOperator(UserUtils.getOperatorInfo().getId(), UserUtils.getOperatorInfo().getOperOrg());
         return custInfos;
     }
 

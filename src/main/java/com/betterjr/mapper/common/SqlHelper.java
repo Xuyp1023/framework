@@ -1,4 +1,10 @@
 package com.betterjr.mapper.common;
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -15,11 +21,6 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandlerRegistry;
-
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Mybatis - 获取Mybatis查询sql工具
@@ -77,7 +78,8 @@ public class SqlHelper {
         try {
             mapperInterface = Class.forName(fullMapperMethodName.substring(0, fullMapperMethodName.lastIndexOf('.')));
             return getMapperSql(session, mapperInterface, methodName, args);
-        } catch (ClassNotFoundException e) {
+        }
+        catch (ClassNotFoundException e) {
             throw new IllegalArgumentException("参数" + fullMapperMethodName + "无效！");
         }
     }
@@ -114,7 +116,6 @@ public class SqlHelper {
         }
         return getNamespaceSql(session, fullMapperMethodName, params);
     }
-
 
     /**
      * 通过命名空间方式获取sql
@@ -182,30 +183,29 @@ public class SqlHelper {
         String strValue = String.valueOf(value);
         if (jdbcType != null) {
             switch (jdbcType) {
-                //数字
-                case BIT:
-                case TINYINT:
-                case SMALLINT:
-                case INTEGER:
-                case BIGINT:
-                case FLOAT:
-                case REAL:
-                case DOUBLE:
-                case NUMERIC:
-                case DECIMAL:
-                    break;
-                //日期
-                case DATE:
-                case TIME:
-                case TIMESTAMP:
-                    //其他，包含字符串和其他特殊类型
-                default:
-                    strValue = "'" + strValue + "'";
-
+            // 数字
+            case BIT:
+            case TINYINT:
+            case SMALLINT:
+            case INTEGER:
+            case BIGINT:
+            case FLOAT:
+            case REAL:
+            case DOUBLE:
+            case NUMERIC:
+            case DECIMAL:
+                break;
+            // 日期
+            case DATE:
+            case TIME:
+            case TIMESTAMP:
+                // 其他，包含字符串和其他特殊类型
+            default:
+                strValue = "'" + strValue + "'";
 
             }
         } else if (Number.class.isAssignableFrom(javaType)) {
-            //不加单引号
+            // 不加单引号
         } else {
             strValue = "'" + strValue + "'";
         }

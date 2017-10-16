@@ -18,13 +18,13 @@ import com.betterjr.modules.sys.entity.SysMenuRuleInfo;
 
 @Service
 public class SysMenuRuleService extends BaseService<SysMenuRuleInfoMapper, SysMenuRuleInfo> {
-    
+
     @Autowired
     private SysMenuService menuService;
-    
-    Map<Integer,SysMenuRuleInfo> menuMap = new HashMap<Integer,SysMenuRuleInfo>();
-    
-    public List<SysMenuRuleInfo> findAll(){
+
+    Map<Integer, SysMenuRuleInfo> menuMap = new HashMap<Integer, SysMenuRuleInfo>();
+
+    public List<SysMenuRuleInfo> findAll() {
         List<SysMenuRuleInfo> list = new ArrayList<SysMenuRuleInfo>();
         list = this.findAll();
         return list;
@@ -35,16 +35,16 @@ public class SysMenuRuleService extends BaseService<SysMenuRuleInfoMapper, SysMe
      * @param ruleNames
      * @return
      */
-    public List<String> findAllByRuleList(String ruleNames){
+    public List<String> findAllByRuleList(String ruleNames) {
         List<String> menuList = new ArrayList<String>();
         List ruleNameList = Arrays.asList(ruleNames.split(";|,"));
         Map anMap = new HashMap<String, Object>();
         anMap.put("ruleName", ruleNameList);
         List<SysMenuRuleInfo> ruleList = this.selectByProperty(anMap);
-        Map<Integer,SysMenuRuleInfo> ruleMap = new HashMap<Integer,SysMenuRuleInfo>();
+        Map<Integer, SysMenuRuleInfo> ruleMap = new HashMap<Integer, SysMenuRuleInfo>();
         for (SysMenuRuleInfo ruleInfo : ruleList) {
-            //去除重复
-            if(ruleMap.get(ruleInfo.getMenuId())!=null){
+            // 去除重复
+            if (ruleMap.get(ruleInfo.getMenuId()) != null) {
                 continue;
             }
             if (ruleInfo.getStatus().equals("1")) {
@@ -54,33 +54,33 @@ public class SysMenuRuleService extends BaseService<SysMenuRuleInfoMapper, SysMe
         }
         return menuList;
     }
-    
+
     /**
      * 获取角色对应菜单
      * @param ruleNames
      * @return
      */
-    public List<String> findAllByRuleAndMenu(List<String> anRuleIdList, Integer anMenuId){
+    public List<String> findAllByRuleAndMenu(List<String> anRuleIdList, Integer anMenuId) {
         List<String> menuList = new ArrayList<String>();
         Map anMap = new HashMap<String, Object>();
         anMap.put("ruleId", anRuleIdList);
-        List<Integer> menus=new ArrayList<Integer>();  
-        if(-1==anMenuId){
-            menus=this.menuService.findAllMenu();
-        }else{
-            menus=this.menuService.findSubMenu(anMenuId);
+        List<Integer> menus = new ArrayList<Integer>();
+        if (-1 == anMenuId) {
+            menus = this.menuService.findAllMenu();
+        } else {
+            menus = this.menuService.findSubMenu(anMenuId);
         }
-        if (Collections3.isEmpty(menus) || Collections3.isEmpty(anRuleIdList)){
-            
+        if (Collections3.isEmpty(menus) || Collections3.isEmpty(anRuleIdList)) {
+
             return menuList;
         }
         anMap.put("menuId", menus);
-        logger.info("findAllByRuleAndMenu ruleNames "+ anRuleIdList +", anMenuId = " + anMenuId +", " + anMap);
+        logger.info("findAllByRuleAndMenu ruleNames " + anRuleIdList + ", anMenuId = " + anMenuId + ", " + anMap);
         List<SysMenuRuleInfo> ruleList = this.selectByProperty(anMap);
-        Map<Integer,SysMenuRuleInfo> ruleMap = new HashMap<Integer,SysMenuRuleInfo>();
+        Map<Integer, SysMenuRuleInfo> ruleMap = new HashMap<Integer, SysMenuRuleInfo>();
         for (SysMenuRuleInfo ruleInfo : ruleList) {
-            //去除重复
-            if(ruleMap.get(ruleInfo.getMenuId())!=null){
+            // 去除重复
+            if (ruleMap.get(ruleInfo.getMenuId()) != null) {
                 continue;
             }
             if (ruleInfo.getStatus().equals("1") && ruleInfo.hasValidMenu(UserUtils.findInnerRules())) {
@@ -88,10 +88,10 @@ public class SysMenuRuleService extends BaseService<SysMenuRuleInfoMapper, SysMe
                 ruleMap.put(ruleInfo.getMenuId(), ruleInfo);
             }
         }
-        
+
         return menuList;
     }
-    
+
     /****
      * 添加菜单角色
      * @param roleId
@@ -100,48 +100,48 @@ public class SysMenuRuleService extends BaseService<SysMenuRuleInfoMapper, SysMe
      * @param menuName
      * @return
      */
-    public boolean addMenuRole(String roleId,String roleName,String menuId,String menuName){
-        SysMenuRuleInfo menuRole=new SysMenuRuleInfo();
-        menuRole.initMenuRole(roleId, roleName, menuId, menuName,getLoginShiroUserType());
-        return this.insert(menuRole)>0;
+    public boolean addMenuRole(String roleId, String roleName, String menuId, String menuName) {
+        SysMenuRuleInfo menuRole = new SysMenuRuleInfo();
+        menuRole.initMenuRole(roleId, roleName, menuId, menuName, getLoginShiroUserType());
+        return this.insert(menuRole) > 0;
     }
-    
+
     /***
      * 根据角色删除关系表
      * @param anRoleId
      * @return
      */
-    public boolean delMenuRole(Long anRoleId){
+    public boolean delMenuRole(Long anRoleId) {
         Map anMap = new HashMap<String, Object>();
         anMap.put("ruleId", anRoleId);
         anMap.put("shiroUserType", getLoginShiroUserType());
-        return this.deleteByExample(anMap)>0;
+        return this.deleteByExample(anMap) > 0;
     }
-    
+
     /**
      * 获取角色对应指定的菜单
      * @param ruleNames
      * @return
      */
-    public boolean checkMenuRole(List<String> anRuleIdList, Integer anMenuId){
+    public boolean checkMenuRole(List<String> anRuleIdList, Integer anMenuId) {
         Map anMap = new HashMap<String, Object>();
         anMap.put("ruleId", anRuleIdList);
         anMap.put("menuId", anMenuId);
-        logger.info("checkMenuRole ruleNames "+ anRuleIdList +", anMenuId = " + anMenuId +", " + anMap);
+        logger.info("checkMenuRole ruleNames " + anRuleIdList + ", anMenuId = " + anMenuId + ", " + anMap);
         List<SysMenuRuleInfo> ruleList = this.selectByProperty(anMap);
-        if(Collections3.isEmpty(ruleList)){
+        if (Collections3.isEmpty(ruleList)) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
     // 获取当前身份
-    public String getLoginShiroUserType(){
+    public String getLoginShiroUserType() {
         List<PlatformBaseRuleType> userInnerRules = UserUtils.findInnerRules();
-        PlatformBaseRuleType platRuleType=Collections3.getFirst(userInnerRules);
-        logger.info("addMenuRole.userInnerRules:"+platRuleType.getTitle()+platRuleType.toString());
+        PlatformBaseRuleType platRuleType = Collections3.getFirst(userInnerRules);
+        logger.info("addMenuRole.userInnerRules:" + platRuleType.getTitle() + platRuleType.toString());
         return platRuleType.toString();
     }
-    
+
 }

@@ -47,8 +47,7 @@ public class IterableCSVToBeanBuilder<T> {
     /**
      * default constructor
      */
-    public IterableCSVToBeanBuilder() {
-    }
+    public IterableCSVToBeanBuilder() {}
 
     /**
      * Creates the IterableCSVToBean.

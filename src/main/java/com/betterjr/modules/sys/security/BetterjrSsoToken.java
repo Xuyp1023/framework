@@ -34,7 +34,8 @@ public class BetterjrSsoToken extends UsernamePasswordToken {
         this.corpId = "";
     }
 
-    public BetterjrSsoToken(final String anTicket, final String anCorpId, final String anCustRole, final String anUsername, final String anPassword, final String anHost) {
+    public BetterjrSsoToken(final String anTicket, final String anCorpId, final String anCustRole,
+            final String anUsername, final String anPassword, final String anHost) {
         super(anUsername, anPassword, false, anHost);
         this.corpId = anCorpId;
         this.ticket = anTicket;

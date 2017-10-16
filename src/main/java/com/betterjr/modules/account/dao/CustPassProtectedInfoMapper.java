@@ -5,5 +5,4 @@ import com.betterjr.mapper.common.Mapper;
 import com.betterjr.modules.account.entity.CustPassProtectedInfo;
 
 @BetterjrMapper
-public interface CustPassProtectedInfoMapper extends Mapper<CustPassProtectedInfo> {
-}
+public interface CustPassProtectedInfoMapper extends Mapper<CustPassProtectedInfo> {}

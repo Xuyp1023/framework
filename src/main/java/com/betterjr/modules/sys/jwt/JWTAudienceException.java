@@ -1,12 +1,12 @@
 package com.betterjr.modules.sys.jwt;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 public class JWTAudienceException extends JWTVerifyException {
- 
+
     private static final long serialVersionUID = 9023354240755174813L;
     private JsonNode audienceNode;
 

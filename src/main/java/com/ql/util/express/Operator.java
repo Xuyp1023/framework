@@ -11,6 +11,7 @@ import com.ql.util.express.instruction.op.OperatorBase;
  */
 public abstract class Operator extends OperatorBase {
 
+    @Override
     public OperateData executeInner(InstructionSetContext context, OperateData[] list) throws Exception {
         Object[] parameters = new Object[list.length];
         for (int i = 0; i < list.length; i++) {
@@ -23,8 +24,7 @@ public abstract class Operator extends OperatorBase {
         if (result == null) {
             // return new OperateData(null,null);
             return OperateDataCacheManager.fetchOperateData(null, null);
-        }
-        else {
+        } else {
             // return new
             // OperateData(result,ExpressUtil.getSimpleDataType(result.getClass()));
             return OperateDataCacheManager.fetchOperateData(result, ExpressUtil.getSimpleDataType(result.getClass()));
@@ -46,21 +46,15 @@ public abstract class Operator extends OperatorBase {
 
         if (op1 instanceof String) {
             compareResult = ((String) op1).compareTo(op2.toString());
-        }
-        else if (op2 instanceof String) {
+        } else if (op2 instanceof String) {
             compareResult = op1.toString().compareTo((String) op2);
-        }
-        else if (op1 instanceof Number && op2 instanceof Number) {
+        } else if (op1 instanceof Number && op2 instanceof Number) {
             // 数字比较
             compareResult = OperatorOfNumber.compareNumber((Number) op1, (Number) op2);
-        }
-        else if ((op1 instanceof Boolean) && (op2 instanceof Boolean)) {
+        } else if ((op1 instanceof Boolean) && (op2 instanceof Boolean)) {
             if (((Boolean) op1).booleanValue() == ((Boolean) op2).booleanValue()) compareResult = 0;
-            else
-                compareResult = -1;
-        }
-        else
-            throw new Exception(op1 + "和" + op2 + "不能执行compare 操作");
+            else compareResult = -1;
+        } else throw new Exception(op1 + "和" + op2 + "不能执行compare 操作");
         return compareResult;
     }
 

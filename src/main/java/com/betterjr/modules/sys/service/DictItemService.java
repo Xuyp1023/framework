@@ -1,6 +1,8 @@
 package com.betterjr.modules.sys.service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -16,24 +18,23 @@ public class DictItemService extends BaseService<DictItemInfoMapper, DictItemInf
 
         return this.selectByProperty("itemNo", anParentId);
     }
-    
-    public DictItemInfo saveDictItem(Integer anItemNo, String anKey, String anCode){
-       Map<String, Object > termMap = new HashMap();
-       termMap.put("itemNo", anItemNo);
-       termMap.put("itemValue", anKey);
-       List<DictItemInfo> data = this.selectByProperty(termMap);
-       DictItemInfo itemInfo = Collections3.getFirst(data);  
-       if ( itemInfo == null ){
-          itemInfo = new DictItemInfo(anKey, anCode, anItemNo);
-          this.insert(itemInfo);
-       }
-       else{
-          itemInfo.setItemCode(anCode);
-          this.updateByPrimaryKey(itemInfo);
-       }
-       return itemInfo;
+
+    public DictItemInfo saveDictItem(Integer anItemNo, String anKey, String anCode) {
+        Map<String, Object> termMap = new HashMap();
+        termMap.put("itemNo", anItemNo);
+        termMap.put("itemValue", anKey);
+        List<DictItemInfo> data = this.selectByProperty(termMap);
+        DictItemInfo itemInfo = Collections3.getFirst(data);
+        if (itemInfo == null) {
+            itemInfo = new DictItemInfo(anKey, anCode, anItemNo);
+            this.insert(itemInfo);
+        } else {
+            itemInfo.setItemCode(anCode);
+            this.updateByPrimaryKey(itemInfo);
+        }
+        return itemInfo;
     }
-    
+
     public List<DictItemInfo> findOutScriptByGroup(int anParentId) {
         Map<String, Object> map = new HashMap();
         map.put("itemNo", anParentId);

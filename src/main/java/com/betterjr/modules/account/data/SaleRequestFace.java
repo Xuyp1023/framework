@@ -2,7 +2,6 @@ package com.betterjr.modules.account.data;
 
 import com.betterjr.common.data.SaleSimpleRequest;
 
- 
 public interface SaleRequestFace extends SaleSimpleRequest {
 
     String getRequestNo();

@@ -31,7 +31,7 @@ public class LoginController {
     @Inject
     private CustCertDubboClientService certDubboClientService;
 
-    @RequestMapping(value = "roleList", method = {RequestMethod.POST})
+    @RequestMapping(value = "roleList", method = { RequestMethod.POST })
     public @ResponseBody String roleList(final HttpServletRequest request) {
         try {
             final X509Certificate cert = Servlets.findCertificate(request);
@@ -41,9 +41,10 @@ public class LoginController {
 
             if (cert != null) {
 
-                final CustCertInfo certInfo= certDubboClientService.checkValidityWithBase64(Encodes.encodeBase64(cert.getEncoded()));
+                final CustCertInfo certInfo = certDubboClientService
+                        .checkValidityWithBase64(Encodes.encodeBase64(cert.getEncoded()));
                 if (certInfo.validCertInfo()) {
-                    return exec(()->certDubboClientService.queryCustCertRoleList(certInfo.getSerialNo()), "", logger);
+                    return exec(() -> certDubboClientService.queryCustCertRoleList(certInfo.getSerialNo()), "", logger);
                 }
             }
         }
@@ -55,19 +56,19 @@ public class LoginController {
         return AjaxObject.newError("获取机构角色列表错误！").toJson();
     }
 
-    @RequestMapping(value = "login", method = {RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = "login", method = { RequestMethod.GET, RequestMethod.POST })
     public String login(final String username, final String password) {
         // TODO System.out.println("controller " + username + ":" + password);
         return "/static/main.html";
     }
 
-    @RequestMapping(value = "tokenLogin", method = {RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = "tokenLogin", method = { RequestMethod.GET, RequestMethod.POST })
     public String tokenLogin(final String username, final String password) {
         // TODO System.out.println("controller " + username + ":" + password);
         return "/static/main.html";
     }
 
-    @RequestMapping(value = "logout", method = {RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = "logout", method = { RequestMethod.GET, RequestMethod.POST })
     public String logout() {
         return "/static/error.html";
     }

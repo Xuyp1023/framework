@@ -24,19 +24,28 @@
 
 package com.betterjr.mapper.provider;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.ibatis.builder.StaticSqlSource;
 import org.apache.ibatis.jdbc.SQL;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ParameterMapping;
-import org.apache.ibatis.scripting.xmltags.*;
+import org.apache.ibatis.scripting.xmltags.ForEachSqlNode;
+import org.apache.ibatis.scripting.xmltags.IfSqlNode;
+import org.apache.ibatis.scripting.xmltags.MixedSqlNode;
+import org.apache.ibatis.scripting.xmltags.SetSqlNode;
+import org.apache.ibatis.scripting.xmltags.SqlNode;
+import org.apache.ibatis.scripting.xmltags.StaticTextSqlNode;
+import org.apache.ibatis.scripting.xmltags.TextSqlNode;
+import org.apache.ibatis.scripting.xmltags.TrimSqlNode;
+import org.apache.ibatis.scripting.xmltags.VarDeclSqlNode;
+import org.apache.ibatis.scripting.xmltags.WhereSqlNode;
 
 import com.betterjr.mapper.mapperhelper.EntityHelper;
 import com.betterjr.mapper.mapperhelper.MapperHelper;
 import com.betterjr.mapper.mapperhelper.MapperTemplate;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Mappper实现类，基础方法实现类
@@ -61,7 +70,8 @@ public class MapperProvider extends MapperTemplate {
         setResultType(ms, entityClass);
         List<SqlNode> sqlNodes = new LinkedList<SqlNode>();
         // 静态的sql部分:select column ... from table
-        sqlNodes.add(new StaticTextSqlNode("SELECT " + EntityHelper.getSelectColumns(entityClass) + " FROM " + tableName(entityClass)));
+        sqlNodes.add(new StaticTextSqlNode(
+                "SELECT " + EntityHelper.getSelectColumns(entityClass) + " FROM " + tableName(entityClass)));
         // 将if添加到<where>
         sqlNodes.add(new WhereSqlNode(ms.getConfiguration(), getAllIfColumnNode(entityClass)));
         return new MixedSqlNode(sqlNodes);
@@ -79,7 +89,8 @@ public class MapperProvider extends MapperTemplate {
         setResultType(ms, entityClass);
         List<SqlNode> sqlNodes = new LinkedList<SqlNode>();
         // 静态的sql部分:select column ... from table
-        sqlNodes.add(new StaticTextSqlNode("SELECT " + EntityHelper.getSelectColumns(entityClass) + " FROM " + tableName(entityClass)));
+        sqlNodes.add(new StaticTextSqlNode(
+                "SELECT " + EntityHelper.getSelectColumns(entityClass) + " FROM " + tableName(entityClass)));
         // 将if添加到<where>
         sqlNodes.add(new WhereSqlNode(ms.getConfiguration(), getAllIfColumnNode(entityClass)));
         String orderByClause = EntityHelper.getOrderByClause(entityClass);
@@ -162,9 +173,8 @@ public class MapperProvider extends MapperTemplate {
         // 处理所有的主键策略
         for (EntityHelper.EntityColumn column : columnList) {
             // 序列的情况，直接写入sql中，不需要额外的获取值
-            if (column.getSequenceName() != null && column.getSequenceName().length() > 0) {
-            }
-            else if (column.isIdentity()) {
+            if (column.getSequenceName() != null
+                    && column.getSequenceName().length() > 0) {} else if (column.isIdentity()) {
                 // 这种情况下,如果原先的字段有值,需要先缓存起来,否则就一定会使用自动增长
                 // 这是一个bind节点
                 sqlNodes.add(new VarDeclSqlNode(column.getProperty() + "_cache", column.getProperty()));
@@ -175,13 +185,13 @@ public class MapperProvider extends MapperTemplate {
                     if (column.getGenerator() != null && column.getGenerator().equals("JDBC")) {
                         continue;
                     }
-                    throw new RuntimeException(ms.getId() + "对应的实体类" + entityClass.getCanonicalName() + "中包含多个MySql的自动增长列,最多只能有一个!");
+                    throw new RuntimeException(
+                            ms.getId() + "对应的实体类" + entityClass.getCanonicalName() + "中包含多个MySql的自动增长列,最多只能有一个!");
                 }
                 // 插入selectKey
                 newSelectKeyMappedStatement(ms, column);
                 hasIdentityKey = true;
-            }
-            else if (column.isUuid()) {
+            } else if (column.isUuid()) {
                 // uuid的情况，直接插入bind节点
                 sqlNodes.add(new VarDeclSqlNode(column.getProperty() + "_bind", getUUID()));
             }
@@ -194,26 +204,25 @@ public class MapperProvider extends MapperTemplate {
             // 优先使用传入的属性值,当原属性property!=null时，用原属性
             // 自增的情况下,如果默认有值,就会备份到property_cache中,所以这里需要先判断备份的值是否存在
             if (column.isIdentity()) {
-                ifNodes.add(getIfCacheNotNull(column, new StaticTextSqlNode("#{" + column.getProperty() + "_cache },")));
-            }
-            else {
+                ifNodes.add(
+                        getIfCacheNotNull(column, new StaticTextSqlNode("#{" + column.getProperty() + "_cache },")));
+            } else {
                 // 其他情况值仍然存在原property中
-                ifNodes.add(getIfNotNull(column, new StaticTextSqlNode("#{" + column.getProperty() + column.getFullJdbcType() + "},")));
+                ifNodes.add(getIfNotNull(column,
+                        new StaticTextSqlNode("#{" + column.getProperty() + column.getFullJdbcType() + "},")));
             }
             // 当属性为null时，如果存在主键策略，会自动获取值，如果不存在，则使用null
             // 序列的情况
             if (column.getSequenceName() != null && column.getSequenceName().length() > 0) {
                 ifNodes.add(getIfIsNull(column, new StaticTextSqlNode(getSeqNextVal(column) + " ,")));
-            }
-            else if (column.isIdentity()) {
+            } else if (column.isIdentity()) {
                 ifNodes.add(getIfCacheIsNull(column, new StaticTextSqlNode("#{" + column.getProperty() + " },")));
-            }
-            else if (column.isUuid()) {
+            } else if (column.isUuid()) {
                 ifNodes.add(getIfIsNull(column, new StaticTextSqlNode("#{" + column.getProperty() + "_bind },")));
-            }
-            else {
+            } else {
                 // 当null的时候，如果不指定jdbcType，oracle可能会报异常，指定VARCHAR不影响其他
-                ifNodes.add(getIfIsNull(column, new StaticTextSqlNode("#{" + column.getProperty() + column.getFullJdbcType() + " },")));
+                ifNodes.add(getIfIsNull(column,
+                        new StaticTextSqlNode("#{" + column.getProperty() + column.getFullJdbcType() + " },")));
             }
         }
         // values(#{property},#{property}...)
@@ -243,8 +252,7 @@ public class MapperProvider extends MapperTemplate {
             if (column.getSequenceName() != null && column.getSequenceName().length() > 0) {
                 // 直接将列加进去
                 ifNodes.add(new StaticTextSqlNode(column.getColumn() + ","));
-            }
-            else if (column.isIdentity()) {
+            } else if (column.isIdentity()) {
                 // 这种情况下,如果原先的字段有值,需要先缓存起来,否则就一定会使用自动增长
                 sqlNodes.add(new VarDeclSqlNode(column.getProperty() + "_cache", column.getProperty()));
                 if (hasIdentityKey) {
@@ -252,20 +260,19 @@ public class MapperProvider extends MapperTemplate {
                     if (column.getGenerator() != null && column.getGenerator().equals("JDBC")) {
                         continue;
                     }
-                    throw new RuntimeException(ms.getId() + "对应的实体类" + entityClass.getCanonicalName() + "中包含多个MySql的自动增长列,最多只能有一个!");
+                    throw new RuntimeException(
+                            ms.getId() + "对应的实体类" + entityClass.getCanonicalName() + "中包含多个MySql的自动增长列,最多只能有一个!");
                 }
                 // 新增一个selectKey-MS
                 newSelectKeyMappedStatement(ms, column);
                 hasIdentityKey = true;
                 // 加入该列
                 ifNodes.add(new StaticTextSqlNode(column.getColumn() + ","));
-            }
-            else if (column.isUuid()) {
+            } else if (column.isUuid()) {
                 // 将UUID的值加入bind节点
                 sqlNodes.add(new VarDeclSqlNode(column.getProperty() + "_bind", getUUID()));
                 ifNodes.add(new StaticTextSqlNode(column.getColumn() + ","));
-            }
-            else {
+            } else {
                 ifNodes.add(getIfNotNull(column, new StaticTextSqlNode(column.getColumn() + ",")));
             }
         }
@@ -278,18 +285,17 @@ public class MapperProvider extends MapperTemplate {
             // 当参数中的属性值不为空的时候,使用传入的值
             // 自增的情况下,如果默认有值,就会备份到property_cache中
             if (column.isIdentity()) {
-                ifNodes.add(new IfSqlNode(new StaticTextSqlNode("#{" + column.getProperty() + "_cache },"), column.getProperty() + "_cache != null "));
-            }
-            else {
-                ifNodes.add(new IfSqlNode(new StaticTextSqlNode("#{" + column.getProperty() + "},"), column.getProperty() + " != null "));
+                ifNodes.add(new IfSqlNode(new StaticTextSqlNode("#{" + column.getProperty() + "_cache },"),
+                        column.getProperty() + "_cache != null "));
+            } else {
+                ifNodes.add(new IfSqlNode(new StaticTextSqlNode("#{" + column.getProperty() + "},"),
+                        column.getProperty() + " != null "));
             }
             if (column.getSequenceName() != null && column.getSequenceName().length() > 0) {
                 ifNodes.add(getIfIsNull(column, new StaticTextSqlNode(getSeqNextVal(column) + " ,")));
-            }
-            else if (column.isIdentity()) {
+            } else if (column.isIdentity()) {
                 ifNodes.add(getIfCacheIsNull(column, new StaticTextSqlNode("#{" + column.getProperty() + " },")));
-            }
-            else if (column.isUuid()) {
+            } else if (column.isUuid()) {
                 ifNodes.add(getIfIsNull(column, new StaticTextSqlNode("#{" + column.getProperty() + "_bind },")));
             }
         }
@@ -357,9 +363,9 @@ public class MapperProvider extends MapperTemplate {
                 if (column.isVersionField()) {
                     ifNodes.add(new StaticTextSqlNode(column.getColumn() + " = " + column.getColumn() + " +1 , "));
                     versionField = column;
-                }
-                else {
-                    ifNodes.add(new StaticTextSqlNode(column.getColumn() + " = #{" + column.getProperty() + column.getFullJdbcType() + "}, "));
+                } else {
+                    ifNodes.add(new StaticTextSqlNode(
+                            column.getColumn() + " = #{" + column.getProperty() + column.getFullJdbcType() + "}, "));
                 }
             }
         }
@@ -406,9 +412,9 @@ public class MapperProvider extends MapperTemplate {
                 if (column.isVersionField()) {
                     columnNode = new StaticTextSqlNode(column.getColumn() + " = " + column.getColumn() + " +1 , ");
                     versionField = column;
-                }
-                else {
-                    columnNode = new StaticTextSqlNode(column.getColumn() + " = #{" + column.getProperty() + column.getFullJdbcType() + "}, ");
+                } else {
+                    columnNode = new StaticTextSqlNode(
+                            column.getColumn() + " = #{" + column.getProperty() + column.getFullJdbcType() + "}, ");
                 }
                 ifNodes.add(getIfNotNull(column, columnNode));
             }
@@ -502,9 +508,10 @@ public class MapperProvider extends MapperTemplate {
         IfSqlNode distinctSqlNode = new IfSqlNode(new StaticTextSqlNode("DISTINCT"), "distinct");
         sqlNodes.add(distinctSqlNode);
 
-        ForEachSqlNode forEachSelectColumns = new ForEachSqlNode(ms.getConfiguration(), new TextSqlNode("${selectColumn}"),
-                "_parameter.selectColumns", null, "selectColumn", null, null, ",");
-        IfSqlNode ifSelectColumns = new IfSqlNode(forEachSelectColumns, "@com.betterjr.mapper.mapperhelper.OGNL@hasSelectColumns(_parameter)");
+        ForEachSqlNode forEachSelectColumns = new ForEachSqlNode(ms.getConfiguration(),
+                new TextSqlNode("${selectColumn}"), "_parameter.selectColumns", null, "selectColumn", null, null, ",");
+        IfSqlNode ifSelectColumns = new IfSqlNode(forEachSelectColumns,
+                "@com.betterjr.mapper.mapperhelper.OGNL@hasSelectColumns(_parameter)");
         sqlNodes.add(ifSelectColumns);
 
         IfSqlNode ifNoSelectColumns = new IfSqlNode(new StaticTextSqlNode(EntityHelper.getSelectColumns(entityClass)),
@@ -514,11 +521,13 @@ public class MapperProvider extends MapperTemplate {
         sqlNodes.add(new StaticTextSqlNode(" FROM " + tableName(entityClass)));
         IfSqlNode ifNullSqlNode = new IfSqlNode(exampleWhereClause(ms.getConfiguration()), "_parameter != null");
         sqlNodes.add(ifNullSqlNode);
-        IfSqlNode orderByClauseSqlNode = new IfSqlNode(new TextSqlNode("order by ${orderByClause}"), "orderByClause != null");
+        IfSqlNode orderByClauseSqlNode = new IfSqlNode(new TextSqlNode("order by ${orderByClause}"),
+                "orderByClause != null");
         sqlNodes.add(orderByClauseSqlNode);
         String orderByClause = EntityHelper.getOrderByClause(entityClass);
         if (orderByClause.length() > 0) {
-            IfSqlNode defaultOrderByClauseSqlNode = new IfSqlNode(new StaticTextSqlNode("ORDER BY " + orderByClause), "orderByClause == null");
+            IfSqlNode defaultOrderByClauseSqlNode = new IfSqlNode(new StaticTextSqlNode("ORDER BY " + orderByClause),
+                    "orderByClause == null");
             sqlNodes.add(defaultOrderByClauseSqlNode);
         }
 
@@ -558,9 +567,9 @@ public class MapperProvider extends MapperTemplate {
                 if (column.isVersionField()) {
                     columnNode = new StaticTextSqlNode(column.getColumn() + " = " + column.getColumn() + " +1 , ");
                     versionField = column;
-                }
-                else {
-                    columnNode = new StaticTextSqlNode(column.getColumn() + " = #{record." + column.getProperty() + "}, ");
+                } else {
+                    columnNode = new StaticTextSqlNode(
+                            column.getColumn() + " = #{record." + column.getProperty() + "}, ");
                 }
 
                 ifNodes.add(new IfSqlNode(columnNode, "record." + column.getProperty() + " != null"));
@@ -568,10 +577,12 @@ public class MapperProvider extends MapperTemplate {
         }
         sqlNodes.add(new SetSqlNode(ms.getConfiguration(), new MixedSqlNode(ifNodes)));
         // Example的Where
-        IfSqlNode ifNullSqlNode = new IfSqlNode(updateByExampleWhereClause(ms.getConfiguration()), "_parameter != null");
+        IfSqlNode ifNullSqlNode = new IfSqlNode(updateByExampleWhereClause(ms.getConfiguration()),
+                "_parameter != null");
         sqlNodes.add(ifNullSqlNode);
         if (versionField != null) {
-            sqlNodes.add(new StaticTextSqlNode(" AND " + versionField.getColumn() + " = #{record." + versionField.getProperty() + "}"));
+            sqlNodes.add(new StaticTextSqlNode(
+                    " AND " + versionField.getColumn() + " = #{record." + versionField.getProperty() + "}"));
         }
         return new MixedSqlNode(sqlNodes);
     }
@@ -593,12 +604,14 @@ public class MapperProvider extends MapperTemplate {
         // 全部的if property!=null and property!=''
         for (EntityHelper.EntityColumn column : columnList) {
             if (!column.isId()) {
-                setSqlNodes.add(new StaticTextSqlNode(column.getColumn() + " = #{record." + column.getProperty() + "}, "));
+                setSqlNodes
+                        .add(new StaticTextSqlNode(column.getColumn() + " = #{record." + column.getProperty() + "}, "));
             }
         }
         sqlNodes.add(new SetSqlNode(ms.getConfiguration(), new MixedSqlNode(setSqlNodes)));
         // Example的Where
-        IfSqlNode ifNullSqlNode = new IfSqlNode(updateByExampleWhereClause(ms.getConfiguration()), "_parameter != null");
+        IfSqlNode ifNullSqlNode = new IfSqlNode(updateByExampleWhereClause(ms.getConfiguration()),
+                "_parameter != null");
         sqlNodes.add(ifNullSqlNode);
         return new MixedSqlNode(sqlNodes);
     }

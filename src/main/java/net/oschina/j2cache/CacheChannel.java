@@ -8,53 +8,53 @@ import java.util.List;
  */
 public interface CacheChannel {
 
-	/**
-	 * 获取缓存中的数据
-	 * @param region: Cache Region name
-	 * @param key: Cache key
-	 * @return cache object
-	 */
-	public CacheObject get(String region, Object key);
-	
-	/**
-	 * 写入缓存
-	 * @param region: Cache Region name
-	 * @param key: Cache key
-	 * @param value: Cache value
-	 */
-	public void set(String region, Object key, Object value);
+    /**
+     * 获取缓存中的数据
+     * @param region: Cache Region name
+     * @param key: Cache key
+     * @return cache object
+     */
+    public CacheObject get(String region, Object key);
 
-	/**
-	 * 删除缓存
-	 * @param region:  Cache Region name
-	 * @param key: Cache key
-	 */
-	public void evict(String region, Object key) ;
+    /**
+     * 写入缓存
+     * @param region: Cache Region name
+     * @param key: Cache key
+     * @param value: Cache value
+     */
+    public void set(String region, Object key, Object value);
 
-	/**
-	 * 批量删除缓存
-	 * @param region: Cache region name
-	 * @param keys: Cache key
-	 */
-	@SuppressWarnings({ "rawtypes" })
-	public void batchEvict(String region, List keys) ;
+    /**
+     * 删除缓存
+     * @param region:  Cache Region name
+     * @param key: Cache key
+     */
+    public void evict(String region, Object key);
 
-	/**
-	 * Clear the cache
-	 * @param region: Cache region name
-	 */
-	public void clear(String region) throws CacheException ;
-	
-	/**
-	 * Get cache region keys
-	 * @param region: Cache region name
-	 * @return key list
-	 */
-	@SuppressWarnings("rawtypes")
-	public List keys(String region) throws CacheException ;
+    /**
+     * 批量删除缓存
+     * @param region: Cache region name
+     * @param keys: Cache key
+     */
+    @SuppressWarnings({ "rawtypes" })
+    public void batchEvict(String region, List keys);
 
-	/**
-	 * 关闭到通道的连接
-	 */
-	public void close() ;
+    /**
+     * Clear the cache
+     * @param region: Cache region name
+     */
+    public void clear(String region) throws CacheException;
+
+    /**
+     * Get cache region keys
+     * @param region: Cache region name
+     * @return key list
+     */
+    @SuppressWarnings("rawtypes")
+    public List keys(String region) throws CacheException;
+
+    /**
+     * 关闭到通道的连接
+     */
+    public void close();
 }

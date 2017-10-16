@@ -23,132 +23,132 @@ public class DomainAttribute implements BetterjrEntity {
      * 编号
      */
     @Id
-    @Column(name = "ID",  columnDefinition="INTEGER" )
-    @MetaData( value="编号", comments = "编号")
+    @Column(name = "ID", columnDefinition = "INTEGER")
+    @MetaData(value = "编号", comments = "编号")
     private Long id;
 
     /**
      * 参数名
      */
-    @Column(name = "C_NAME",  columnDefinition="VARCHAR" )
-    @MetaData( value="参数名", comments = "参数名")
+    @Column(name = "C_NAME", columnDefinition = "VARCHAR")
+    @MetaData(value = "参数名", comments = "参数名")
     private String name;
 
     /**
      * 参数编码
      */
-    @Column(name = "C_CODE",  columnDefinition="VARCHAR" )
-    @MetaData( value="参数编码", comments = "参数编码")
+    @Column(name = "C_CODE", columnDefinition = "VARCHAR")
+    @MetaData(value = "参数编码", comments = "参数编码")
     private String code;
 
     /**
      * 参数类型
      */
-    @Column(name = "C_TYPE",  columnDefinition="CHAR" )
-    @MetaData( value="参数类型", comments = "参数类型")
+    @Column(name = "C_TYPE", columnDefinition = "CHAR")
+    @MetaData(value = "参数类型", comments = "参数类型")
     private String type;
 
     /**
      * 数据类型
      */
-    @Column(name = "C_DATA_TYPE",  columnDefinition="CHAR" )
-    @MetaData( value="数据类型", comments = "数据类型")
+    @Column(name = "C_DATA_TYPE", columnDefinition = "CHAR")
+    @MetaData(value = "数据类型", comments = "数据类型")
     private String dataType;
 
     /**
      * 机构
      */
-    @Column(name = "C_OPERORG",  columnDefinition="VARCHAR" )
-    @MetaData( value="机构", comments = "机构")
+    @Column(name = "C_OPERORG", columnDefinition = "VARCHAR")
+    @MetaData(value = "机构", comments = "机构")
     private String operOrg;
 
     /**
      * 公司
      */
-    @Column(name = "L_CUSTNO",  columnDefinition="INTEGER" )
-    @MetaData( value="公司", comments = "公司")
+    @Column(name = "L_CUSTNO", columnDefinition = "INTEGER")
+    @MetaData(value = "公司", comments = "公司")
     private Long custNo;
 
     /**
      * 公司名称
      */
-    @Column(name = "C_CUSTNAME",  columnDefinition="VARCHAR" )
-    @MetaData( value="公司名称", comments = "公司名称")
+    @Column(name = "C_CUSTNAME", columnDefinition = "VARCHAR")
+    @MetaData(value = "公司名称", comments = "公司名称")
     private String custName;
 
     /**
      * 字符串参数
      */
-    @Column(name = "C_STRING_VALUE",  columnDefinition="VARCHAR" )
-    @MetaData( value="字符串参数", comments = "字符串参数")
+    @Column(name = "C_STRING_VALUE", columnDefinition = "VARCHAR")
+    @MetaData(value = "字符串参数", comments = "字符串参数")
     private String stringValue;
 
     /**
      * 数字参数
      */
-    @Column(name = "N_NUMBER_VALUE",  columnDefinition="INTEGER" )
-    @MetaData( value="数字参数", comments = "数字参数")
+    @Column(name = "N_NUMBER_VALUE", columnDefinition = "INTEGER")
+    @MetaData(value = "数字参数", comments = "数字参数")
     private Long numberValue;
 
     /**
      * 货币参数
      */
-    @Column(name = "F_MONEY_VALUE",  columnDefinition="DECIMAL" )
-    @MetaData( value="货币参数", comments = "货币参数")
+    @Column(name = "F_MONEY_VALUE", columnDefinition = "DECIMAL")
+    @MetaData(value = "货币参数", comments = "货币参数")
     private BigDecimal moneyValue;
 
     /**
      * 对象参数(JSON)
      */
-    @Column(name = "C_OBJECT_VALUE",  columnDefinition="LONGTEXT" )
-    @MetaData( value="对象参数(JSON)", comments = "对象参数(JSON)")
+    @Column(name = "C_OBJECT_VALUE", columnDefinition = "LONGTEXT")
+    @MetaData(value = "对象参数(JSON)", comments = "对象参数(JSON)")
     private String objectValue;
 
-    @Column(name = "T_MODI_TIME",  columnDefinition="VARCHAR" )
-    @MetaData( value="", comments = "")
+    @Column(name = "T_MODI_TIME", columnDefinition = "VARCHAR")
+    @MetaData(value = "", comments = "")
     private String modiTime;
 
-    @Column(name = "D_MODI_DATE",  columnDefinition="VARCHAR" )
-    @MetaData( value="", comments = "")
+    @Column(name = "D_MODI_DATE", columnDefinition = "VARCHAR")
+    @MetaData(value = "", comments = "")
     private String modiDate;
 
-    @Column(name = "C_MODI_OPERNAME",  columnDefinition="VARCHAR" )
-    @MetaData( value="", comments = "")
+    @Column(name = "C_MODI_OPERNAME", columnDefinition = "VARCHAR")
+    @MetaData(value = "", comments = "")
     private String modiOperName;
 
-    @Column(name = "L_MODI_OPERID",  columnDefinition="INTEGER" )
-    @MetaData( value="", comments = "")
+    @Column(name = "L_MODI_OPERID", columnDefinition = "INTEGER")
+    @MetaData(value = "", comments = "")
     private Long modiOperId;
 
-    @Column(name = "T_REG_TIME",  columnDefinition="VARCHAR" )
-    @MetaData( value="", comments = "")
+    @Column(name = "T_REG_TIME", columnDefinition = "VARCHAR")
+    @MetaData(value = "", comments = "")
     private String regTime;
 
-    @Column(name = "D_REG_DATE",  columnDefinition="VARCHAR" )
-    @MetaData( value="", comments = "")
+    @Column(name = "D_REG_DATE", columnDefinition = "VARCHAR")
+    @MetaData(value = "", comments = "")
     private String regDate;
 
-    @Column(name = "C_REG_OPERNAME",  columnDefinition="VARCHAR" )
-    @MetaData( value="", comments = "")
+    @Column(name = "C_REG_OPERNAME", columnDefinition = "VARCHAR")
+    @MetaData(value = "", comments = "")
     private String regOperName;
 
-    @Column(name = "L_REG_OPERID",  columnDefinition="INTEGER" )
-    @MetaData( value="", comments = "")
+    @Column(name = "L_REG_OPERID", columnDefinition = "INTEGER")
+    @MetaData(value = "", comments = "")
     private Long regOperId;
 
-    @Column(name = "N_VERSION",  columnDefinition="INTEGER" )
-    @MetaData( value="", comments = "")
+    @Column(name = "N_VERSION", columnDefinition = "INTEGER")
+    @MetaData(value = "", comments = "")
     private Long version;
 
     /**
      * 状态：0暂存，1已发布，2已撤回，3已删除
      */
-    @Column(name = "C_BUSIN_STATUS",  columnDefinition="VARCHAR" )
-    @MetaData( value="状态：0暂存", comments = "状态：0暂存，1已发布，2已撤回，3已删除")
+    @Column(name = "C_BUSIN_STATUS", columnDefinition = "VARCHAR")
+    @MetaData(value = "状态：0暂存", comments = "状态：0暂存，1已发布，2已撤回，3已删除")
     private String businStatus;
 
-    @Column(name = "C_LAST_STATUS",  columnDefinition="VARCHAR" )
-    @MetaData( value="", comments = "")
+    @Column(name = "C_LAST_STATUS", columnDefinition = "VARCHAR")
+    @MetaData(value = "", comments = "")
     private String lastStatus;
 
     private static final long serialVersionUID = 8697619640929920547L;
@@ -387,25 +387,43 @@ public class DomainAttribute implements BetterjrEntity {
                 && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
                 && (this.getCode() == null ? other.getCode() == null : this.getCode().equals(other.getCode()))
                 && (this.getType() == null ? other.getType() == null : this.getType().equals(other.getType()))
-                && (this.getDataType() == null ? other.getDataType() == null : this.getDataType().equals(other.getDataType()))
-                && (this.getOperOrg() == null ? other.getOperOrg() == null : this.getOperOrg().equals(other.getOperOrg()))
+                && (this.getDataType() == null ? other.getDataType() == null
+                        : this.getDataType().equals(other.getDataType()))
+                && (this.getOperOrg() == null ? other.getOperOrg() == null
+                        : this.getOperOrg().equals(other.getOperOrg()))
                 && (this.getCustNo() == null ? other.getCustNo() == null : this.getCustNo().equals(other.getCustNo()))
-                && (this.getCustName() == null ? other.getCustName() == null : this.getCustName().equals(other.getCustName()))
-                && (this.getStringValue() == null ? other.getStringValue() == null : this.getStringValue().equals(other.getStringValue()))
-                && (this.getNumberValue() == null ? other.getNumberValue() == null : this.getNumberValue().equals(other.getNumberValue()))
-                && (this.getMoneyValue() == null ? other.getMoneyValue() == null : this.getMoneyValue().equals(other.getMoneyValue()))
-                && (this.getObjectValue() == null ? other.getObjectValue() == null : this.getObjectValue().equals(other.getObjectValue()))
-                && (this.getModiTime() == null ? other.getModiTime() == null : this.getModiTime().equals(other.getModiTime()))
-                && (this.getModiDate() == null ? other.getModiDate() == null : this.getModiDate().equals(other.getModiDate()))
-                && (this.getModiOperName() == null ? other.getModiOperName() == null : this.getModiOperName().equals(other.getModiOperName()))
-                && (this.getModiOperId() == null ? other.getModiOperId() == null : this.getModiOperId().equals(other.getModiOperId()))
-                && (this.getRegTime() == null ? other.getRegTime() == null : this.getRegTime().equals(other.getRegTime()))
-                && (this.getRegDate() == null ? other.getRegDate() == null : this.getRegDate().equals(other.getRegDate()))
-                && (this.getRegOperName() == null ? other.getRegOperName() == null : this.getRegOperName().equals(other.getRegOperName()))
-                && (this.getRegOperId() == null ? other.getRegOperId() == null : this.getRegOperId().equals(other.getRegOperId()))
-                && (this.getVersion() == null ? other.getVersion() == null : this.getVersion().equals(other.getVersion()))
-                && (this.getBusinStatus() == null ? other.getBusinStatus() == null : this.getBusinStatus().equals(other.getBusinStatus()))
-                && (this.getLastStatus() == null ? other.getLastStatus() == null : this.getLastStatus().equals(other.getLastStatus()));
+                && (this.getCustName() == null ? other.getCustName() == null
+                        : this.getCustName().equals(other.getCustName()))
+                && (this.getStringValue() == null ? other.getStringValue() == null
+                        : this.getStringValue().equals(other.getStringValue()))
+                && (this.getNumberValue() == null ? other.getNumberValue() == null
+                        : this.getNumberValue().equals(other.getNumberValue()))
+                && (this.getMoneyValue() == null ? other.getMoneyValue() == null
+                        : this.getMoneyValue().equals(other.getMoneyValue()))
+                && (this.getObjectValue() == null ? other.getObjectValue() == null
+                        : this.getObjectValue().equals(other.getObjectValue()))
+                && (this.getModiTime() == null ? other.getModiTime() == null
+                        : this.getModiTime().equals(other.getModiTime()))
+                && (this.getModiDate() == null ? other.getModiDate() == null
+                        : this.getModiDate().equals(other.getModiDate()))
+                && (this.getModiOperName() == null ? other.getModiOperName() == null
+                        : this.getModiOperName().equals(other.getModiOperName()))
+                && (this.getModiOperId() == null ? other.getModiOperId() == null
+                        : this.getModiOperId().equals(other.getModiOperId()))
+                && (this.getRegTime() == null ? other.getRegTime() == null
+                        : this.getRegTime().equals(other.getRegTime()))
+                && (this.getRegDate() == null ? other.getRegDate() == null
+                        : this.getRegDate().equals(other.getRegDate()))
+                && (this.getRegOperName() == null ? other.getRegOperName() == null
+                        : this.getRegOperName().equals(other.getRegOperName()))
+                && (this.getRegOperId() == null ? other.getRegOperId() == null
+                        : this.getRegOperId().equals(other.getRegOperId()))
+                && (this.getVersion() == null ? other.getVersion() == null
+                        : this.getVersion().equals(other.getVersion()))
+                && (this.getBusinStatus() == null ? other.getBusinStatus() == null
+                        : this.getBusinStatus().equals(other.getBusinStatus()))
+                && (this.getLastStatus() == null ? other.getLastStatus() == null
+                        : this.getLastStatus().equals(other.getLastStatus()));
     }
 
     @Override

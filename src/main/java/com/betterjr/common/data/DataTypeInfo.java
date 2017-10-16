@@ -1,16 +1,17 @@
 package com.betterjr.common.data;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
- 
+import org.apache.commons.lang3.StringUtils;
 
 import com.betterjr.common.utils.BetterDateUtils;
 import com.betterjr.common.utils.BetterStringUtils;
-
-import java.util.*;
 
 /**
  * C 字符型(String) A 数字字符型(Integer)，T时间日期型，D日期型， 限于0—9 N 数值型(Double)，其长度不包含小数点，B逻辑型(Boolean), BD(BigDecimal), LONG长整型(Long) 可参与数值计算 TEXT 不定长文本 BINARY 二进制数据
@@ -20,8 +21,9 @@ import java.util.*;
  */
 public enum DataTypeInfo {
     C, N, A, D, BD, T, B, O, LONG, TEXT, BINARY;
-    private static final DecimalFormat dfArr[] = new DecimalFormat[] { new DecimalFormat("##0"), new DecimalFormat("##0.0"),
-            new DecimalFormat("##0.00"), new DecimalFormat("##0.000"), new DecimalFormat("##0.0000"), new DecimalFormat("##0.00000") };
+    private static final DecimalFormat dfArr[] = new DecimalFormat[] { new DecimalFormat("##0"),
+            new DecimalFormat("##0.0"), new DecimalFormat("##0.00"), new DecimalFormat("##0.000"),
+            new DecimalFormat("##0.0000"), new DecimalFormat("##0.00000") };
 
     private static Map<DataTypeInfo, Class> workClassMap = new HashMap();
 
@@ -39,15 +41,15 @@ public enum DataTypeInfo {
         workClassMap.put(O, Void.class);
     }
 
-    public static boolean simpleObject(Object anObj){
-       if (anObj != null){
-           DataTypeInfo dt = findDataType(anObj.getClass());
-           return dt != null;
-       }
-       
+    public static boolean simpleObject(Object anObj) {
+        if (anObj != null) {
+            DataTypeInfo dt = findDataType(anObj.getClass());
+            return dt != null;
+        }
+
         return true;
     }
-    
+
     public static DataTypeInfo findDataType(Class anClass) {
         for (Map.Entry<DataTypeInfo, Class> ent : workClassMap.entrySet()) {
             if (ent.getValue().equals(anClass)) {
@@ -56,6 +58,7 @@ public enum DataTypeInfo {
         }
         return null;
     }
+
     public static Class getClass(DataTypeInfo cc) {
 
         return workClassMap.get(cc);
@@ -69,7 +72,7 @@ public enum DataTypeInfo {
 
     public static DataTypeInfo checking(String anWorkType) {
         try {
-            if (BetterStringUtils.isNotBlank(anWorkType)) {
+            if (StringUtils.isNotBlank(anWorkType)) {
                 return DataTypeInfo.valueOf(anWorkType.trim().toUpperCase());
             }
         }
@@ -99,23 +102,22 @@ public enum DataTypeInfo {
                 DecimalFormat df = dfArr[anScale];
 
                 return df.format(anObj);
-            }
-            else {
+            } else {
                 return anObj.toString();
             }
-        }
-        else if (anObj instanceof java.util.Date) {
+        } else if (anObj instanceof java.util.Date) {
 
             return BetterDateUtils.formatNumberDate((java.util.Date) anObj);
         }
 
         return anObj.toString();
     }
+
     public static void main(String[] args) {
-        Object[] objs = new Object[] { "aaaa", new Long(1), new Integer(12), new BigDecimal(123), new Double(1234), new Date(),
-                new Timestamp(System.currentTimeMillis()), new byte[]{12,12,1}, new ArrayList()};
-        for (Object obj : objs){
-           System.out.println(obj +" = "+simpleObject(obj)); 
+        Object[] objs = new Object[] { "aaaa", new Long(1), new Integer(12), new BigDecimal(123), new Double(1234),
+                new Date(), new Timestamp(System.currentTimeMillis()), new byte[] { 12, 12, 1 }, new ArrayList() };
+        for (Object obj : objs) {
+            System.out.println(obj + " = " + simpleObject(obj));
         }
     }
 }

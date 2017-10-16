@@ -1,27 +1,20 @@
 package com.betterjr.common.utils;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.betterjr.common.data.SimpleDataEntity;
 import com.betterjr.common.mapper.JsonMapper;
 import com.betterjr.common.service.SpringContextHolder;
-import com.betterjr.common.utils.CacheUtils;
 import com.betterjr.modules.sys.entity.DictInfo;
 import com.betterjr.modules.sys.entity.DictItemInfo;
 import com.betterjr.modules.sys.service.DictService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.common.collect.Lists;
 
 /**
  * 字典工具类
@@ -67,7 +60,7 @@ public class DictUtils {
         if (StringUtils.isNotBlank(anType) && StringUtils.isNotBlank(anValue)) {
             for (DictItemInfo dictItem : getDictList(anType)) {
                 itemCode = dictItem.getItemCode();
-                if (BetterStringUtils.isNotBlank(itemCode) && itemCode.equalsIgnoreCase(anValue)) {
+                if (StringUtils.isNotBlank(itemCode) && itemCode.equalsIgnoreCase(anValue)) {
 
                     return dictItem.getItemName();
                 }
@@ -81,7 +74,7 @@ public class DictUtils {
         if (StringUtils.isNotBlank(anType) && StringUtils.isNotBlank(anValue)) {
             for (DictItemInfo dictItem : getDictList(anType)) {
                 itemCode = dictItem.getItemCode();
-                if (BetterStringUtils.isNotBlank(itemCode) && itemCode.equalsIgnoreCase(anValue)) {
+                if (StringUtils.isNotBlank(itemCode) && itemCode.equalsIgnoreCase(anValue)) {
 
                     return dictItem.getItemValue();
                 }
@@ -112,24 +105,22 @@ public class DictUtils {
             return;
         }
         String tmpValue;
-        DictItemInfo dictItem=null;
+        DictItemInfo dictItem = null;
         try {
             tmpValue = JsonMapper.getInstance().writeValueAsString(anObj);
             dictItem = getDictItem(anType, anKey);
             if (dictItem == null) {
                 dictItem = dictService.saveDictItem(anType, anKey, tmpValue);
-            }
-            else {
+            } else {
                 dictItem.setItemCode(tmpValue);
                 dictService.saveDictItem(dictItem);
             }
 
         }
-        catch (JsonProcessingException e) {
-        }
-        finally{
-            //清除缓存
-            CacheUtils.remove(CACHE_DICT_MAP,anType);
+        catch (JsonProcessingException e) {}
+        finally {
+            // 清除缓存
+            CacheUtils.remove(CACHE_DICT_MAP, anType);
         }
 
     }
@@ -161,7 +152,7 @@ public class DictUtils {
      */
     public static <T> T loadObject(String anType, String anKey, Class<T> anClass) {
         String tmpCode = getDictCode(anType, anKey);
-        if (BetterStringUtils.isBlank(tmpCode)) {
+        if (StringUtils.isBlank(tmpCode)) {
 
             return null;
         }
@@ -298,7 +289,8 @@ public class DictUtils {
             anSB.append("\t   this.Provinces.setItem({id: '").append(sde.getValue()).append("', name: '");
             anSB.append(sde.getName()).append("', citys: citys});\r\n");
             for (SimpleDataEntity subSde : AreaUtils.findAreaList(sde.getValue())) {
-                anSB.append("\t   citys.set('").append(subSde.getValue()).append("', '").append(subSde.getName()).append("');\r\n");
+                anSB.append("\t   citys.set('").append(subSde.getValue()).append("', '").append(subSde.getName())
+                        .append("');\r\n");
             }
             anSB.append("\r\n");
         }
@@ -318,19 +310,18 @@ public class DictUtils {
      */
     public static List<DictItemInfo> getDictList(String anType) {
         @SuppressWarnings("unchecked")
-        List<DictItemInfo> dictList = (List<DictItemInfo>) CacheUtils.get(CACHE_DICT_MAP,anType);
+        List<DictItemInfo> dictList = (List<DictItemInfo>) CacheUtils.get(CACHE_DICT_MAP, anType);
         if (dictList == null) {
-           DictInfo dict = dictService.findByCode(anType);
+            DictInfo dict = dictService.findByCode(anType);
 
-           dictList=dictService.findByGroup(dict.getId());
-           CacheUtils.put(CACHE_DICT_MAP, dict.getDictCode(), dictList);
+            dictList = dictService.findByGroup(dict.getId());
+            CacheUtils.put(CACHE_DICT_MAP, dict.getDictCode(), dictList);
         }
         if (dictList == null) {
             dictList = Lists.newArrayList();
         }
         return dictList;
     }
-
 
     public static Map<String, String> getDictMap(String anType) {
         Map<String, String> map = new HashMap();
@@ -351,9 +342,8 @@ public class DictUtils {
             try {
                 result.add(Long.parseLong(item.getItemCode()));
             }
-            catch (Exception ex) {
-            }
+            catch (Exception ex) {}
         }
         return result;
     }
-    }
+}

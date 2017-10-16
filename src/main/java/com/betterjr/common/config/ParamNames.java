@@ -23,15 +23,14 @@ public abstract class ParamNames {
     public static final String FUND_INFO = "fundInfo";
 
     public static final String FUND_CALENDAR = "fundCalendar";
-    
+
     public static final String FUND_AGENCY = "fundAgency";
 
     public static final String FUND_DAY = "fundDay";
 
     public static final String COMBINBEST = "combinVest";
-    
+
     public static final String COMBIN = "combin";
-    
 
     public static final String FUND_CONTROL = "fundContrl";
 
@@ -46,7 +45,7 @@ public abstract class ParamNames {
     public static final String REQUEST = "request";
 
     public static final String DATA = "data";
-    
+
     public static final String ACCO_REQ = "accoReq";
 
     // 通配处理主要是为了方便配置中模糊配置，减少配置量
@@ -69,13 +68,13 @@ public abstract class ParamNames {
     public static final int QUERY_OPENDAY_COUNT = 30;
 
     public static final int QUERY_REQUEST_DATE = 10;
-    
+
     public static final int MAX_PAGE_SIZE = 100;
-    public static final String PENGUIN_CODE ="PenguinCode";
-    public static final String AGENCY_FILE_DOWNLOAD_PATH ="AgencyFileDownloadPath";
-    public static final String OPENACCO_FILE_DOWNLOAD_PATH ="OpenAccoFileDownloadPath";
-    public static final String BUSIN_VALIDDAY="BUSIN_VALIDDAY";
-    
+    public static final String PENGUIN_CODE = "PenguinCode";
+    public static final String AGENCY_FILE_DOWNLOAD_PATH = "AgencyFileDownloadPath";
+    public static final String OPENACCO_FILE_DOWNLOAD_PATH = "OpenAccoFileDownloadPath";
+    public static final String BUSIN_VALIDDAY = "BUSIN_VALIDDAY";
+
     /**
      * 系统销售机构代码 
      * 209: 大成基金 
@@ -89,34 +88,33 @@ public abstract class ParamNames {
     public static final String SALE_AGENTCY_NF = "201";
     public static final String SALE_AGENTCY_MS = "269";
     public static final String SALE_AGENTCY_ZS = "217";
-    
-  
+
     /**
      * 交易状态 00：待复核，，02：待报，03：驳回修改，04：废单，
      * 05：已撤，06：已报，07：确认成功，08：已结束
      */
-    public static final String TRADE_STATUS_00="00";//待复核
-    public static final String TRADE_STATUS_01="01";//待勾兑
-    public static final String TRADE_STATUS_02="02";//待报
-    public static final String TRADE_STATUS_03="03";//驳回修改
-    public static final String TRADE_STATUS_04="04";//废单
-    public static final String TRADE_STATUS_05="05";//已撤
-    public static final String TRADE_STATUS_06="06";//已报
-    public static final String TRADE_STATUS_07="07";//确认成功
-    public static final String TRADE_STATUS_08="08";//已结束（确认失败）
-    public static final String TRADE_STATUS_0A="0A";//申请失败
-    public static final String TRADE_STATUS_10="10";//上报失败
-    public static final String TRADE_STATUS_0B="OB";//撤单
-    public static final String TRADE_STATUS_OC="OC";//撤单失败
-    
+    public static final String TRADE_STATUS_00 = "00";// 待复核
+    public static final String TRADE_STATUS_01 = "01";// 待勾兑
+    public static final String TRADE_STATUS_02 = "02";// 待报
+    public static final String TRADE_STATUS_03 = "03";// 驳回修改
+    public static final String TRADE_STATUS_04 = "04";// 废单
+    public static final String TRADE_STATUS_05 = "05";// 已撤
+    public static final String TRADE_STATUS_06 = "06";// 已报
+    public static final String TRADE_STATUS_07 = "07";// 确认成功
+    public static final String TRADE_STATUS_08 = "08";// 已结束（确认失败）
+    public static final String TRADE_STATUS_0A = "0A";// 申请失败
+    public static final String TRADE_STATUS_10 = "10";// 上报失败
+    public static final String TRADE_STATUS_0B = "OB";// 撤单
+    public static final String TRADE_STATUS_OC = "OC";// 撤单失败
+
     /**
      * 业务类型:开户
      */
-    public static final String  BUSIFLAG_OPENACCO="01";
+    public static final String BUSIFLAG_OPENACCO = "01";
     /**
      * 业务类型：增开
      */
-    public static final String BUSIFLAG_ADDACCO="08";
+    public static final String BUSIFLAG_ADDACCO = "08";
     /**
      * 业务类型：认购
      */
@@ -128,7 +126,7 @@ public abstract class ParamNames {
     /**
      * 业务类型：赎回
      */
-    public static final String BUSIFLAG_REDEEM="24";
+    public static final String BUSIFLAG_REDEEM = "24";
     /**
      * 业务类型：申购撤单
      */
@@ -140,9 +138,9 @@ public abstract class ParamNames {
     /*
      * 支付状态：00-未支付
      */
-    public static final String PAYSTATUS_00="00";
-    
+    public static final String PAYSTATUS_00 = "00";
+
     public static final String DEFAULT_BANK_NET_NO = "0101";
-    public static final String CONTRACT_PATH ="contract";
-    public static final String FACTOR_CORE_CUSTINFO ="FactorCoreCustInfo";
+    public static final String CONTRACT_PATH = "contract";
+    public static final String FACTOR_CORE_CUSTINFO = "FactorCoreCustInfo";
 }

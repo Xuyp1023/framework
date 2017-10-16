@@ -44,7 +44,8 @@ public class SequenceService extends BaseService<SequenceRecordMapper, SequenceR
     private static final long DEFAULT_INCREMENT = 1L;
     private static final long DEFAULT_MAX = 99999999999999L;
 
-    public long saveGetSequence(final String anSeqId, final String anOperOrg, final Long anCustNo, final String anCycle) {
+    public long saveGetSequence(final String anSeqId, final String anOperOrg, final Long anCustNo,
+            final String anCycle) {
         long currentSeqNo = 0;
         final String operOrg = StringUtils.isBlank(anOperOrg) ? "DEFAULT" : anOperOrg;
         final long custNo = anCustNo == null ? 0L : anCustNo.longValue();
@@ -68,7 +69,8 @@ public class SequenceService extends BaseService<SequenceRecordMapper, SequenceR
             logger.debug("End SeqId:" + anSeqId + "  operOrg:" + operOrg + " custNo:" + custNo + " " + sequenceRecord);
             currentSeqNo = sequenceRecord.getNextValue();
 
-            final boolean isReachTheNextCycle = isReachTheNextCycle(sequenceRecord.getCycle(), sequenceRecord.getCycleStartDate());
+            final boolean isReachTheNextCycle = isReachTheNextCycle(sequenceRecord.getCycle(),
+                    sequenceRecord.getCycleStartDate());
 
             // if currentSeqNo > max value or reach the next cycle, reset the seqDef's data
             if (currentSeqNo > sequenceRecord.getMaximumValue() || isReachTheNextCycle) {
@@ -85,12 +87,12 @@ public class SequenceService extends BaseService<SequenceRecordMapper, SequenceR
         catch (final Exception e) {
             throw new BytterException("error occured when getting sequence", e);
         }
-        finally {
-        }
+        finally {}
         return currentSeqNo;
     }
 
-    private synchronized SequenceRecord saveRetrieveDefaultSeqDef(final String anSeqId, final String anOperOrg, final long anCustNo, final String anCycle) {
+    private synchronized SequenceRecord saveRetrieveDefaultSeqDef(final String anSeqId, final String anOperOrg,
+            final long anCustNo, final String anCycle) {
         try {
             final SequenceRecord sequenceRecord = new SequenceRecord();
 
@@ -127,11 +129,9 @@ public class SequenceService extends BaseService<SequenceRecordMapper, SequenceR
 
         if (StringUtils.isEmpty(anCycle)) {
             return false;
-        }
-        else if (StringUtils.equalsIgnoreCase(anCycle, CYCLE_DAY)) {
+        } else if (StringUtils.equalsIgnoreCase(anCycle, CYCLE_DAY)) {
             return date1.isBefore(date2);
-        }
-        else if (StringUtils.equalsIgnoreCase(anCycle, CYCLE_WEEK)) {
+        } else if (StringUtils.equalsIgnoreCase(anCycle, CYCLE_WEEK)) {
 
             if (date1.getYear() == date2.getYear()) {
                 if (date1.getMonthValue() == date2.getMonthValue()) {
@@ -146,16 +146,14 @@ public class SequenceService extends BaseService<SequenceRecordMapper, SequenceR
                 }
             }
             return true;
-        }
-        else if (StringUtils.equalsIgnoreCase(anCycle, CYCLE_MONTH)) {
+        } else if (StringUtils.equalsIgnoreCase(anCycle, CYCLE_MONTH)) {
             if (date1.getYear() == date2.getYear()) {
                 if (date1.getMonthValue() == date2.getMonthValue()) {
                     return false;
                 }
             }
             return true;
-        }
-        else if (StringUtils.equalsIgnoreCase(anCycle, CYCLE_YEAR)) {
+        } else if (StringUtils.equalsIgnoreCase(anCycle, CYCLE_YEAR)) {
             if (date1.getYear() == date2.getYear()) {
                 return false;
             }
@@ -177,14 +175,12 @@ public class SequenceService extends BaseService<SequenceRecordMapper, SequenceR
             if (cal1.get(Calendar.WEEK_OF_YEAR) == cal2.get(Calendar.WEEK_OF_YEAR)) {
                 return true;
             }
-        }
-        else if (subYear == 1 && cal2.get(Calendar.MONTH) == 11) // subYear==1,说明cal比cal2大一年;java的一月用"0"标识，那么12月用"11"
+        } else if (subYear == 1 && cal2.get(Calendar.MONTH) == 11) // subYear==1,说明cal比cal2大一年;java的一月用"0"标识，那么12月用"11"
         {
             if (cal1.get(Calendar.WEEK_OF_YEAR) == cal2.get(Calendar.WEEK_OF_YEAR)) {
                 return true;
             }
-        }
-        else if (subYear == -1 && cal1.get(Calendar.MONTH) == 11)// subYear==-1,说明cal比cal2小一年
+        } else if (subYear == -1 && cal1.get(Calendar.MONTH) == 11)// subYear==-1,说明cal比cal2小一年
         {
             if (cal1.get(Calendar.WEEK_OF_YEAR) == cal2.get(Calendar.WEEK_OF_YEAR)) {
                 return true;

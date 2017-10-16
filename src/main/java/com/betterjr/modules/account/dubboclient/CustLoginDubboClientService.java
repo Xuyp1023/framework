@@ -11,7 +11,7 @@ import com.betterjr.modules.cert.entity.CustCertInfo;
 @Service
 public class CustLoginDubboClientService implements ICustLoginService {
 
-    @Reference(interfaceClass=ICustLoginService.class)
+    @Reference(interfaceClass = ICustLoginService.class)
     private ICustLoginService custLoginService;
 
     @Override

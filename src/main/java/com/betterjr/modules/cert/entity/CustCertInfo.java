@@ -13,6 +13,8 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.data.BetterBaseEntity;
 import com.betterjr.common.entity.BetterjrEntity;
@@ -438,16 +440,22 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
     }
 
     private static final List<String> ALLOW_STATUS = Arrays.asList("0", "9");
+
     public boolean validCertInfo() {
         return ALLOW_STATUS.contains(this.getStatus());
     }
+
     public boolean validCertInfo(final CustCertInfo other) {
-        return (ALLOW_STATUS.contains(this.getStatus())
-                && this.getSerialNo() == null ? other.getSerialNo() == null : this.getSerialNo().equals(other.getSerialNo()))
-                && (this.getVersionUid() == null ? other.getVersionUid() == null : this.getVersionUid().equals(other.getVersionUid()))
-                && (this.getCertInfo() == null ? other.getCertInfo() == null : this.getCertInfo().equals(other.getCertInfo()))
-                && (this.getValidDate() == null ? other.getValidDate() == null : this.getValidDate().equals(other.getValidDate()))
-                && (this.getCreateDate() == null ? other.getCreateDate() == null : this.getCreateDate().equals(other.getCreateDate()));
+        return (ALLOW_STATUS.contains(this.getStatus()) && this.getSerialNo() == null ? other.getSerialNo() == null
+                : this.getSerialNo().equals(other.getSerialNo()))
+                && (this.getVersionUid() == null ? other.getVersionUid() == null
+                        : this.getVersionUid().equals(other.getVersionUid()))
+                && (this.getCertInfo() == null ? other.getCertInfo() == null
+                        : this.getCertInfo().equals(other.getCertInfo()))
+                && (this.getValidDate() == null ? other.getValidDate() == null
+                        : this.getValidDate().equals(other.getValidDate()))
+                && (this.getCreateDate() == null ? other.getCreateDate() == null
+                        : this.getCreateDate().equals(other.getCreateDate()));
     }
 
     @Override
@@ -622,35 +630,59 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
             return false;
         }
         final CustCertInfo other = (CustCertInfo) that;
-        return (this.getSerialNo() == null ? other.getSerialNo() == null : this.getSerialNo().equals(other.getSerialNo()))
+        return (this.getSerialNo() == null ? other.getSerialNo() == null
+                : this.getSerialNo().equals(other.getSerialNo()))
                 && (this.getCustNo() == null ? other.getCustNo() == null : this.getCustNo().equals(other.getCustNo()))
-                && (this.getIdentNo() == null ? other.getIdentNo() == null : this.getIdentNo().equals(other.getIdentNo()))
-                && (this.getCustName() == null ? other.getCustName() == null : this.getCustName().equals(other.getCustName()))
-                && (this.getContName() == null ? other.getContName() == null : this.getContName().equals(other.getContName()))
-                && (this.getContIdentType() == null ? other.getContIdentType() == null : this.getContIdentType().equals(other.getContIdentType()))
-                && (this.getContIdentNo() == null ? other.getContIdentNo() == null : this.getContIdentNo().equals(other.getContIdentNo()))
-                && (this.getContPhone() == null ? other.getContPhone() == null : this.getContPhone().equals(other.getContPhone()))
+                && (this.getIdentNo() == null ? other.getIdentNo() == null
+                        : this.getIdentNo().equals(other.getIdentNo()))
+                && (this.getCustName() == null ? other.getCustName() == null
+                        : this.getCustName().equals(other.getCustName()))
+                && (this.getContName() == null ? other.getContName() == null
+                        : this.getContName().equals(other.getContName()))
+                && (this.getContIdentType() == null ? other.getContIdentType() == null
+                        : this.getContIdentType().equals(other.getContIdentType()))
+                && (this.getContIdentNo() == null ? other.getContIdentNo() == null
+                        : this.getContIdentNo().equals(other.getContIdentNo()))
+                && (this.getContPhone() == null ? other.getContPhone() == null
+                        : this.getContPhone().equals(other.getContPhone()))
                 && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
-                && (this.getVersionUid() == null ? other.getVersionUid() == null : this.getVersionUid().equals(other.getVersionUid()))
-                && (this.getSubject() == null ? other.getSubject() == null : this.getSubject().equals(other.getSubject()))
+                && (this.getVersionUid() == null ? other.getVersionUid() == null
+                        : this.getVersionUid().equals(other.getVersionUid()))
+                && (this.getSubject() == null ? other.getSubject() == null
+                        : this.getSubject().equals(other.getSubject()))
                 && (this.getOperNo() == null ? other.getOperNo() == null : this.getOperNo().equals(other.getOperNo()))
-                && (this.getCertInfo() == null ? other.getCertInfo() == null : this.getCertInfo().equals(other.getCertInfo()))
-                && (this.getValidDate() == null ? other.getValidDate() == null : this.getValidDate().equals(other.getValidDate()))
-                && (this.getCreateDate() == null ? other.getCreateDate() == null : this.getCreateDate().equals(other.getCreateDate()))
+                && (this.getCertInfo() == null ? other.getCertInfo() == null
+                        : this.getCertInfo().equals(other.getCertInfo()))
+                && (this.getValidDate() == null ? other.getValidDate() == null
+                        : this.getValidDate().equals(other.getValidDate()))
+                && (this.getCreateDate() == null ? other.getCreateDate() == null
+                        : this.getCreateDate().equals(other.getCreateDate()))
                 && (this.getToken() == null ? other.getToken() == null : this.getToken().equals(other.getToken()))
-                && (this.getOperOrg() == null ? other.getOperOrg() == null : this.getOperOrg().equals(other.getOperOrg()))
+                && (this.getOperOrg() == null ? other.getOperOrg() == null
+                        : this.getOperOrg().equals(other.getOperOrg()))
                 && (this.getCertId() == null ? other.getCertId() == null : this.getCertId().equals(other.getCertId()))
-                && (this.getRegOperId() == null ? other.getRegOperId() == null : this.getRegOperId().equals(other.getRegOperId()))
-                && (this.getRegOperName() == null ? other.getRegOperName() == null : this.getRegOperName().equals(other.getRegOperName()))
-                && (this.getRegDate() == null ? other.getRegDate() == null : this.getRegDate().equals(other.getRegDate()))
-                && (this.getRegTime() == null ? other.getRegTime() == null : this.getRegTime().equals(other.getRegTime()))
-                && (this.getModiOperId() == null ? other.getModiOperId() == null : this.getModiOperId().equals(other.getModiOperId()))
-                && (this.getModiOperName() == null ? other.getModiOperName() == null : this.getModiOperName().equals(other.getModiOperName()))
-                && (this.getModiDate() == null ? other.getModiDate() == null : this.getModiDate().equals(other.getModiDate()))
-                && (this.getModiTime() == null ? other.getModiTime() == null : this.getModiTime().equals(other.getModiTime()))
-                && (this.getPublishDate() == null ? other.getPublishDate() == null : this.getPublishDate().equals(other.getPublishDate()))
-                && (this.getPublishMode() == null ? other.getPublishMode() == null : this.getPublishMode().equals(other.getPublishMode()))
-                && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
+                && (this.getRegOperId() == null ? other.getRegOperId() == null
+                        : this.getRegOperId().equals(other.getRegOperId()))
+                && (this.getRegOperName() == null ? other.getRegOperName() == null
+                        : this.getRegOperName().equals(other.getRegOperName()))
+                && (this.getRegDate() == null ? other.getRegDate() == null
+                        : this.getRegDate().equals(other.getRegDate()))
+                && (this.getRegTime() == null ? other.getRegTime() == null
+                        : this.getRegTime().equals(other.getRegTime()))
+                && (this.getModiOperId() == null ? other.getModiOperId() == null
+                        : this.getModiOperId().equals(other.getModiOperId()))
+                && (this.getModiOperName() == null ? other.getModiOperName() == null
+                        : this.getModiOperName().equals(other.getModiOperName()))
+                && (this.getModiDate() == null ? other.getModiDate() == null
+                        : this.getModiDate().equals(other.getModiDate()))
+                && (this.getModiTime() == null ? other.getModiTime() == null
+                        : this.getModiTime().equals(other.getModiTime()))
+                && (this.getPublishDate() == null ? other.getPublishDate() == null
+                        : this.getPublishDate().equals(other.getPublishDate()))
+                && (this.getPublishMode() == null ? other.getPublishMode() == null
+                        : this.getPublishMode().equals(other.getPublishMode()))
+                && (this.getDescription() == null ? other.getDescription() == null
+                        : this.getDescription().equals(other.getDescription()))
                 && (this.getEmail() == null ? other.getEmail() == null : this.getEmail().equals(other.getEmail()));
     }
 
@@ -719,10 +751,11 @@ public class CustCertInfo extends BetterBaseEntity implements BetterjrEntity {
      * @return
      */
     public boolean invalidDownload() {
-        if (BetterStringUtils.isBlank(this.publishDate)) {
+        if (StringUtils.isBlank(this.publishDate)) {
             return false;
         }
         final String tmpDate = BetterDateUtils.addStrDays(this.publishDate, 10);
-        return (BetterDateUtils.getNumDate().compareTo(tmpDate) > 0) || Arrays.asList("0", "1", "2").contains(this.getStatus());
+        return (BetterDateUtils.getNumDate().compareTo(tmpDate) > 0)
+                || Arrays.asList("0", "1", "2").contains(this.getStatus());
     }
 }

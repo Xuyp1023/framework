@@ -1,12 +1,13 @@
 
 package com.betterjr.mapper.other;
 
-import com.betterjr.mapper.mapperhelper.EntityHelper;
+import java.util.Map;
+
 import org.apache.ibatis.jdbc.SQL;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 
-import java.util.Map;
+import com.betterjr.mapper.mapperhelper.EntityHelper;
 
 /**
  * @author liuzh
@@ -21,28 +22,30 @@ public class CommonProvider extends BaseProvider {
      * @return
      */
     public String selectOne(final Map<String, Object> params) {
-        return new SQL() {{
-            Object entity = getEntity(params);
-            Class<?> entityClass = getEntityClass(params);
-            EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
-            SELECT(EntityHelper.getAllColumns(entityClass));
-            FROM(entityTable.getName());
-            if (entity != null) {
-                final MetaObject metaObject = SystemMetaObject.forObject(entity);
-                for (EntityHelper.EntityColumn column : entityTable.getEntityClassColumns()) {
-                    Object value = metaObject.getValue(column.getProperty());
-                    if (value == null) {
-                        continue;
-                    } else if (column.getJavaType().equals(String.class)) {
-                        if (isNotEmpty((String) value)) {
+        return new SQL() {
+            {
+                Object entity = getEntity(params);
+                Class<?> entityClass = getEntityClass(params);
+                EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
+                SELECT(EntityHelper.getAllColumns(entityClass));
+                FROM(entityTable.getName());
+                if (entity != null) {
+                    final MetaObject metaObject = SystemMetaObject.forObject(entity);
+                    for (EntityHelper.EntityColumn column : entityTable.getEntityClassColumns()) {
+                        Object value = metaObject.getValue(column.getProperty());
+                        if (value == null) {
+                            continue;
+                        } else if (column.getJavaType().equals(String.class)) {
+                            if (isNotEmpty((String) value)) {
+                                WHERE(column.getColumn() + "=#{record." + column.getProperty() + "}");
+                            }
+                        } else {
                             WHERE(column.getColumn() + "=#{record." + column.getProperty() + "}");
                         }
-                    } else {
-                        WHERE(column.getColumn() + "=#{record." + column.getProperty() + "}");
                     }
                 }
             }
-        }}.toString();
+        }.toString();
     }
 
     /**
@@ -52,32 +55,34 @@ public class CommonProvider extends BaseProvider {
      * @return
      */
     public String select(final Map<String, Object> params) {
-        return new SQL() {{
-            Object entity = getEntity(params);
-            Class<?> entityClass = getEntityClass(params);
-            EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
-            SELECT(EntityHelper.getAllColumns(entityClass));
-            FROM(entityTable.getName());
-            if (entity != null) {
-                final MetaObject metaObject = SystemMetaObject.forObject(entity);
-                for (EntityHelper.EntityColumn column : entityTable.getEntityClassColumns()) {
-                    Object value = metaObject.getValue(column.getProperty());
-                    if (value == null) {
-                        continue;
-                    } else if (column.getJavaType().equals(String.class)) {
-                        if (isNotEmpty((String) value)) {
+        return new SQL() {
+            {
+                Object entity = getEntity(params);
+                Class<?> entityClass = getEntityClass(params);
+                EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
+                SELECT(EntityHelper.getAllColumns(entityClass));
+                FROM(entityTable.getName());
+                if (entity != null) {
+                    final MetaObject metaObject = SystemMetaObject.forObject(entity);
+                    for (EntityHelper.EntityColumn column : entityTable.getEntityClassColumns()) {
+                        Object value = metaObject.getValue(column.getProperty());
+                        if (value == null) {
+                            continue;
+                        } else if (column.getJavaType().equals(String.class)) {
+                            if (isNotEmpty((String) value)) {
+                                WHERE(column.getColumn() + "=#{record." + column.getProperty() + "}");
+                            }
+                        } else {
                             WHERE(column.getColumn() + "=#{record." + column.getProperty() + "}");
                         }
-                    } else {
-                        WHERE(column.getColumn() + "=#{record." + column.getProperty() + "}");
                     }
                 }
+                String orderByClause = EntityHelper.getOrderByClause(entityClass);
+                if (orderByClause.length() > 0) {
+                    ORDER_BY(orderByClause);
+                }
             }
-            String orderByClause = EntityHelper.getOrderByClause(entityClass);
-            if (orderByClause.length() > 0) {
-                ORDER_BY(orderByClause);
-            }
-        }}.toString();
+        }.toString();
     }
 
     /**
@@ -87,34 +92,36 @@ public class CommonProvider extends BaseProvider {
      * @return
      */
     public String count(final Map<String, Object> params) {
-        return new SQL() {{
-            Object entity = getEntity(params);
-            Class<?> entityClass;
-            if (entity instanceof Class<?>) {
-                entityClass = (Class<?>) entity;
-                entity = null;
-            } else {
-                entityClass = getEntityClass(params);
-            }
-            EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
-            SELECT("count(*)");
-            FROM(entityTable.getName());
-            if (entity != null) {
-                MetaObject metaObject = SystemMetaObject.forObject(entity);
-                for (EntityHelper.EntityColumn column : entityTable.getEntityClassColumns()) {
-                    Object value = metaObject.getValue(column.getProperty());
-                    if (value == null) {
-                        continue;
-                    } else if (column.getJavaType().equals(String.class)) {
-                        if (isNotEmpty((String) value)) {
+        return new SQL() {
+            {
+                Object entity = getEntity(params);
+                Class<?> entityClass;
+                if (entity instanceof Class<?>) {
+                    entityClass = (Class<?>) entity;
+                    entity = null;
+                } else {
+                    entityClass = getEntityClass(params);
+                }
+                EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
+                SELECT("count(*)");
+                FROM(entityTable.getName());
+                if (entity != null) {
+                    MetaObject metaObject = SystemMetaObject.forObject(entity);
+                    for (EntityHelper.EntityColumn column : entityTable.getEntityClassColumns()) {
+                        Object value = metaObject.getValue(column.getProperty());
+                        if (value == null) {
+                            continue;
+                        } else if (column.getJavaType().equals(String.class)) {
+                            if (isNotEmpty((String) value)) {
+                                WHERE(column.getColumn() + "=#{record." + column.getProperty() + "}");
+                            }
+                        } else {
                             WHERE(column.getColumn() + "=#{record." + column.getProperty() + "}");
                         }
-                    } else {
-                        WHERE(column.getColumn() + "=#{record." + column.getProperty() + "}");
                     }
                 }
             }
-        }}.toString();
+        }.toString();
     }
 
     /**
@@ -124,20 +131,23 @@ public class CommonProvider extends BaseProvider {
      * @return
      */
     public String selectByPrimaryKey(final Map<String, Object> params) {
-        return new SQL() {{
-            Object entity = getEntity(params);
-            Class<?> entityClass = getEntityClass(params);
-            EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
-            SELECT(EntityHelper.getAllColumns(entityClass));
-            FROM(entityTable.getName());
-            if (entityTable.getEntityClassPKColumns().size() == 1) {
-                EntityHelper.EntityColumn column = entityTable.getEntityClassPKColumns().iterator().next();
-                notNullKeyProperty(column.getProperty(), entity);
-                WHERE(column.getColumn() + "=#{key}");
-            } else {
-                applyWherePk(this, SystemMetaObject.forObject(entity), entityTable.getEntityClassPKColumns(), "key");
+        return new SQL() {
+            {
+                Object entity = getEntity(params);
+                Class<?> entityClass = getEntityClass(params);
+                EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
+                SELECT(EntityHelper.getAllColumns(entityClass));
+                FROM(entityTable.getName());
+                if (entityTable.getEntityClassPKColumns().size() == 1) {
+                    EntityHelper.EntityColumn column = entityTable.getEntityClassPKColumns().iterator().next();
+                    notNullKeyProperty(column.getProperty(), entity);
+                    WHERE(column.getColumn() + "=#{key}");
+                } else {
+                    applyWherePk(this, SystemMetaObject.forObject(entity), entityTable.getEntityClassPKColumns(),
+                            "key");
+                }
             }
-        }}.toString();
+        }.toString();
     }
 
     /**
@@ -147,14 +157,16 @@ public class CommonProvider extends BaseProvider {
      * @return
      */
     public String insert(final Map<String, Object> params) {
-        return new SQL() {{
-            Class<?> entityClass = getEntityClass(params);
-            EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
-            INSERT_INTO(entityTable.getName());
-            for (EntityHelper.EntityColumn column : entityTable.getEntityClassColumns()) {
-                VALUES(column.getColumn(), "#{record." + column.getProperty() + "}");
+        return new SQL() {
+            {
+                Class<?> entityClass = getEntityClass(params);
+                EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
+                INSERT_INTO(entityTable.getName());
+                for (EntityHelper.EntityColumn column : entityTable.getEntityClassColumns()) {
+                    VALUES(column.getColumn(), "#{record." + column.getProperty() + "}");
+                }
             }
-        }}.toString();
+        }.toString();
     }
 
     /**
@@ -164,19 +176,21 @@ public class CommonProvider extends BaseProvider {
      * @return
      */
     public String insertSelective(final Map<String, Object> params) {
-        return new SQL() {{
-            Object entity = getEntity(params);
-            Class<?> entityClass = getEntityClass(params);
-            EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
-            MetaObject metaObject = SystemMetaObject.forObject(entity);
-            INSERT_INTO(entityTable.getName());
-            for (EntityHelper.EntityColumn column : entityTable.getEntityClassColumns()) {
-                Object value = metaObject.getValue(column.getProperty());
-                if (column.isId() || value != null) {
-                    VALUES(column.getColumn(), "#{record." + column.getProperty() + "}");
+        return new SQL() {
+            {
+                Object entity = getEntity(params);
+                Class<?> entityClass = getEntityClass(params);
+                EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
+                MetaObject metaObject = SystemMetaObject.forObject(entity);
+                INSERT_INTO(entityTable.getName());
+                for (EntityHelper.EntityColumn column : entityTable.getEntityClassColumns()) {
+                    Object value = metaObject.getValue(column.getProperty());
+                    if (column.isId() || value != null) {
+                        VALUES(column.getColumn(), "#{record." + column.getProperty() + "}");
+                    }
                 }
             }
-        }}.toString();
+        }.toString();
     }
 
     /**
@@ -186,31 +200,33 @@ public class CommonProvider extends BaseProvider {
      * @return
      */
     public String delete(final Map<String, Object> params) {
-        return new SQL() {{
-            Object entity = getEntity(params);
-            Class<?> entityClass = getEntityClass(params);
-            EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
-            MetaObject metaObject = SystemMetaObject.forObject(entity);
-            DELETE_FROM(entityTable.getName());
-            boolean hasValue = false;
-            for (EntityHelper.EntityColumn column : entityTable.getEntityClassColumns()) {
-                Object value = metaObject.getValue(column.getProperty());
-                if (value == null) {
-                    continue;
-                } else if (column.getJavaType().equals(String.class)) {
-                    if (isNotEmpty((String) value)) {
+        return new SQL() {
+            {
+                Object entity = getEntity(params);
+                Class<?> entityClass = getEntityClass(params);
+                EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
+                MetaObject metaObject = SystemMetaObject.forObject(entity);
+                DELETE_FROM(entityTable.getName());
+                boolean hasValue = false;
+                for (EntityHelper.EntityColumn column : entityTable.getEntityClassColumns()) {
+                    Object value = metaObject.getValue(column.getProperty());
+                    if (value == null) {
+                        continue;
+                    } else if (column.getJavaType().equals(String.class)) {
+                        if (isNotEmpty((String) value)) {
+                            WHERE(column.getColumn() + "=#{record." + column.getProperty() + "}");
+                            hasValue = true;
+                        }
+                    } else {
                         WHERE(column.getColumn() + "=#{record." + column.getProperty() + "}");
                         hasValue = true;
                     }
-                } else {
-                    WHERE(column.getColumn() + "=#{record." + column.getProperty() + "}");
-                    hasValue = true;
+                }
+                if (!hasValue) {
+                    throw new UnsupportedOperationException("delete方法不支持删除全表的操作!");
                 }
             }
-            if (!hasValue) {
-                throw new UnsupportedOperationException("delete方法不支持删除全表的操作!");
-            }
-        }}.toString();
+        }.toString();
     }
 
     /**
@@ -220,19 +236,22 @@ public class CommonProvider extends BaseProvider {
      * @return
      */
     public String deleteByPrimaryKey(final Map<String, Object> params) {
-        return new SQL() {{
-            Object entity = getEntity(params);
-            Class<?> entityClass = getEntityClass(params);
-            EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
-            DELETE_FROM(entityTable.getName());
-            if (entityTable.getEntityClassPKColumns().size() == 1) {
-                EntityHelper.EntityColumn column = entityTable.getEntityClassPKColumns().iterator().next();
-                notNullKeyProperty(column.getProperty(), entity);
-                WHERE(column.getColumn() + "=#{key}");
-            } else {
-                applyWherePk(this, SystemMetaObject.forObject(entity), entityTable.getEntityClassPKColumns(), "key");
+        return new SQL() {
+            {
+                Object entity = getEntity(params);
+                Class<?> entityClass = getEntityClass(params);
+                EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
+                DELETE_FROM(entityTable.getName());
+                if (entityTable.getEntityClassPKColumns().size() == 1) {
+                    EntityHelper.EntityColumn column = entityTable.getEntityClassPKColumns().iterator().next();
+                    notNullKeyProperty(column.getProperty(), entity);
+                    WHERE(column.getColumn() + "=#{key}");
+                } else {
+                    applyWherePk(this, SystemMetaObject.forObject(entity), entityTable.getEntityClassPKColumns(),
+                            "key");
+                }
             }
-        }}.toString();
+        }.toString();
     }
 
     /**
@@ -242,20 +261,22 @@ public class CommonProvider extends BaseProvider {
      * @return
      */
     public String updateByPrimaryKey(final Map<String, Object> params) {
-        return new SQL() {{
-            Object entity = getEntity(params);
-            Class<?> entityClass = getEntityClass(params);
-            EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
-            MetaObject metaObject = SystemMetaObject.forObject(entity);
-            UPDATE(entityTable.getName());
-            for (EntityHelper.EntityColumn column : entityTable.getEntityClassColumns()) {
-                //更新不是ID的字段，因为根据主键查询的...更新后还是一样。
-                if (!column.isId()) {
-                    SET(column.getColumn() + "=#{record." + column.getProperty() + "}");
+        return new SQL() {
+            {
+                Object entity = getEntity(params);
+                Class<?> entityClass = getEntityClass(params);
+                EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
+                MetaObject metaObject = SystemMetaObject.forObject(entity);
+                UPDATE(entityTable.getName());
+                for (EntityHelper.EntityColumn column : entityTable.getEntityClassColumns()) {
+                    // 更新不是ID的字段，因为根据主键查询的...更新后还是一样。
+                    if (!column.isId()) {
+                        SET(column.getColumn() + "=#{record." + column.getProperty() + "}");
+                    }
                 }
+                applyWherePk(this, metaObject, entityTable.getEntityClassPKColumns(), "record");
             }
-            applyWherePk(this, metaObject, entityTable.getEntityClassPKColumns(), "record");
-        }}.toString();
+        }.toString();
     }
 
     /**
@@ -265,90 +286,102 @@ public class CommonProvider extends BaseProvider {
      * @return
      */
     public String updateByPrimaryKeySelective(final Map<String, Object> params) {
-        return new SQL() {{
-            Object entity = getEntity(params);
-            Class<?> entityClass = getEntityClass(params);
-            EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
-            MetaObject metaObject = SystemMetaObject.forObject(entity);
-            UPDATE(entityTable.getName());
-            for (EntityHelper.EntityColumn column : entityTable.getEntityClassColumns()) {
-                Object value = metaObject.getValue(column.getProperty());
-                //更新不是ID的字段，因为根据主键查询的...更新后还是一样。
-                if (value != null && !column.isId()) {
-                    SET(column.getColumn() + "=#{record." + column.getProperty() + "}");
+        return new SQL() {
+            {
+                Object entity = getEntity(params);
+                Class<?> entityClass = getEntityClass(params);
+                EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
+                MetaObject metaObject = SystemMetaObject.forObject(entity);
+                UPDATE(entityTable.getName());
+                for (EntityHelper.EntityColumn column : entityTable.getEntityClassColumns()) {
+                    Object value = metaObject.getValue(column.getProperty());
+                    // 更新不是ID的字段，因为根据主键查询的...更新后还是一样。
+                    if (value != null && !column.isId()) {
+                        SET(column.getColumn() + "=#{record." + column.getProperty() + "}");
+                    }
                 }
+                applyWherePk(this, metaObject, entityTable.getEntityClassPKColumns(), "record");
             }
-            applyWherePk(this, metaObject, entityTable.getEntityClassPKColumns(), "record");
-        }}.toString();
+        }.toString();
     }
 
     public String countByExample(final Map<String, Object> params) {
-        return new SQL() {{
-            MetaObject example = getExample(params);
-            Class<?> entityClass = getEntityClass(params);
-            EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
-            SELECT("count(*)");
-            FROM(entityTable.getName());
-            applyWhere(this, example);
-        }}.toString();
+        return new SQL() {
+            {
+                MetaObject example = getExample(params);
+                Class<?> entityClass = getEntityClass(params);
+                EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
+                SELECT("count(*)");
+                FROM(entityTable.getName());
+                applyWhere(this, example);
+            }
+        }.toString();
     }
 
     public String deleteByExample(final Map<String, Object> params) {
-        return new SQL() {{
-            MetaObject example = getExample(params);
-            Class<?> entityClass = getEntityClass(params);
-            EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
-            DELETE_FROM(entityTable.getName());
-            applyWhere(this, example);
-        }}.toString();
+        return new SQL() {
+            {
+                MetaObject example = getExample(params);
+                Class<?> entityClass = getEntityClass(params);
+                EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
+                DELETE_FROM(entityTable.getName());
+                applyWhere(this, example);
+            }
+        }.toString();
     }
 
     public String selectByExample(final Map<String, Object> params) {
-        return new SQL() {{
-            MetaObject example = getExample(params);
-            Class<?> entityClass = getEntityClass(params);
-            EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
-            SELECT(EntityHelper.getAllColumns(entityClass));
-            FROM(entityTable.getName());
-            applyWhere(this, example);
-            applyOrderBy(this, example, EntityHelper.getOrderByClause(entityClass));
-        }}.toString();
+        return new SQL() {
+            {
+                MetaObject example = getExample(params);
+                Class<?> entityClass = getEntityClass(params);
+                EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
+                SELECT(EntityHelper.getAllColumns(entityClass));
+                FROM(entityTable.getName());
+                applyWhere(this, example);
+                applyOrderBy(this, example, EntityHelper.getOrderByClause(entityClass));
+            }
+        }.toString();
     }
 
     public String updateByExampleSelective(final Map<String, Object> params) {
-        return new SQL() {{
-            Object entity = getEntity(params);
-            MetaObject example = getExample(params);
-            Class<?> entityClass = getEntityClass(params);
-            EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
-            MetaObject metaObject = SystemMetaObject.forObject(entity);
-            UPDATE(entityTable.getName());
-            for (EntityHelper.EntityColumn column : entityTable.getEntityClassColumns()) {
-                Object value = metaObject.getValue(column.getProperty());
-                //更新不是ID的字段，因为根据主键查询的...更新后还是一样。
-                if (value != null) {
-                    SET(column.getColumn() + "=#{record." + column.getProperty() + "}");
+        return new SQL() {
+            {
+                Object entity = getEntity(params);
+                MetaObject example = getExample(params);
+                Class<?> entityClass = getEntityClass(params);
+                EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
+                MetaObject metaObject = SystemMetaObject.forObject(entity);
+                UPDATE(entityTable.getName());
+                for (EntityHelper.EntityColumn column : entityTable.getEntityClassColumns()) {
+                    Object value = metaObject.getValue(column.getProperty());
+                    // 更新不是ID的字段，因为根据主键查询的...更新后还是一样。
+                    if (value != null) {
+                        SET(column.getColumn() + "=#{record." + column.getProperty() + "}");
+                    }
                 }
+                applyWhere(this, example);
             }
-            applyWhere(this, example);
-        }}.toString();
+        }.toString();
     }
 
     public String updateByExample(final Map<String, Object> params) {
-        return new SQL() {{
-            Object entity = getEntity(params);
-            MetaObject example = getExample(params);
-            Class<?> entityClass = getEntityClass(params);
-            EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
-            MetaObject metaObject = SystemMetaObject.forObject(entity);
-            UPDATE(entityTable.getName());
-            for (EntityHelper.EntityColumn column : entityTable.getEntityClassColumns()) {
-                //更新不是ID的字段，因为根据主键查询的...更新后还是一样。
-                if (!column.isId()) {
-                    SET(column.getColumn() + "=#{record." + column.getProperty() + "}");
+        return new SQL() {
+            {
+                Object entity = getEntity(params);
+                MetaObject example = getExample(params);
+                Class<?> entityClass = getEntityClass(params);
+                EntityHelper.EntityTable entityTable = EntityHelper.getEntityTable(entityClass);
+                MetaObject metaObject = SystemMetaObject.forObject(entity);
+                UPDATE(entityTable.getName());
+                for (EntityHelper.EntityColumn column : entityTable.getEntityClassColumns()) {
+                    // 更新不是ID的字段，因为根据主键查询的...更新后还是一样。
+                    if (!column.isId()) {
+                        SET(column.getColumn() + "=#{record." + column.getProperty() + "}");
+                    }
                 }
+                applyWhere(this, example);
             }
-            applyWhere(this, example);
-        }}.toString();
+        }.toString();
     }
 }

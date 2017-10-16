@@ -18,57 +18,56 @@ package net.oauth.jsontoken.crypto;
 
 import java.security.InvalidKeyException;
 import java.security.SignatureException;
-import java.util.Arrays;
 
 /**
  * A {@link Verifier} that uses HMAC-SHA256 to verify symmetric-key signatures on byte arrays.
  */
 public class HmacSHA256Verifier implements Verifier {
 
-  private final HmacSHA256Signer signer;
+    private final HmacSHA256Signer signer;
 
-  /**
-   * Public constructor.
-   * @param verificationKey the HMAC verification key to be used for signature verification.
-   * @throws InvalidKeyException if the verificationKey cannot be used as an HMAC key.
-   */
-  public HmacSHA256Verifier(byte[] verificationKey) throws InvalidKeyException {
-    signer = new HmacSHA256Signer("verifier", null, verificationKey);
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see net.oauth.jsontoken.crypto.Verifier#verifySignature(byte[], byte[])
-   */
-  @Override
-  public void verifySignature(byte[] source, byte[] signature) throws SignatureException {
-    byte[] comparison = signer.sign(source);
-    if (!compareBytes(signature, comparison)) {
-      throw new SignatureException("signature did not verify");
+    /**
+     * Public constructor.
+     * @param verificationKey the HMAC verification key to be used for signature verification.
+     * @throws InvalidKeyException if the verificationKey cannot be used as an HMAC key.
+     */
+    public HmacSHA256Verifier(byte[] verificationKey) throws InvalidKeyException {
+        signer = new HmacSHA256Signer("verifier", null, verificationKey);
     }
-  }
 
-  /**
-   * Performs a byte-by-byte comparison of {@code first} and {@code second} parameters. This
-   * method will "NOT" short-circuit the comparison once it has detected a byte difference in
-   * order to defend against a "timing attack".
-   *
-   * @param first the first byte array used in the comparison
-   * @param second the second byte array used in the comparison
-   * @return {@code true} if the {@code first} and {@code second} byte arrays are equal
-   *         otherwise {@code false}
-   */
-  private boolean compareBytes(byte[] first, byte[] second) {
-    if (first == null || second == null) {
-      return (first == second);
-    } else if (first.length != second.length) {
-      return false;
-    } else {
-      byte result = 0;
-      for (int i = 0; i < first.length; i++) {
-        result |= first[i] ^ second[i];
-      }
-      return (result == 0);
+    /*
+     * (non-Javadoc)
+     * @see net.oauth.jsontoken.crypto.Verifier#verifySignature(byte[], byte[])
+     */
+    @Override
+    public void verifySignature(byte[] source, byte[] signature) throws SignatureException {
+        byte[] comparison = signer.sign(source);
+        if (!compareBytes(signature, comparison)) {
+            throw new SignatureException("signature did not verify");
+        }
     }
-  }
+
+    /**
+     * Performs a byte-by-byte comparison of {@code first} and {@code second} parameters. This
+     * method will "NOT" short-circuit the comparison once it has detected a byte difference in
+     * order to defend against a "timing attack".
+     *
+     * @param first the first byte array used in the comparison
+     * @param second the second byte array used in the comparison
+     * @return {@code true} if the {@code first} and {@code second} byte arrays are equal
+     *         otherwise {@code false}
+     */
+    private boolean compareBytes(byte[] first, byte[] second) {
+        if (first == null || second == null) {
+            return (first == second);
+        } else if (first.length != second.length) {
+            return false;
+        } else {
+            byte result = 0;
+            for (int i = 0; i < first.length; i++) {
+                result |= first[i] ^ second[i];
+            }
+            return (result == 0);
+        }
+    }
 }

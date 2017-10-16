@@ -46,20 +46,20 @@ public class FreemarkerService extends Configuration {
      * @param dataMap 模板处理的上下文数据
      * @return
      */
-    public StringBuffer processTemplate(String templateName, long version, String templateContents, Map<String, Object> dataMap) {
+    public StringBuffer processTemplate(String templateName, long version, String templateContents,
+            Map<String, Object> dataMap) {
         Assert.notNull(templateName);
         Assert.notNull(version);
         if (StringUtils.isBlank(templateContents)) {
-            
+
             return new StringBuffer();
         }
-        
+
         Object templateSource = stringTemplateLoader.findTemplateSource(templateName);
         if (templateSource == null) {
             logger.debug("Init freemarker template: {}", templateName);
             stringTemplateLoader.putTemplate(templateName, templateContents, version);
-        }
-        else {
+        } else {
             long ver = stringTemplateLoader.getLastModified(templateSource);
             if (version > ver) {
                 logger.debug("Update freemarker template: {}", templateName);
@@ -86,13 +86,13 @@ public class FreemarkerService extends Configuration {
 
     public StringBuffer processTemplateByContents(String templateContents, Map<String, Object> dataMap) {
         String templateName = "_" + templateContents.hashCode();
-        
+
         return processTemplate(templateName, 0, templateContents, dataMap);
     }
-    
+
     @Deprecated
     public StringBuffer processTemplateByFileName(String templateFileName, Map<String, Object> dataMap) {
-        String moduleName="sale";
+        String moduleName = "sale";
         return this.processTemplateByFileNameUnderModule(templateFileName, dataMap, moduleName);
     }
 
@@ -103,16 +103,19 @@ public class FreemarkerService extends Configuration {
      * @param moduleName 模板所在的功能模块
      * @return
      */
-    public StringBuffer processTemplateByFileNameUnderModule(String templateFileName, Map<String, Object> dataMap,String moduleName) {
-        dataMap.put("numberFormater",  new CustDecimalJsonSerializer());
-        dataMap.put("dictUtils",  new DictUtils());
-        String subPath=File.separator + "templates" + File.separator + "modules"+File.separator+moduleName+File.separator;
-        String templateDir = System.getProperty("java.io.tmpdir") +subPath;
+    public StringBuffer processTemplateByFileNameUnderModule(String templateFileName, Map<String, Object> dataMap,
+            String moduleName) {
+        dataMap.put("numberFormater", new CustDecimalJsonSerializer());
+        dataMap.put("dictUtils", new DictUtils());
+        String subPath = File.separator + "templates" + File.separator + "modules" + File.separator + moduleName
+                + File.separator;
+        String templateDir = System.getProperty("java.io.tmpdir") + subPath;
         File targetTemplateFile = new File(templateDir + File.separator + templateFileName + ".ftl");
         if ((targetTemplateFile.exists() && targetTemplateFile.isFile() && targetTemplateFile.length() > 10) == false) {
             try {
                 // 从classpath加载文件处理写入临时文件
-                InputStream source = this.getClass().getResourceAsStream("/templates/modules/"+moduleName +"/" + templateFileName + ".ftl");
+                InputStream source = this.getClass()
+                        .getResourceAsStream("/templates/modules/" + moduleName + "/" + templateFileName + ".ftl");
                 FileUtils.copyInputStreamToFile(source, targetTemplateFile);
             }
             catch (IOException e) {
@@ -134,17 +137,18 @@ public class FreemarkerService extends Configuration {
             catch (IOException e) {
                 throw new ServiceException("error.freemarker.template.process", e);
             }
-        }
-        else {
+        } else {
             return processTemplateByName(templateFileName, dataMap);
         }
     }
-    
-    public StringBuffer processTemplateByFactory(String templateFileName, Map<String, Object> dataMap, String moduleName, InputStream  anSource) {
-        dataMap.put("numberFormater",  new CustDecimalJsonSerializer());
-        dataMap.put("dictUtils",  new DictUtils());
-        String subPath=File.separator + "templates" + File.separator + "modules"+File.separator+moduleName+File.separator;
-        String templateDir = System.getProperty("java.io.tmpdir") +subPath;
+
+    public StringBuffer processTemplateByFactory(String templateFileName, Map<String, Object> dataMap,
+            String moduleName, InputStream anSource) {
+        dataMap.put("numberFormater", new CustDecimalJsonSerializer());
+        dataMap.put("dictUtils", new DictUtils());
+        String subPath = File.separator + "templates" + File.separator + "modules" + File.separator + moduleName
+                + File.separator;
+        String templateDir = System.getProperty("java.io.tmpdir") + subPath;
         File targetTemplateFile = new File(templateDir + File.separator + templateFileName + ".ftl");
         try {
             FileUtils.copyInputStreamToFile(anSource, targetTemplateFile);
@@ -167,10 +171,9 @@ public class FreemarkerService extends Configuration {
             catch (IOException e) {
                 throw new ServiceException("error.freemarker.template.process", e);
             }
-        }
-        else {
+        } else {
             return processTemplateByName(templateFileName, dataMap);
         }
-        
+
     }
 }

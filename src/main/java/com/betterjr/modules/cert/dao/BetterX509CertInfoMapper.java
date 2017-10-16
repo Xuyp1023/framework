@@ -5,5 +5,4 @@ import com.betterjr.mapper.common.Mapper;
 import com.betterjr.modules.cert.entity.BetterX509CertInfo;
 
 @BetterjrMapper
-public interface BetterX509CertInfoMapper extends Mapper<BetterX509CertInfo> {
-}
+public interface BetterX509CertInfoMapper extends Mapper<BetterX509CertInfo> {}

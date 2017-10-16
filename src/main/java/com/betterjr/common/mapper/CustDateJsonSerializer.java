@@ -11,11 +11,11 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 public class CustDateJsonSerializer extends JsonSerializer<String> {
 
     @Override
-    public void serialize(String anValue, JsonGenerator anGen, SerializerProvider anSerializers) throws IOException, JsonProcessingException {
+    public void serialize(String anValue, JsonGenerator anGen, SerializerProvider anSerializers)
+            throws IOException, JsonProcessingException {
         if (anValue == null) {
             anGen.writeString(" ");
-        }
-        else {
+        } else {
             anGen.writeString(BetterDateUtils.formatDispDate(anValue));
         }
     }

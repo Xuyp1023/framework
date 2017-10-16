@@ -33,9 +33,7 @@ public class CustOperatorService extends BaseService<CustOperatorInfoMapper, Cus
     @Autowired
     private CustAndOperatorRelaService operatorRelaService;
 
-    
-    public CustOperatorService(){
-    }
+    public CustOperatorService() {}
 
     public boolean isFirstOperator(final String anOperOrg) {
 
@@ -47,8 +45,7 @@ public class CustOperatorService extends BaseService<CustOperatorInfoMapper, Cus
         final CustOperatorInfo custOper = this.selectByPrimaryKey(anOperID);
         if (custOper != null && custOper.getDefOper() != null) {
             return custOper.getDefOper();
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -56,8 +53,7 @@ public class CustOperatorService extends BaseService<CustOperatorInfoMapper, Cus
     public static Object workForCustNo(final String anValue) {
         if (StringUtils.isNotBlank(anValue)) {
             return new Long(anValue);
-        }
-        else {
+        } else {
             return findCustNoList();
         }
     }
@@ -67,11 +63,10 @@ public class CustOperatorService extends BaseService<CustOperatorInfoMapper, Cus
         List custList;
         if (contextInfo == null) {
             custList = new ArrayList(1);
-        }
-        else {
+        } else {
             custList = contextInfo.findCustList();
         }
-        if (custList.size() == 0){
+        if (custList.size() == 0) {
             custList.add(-1L);
         }
         return custList;
@@ -98,9 +93,9 @@ public class CustOperatorService extends BaseService<CustOperatorInfoMapper, Cus
         map.put("operCode", anOperCode);
         // return operatorMapper.findCustOperatorByOperCode(anOperOrg, anOperCode);
         final List<CustOperatorInfo> list = this.selectByProperty(map);
-        //验证用户名大小写
-        for(CustOperatorInfo anInfo : list) {
-            if(BetterStringUtils.equals(anInfo.getOperCode(), anOperCode)) {
+        // 验证用户名大小写
+        for (CustOperatorInfo anInfo : list) {
+            if (StringUtils.equals(anInfo.getOperCode(), anOperCode)) {
                 return anInfo;
             }
         }
@@ -145,7 +140,7 @@ public class CustOperatorService extends BaseService<CustOperatorInfoMapper, Cus
         return false;
     }
 
-    public CustOperatorInfo findCustOperatorInfo(final Long anOperId){
+    public CustOperatorInfo findCustOperatorInfo(final Long anOperId) {
         return this.selectByPrimaryKey(anOperId);
     }
 
@@ -155,33 +150,31 @@ public class CustOperatorService extends BaseService<CustOperatorInfoMapper, Cus
         return this.selectByProperty("id", operators);
     }
 
-    public boolean saveBindingTradePassword(final CustPasswordType anLoginPassType, final String anNewPasswd, final String anOkPasswd, final String anLoginPasswd){
+    public boolean saveBindingTradePassword(final CustPasswordType anLoginPassType, final String anNewPasswd,
+            final String anOkPasswd, final String anLoginPasswd) {
 
         return custPassService.saveBindingTradePassword(anLoginPassType, anNewPasswd, anOkPasswd, anLoginPasswd);
     }
 
-    public boolean saveModifyTradePassword(final String anNewPassword, final String anOkPassword, final String anOldPassword){
+    public boolean saveModifyTradePassword(final String anNewPassword, final String anOkPassword,
+            final String anOldPassword) {
         return custPassService.savePassword(CustPasswordType.ORG_TRADE, anNewPassword, anOkPassword, anOldPassword);
     }
-    
+
     /**
      * 查询默认机构的下操作员名称
      * @param operOrg
      * @return
      */
-    public CustOperatorInfo findDefaultOperator(String operOrg){
-        
-        Map build = QueryTermBuilder
-        .newInstance()
-        .put("status", "1")
-        .put("clerkMan", "1")
-        .put("operOrg", operOrg)
-        .build();
+    public CustOperatorInfo findDefaultOperator(String operOrg) {
+
+        Map build = QueryTermBuilder.newInstance().put("status", "1").put("clerkMan", "1").put("operOrg", operOrg)
+                .build();
         List<CustOperatorInfo> opers = this.selectByProperty(build);
-        if(Collections3.isEmpty(opers)){
+        if (Collections3.isEmpty(opers)) {
             return null;
         }
         return Collections3.getFirst(opers);
-        
+
     }
 }

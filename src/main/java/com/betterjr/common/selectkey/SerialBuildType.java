@@ -1,10 +1,13 @@
 package com.betterjr.common.selectkey;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.betterjr.common.utils.BetterDateUtils;
 import com.betterjr.common.utils.BetterStringUtils;
 
 public enum SerialBuildType {
-    SERIAL_ALL("0", " "), SERIAL_DAY("1", "yyyyMMdd"), SERIAL_WEEK("2", "yyyyww"), SERIAL_MONTH("3", "yyyyMM"), SERIAL_YEAR("4", "yyyy");
+    SERIAL_ALL("0", " "), SERIAL_DAY("1", "yyyyMMdd"), SERIAL_WEEK("2", "yyyyww"), SERIAL_MONTH("3",
+            "yyyyMM"), SERIAL_YEAR("4", "yyyy");
     private final String value;
     private final String matchPatten;
 
@@ -19,7 +22,7 @@ public enum SerialBuildType {
 
     public static SerialBuildType checking(String anWorkType) {
         try {
-            if (BetterStringUtils.isNotBlank(anWorkType)) {
+            if (StringUtils.isNotBlank(anWorkType)) {
                 for (SerialBuildType tmpSBT : SerialBuildType.values()) {
                     if (tmpSBT.value.equals(anWorkType)) {
 
@@ -43,12 +46,12 @@ public enum SerialBuildType {
      */
     public String findMachValue() {
 
-        return BetterStringUtils.trim(BetterDateUtils.getDate(this.matchPatten));
+        return StringUtils.trim(BetterDateUtils.getDate(this.matchPatten));
     }
-    
-    public static void main(String[] args){
-       int aa = 5;
-       System.out.println( BetterStringUtils.leftPad(Integer.toString(aa), 5,"0") );
-       System.out.println(BetterDateUtils.formatDate(BetterDateUtils.parseDate("20100103"), "yyyyww"));
+
+    public static void main(String[] args) {
+        int aa = 5;
+        System.out.println(StringUtils.leftPad(Integer.toString(aa), 5, "0"));
+        System.out.println(BetterDateUtils.formatDate(BetterDateUtils.parseDate("20100103"), "yyyyww"));
     }
 }

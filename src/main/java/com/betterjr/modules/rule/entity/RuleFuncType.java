@@ -9,8 +9,7 @@ public enum RuleFuncType {
             if (StringUtils.isNotBlank(anWorkType)) {
 
                 return RuleFuncType.valueOf(anWorkType.trim().toUpperCase());
-            }
-            else{
+            } else {
                 return MACRO;
             }
         }

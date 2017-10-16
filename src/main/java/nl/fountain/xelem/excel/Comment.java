@@ -23,16 +23,19 @@ package nl.fountain.xelem.excel;
  * Represents the Comment element.
  */
 public interface Comment extends XLElement {
-    
+
     void setAuthor(String author);
+
     String getAuthor();
-    
+
     void setShowAlways(boolean show);
+
     boolean showsAlways();
-    
+
     void setData(String data);
+
     String getData();
-    
+
     /**
      * Gets the content of the data element stripped of the author (if
      * there was any).

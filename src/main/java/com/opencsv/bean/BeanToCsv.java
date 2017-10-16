@@ -1,5 +1,13 @@
 package com.opencsv.bean;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  Copyright 2007 Kyle Miller.
 
@@ -18,14 +26,6 @@ package com.opencsv.bean;
 
 import com.opencsv.CSVWriter;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.io.Writer;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Allows to export Java beans content to a new CSV spreadsheet file.
  *
@@ -37,8 +37,7 @@ public class BeanToCsv<T> {
     /**
      * default constructor.
      */
-    public BeanToCsv() {
-    }
+    public BeanToCsv() {}
 
     /**
      * Writes all the objects, one at a time, to a created csvWriter using the passed in Strategy.
@@ -48,8 +47,7 @@ public class BeanToCsv<T> {
      * @param objects - list of objects to write.
      * @return - false if there are no objects to process, true otherwise.
      */
-    public boolean write(MappingStrategy<T> mapper, Writer writer,
-                         List<?> objects) {
+    public boolean write(MappingStrategy<T> mapper, Writer writer, List<?> objects) {
         return write(mapper, new CSVWriter(writer), objects);
     }
 
@@ -70,7 +68,8 @@ public class BeanToCsv<T> {
             List<Method> getters = findGetters(mapper);
             processAndWriteObjects(csv, objects, getters);
             return true;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new RuntimeException("Error writing CSV !", e);
         }
     }
@@ -84,7 +83,8 @@ public class BeanToCsv<T> {
      * @throws IllegalAccessException -  thrown if there is an failure in Introspection.
      * @throws InvocationTargetException -  thrown if there is an failure in Introspection.
      */
-    private void processAndWriteObjects(CSVWriter csv, List<?> objects, List<Method> getters) throws IntrospectionException, IllegalAccessException, InvocationTargetException {
+    private void processAndWriteObjects(CSVWriter csv, List<?> objects, List<Method> getters)
+            throws IntrospectionException, IllegalAccessException, InvocationTargetException {
         for (Object obj : objects) {
             String[] line = processObject(getters, obj);
             csv.writeNext(line);
@@ -118,8 +118,8 @@ public class BeanToCsv<T> {
      * @throws IllegalAccessException - thrown by error in introspection.
      * @throws InvocationTargetException - thrown by error in introspection.
      */
-    protected String[] processObject(List<Method> getters, Object bean) throws IntrospectionException,
-            IllegalAccessException, InvocationTargetException {
+    protected String[] processObject(List<Method> getters, Object bean)
+            throws IntrospectionException, IllegalAccessException, InvocationTargetException {
         List<String> values = new ArrayList<String>();
         // retrieve bean values
         for (Method getter : getters) {
@@ -139,8 +139,7 @@ public class BeanToCsv<T> {
      * @return - list of methods for getting the data in the bean.
      * @throws IntrospectionException - thrown if there is an failure in Introspection.
      */
-    private List<Method> findGetters(MappingStrategy<T> mapper)
-            throws IntrospectionException {
+    private List<Method> findGetters(MappingStrategy<T> mapper) throws IntrospectionException {
         int i = 0;
         PropertyDescriptor prop = mapper.findDescriptor(i);
         // build getters methods list

@@ -11,6 +11,9 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
+
 import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.common.mapper.CustDateJsonSerializer;
@@ -31,153 +34,153 @@ public class BetterX509CertInfo implements BetterjrEntity {
      * 编号
      */
     @Id
-    @Column(name = "ID",  columnDefinition="INTEGER" )
-    @MetaData( value="编号", comments = "编号")
+    @Column(name = "ID", columnDefinition = "INTEGER")
+    @MetaData(value = "编号", comments = "编号")
     private Long id;
 
     /**
      * 年限
      */
-    @Column(name = "n_year",  columnDefinition="INTEGER" )
-    @MetaData( value="年限", comments = "年限")
+    @Column(name = "n_year", columnDefinition = "INTEGER")
+    @MetaData(value = "年限", comments = "年限")
     private Integer year;
 
     /**
      * 证书名称
      */
-    @Column(name = "c_name",  columnDefinition="VARCHAR" )
-    @MetaData( value="证书名称", comments = "证书名称")
+    @Column(name = "c_name", columnDefinition = "VARCHAR")
+    @MetaData(value = "证书名称", comments = "证书名称")
     private String commName;
 
     /**
      * 数字证书签发者
      */
-    @Column(name = "c_publisher",  columnDefinition="VARCHAR" )
-    @MetaData( value="数字证书签发者", comments = "数字证书签发者")
+    @Column(name = "c_publisher", columnDefinition = "VARCHAR")
+    @MetaData(value = "数字证书签发者", comments = "数字证书签发者")
     private String signer;
 
     /**
      * 数字证书类型； 0 ：根证书，1：中级证书，2：SSL证书，3：最终用户证书
      */
-    @Column(name = "c_cert_type",  columnDefinition="VARCHAR" )
-    @MetaData( value="数字证书类型", comments = "数字证书类型； 0 ：根证书，1：中级证书，2：SSL证书，3：最终用户证书")
+    @Column(name = "c_cert_type", columnDefinition = "VARCHAR")
+    @MetaData(value = "数字证书类型", comments = "数字证书类型； 0 ：根证书，1：中级证书，2：SSL证书，3：最终用户证书")
     private String certType;
 
     /**
      * 证书别名
      */
-    @Column(name = "c_alias",  columnDefinition="VARCHAR" )
-    @MetaData( value="证书别名", comments = "证书别名")
+    @Column(name = "c_alias", columnDefinition = "VARCHAR")
+    @MetaData(value = "证书别名", comments = "证书别名")
     private String certAlias;
 
     /**
      * 证书序列号
      */
-    @Column(name = "c_serialno",  columnDefinition="VARCHAR" )
-    @MetaData( value="证书序列号", comments = "证书序列号")
+    @Column(name = "c_serialno", columnDefinition = "VARCHAR")
+    @MetaData(value = "证书序列号", comments = "证书序列号")
     private String serialNo;
 
     /**
      * 证书发行日期
      */
-    @JsonSerialize(using=CustDateJsonSerializer.class)
-    @Column(name = "d_createdate",  columnDefinition="VARCHAR" )
-    @MetaData( value="证书发行日期", comments = "证书发行日期")
+    @JsonSerialize(using = CustDateJsonSerializer.class)
+    @Column(name = "d_createdate", columnDefinition = "VARCHAR")
+    @MetaData(value = "证书发行日期", comments = "证书发行日期")
     private String createDate;
 
     /**
      * 证书有效期
      */
-    @JsonSerialize(using=CustDateJsonSerializer.class)
-    @Column(name = "d_validdate",  columnDefinition="VARCHAR" )
-    @MetaData( value="证书有效期", comments = "证书有效期")
+    @JsonSerialize(using = CustDateJsonSerializer.class)
+    @Column(name = "d_validdate", columnDefinition = "VARCHAR")
+    @MetaData(value = "证书有效期", comments = "证书有效期")
     private String validDate;
 
     /**
      * 省份
      */
-    @Column(name = "c_province",  columnDefinition="VARCHAR" )
-    @MetaData( value="省份", comments = "省份")
+    @Column(name = "c_province", columnDefinition = "VARCHAR")
+    @MetaData(value = "省份", comments = "省份")
     private String provinceName;
 
     /**
      * 城市地区
      */
-    @Column(name = "c_city",  columnDefinition="VARCHAR" )
-    @MetaData( value="城市地区", comments = "城市地区")
+    @Column(name = "c_city", columnDefinition = "VARCHAR")
+    @MetaData(value = "城市地区", comments = "城市地区")
     private String cityName;
 
     /**
      * 国家
      */
-    @Column(name = "c_country",  columnDefinition="VARCHAR" )
-    @MetaData( value="国家", comments = "国家")
+    @Column(name = "c_country", columnDefinition = "VARCHAR")
+    @MetaData(value = "国家", comments = "国家")
     private String countryCode;
 
     /**
      * 部门
      */
-    @Column(name = "c_department",  columnDefinition="VARCHAR" )
-    @MetaData( value="部门", comments = "部门")
+    @Column(name = "c_department", columnDefinition = "VARCHAR")
+    @MetaData(value = "部门", comments = "部门")
     private String orgUnitName;
 
     /**
      * 组织
      */
-    @Column(name = "c_organization",  columnDefinition="VARCHAR" )
-    @MetaData( value="组织", comments = "组织")
+    @Column(name = "c_organization", columnDefinition = "VARCHAR")
+    @MetaData(value = "组织", comments = "组织")
     private String orgName;
 
     /**
      * email地址
      */
-    @Column(name = "c_email",  columnDefinition="VARCHAR" )
-    @MetaData( value="email地址", comments = "email地址")
+    @Column(name = "c_email", columnDefinition = "VARCHAR")
+    @MetaData(value = "email地址", comments = "email地址")
     private String email;
 
     /**
      * 状态；0：创建，1：发布，9：回收
      */
-    @Column(name = "c_status",  columnDefinition="VARCHAR" )
-    @MetaData( value="状态", comments = "状态；0：创建，1：发布，9：回收")
+    @Column(name = "c_status", columnDefinition = "VARCHAR")
+    @MetaData(value = "状态", comments = "状态；0：创建，1：发布，9：回收")
     private String certStatus;
 
     /**
      * 创建日期
      */
-    @JsonSerialize(using=CustTimeJsonSerializer.class)
-    @Column(name = "d_reg_date",  columnDefinition="VARCHAR" )
-    @MetaData( value="创建日期", comments = "创建日期")
+    @JsonSerialize(using = CustTimeJsonSerializer.class)
+    @Column(name = "d_reg_date", columnDefinition = "VARCHAR")
+    @MetaData(value = "创建日期", comments = "创建日期")
     @OrderBy("DESC")
     private String regDate;
 
     /**
      * 创建人(操作员)ID号
      */
-    @Column(name = "l_reg_operid",  columnDefinition="INTEGER" )
-    @MetaData( value="创建人(操作员)ID号", comments = "创建人(操作员)ID号")
+    @Column(name = "l_reg_operid", columnDefinition = "INTEGER")
+    @MetaData(value = "创建人(操作员)ID号", comments = "创建人(操作员)ID号")
     private Long regOperId;
 
     /**
      * 描述
      */
-    @Column(name = "c_description",  columnDefinition="VARCHAR" )
-    @MetaData( value="描述", comments = "描述")
+    @Column(name = "c_description", columnDefinition = "VARCHAR")
+    @MetaData(value = "描述", comments = "描述")
     private String description;
 
     /**
      * 创建人(操作员)姓名
      */
-    @Column(name = "c_reg_opername",  columnDefinition="VARCHAR" )
-    @MetaData( value="创建人(操作员)姓名", comments = "创建人(操作员)姓名")
+    @Column(name = "c_reg_opername", columnDefinition = "VARCHAR")
+    @MetaData(value = "创建人(操作员)姓名", comments = "创建人(操作员)姓名")
     private String regOperName;
 
     /**
      * 创建时间
      */
-    @JsonSerialize(using=CustTimeJsonSerializer.class)
-    @Column(name = "t_reg_time",  columnDefinition="VARCHAR" )
-    @MetaData( value="创建时间", comments = "创建时间")
+    @JsonSerialize(using = CustTimeJsonSerializer.class)
+    @Column(name = "t_reg_time", columnDefinition = "VARCHAR")
+    @MetaData(value = "创建时间", comments = "创建时间")
     @OrderBy("DESC")
     private String regTime;
 
@@ -192,31 +195,31 @@ public class BetterX509CertInfo implements BetterjrEntity {
     /**
      * 数字证书回收的原因
      */
-    @Column(name = "c_reason",  columnDefinition="VARCHAR" )
-    @MetaData( value="数字证书回收的原因", comments = "数字证书回收的原因")
+    @Column(name = "c_reason", columnDefinition = "VARCHAR")
+    @MetaData(value = "数字证书回收的原因", comments = "数字证书回收的原因")
     private String revokeReason;
 
     /**
      * 数字证书内容
      */
-    @Column(name = "c_data",  columnDefinition="Byte[]" )
-    @MetaData( value="数字证书内容", comments = "数字证书内容")
+    @Column(name = "c_data", columnDefinition = "Byte[]")
+    @MetaData(value = "数字证书内容", comments = "数字证书内容")
     @JsonIgnore
     private byte[] data;
 
     /**
      * 数字证书私钥信息
      */
-    @Column(name = "c_private_key",  columnDefinition="Byte[]" )
-    @MetaData( value="数字证书私钥信息", comments = "数字证书私钥信息")
+    @Column(name = "c_private_key", columnDefinition = "Byte[]")
+    @MetaData(value = "数字证书私钥信息", comments = "数字证书私钥信息")
     @JsonIgnore
     private byte[] privateKey;
 
     /**
      * 数字证书公钥信息
      */
-    @Column(name = "c_public_key",  columnDefinition="Byte[]" )
-    @MetaData( value="数字证书公钥信息", comments = "数字证书公钥信息")
+    @Column(name = "c_public_key", columnDefinition = "Byte[]")
+    @MetaData(value = "数字证书公钥信息", comments = "数字证书公钥信息")
     @JsonIgnore
     private byte[] publicKey;
 
@@ -406,7 +409,7 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return this.data;
     }
 
-    public void setData(final byte[] anData){
+    public void setData(final byte[] anData) {
 
         this.data = anData;
     }
@@ -443,11 +446,10 @@ public class BetterX509CertInfo implements BetterjrEntity {
         this.publicKey = anPublicKey;
     }
 
-    public String findOperOrg(){
-        if (BetterStringUtils.isNotBlank(this.orgName)){
+    public String findOperOrg() {
+        if (StringUtils.isNotBlank(this.orgName)) {
             return this.orgName.concat(".").concat(orgUnitName);
-        }
-        else{
+        } else {
             return this.commName.concat(".").concat(orgUnitName);
         }
     }
@@ -499,29 +501,49 @@ public class BetterX509CertInfo implements BetterjrEntity {
         final BetterX509CertInfo other = (BetterX509CertInfo) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
                 && (this.getYear() == null ? other.getYear() == null : this.getYear().equals(other.getYear()))
-                && (this.getCommName() == null ? other.getCommName() == null : this.getCommName().equals(other.getCommName()))
+                && (this.getCommName() == null ? other.getCommName() == null
+                        : this.getCommName().equals(other.getCommName()))
                 && (this.getSigner() == null ? other.getSigner() == null : this.getSigner().equals(other.getSigner()))
-                && (this.getCertType() == null ? other.getCertType() == null : this.getCertType().equals(other.getCertType()))
-                && (this.getCertAlias() == null ? other.getCertAlias() == null : this.getCertAlias().equals(other.getCertAlias()))
-                && (this.getSerialNo() == null ? other.getSerialNo() == null : this.getSerialNo().equals(other.getSerialNo()))
-                && (this.getCreateDate() == null ? other.getCreateDate() == null : this.getCreateDate().equals(other.getCreateDate()))
-                && (this.getValidDate() == null ? other.getValidDate() == null : this.getValidDate().equals(other.getValidDate()))
-                && (this.getProvinceName() == null ? other.getProvinceName() == null : this.getProvinceName().equals(other.getProvinceName()))
-                && (this.getCityName() == null ? other.getCityName() == null : this.getCityName().equals(other.getCityName()))
-                && (this.getCountryCode() == null ? other.getCountryCode() == null : this.getCountryCode().equals(other.getCountryCode()))
-                && (this.getOrgUnitName() == null ? other.getOrgUnitName() == null : this.getOrgUnitName().equals(other.getOrgUnitName()))
-                && (this.getOrgName() == null ? other.getOrgName() == null : this.getOrgName().equals(other.getOrgName()))
+                && (this.getCertType() == null ? other.getCertType() == null
+                        : this.getCertType().equals(other.getCertType()))
+                && (this.getCertAlias() == null ? other.getCertAlias() == null
+                        : this.getCertAlias().equals(other.getCertAlias()))
+                && (this.getSerialNo() == null ? other.getSerialNo() == null
+                        : this.getSerialNo().equals(other.getSerialNo()))
+                && (this.getCreateDate() == null ? other.getCreateDate() == null
+                        : this.getCreateDate().equals(other.getCreateDate()))
+                && (this.getValidDate() == null ? other.getValidDate() == null
+                        : this.getValidDate().equals(other.getValidDate()))
+                && (this.getProvinceName() == null ? other.getProvinceName() == null
+                        : this.getProvinceName().equals(other.getProvinceName()))
+                && (this.getCityName() == null ? other.getCityName() == null
+                        : this.getCityName().equals(other.getCityName()))
+                && (this.getCountryCode() == null ? other.getCountryCode() == null
+                        : this.getCountryCode().equals(other.getCountryCode()))
+                && (this.getOrgUnitName() == null ? other.getOrgUnitName() == null
+                        : this.getOrgUnitName().equals(other.getOrgUnitName()))
+                && (this.getOrgName() == null ? other.getOrgName() == null
+                        : this.getOrgName().equals(other.getOrgName()))
                 && (this.getEmail() == null ? other.getEmail() == null : this.getEmail().equals(other.getEmail()))
-                && (this.getCertStatus() == null ? other.getCertStatus() == null : this.getCertStatus().equals(other.getCertStatus()))
-                && (this.getRegDate() == null ? other.getRegDate() == null : this.getRegDate().equals(other.getRegDate()))
-                && (this.getRegOperId() == null ? other.getRegOperId() == null : this.getRegOperId().equals(other.getRegOperId()))
-                && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
-                && (this.getRegOperName() == null ? other.getRegOperName() == null : this.getRegOperName().equals(other.getRegOperName()))
-                && (this.getRegTime() == null ? other.getRegTime() == null : this.getRegTime().equals(other.getRegTime()))
+                && (this.getCertStatus() == null ? other.getCertStatus() == null
+                        : this.getCertStatus().equals(other.getCertStatus()))
+                && (this.getRegDate() == null ? other.getRegDate() == null
+                        : this.getRegDate().equals(other.getRegDate()))
+                && (this.getRegOperId() == null ? other.getRegOperId() == null
+                        : this.getRegOperId().equals(other.getRegOperId()))
+                && (this.getDescription() == null ? other.getDescription() == null
+                        : this.getDescription().equals(other.getDescription()))
+                && (this.getRegOperName() == null ? other.getRegOperName() == null
+                        : this.getRegOperName().equals(other.getRegOperName()))
+                && (this.getRegTime() == null ? other.getRegTime() == null
+                        : this.getRegTime().equals(other.getRegTime()))
                 && (this.getPasswd() == null ? other.getPasswd() == null : this.getPasswd().equals(other.getPasswd()))
-                && (this.getRevokeReason() == null ? other.getRevokeReason() == null : this.getRevokeReason().equals(other.getRevokeReason()))
-                && (this.getPublicKey() == null ? other.getPublicKey() == null : this.getPublicKey().equals(other.getPublicKey()))
-                && (this.getPrivateKey() == null ? other.getPrivateKey() == null : this.getPrivateKey().equals(other.getPrivateKey()))
+                && (this.getRevokeReason() == null ? other.getRevokeReason() == null
+                        : this.getRevokeReason().equals(other.getRevokeReason()))
+                && (this.getPublicKey() == null ? other.getPublicKey() == null
+                        : this.getPublicKey().equals(other.getPublicKey()))
+                && (this.getPrivateKey() == null ? other.getPrivateKey() == null
+                        : this.getPrivateKey().equals(other.getPrivateKey()))
                 && (this.getData() == null ? other.getData() == null : this.getData().equals(other.getData()));
     }
 
@@ -558,12 +580,12 @@ public class BetterX509CertInfo implements BetterjrEntity {
         return result;
     }
 
-    public void modifyValue(final CustOperatorInfo anOperator, final BetterX509CertInfo anCertInfo){
+    public void modifyValue(final CustOperatorInfo anOperator, final BetterX509CertInfo anCertInfo) {
         this.regDate = anCertInfo.getRegDate();
         this.regTime = anCertInfo.getRegTime();
         this.certStatus = anCertInfo.getCertStatus();
         this.id = anCertInfo.getId();
-        if (anOperator != null){
+        if (anOperator != null) {
             this.regOperId = anOperator.getId();
             this.regOperName = anOperator.getName();
         }
@@ -592,29 +614,32 @@ public class BetterX509CertInfo implements BetterjrEntity {
      * @param anSerialNo 证书序列号
      * @return
      */
-    public boolean validDownload(final String anSerialNo){
+    public boolean validDownload(final String anSerialNo) {
 
-        return "3".equals(this.getCertType()) && "1".equals(this.getCertStatus()) && this.getSerialNo().equals(anSerialNo);
+        return "3".equals(this.getCertType()) && "1".equals(this.getCertStatus())
+                && this.getSerialNo().equals(anSerialNo);
     }
 
     public void calcValidDate() {
         final Date now = BetterDateUtils.getNow();
         this.setCreateDate(BetterDateUtils.formatNumberDate(now));
-        this.setValidDate(BetterDateUtils.formatNumberDate(BetterDateUtils.addYears(now, this.getYear() == null ? 99 : this.getYear())));
+        this.setValidDate(BetterDateUtils
+                .formatNumberDate(DateUtils.addYears(now, this.getYear() == null ? 99 : this.getYear())));
     }
 
-    public void initDefValue(final CustOperatorInfo anOperator){
+    public void initDefValue(final CustOperatorInfo anOperator) {
         this.regDate = BetterDateUtils.getNumDate();
         this.regTime = BetterDateUtils.getNumTime();
         this.certStatus = "0";
         this.id = SerialGenerator.getLongValue("X509CertInfo.id");
-        if (anOperator != null){
+        if (anOperator != null) {
             this.regOperId = anOperator.getId();
             this.regOperName = anOperator.getName();
         }
 
-        if (BetterStringUtils.isBlank(this.serialNo)){
-            this.serialNo = Long.toUnsignedString(System.currentTimeMillis() * 10000 + SerialGenerator.randomInt(10000));
+        if (StringUtils.isBlank(this.serialNo)) {
+            this.serialNo = Long
+                    .toUnsignedString(System.currentTimeMillis() * 10000 + SerialGenerator.randomInt(10000));
         }
     }
 

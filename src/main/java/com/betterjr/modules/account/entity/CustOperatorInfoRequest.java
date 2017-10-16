@@ -130,12 +130,12 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
      * 默认经办人；1默认经办人，0非默认经办人
      */
     private String defOper;
-    
+
     /***
      * 客户列表 
      */
     private String custList;
-    
+
     /***
      * 对外经办人
      */
@@ -363,18 +363,19 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
 
     @Override
     public String toString() {
-        return "CustOperatorInfoRequest [id=" + id + ", contIdentType=" + contIdentType + ", name=" + name + ", contIdentNo=" + contIdentNo
-                + ", contCertValidDate=" + contCertValidDate + ", sex=" + sex + ", zipCode=" + zipCode + ", address=" + address + ", phone=" + phone
-                + ", faxNo=" + faxNo + ", mobileNo=" + mobileNo + ", email=" + email + ", identClass=" + identClass + ", transBusin=" + transBusin
-                + ", revokeBusin=" + revokeBusin + ", status=" + status + ", lastStatus=" + lastStatus + ", regDate=" + regDate + ", modiDate="
-                + modiDate + ", operCode=" + operCode + ", operOrg=" + operOrg + ", contactorSerial=" + contactorSerial + ", ruleList=" + ruleList+ ", custList=" + custList
-                + ",clerkMan=" +clerkMan
-                + "]";
+        return "CustOperatorInfoRequest [id=" + id + ", contIdentType=" + contIdentType + ", name=" + name
+                + ", contIdentNo=" + contIdentNo + ", contCertValidDate=" + contCertValidDate + ", sex=" + sex
+                + ", zipCode=" + zipCode + ", address=" + address + ", phone=" + phone + ", faxNo=" + faxNo
+                + ", mobileNo=" + mobileNo + ", email=" + email + ", identClass=" + identClass + ", transBusin="
+                + transBusin + ", revokeBusin=" + revokeBusin + ", status=" + status + ", lastStatus=" + lastStatus
+                + ", regDate=" + regDate + ", modiDate=" + modiDate + ", operCode=" + operCode + ", operOrg=" + operOrg
+                + ", contactorSerial=" + contactorSerial + ", ruleList=" + ruleList + ", custList=" + custList
+                + ",clerkMan=" + clerkMan + "]";
     }
 
     public void initAdminOperator(final String anOperOrg, final String anName, final String anPassword) {
         this.operOrg = anOperOrg;
-//        this.ruleList = "SUPPLIER_USER,SELLER_USER,CORE_USER,FACTOR_USER,PLATFORM_USER";
+        // this.ruleList = "SUPPLIER_USER,SELLER_USER,CORE_USER,FACTOR_USER,PLATFORM_USER";
         this.ruleList = "OPERATOR_ADMIN";
         this.operCode = "admin";
         this.password = anPassword;

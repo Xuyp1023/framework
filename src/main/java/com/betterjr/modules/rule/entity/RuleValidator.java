@@ -2,10 +2,15 @@ package com.betterjr.modules.rule.entity;
 
 import java.math.BigDecimal;
 
-import com.betterjr.common.annotation.*;
-import com.betterjr.common.entity.BetterjrEntity;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-import javax.persistence.*;
+import com.betterjr.common.annotation.MetaData;
+import com.betterjr.common.entity.BetterjrEntity;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -142,7 +147,7 @@ public class RuleValidator implements BetterjrEntity {
      * 描述
      */
     @Column(name = "C_REF_VALUE", columnDefinition = "VARCHAR")
-    @MetaData(value = "参考值", comments = "参考值，使用处理过程中的参考值达到灵活处理的目的，名称:字段；名称:字段的模式处理")    
+    @MetaData(value = "参考值", comments = "参考值，使用处理过程中的参考值达到灵活处理的目的，名称:字段；名称:字段的模式处理")
     private String refValue;
 
     private static final long serialVersionUID = 1443883172535L;
@@ -210,7 +215,7 @@ public class RuleValidator implements BetterjrEntity {
     public void setDataScale(Integer dataScale) {
         this.dataScale = dataScale;
     }
- 
+
     public BigDecimal getMaxValues() {
         return this.maxValues;
     }
@@ -339,25 +344,42 @@ public class RuleValidator implements BetterjrEntity {
             return false;
         }
         RuleValidator other = (RuleValidator) that;
-        return (this.getValidName() == null ? other.getValidName() == null : this.getValidName().equals(other.getValidName()))
+        return (this.getValidName() == null ? other.getValidName() == null
+                : this.getValidName().equals(other.getValidName()))
                 && (this.getSysNo() == null ? other.getSysNo() == null : this.getSysNo().equals(other.getSysNo()))
-                && (this.getShowName() == null ? other.getShowName() == null : this.getShowName().equals(other.getShowName()))
-                && (this.getFieldName() == null ? other.getFieldName() == null : this.getFieldName().equals(other.getFieldName()))
+                && (this.getShowName() == null ? other.getShowName() == null
+                        : this.getShowName().equals(other.getShowName()))
+                && (this.getFieldName() == null ? other.getFieldName() == null
+                        : this.getFieldName().equals(other.getFieldName()))
                 && (this.isMustItem() == other.isMustItem())
-                && (this.getDataType() == null ? other.getDataType() == null : this.getDataType().equals(other.getDataType()))
-                && (this.getDataLen() == null ? other.getDataLen() == null : this.getDataLen().equals(other.getDataLen()))
-                && (this.getDataScale() == null ? other.getDataScale() == null : this.getDataScale().equals(other.getDataScale()))
-                && (this.getMaxValues() == null ? other.getMaxValues() == null : this.getMaxValues().equals(other.getMaxValues()))
-                && (this.getMinValue() == null ? other.getMinValue() == null : this.getMinValue().equals(other.getMinValue()))
-                && (this.getValidator() == null ? other.getValidator() == null : this.getValidator().equals(other.getValidator()))
-                && (this.getWorkPattern() == null ? other.getWorkPattern() == null : this.getWorkPattern().equals(other.getWorkPattern()))
-                && (this.getRegDate() == null ? other.getRegDate() == null : this.getRegDate().equals(other.getRegDate()))
-                && (this.getModiDate() == null ? other.getModiDate() == null : this.getModiDate().equals(other.getModiDate()))
-                && (this.getBusinField() == null ? other.getBusinField() == null : this.getBusinField().equals(other.getBusinField()))
-                && (this.getDepends() == null ? other.getDepends() == null : this.getDepends().equals(other.getDepends()))
-                && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
-                && (this.getMessage() == null ? other.getMessage() == null : this.getMessage().equals(other.getMessage()))
-                && (this.getRefValue() == null ? other.getRefValue() == null : this.getRefValue().equals(other.getRefValue()));
+                && (this.getDataType() == null ? other.getDataType() == null
+                        : this.getDataType().equals(other.getDataType()))
+                && (this.getDataLen() == null ? other.getDataLen() == null
+                        : this.getDataLen().equals(other.getDataLen()))
+                && (this.getDataScale() == null ? other.getDataScale() == null
+                        : this.getDataScale().equals(other.getDataScale()))
+                && (this.getMaxValues() == null ? other.getMaxValues() == null
+                        : this.getMaxValues().equals(other.getMaxValues()))
+                && (this.getMinValue() == null ? other.getMinValue() == null
+                        : this.getMinValue().equals(other.getMinValue()))
+                && (this.getValidator() == null ? other.getValidator() == null
+                        : this.getValidator().equals(other.getValidator()))
+                && (this.getWorkPattern() == null ? other.getWorkPattern() == null
+                        : this.getWorkPattern().equals(other.getWorkPattern()))
+                && (this.getRegDate() == null ? other.getRegDate() == null
+                        : this.getRegDate().equals(other.getRegDate()))
+                && (this.getModiDate() == null ? other.getModiDate() == null
+                        : this.getModiDate().equals(other.getModiDate()))
+                && (this.getBusinField() == null ? other.getBusinField() == null
+                        : this.getBusinField().equals(other.getBusinField()))
+                && (this.getDepends() == null ? other.getDepends() == null
+                        : this.getDepends().equals(other.getDepends()))
+                && (this.getDescription() == null ? other.getDescription() == null
+                        : this.getDescription().equals(other.getDescription()))
+                && (this.getMessage() == null ? other.getMessage() == null
+                        : this.getMessage().equals(other.getMessage()))
+                && (this.getRefValue() == null ? other.getRefValue() == null
+                        : this.getRefValue().equals(other.getRefValue()));
     }
 
     @Override
@@ -383,6 +405,6 @@ public class RuleValidator implements BetterjrEntity {
         result = prime * result + ((getDepends() == null) ? 0 : getDepends().hashCode());
         result = prime * result + ((getMessage() == null) ? 0 : getMessage().hashCode());
         result = prime * result + ((getRefValue() == null) ? 0 : getRefValue().hashCode());
-    return result;
+        return result;
     }
 }

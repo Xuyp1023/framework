@@ -9,12 +9,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
-import com.betterjr.common.config.ParamNames;
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.modules.document.IAgencyAuthFileGroupService;
-import com.betterjr.modules.document.entity.CustFileItem;
-import com.betterjr.modules.sys.service.SysConfigService;
 
 /**
  * 操作系统层面的文件管理，实现文件处理抽象类
@@ -24,21 +22,20 @@ import com.betterjr.modules.sys.service.SysConfigService;
  */
 public class FileSystemFileManager implements FileManager {
     private IAgencyAuthFileGroupService fileGroupService;
-    
-    
-    public FileSystemFileManager(IAgencyAuthFileGroupService anFileGroupService){
+
+    public FileSystemFileManager(IAgencyAuthFileGroupService anFileGroupService) {
         this.fileGroupService = anFileGroupService;
     }
-    
+
     @Override
     public boolean save(String anFilePath, InputStream anIn) {
         final String absPath = fileGroupService.findAbsFilePath(anFilePath);
         File tmpFile = new File(absPath);
         File tmpPath = tmpFile.getParentFile();
-        if (tmpPath.exists() == false){
+        if (tmpPath.exists() == false) {
             tmpPath.mkdirs();
         }
-        
+
         OutputStream outStream = null;
         try {
             outStream = new FileOutputStream(tmpFile);
@@ -61,15 +58,14 @@ public class FileSystemFileManager implements FileManager {
             try {
                 return new FileInputStream(tmpFile);
             }
-            catch (FileNotFoundException e) {
-            }
+            catch (FileNotFoundException e) {}
         }
         return null;
     }
 
     @Override
     public boolean exists(String anFilePath) {
-        if (BetterStringUtils.isBlank(anFilePath)) {
+        if (StringUtils.isBlank(anFilePath)) {
             return false;
         }
         final String absPath = fileGroupService.findAbsFilePath(anFilePath);
@@ -81,7 +77,7 @@ public class FileSystemFileManager implements FileManager {
     public long findSize(String anFilePath) {
         final String absPath = fileGroupService.findAbsFilePath(anFilePath);
         File tmpFile = new File(absPath);
-        if (tmpFile.exists() && tmpFile.isFile()){
+        if (tmpFile.exists() && tmpFile.isFile()) {
             return tmpFile.length();
         }
         return -1;

@@ -24,6 +24,9 @@
 
 package com.betterjr.mapper.pagehelper.parser.impl;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ParameterMapping;
@@ -33,9 +36,6 @@ import com.betterjr.mapper.pagehelper.Page;
 import com.betterjr.mapper.pagehelper.SqlUtil;
 import com.betterjr.mapper.pagehelper.parser.SqlServer;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * @author liuzh
  */
@@ -44,7 +44,7 @@ public class SqlServerParser extends AbstractParser {
 
     @Override
     public boolean isSupportedMappedStatementCache() {
-        //由于sqlserver每次分页参数都是直接写入到sql语句中，因此不能缓存MS
+        // 由于sqlserver每次分页参数都是直接写入到sql语句中，因此不能缓存MS
         return false;
     }
 

@@ -17,8 +17,8 @@ import com.betterjr.common.exception.BettjerNestedException;
 import com.betterjr.common.exception.BytterValidException;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonParser.Feature;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -68,12 +68,10 @@ public class JsonMapper extends ObjectMapper {
             Map<String, Object> map = new HashMap();
             map.put(WORK_DATANODE, dataList);
             return map;
-        }
-        else if (anObj instanceof Map) {
+        } else if (anObj instanceof Map) {
             result.add(anObj);
             return (Map) anObj;
-        }
-        else {
+        } else {
             Map<String, Object> map = new HashMap();
             map.put(WORK_DATANODE, anObj);
             return map;
@@ -86,12 +84,10 @@ public class JsonMapper extends ObjectMapper {
         if (anObj instanceof List) {
             dataList = prepareList((List) anObj);
             return dataList;
-        }
-        else if (anObj instanceof Map) {
+        } else if (anObj instanceof Map) {
             result.add(anObj);
             return result;
-        }
-        else {
+        } else {
             dataList = new LinkedList<>();
         }
         int listSize;
@@ -108,29 +104,24 @@ public class JsonMapper extends ObjectMapper {
                         listSize = tmpList.size();
                         if (listSize == 1) {
                             result.add(tmpList.get(0));
-                        }
-                        else if (listSize > 1) {
+                        } else if (listSize > 1) {
                             result.add(tmpList);
                         }
-                    }
-                    else if (subObj instanceof Map) {
+                    } else if (subObj instanceof Map) {
                         subMap = (Map) subObj;
                         if (subMap.size() > 0) {
                             result.add(subMap);
                         }
                     }
-                }
-                else if (listSize > 1) {
+                } else if (listSize > 1) {
                     result.add(tmpList);
                 }
-            }
-            else if (obj instanceof Map) {
+            } else if (obj instanceof Map) {
                 subMap = (Map) obj;
                 if (subMap.size() > 0) {
                     result.add(subMap);
                 }
-            }
-            else {
+            } else {
                 result.add(obj);
             }
         }
@@ -155,14 +146,16 @@ public class JsonMapper extends ObjectMapper {
         // 空值处理为空串
         this.getSerializerProvider().setNullValueSerializer(new JsonSerializer<Object>() {
             @Override
-            public void serialize(Object value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
+            public void serialize(Object value, JsonGenerator jgen, SerializerProvider provider)
+                    throws IOException, JsonProcessingException {
                 jgen.writeString("");
             }
         });
         // 进行HTML解码。
         this.registerModule(new SimpleModule().addSerializer(String.class, new JsonSerializer<String>() {
             @Override
-            public void serialize(String value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
+            public void serialize(String value, JsonGenerator jgen, SerializerProvider provider)
+                    throws IOException, JsonProcessingException {
                 jgen.writeString(StringEscapeUtils.unescapeHtml4(value));
             }
         }));
@@ -441,7 +434,7 @@ public class JsonMapper extends ObjectMapper {
             throw BettjerNestedException.wrap(e);
         }
     }
-    
+
     /**
      * 将对象转换为集合，按照给定的对象
      * 
@@ -458,7 +451,8 @@ public class JsonMapper extends ObjectMapper {
 
     public static <T> T jacksonToCollection(String src, Class<?> collectionClass, Class<?>... valueType) {
         ObjectMapper jacksonMapper = getInstance();
-        JavaType javaType = jacksonMapper.getTypeFactory().constructParametrizedType(collectionClass, collectionClass, valueType);
+        JavaType javaType = jacksonMapper.getTypeFactory().constructParametrizedType(collectionClass, collectionClass,
+                valueType);
 
         try {
             return (T) jacksonMapper.readValue(src, javaType);
@@ -468,6 +462,7 @@ public class JsonMapper extends ObjectMapper {
         }
 
     }
+
     /**
      * 测试
      */

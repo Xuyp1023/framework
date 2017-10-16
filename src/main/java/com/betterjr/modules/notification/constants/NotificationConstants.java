@@ -25,22 +25,20 @@ public interface NotificationConstants {
     String CHANNEL_SMS = "2";
     String CHANNEL_WECHAT = "3";
 
-    // 模板启用状态 1 启用  0 禁用
+    // 模板启用状态 1 启用 0 禁用
     String PROFILE_STATUS_ENABLED = "1";
     String PROFILE_STATUS_DISABLED = "0";
-
 
     String CUST_NO = "custNo";
     String OPER_ID = "operId";
     String PROFILE_NAME = "profileName";
 
-    // 模板类型  0:平台,1:保理公司,2:核心企业,3:供应商,4:经销商
+    // 模板类型 0:平台,1:保理公司,2:核心企业,3:供应商,4:经销商
     String PROFILE_TYPE_PLATFORM = "0";
     String PROFILE_TYPE_FACTOR = "1";
     String PROFILE_TYPE_CORE = "2";
     String PROFILE_TYPE_SUPPLIER = "3";
     String PROFILE_TYPE_SELLER = "4";
-
 
     // 是否客户自定义模板
     String PROFILE_CUSTOM = "1";

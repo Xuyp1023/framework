@@ -16,6 +16,7 @@ public interface ICustCertService {
      * @throws 异常情况
      */
     public CustCertInfo checkValidity(X509Certificate anX509);
+
     public CustCertInfo checkValidityWithBase64(final String anX509Str);
 
     /**

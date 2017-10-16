@@ -43,7 +43,16 @@
  */
 package com.itextpdf.tool.xml.css.apply;
 
-import com.itextpdf.text.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactoryImp;
+import com.itextpdf.text.FontProvider;
 import com.itextpdf.text.html.HtmlUtilities;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.tool.xml.Tag;
@@ -51,11 +60,6 @@ import com.itextpdf.tool.xml.css.CSS;
 import com.itextpdf.tool.xml.css.CssUtils;
 import com.itextpdf.tool.xml.css.FontSizeTranslator;
 import com.itextpdf.tool.xml.html.HTMLUtils;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * Applies CSS Rules to Chunks
@@ -66,7 +70,8 @@ public class ChunkCssApplier {
      * 100 - 500 and "lighter" = normal.<br />
      * 600 - 900 and "bolder" = bold.
      */
-    public static final List<String> BOLD = Arrays.asList(new String[]{"bold", "bolder", "600", "700", "800", "900"});
+    public static final List<String> BOLD = Arrays
+            .asList(new String[] { "bold", "bolder", "600", "700", "800", "900" });
     protected final CssUtils utils = CssUtils.getInstance();
     protected FontProvider fontProvider;
 
@@ -81,19 +86,19 @@ public class ChunkCssApplier {
             this.fontProvider = new FontFactoryImp();
         }
     }
-	/**
-	 *
-	 * @param c the Chunk to apply CSS to.
-	 * @param t the tag containing the chunk data
-	 * @return the styled chunk
-	 */
+
+    /**
+     *
+     * @param c the Chunk to apply CSS to.
+     * @param t the tag containing the chunk data
+     * @return the styled chunk
+     */
     public Chunk apply(final Chunk c, final Tag t) {
         Font f = applyFontStyles(t);
-		// for chinese charater display @www.micmiu.com
-		if (null != HTMLUtils.bfCN && HTMLUtils.isChinese(c.getContent())) {
-			f = new Font(HTMLUtils.bfCN, f.getSize(), f.getStyle(),
-					f.getColor());
-		}
+        // for chinese charater display @www.micmiu.com
+        if (null != HTMLUtils.bfCN && HTMLUtils.isChinese(c.getContent())) {
+            f = new Font(HTMLUtils.bfCN, f.getSize(), f.getStyle(), f.getColor());
+        }
         float size = f.getSize();
         Map<String, String> rules = t.getCSS();
         for (Entry<String, String> entry : rules.entrySet()) {
@@ -105,16 +110,20 @@ public class ChunkCssApplier {
                 }
             } else if (CSS.Property.LETTER_SPACING.equalsIgnoreCase(key)) {
                 c.setCharacterSpacing(utils.parsePxInCmMmPcToPt(value));
-            } else if (null != rules.get(CSS.Property.XFA_FONT_HORIZONTAL_SCALE)) { // only % allowed; need a catch block NumberFormatExc?
-                c.setHorizontalScaling(Float.parseFloat(rules.get(CSS.Property.XFA_FONT_HORIZONTAL_SCALE).replace("%", "")) / 100);
+            } else if (null != rules.get(CSS.Property.XFA_FONT_HORIZONTAL_SCALE)) { // only % allowed; need a catch
+                                                                                    // block NumberFormatExc?
+                c.setHorizontalScaling(
+                        Float.parseFloat(rules.get(CSS.Property.XFA_FONT_HORIZONTAL_SCALE).replace("%", "")) / 100);
             }
         }
         // following styles are separate from the for each loop, because they are based on font settings like size.
         if (null != rules.get(CSS.Property.VERTICAL_ALIGN)) {
             String value = rules.get(CSS.Property.VERTICAL_ALIGN);
-            if (value.equalsIgnoreCase(CSS.Value.SUPER) || value.equalsIgnoreCase(CSS.Value.TOP) || value.equalsIgnoreCase(CSS.Value.TEXT_TOP)) {
+            if (value.equalsIgnoreCase(CSS.Value.SUPER) || value.equalsIgnoreCase(CSS.Value.TOP)
+                    || value.equalsIgnoreCase(CSS.Value.TEXT_TOP)) {
                 c.setTextRise((float) (size / 2 + 0.5));
-            } else if (value.equalsIgnoreCase(CSS.Value.SUB) || value.equalsIgnoreCase(CSS.Value.BOTTOM) || value.equalsIgnoreCase(CSS.Value.TEXT_BOTTOM)) {
+            } else if (value.equalsIgnoreCase(CSS.Value.SUB) || value.equalsIgnoreCase(CSS.Value.BOTTOM)
+                    || value.equalsIgnoreCase(CSS.Value.TEXT_BOTTOM)) {
                 c.setTextRise(-size / 2);
             } else {
                 c.setTextRise(utils.parsePxInCmMmPcToPt(value));
@@ -127,7 +136,9 @@ public class ChunkCssApplier {
                 c.setHorizontalScaling(100 / Float.parseFloat(xfaVertScale.replace("%", "")));
             }
         }
-        if (null != rules.get(CSS.Property.TEXT_DECORATION)) { // Restriction? In html a underline and a line-through is possible on one piece of text. A Chunk can set an underline only once.
+        if (null != rules.get(CSS.Property.TEXT_DECORATION)) { // Restriction? In html a underline and a line-through is
+                                                               // possible on one piece of text. A Chunk can set an
+                                                               // underline only once.
             String value = rules.get(CSS.Property.TEXT_DECORATION);
             if (CSS.Value.UNDERLINE.equalsIgnoreCase(value)) {
                 c.setUnderline(0.75f, -size / 8f);
@@ -143,13 +154,13 @@ public class ChunkCssApplier {
         c.setFont(f);
 
         Float leading = null;
-        if(rules.get(CSS.Property.LINE_HEIGHT) != null) {
+        if (rules.get(CSS.Property.LINE_HEIGHT) != null) {
             String value = rules.get(CSS.Property.LINE_HEIGHT);
-            if(utils.isNumericValue(value)) {
+            if (utils.isNumericValue(value)) {
                 leading = Float.parseFloat(value) * c.getFont().getSize();
             } else if (utils.isRelativeValue(value)) {
                 leading = utils.parseRelativeValue(value, c.getFont().getSize());
-            } else if (utils.isMetricValue(value)){
+            } else if (utils.isMetricValue(value)) {
                 leading = utils.parsePxInCmMmPcToPt(value);
             }
         }
@@ -193,7 +204,7 @@ public class ChunkCssApplier {
                     }
                 }
             } else if (CSS.Property.FONT_FAMILY.equalsIgnoreCase(key)) {
-				// TODO improve fontfamily parsing (what if a font family has a comma in the name ? )
+                // TODO improve fontfamily parsing (what if a font family has a comma in the name ? )
                 fontName = value;
             } else if (CSS.Property.COLOR.equalsIgnoreCase(key)) {
                 color = HtmlUtilities.decodeColor(value);
@@ -207,7 +218,8 @@ public class ChunkCssApplier {
                     s = utils.trimAndRemoveQuoutes(s);
                     if (fontProvider.isRegistered(s)) {
                         Font f = fontProvider.getFont(s, encoding, BaseFont.EMBEDDED, size, style, color);
-                        if (f != null && (style == Font.NORMAL || style == Font.UNDEFINED || (f.getStyle() & style) == 0)) {
+                        if (f != null
+                                && (style == Font.NORMAL || style == Font.UNDEFINED || (f.getStyle() & style) == 0)) {
                             return f;
                         }
                         if (firstFont == null) {
@@ -232,7 +244,7 @@ public class ChunkCssApplier {
         return fontProvider.getFont(fontName, encoding, BaseFont.EMBEDDED, size, style, color);
     }
 
-	/**
+    /**
      * Method used for retrieving the widest word of a chunk of text. All styles of the chunk will be taken into account when calculating the width of the words.
      *
      * @param c chunk of which the widest word is required.

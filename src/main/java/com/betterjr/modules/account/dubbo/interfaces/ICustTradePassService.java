@@ -40,7 +40,6 @@ public interface ICustTradePassService {
      */
     String webCheckTradePassword(String anTradePassword);
 
-
     /**
      * @param anNewPassword
      * @param anOkPassword

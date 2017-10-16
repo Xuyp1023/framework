@@ -1,6 +1,5 @@
 package com.betterjr.common.data;
 
- 
 import com.betterjr.common.utils.BetterDateUtils;
 
 /**
@@ -11,7 +10,7 @@ import com.betterjr.common.utils.BetterDateUtils;
  */
 public class SysDateInfo implements java.io.Serializable {
     private static final long serialVersionUID = 6533500504081647703L;
-    
+
     // 自然日期，如果没有使用系统当日期
     private String naturalDate;
     // 上一交易日
@@ -25,14 +24,13 @@ public class SysDateInfo implements java.io.Serializable {
 
     }
 
-    public String findTradeDate(String anTradeTime) { 
+    public String findTradeDate(String anTradeTime) {
         String myTime = naturalDate.concat(" ").concat(BetterDateUtils.getNumTime());
         String otherTime = currentDate.concat(" ").concat(anTradeTime);
         int result = myTime.compareTo(otherTime);
         if (result <= 0) {
             return this.currentDate;
-        }
-        else {
+        } else {
             return this.nextDate;
         }
     }
@@ -66,8 +64,7 @@ public class SysDateInfo implements java.io.Serializable {
     public String getTradeDate(boolean anNext) {
         if (anNext) {
             return this.nextDate;
-        }
-        else {
+        } else {
             return this.currentDate;
         }
     }

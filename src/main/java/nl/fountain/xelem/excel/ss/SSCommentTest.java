@@ -16,7 +16,7 @@ public class SSCommentTest extends XLElementTest {
     public static void main(String[] args) {
         junit.textui.TestRunner.run(SSCommentTest.class);
     }
-       
+
     public void testGetDataClean() {
         Comment comment = new SSComment();
         char lf = 10;
@@ -24,7 +24,7 @@ public class SSCommentTest extends XLElementTest {
         comment.setAuthor("the great author");
         assertEquals("dit is commentaar.", comment.getDataClean());
     }
-    
+
     public void testAssemble() {
         Comment comment = new SSComment();
         comment.setData("commentaartekst");
@@ -33,9 +33,8 @@ public class SSCommentTest extends XLElementTest {
         assertTrue(xml.indexOf("<ss:Comment>") > 0);
         assertTrue(xml.indexOf("<ss:Data>commentaartekst</ss:Data>") > 0);
         assertTrue(xml.indexOf("</ss:Comment>") > 0);
-        
-        //System.out.println(xml);
+
+        // System.out.println(xml);
     }
-    
 
 }

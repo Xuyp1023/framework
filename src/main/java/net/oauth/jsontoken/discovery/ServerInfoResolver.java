@@ -28,12 +28,12 @@ import java.net.URI;
  */
 public interface ServerInfoResolver {
 
-  /**
-   * Fetches and parses a server info document.
-   * @param serverDescriptor the URL from which the server info document
-   *   should be fetched.
-   * @return an object representing the server info document.
-   */
-  public ServerInfo resolve(URI serverDescriptor);
+    /**
+     * Fetches and parses a server info document.
+     * @param serverDescriptor the URL from which the server info document
+     *   should be fetched.
+     * @return an object representing the server info document.
+     */
+    public ServerInfo resolve(URI serverDescriptor);
 
 }

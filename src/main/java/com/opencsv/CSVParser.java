@@ -1,5 +1,13 @@
 package com.opencsv;
 
+import static com.opencsv.enums.CSVReaderNullFieldIndicator.NEITHER;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 /**
  Copyright 2005 Bytecode Pty Ltd.
 
@@ -17,13 +25,6 @@ package com.opencsv;
  */
 
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.opencsv.enums.CSVReaderNullFieldIndicator.NEITHER;
 
 /**
  * A very simple CSV parser released under a commercial-friendly license.
@@ -124,7 +125,6 @@ public class CSVParser {
         this(separator, DEFAULT_QUOTE_CHARACTER, DEFAULT_ESCAPE_CHARACTER);
     }
 
-
     /**
      * Constructs CSVParser with supplied separator and quote char.
      *
@@ -169,7 +169,8 @@ public class CSVParser {
      * @param strictQuotes            if true, characters outside the quotes are ignored
      * @param ignoreLeadingWhiteSpace if true, white space in front of a quote in a field is ignored
      */
-    public CSVParser(char separator, char quotechar, char escape, boolean strictQuotes, boolean ignoreLeadingWhiteSpace) {
+    public CSVParser(char separator, char quotechar, char escape, boolean strictQuotes,
+            boolean ignoreLeadingWhiteSpace) {
         this(separator, quotechar, escape, strictQuotes, ignoreLeadingWhiteSpace, DEFAULT_IGNORE_QUOTATIONS);
     }
 
@@ -185,8 +186,9 @@ public class CSVParser {
      * @param ignoreQuotations        if true, treat quotations like any other character.
      */
     public CSVParser(char separator, char quotechar, char escape, boolean strictQuotes, boolean ignoreLeadingWhiteSpace,
-                     boolean ignoreQuotations) {
-        this(separator, quotechar, escape, strictQuotes, ignoreLeadingWhiteSpace, ignoreQuotations, DEFAULT_NULL_FIELD_INDICATOR);
+            boolean ignoreQuotations) {
+        this(separator, quotechar, escape, strictQuotes, ignoreLeadingWhiteSpace, ignoreQuotations,
+                DEFAULT_NULL_FIELD_INDICATOR);
     }
 
     /**
@@ -203,7 +205,7 @@ public class CSVParser {
      *                                BOTH, NEITHER (default)
      */
     CSVParser(char separator, char quotechar, char escape, boolean strictQuotes, boolean ignoreLeadingWhiteSpace,
-              boolean ignoreQuotations, CSVReaderNullFieldIndicator nullFieldIndicator) {
+            boolean ignoreQuotations, CSVReaderNullFieldIndicator nullFieldIndicator) {
         if (anyCharactersAreTheSame(separator, quotechar, escape)) {
             throw new UnsupportedOperationException("The separator, quote, and escape characters must be different!");
         }
@@ -218,7 +220,6 @@ public class CSVParser {
         this.ignoreQuotations = ignoreQuotations;
         this.nullFieldIndicator = nullFieldIndicator;
     }
-
 
     /**
      * @return The default separator for this parser.
@@ -272,7 +273,8 @@ public class CSVParser {
      * @return true if any two of the three are the same.
      */
     private boolean anyCharactersAreTheSame(char separator, char quotechar, char escape) {
-        return isSameCharacter(separator, quotechar) || isSameCharacter(separator, escape) || isSameCharacter(quotechar, escape);
+        return isSameCharacter(separator, quotechar) || isSameCharacter(separator, escape)
+                || isSameCharacter(quotechar, escape);
     }
 
     /**
@@ -334,7 +336,7 @@ public class CSVParser {
             if (pending != null) {
                 String s = pending;
                 pending = null;
-                return new String[]{s};
+                return new String[] { s };
             } else {
                 return null;
             }
@@ -347,7 +349,7 @@ public class CSVParser {
         if (pending != null) {
             sb.append(pending);
             pending = null;
-            inQuotes = !this.ignoreQuotations;//true;
+            inQuotes = !this.ignoreQuotations;// true;
         }
         for (int i = 0; i < nextLine.length(); i++) {
 
@@ -368,11 +370,14 @@ public class CSVParser {
 
                     // the tricky case of an embedded quote in the middle: a,bc"d"ef,g
                     if (!strictQuotes) {
-                        if (i > 2 //not on the beginning of the line
-                                && nextLine.charAt(i - 1) != this.separator //not at the beginning of an escape sequence
-                                && nextLine.length() > (i + 1) &&
-                                nextLine.charAt(i + 1) != this.separator //not at the	end of an escape sequence
-                                ) {
+                        if (i > 2 // not on the beginning of the line
+                                && nextLine.charAt(i - 1) != this.separator // not at the beginning of an escape
+                                                                            // sequence
+                                && nextLine.length() > (i + 1) && nextLine.charAt(i + 1) != this.separator // not at the
+                                                                                                           // end of an
+                                                                                                           // escape
+                                                                                                           // sequence
+                        ) {
 
                             if (ignoreLeadingWhiteSpace && sb.length() > 0 && isAllWhiteSpace(sb)) {
                                 sb.setLength(0);
@@ -436,14 +441,14 @@ public class CSVParser {
 
     private boolean shouldConvertEmptyToNull(boolean fromQuotedField) {
         switch (nullFieldIndicator) {
-            case BOTH:
-                return true;
-            case EMPTY_SEPARATORS:
-                return !fromQuotedField;
-            case EMPTY_QUOTES:
-                return fromQuotedField;
-            default:
-                return false;
+        case BOTH:
+            return true;
+        case EMPTY_SEPARATORS:
+            return !fromQuotedField;
+        case EMPTY_QUOTES:
+            return fromQuotedField;
+        default:
+            return false;
         }
     }
 
@@ -482,8 +487,8 @@ public class CSVParser {
      * @return true if the following character is a quote
      */
     private boolean isNextCharacterEscapedQuote(String nextLine, boolean inQuotes, int i) {
-        return inQuotes  // we are in quotes, therefore there can be escaped quotes in here.
-                && nextLine.length() > (i + 1)  // there is indeed another character to check.
+        return inQuotes // we are in quotes, therefore there can be escaped quotes in here.
+                && nextLine.length() > (i + 1) // there is indeed another character to check.
                 && isCharacterQuoteCharacter(nextLine.charAt(i + 1));
     }
 
@@ -506,10 +511,11 @@ public class CSVParser {
     private boolean isCharacterEscapeCharacter(char c) {
         return c == escape;
     }
-    
+
     private boolean isCharacterSeparatorCharacter(char c) {
         return c == separator;
     }
+
     /**
      * Checks to see if the character passed in could be escapable.  Escapable characters for openCSV are the
      * quotation character or the escape character.
@@ -534,8 +540,8 @@ public class CSVParser {
      * @return true if the following character is a quote
      */
     protected boolean isNextCharacterEscapable(String nextLine, boolean inQuotes, int i) {
-        return inQuotes  // we are in quotes, therefore there can be escaped quotes in here.
-                && nextLine.length() > (i + 1)  // there is indeed another character to check.
+        return inQuotes // we are in quotes, therefore there can be escaped quotes in here.
+                && nextLine.length() > (i + 1) // there is indeed another character to check.
                 && isCharacterEscapable(nextLine.charAt(i + 1));
     }
 

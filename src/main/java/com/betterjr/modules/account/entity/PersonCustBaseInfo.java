@@ -1,8 +1,14 @@
 package com.betterjr.modules.account.entity;
 
-import com.betterjr.common.annotation.*;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.entity.BetterjrEntity;
- import javax.persistence.*;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -12,57 +18,57 @@ public class PersonCustBaseInfo implements BetterjrEntity {
      * 客户编号
      */
     @Id
-    @Column(name = "L_CUSTNO",  columnDefinition="INTEGER" )
-    @MetaData( value="客户编号", comments = "客户编号")
+    @Column(name = "L_CUSTNO", columnDefinition = "INTEGER")
+    @MetaData(value = "客户编号", comments = "客户编号")
     private Long custNo;
 
     /**
      * 出生日期
      */
-    @Column(name = "D_BIRTHDAY",  columnDefinition="VARCHAR" )
-    @MetaData( value="出生日期", comments = "出生日期")
+    @Column(name = "D_BIRTHDAY", columnDefinition = "VARCHAR")
+    @MetaData(value = "出生日期", comments = "出生日期")
     private String birthDay;
 
     /**
      * 客户性别:0-女，1-男
      */
-    @Column(name = "C_SEX",  columnDefinition="VARCHAR" )
-    @MetaData( value="客户性别:0-女", comments = "客户性别:0-女，1-男")
+    @Column(name = "C_SEX", columnDefinition = "VARCHAR")
+    @MetaData(value = "客户性别:0-女", comments = "客户性别:0-女，1-男")
     private String sex;
 
     /**
      * 职业:01-政府部门，02-教科文，03-金融，04-商贸，05-房地产，06-制造业，07-自由职业，08-其它
      */
-    @Column(name = "C_VOCATION",  columnDefinition="VARCHAR" )
-    @MetaData( value="职业:01-政府部门", comments = "职业:01-政府部门，02-教科文，03-金融，04-商贸，05-房地产，06-制造业，07-自由职业，08-其它")
+    @Column(name = "C_VOCATION", columnDefinition = "VARCHAR")
+    @MetaData(value = "职业:01-政府部门", comments = "职业:01-政府部门，02-教科文，03-金融，04-商贸，05-房地产，06-制造业，07-自由职业，08-其它")
     private String vocation;
 
     /**
      * 学历:01-初中及以下，02-高中/中专，03-大专/本科，04-硕士及以上
      */
-    @Column(name = "C_EDUCATION",  columnDefinition="VARCHAR" )
-    @MetaData( value="学历:01-初中及以下", comments = "学历:01-初中及以下，02-高中/中专，03-大专/本科，04-硕士及以上")
+    @Column(name = "C_EDUCATION", columnDefinition = "VARCHAR")
+    @MetaData(value = "学历:01-初中及以下", comments = "学历:01-初中及以下，02-高中/中专，03-大专/本科，04-硕士及以上")
     private String education;
 
     /**
      * 民族
      */
-    @Column(name = "C_NATION_CODE",  columnDefinition="VARCHAR" )
-    @MetaData( value="民族", comments = "民族")
+    @Column(name = "C_NATION_CODE", columnDefinition = "VARCHAR")
+    @MetaData(value = "民族", comments = "民族")
     private String nationCode;
 
     /**
      * 年收入
      */
-    @Column(name = "C_INCOME",  columnDefinition="VARCHAR" )
-    @MetaData( value="年收入", comments = "年收入")
+    @Column(name = "C_INCOME", columnDefinition = "VARCHAR")
+    @MetaData(value = "年收入", comments = "年收入")
     private String incoming;
 
     /**
      * 修改日期
      */
-    @Column(name = "D_MODIDATE",  columnDefinition="VARCHAR" )
-    @MetaData( value="修改日期", comments = "修改日期")
+    @Column(name = "D_MODIDATE", columnDefinition = "VARCHAR")
+    @MetaData(value = "修改日期", comments = "修改日期")
     private String modiDate;
 
     private static final long serialVersionUID = 1442500881780L;
@@ -163,13 +169,19 @@ public class PersonCustBaseInfo implements BetterjrEntity {
         }
         PersonCustBaseInfo other = (PersonCustBaseInfo) that;
         return (this.getCustNo() == null ? other.getCustNo() == null : this.getCustNo().equals(other.getCustNo()))
-            && (this.getBirthDay() == null ? other.getBirthDay() == null : this.getBirthDay().equals(other.getBirthDay()))
-            && (this.getSex() == null ? other.getSex() == null : this.getSex().equals(other.getSex()))
-            && (this.getVocation() == null ? other.getVocation() == null : this.getVocation().equals(other.getVocation()))
-            && (this.getEducation() == null ? other.getEducation() == null : this.getEducation().equals(other.getEducation()))
-            && (this.getNationCode() == null ? other.getNationCode() == null : this.getNationCode().equals(other.getNationCode()))
-            && (this.getIncoming() == null ? other.getIncoming() == null : this.getIncoming().equals(other.getIncoming()))
-            && (this.getModiDate() == null ? other.getModiDate() == null : this.getModiDate().equals(other.getModiDate()));
+                && (this.getBirthDay() == null ? other.getBirthDay() == null
+                        : this.getBirthDay().equals(other.getBirthDay()))
+                && (this.getSex() == null ? other.getSex() == null : this.getSex().equals(other.getSex()))
+                && (this.getVocation() == null ? other.getVocation() == null
+                        : this.getVocation().equals(other.getVocation()))
+                && (this.getEducation() == null ? other.getEducation() == null
+                        : this.getEducation().equals(other.getEducation()))
+                && (this.getNationCode() == null ? other.getNationCode() == null
+                        : this.getNationCode().equals(other.getNationCode()))
+                && (this.getIncoming() == null ? other.getIncoming() == null
+                        : this.getIncoming().equals(other.getIncoming()))
+                && (this.getModiDate() == null ? other.getModiDate() == null
+                        : this.getModiDate().equals(other.getModiDate()));
     }
 
     @Override

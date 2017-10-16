@@ -1,11 +1,16 @@
 
 package com.betterjr.mapper.other.mapper;
 
-import com.betterjr.mapper.other.CommonProvider;
-import org.apache.ibatis.annotations.*;
-
 import java.util.List;
 import java.util.Map;
+
+import org.apache.ibatis.annotations.DeleteProvider;
+import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.UpdateProvider;
+
+import com.betterjr.mapper.other.CommonProvider;
 
 /**
  * 这个仍然是接口类，不需要被继承，可以直接用
@@ -155,7 +160,8 @@ public interface CommonMapper {
      * @return
      */
     @SelectProvider(type = CommonProvider.class, method = "selectByExample")
-    <T> List<Map<String, Object>> selectByExample(@Param("entityClass") Class<T> entityClass, @Param("example") Object example);
+    <T> List<Map<String, Object>> selectByExample(@Param("entityClass") Class<T> entityClass,
+            @Param("example") Object example);
 
     /**
      * 通过Example进行更新非空字段

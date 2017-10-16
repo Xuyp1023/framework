@@ -78,7 +78,8 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
      * 认证回调函数, 登录时调用.
      */
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(final AuthenticationToken authcToken) throws AuthenticationException {
+    protected AuthenticationInfo doGetAuthenticationInfo(final AuthenticationToken authcToken)
+            throws AuthenticationException {
 
         CustOperatorInfo user = null;
         String passWD = null;
@@ -96,8 +97,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
             if (cert != null) {
                 certInfo = checkValid(cert);
                 log.info("数字证数验证成功: certInfo = " + certInfo);
-            }
-            else {
+            } else {
                 log.error("数字证数验证失败");
                 throw new AuthenticationException("数字证书验证失败！");
             }
@@ -112,7 +112,8 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
                 user = operatorService.findCustOperatorByOperCode(certInfo.getOperOrg(), token.getUsername());
                 if (user != null) {
                     log.warn(user.toString());
-                    final CustPassInfo passInfo = passService.getOperaterPassByCustNo(user.getId(), CustPasswordType.ORG);
+                    final CustPassInfo passInfo = passService.getOperaterPassByCustNo(user.getId(),
+                            CustPasswordType.ORG);
 
                     // 临时锁定
                     if (passInfo == null || passInfo.validLockType()) {
@@ -125,8 +126,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
                     custRole = token.getCustRole();
                     contextInfo = userService.saveFormLogin(user);
                 }
-            }
-            else if (authcToken instanceof BetterjrSsoToken) {
+            } else if (authcToken instanceof BetterjrSsoToken) {
                 // 用证书登录方式，控制在拜特资金管理系统，原则上不存在过期或无效的问题
                 // 统一使用Form形式的验证！
                 saltStr = "985a44369b063938a6a7";
@@ -141,8 +141,8 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
             workData = contextInfo;
 
             if (user != null) {
-                userPassData = passService.findPassAndSalt(user.getId(),
-                        new String[] { CustPasswordType.PERSON_TRADE.getPassType(), CustPasswordType.ORG_TRADE.getPassType() });
+                userPassData = passService.findPassAndSalt(user.getId(), new String[] {
+                        CustPasswordType.PERSON_TRADE.getPassType(), CustPasswordType.ORG_TRADE.getPassType() });
                 log.warn(user.toString());
                 if (user.getStatus().equals("1") == false) {
                     throw new DisabledAccountException("操作员被要求暂停业务或者已经被注销");
@@ -154,15 +154,15 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
                     ut = UserType.OPERATOR_ADMIN;
                 }
 
-                final ShiroUser shiroUser = new ShiroUser(ut, user.getId(), user.getName(), user, custRole, certInfo, mobileLogin, workData, userPassData);
+                final ShiroUser shiroUser = new ShiroUser(ut, user.getId(), user.getName(), user, custRole, certInfo,
+                        mobileLogin, workData, userPassData);
                 log.info("this login user Info is :" + shiroUser);
                 final byte[] salt = Encodes.decodeHex(saltStr);
 
                 // 这里可以缓存认证
                 log.warn("ready invoke SimpleAuthenticationInfo");
                 return new SimpleAuthenticationInfo(shiroUser, passWD, ByteSource.Util.bytes(salt), getName());
-            }
-            else {
+            } else {
                 return null;
             }
         }

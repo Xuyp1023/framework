@@ -1,13 +1,18 @@
 package com.betterjr.modules.account.entity;
 
-import com.betterjr.common.annotation.*;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.common.mapper.BeanMapper;
 import com.betterjr.common.selectkey.SerialGenerator;
 import com.betterjr.common.utils.BetterDateUtils;
 import com.betterjr.common.utils.DictUtils;
-
-import javax.persistence.*;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -247,19 +252,28 @@ public class SaleTradeAccountInfo implements BetterjrEntity {
             return false;
         }
         SaleTradeAccountInfo other = (SaleTradeAccountInfo) that;
-        return (this.getTradeAccount() == null ? other.getTradeAccount() == null : this.getTradeAccount().equals(other.getTradeAccount()))
+        return (this.getTradeAccount() == null ? other.getTradeAccount() == null
+                : this.getTradeAccount().equals(other.getTradeAccount()))
                 && (this.getCustNo() == null ? other.getCustNo() == null : this.getCustNo().equals(other.getCustNo()))
                 && (this.getNetNo() == null ? other.getNetNo() == null : this.getNetNo().equals(other.getNetNo()))
-                && (this.getMainAccount() == null ? other.getMainAccount() == null : this.getMainAccount().equals(other.getMainAccount()))
-                && (this.getRegCode() == null ? other.getRegCode() == null : this.getRegCode().equals(other.getRegCode()))
-                && (this.getRegDate() == null ? other.getRegDate() == null : this.getRegDate().equals(other.getRegDate()))
-                && (this.getModiDate() == null ? other.getModiDate() == null : this.getModiDate().equals(other.getModiDate()))
+                && (this.getMainAccount() == null ? other.getMainAccount() == null
+                        : this.getMainAccount().equals(other.getMainAccount()))
+                && (this.getRegCode() == null ? other.getRegCode() == null
+                        : this.getRegCode().equals(other.getRegCode()))
+                && (this.getRegDate() == null ? other.getRegDate() == null
+                        : this.getRegDate().equals(other.getRegDate()))
+                && (this.getModiDate() == null ? other.getModiDate() == null
+                        : this.getModiDate().equals(other.getModiDate()))
                 && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
-                && (this.getLastStatus() == null ? other.getLastStatus() == null : this.getLastStatus().equals(other.getLastStatus()))
-                && (this.getClearStatus() == null ? other.getClearStatus() == null : this.getClearStatus().equals(other.getClearStatus()))
-                && (this.getSpecialFlag() == null ? other.getSpecialFlag() == null : this.getSpecialFlag().equals(other.getSpecialFlag()))
+                && (this.getLastStatus() == null ? other.getLastStatus() == null
+                        : this.getLastStatus().equals(other.getLastStatus()))
+                && (this.getClearStatus() == null ? other.getClearStatus() == null
+                        : this.getClearStatus().equals(other.getClearStatus()))
+                && (this.getSpecialFlag() == null ? other.getSpecialFlag() == null
+                        : this.getSpecialFlag().equals(other.getSpecialFlag()))
                 && (this.getConter() == null ? other.getConter() == null : this.getConter().equals(other.getConter()))
-                && (this.getAcceptMode() == null ? other.getAcceptMode() == null : this.getAcceptMode().equals(other.getAcceptMode()));
+                && (this.getAcceptMode() == null ? other.getAcceptMode() == null
+                        : this.getAcceptMode().equals(other.getAcceptMode()));
     }
 
     @Override
@@ -296,7 +310,8 @@ public class SaleTradeAccountInfo implements BetterjrEntity {
         this.setLastStatus(this.status);
         this.setClearStatus("0");
         this.setConter(false);
-        this.setAcceptMode(DictUtils.getDictCode("SaleDefAcceptModes", request.getAcceptMode(), request.getAcceptMode()));
+        this.setAcceptMode(
+                DictUtils.getDictCode("SaleDefAcceptModes", request.getAcceptMode(), request.getAcceptMode()));
         this.setTradeAccount(SerialGenerator.getTradeAcco(request.getNetNo()));
         request.setTradeAccount(this.getTradeAccount());
 

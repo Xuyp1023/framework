@@ -70,8 +70,9 @@ public class ExpressLoader {
                 var.setGlobeName(item.getGlobeName() + "." + var.name);
                 result.put(var.getGlobeName(), var);
             }
-            result.put(item.getGlobeName(), new ExportItem(item.getGlobeName(), item.getName(), item.getType(), item.toString()));
+            result.put(item.getGlobeName(),
+                    new ExportItem(item.getGlobeName(), item.getName(), item.getType(), item.toString()));
         }
-        return (ExportItem[]) result.values().toArray(new ExportItem[0]);
+        return result.values().toArray(new ExportItem[0]);
     }
 }

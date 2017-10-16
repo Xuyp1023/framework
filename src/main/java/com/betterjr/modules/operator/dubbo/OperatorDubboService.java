@@ -52,7 +52,9 @@ public class OperatorDubboService implements IOperatorService {
      */
     @Override
     public String webQueryCustOperator(final Map<String, String> anMap, final int anPageNum, final int anPageSize) {
-        return AjaxObject.newOkWithPage("操作员分页查询", operatorRequestService.queryCustOperator(anMap, anPageNum, anPageSize)).toJson();
+        return AjaxObject
+                .newOkWithPage("操作员分页查询", operatorRequestService.queryCustOperator(anMap, anPageNum, anPageSize))
+                .toJson();
     }
 
     @Override
@@ -144,8 +146,7 @@ public class OperatorDubboService implements IOperatorService {
     public String webUpdatePassword(final String anNewPasswd, final String anOkPasswd, final String anPasswd) {
         if (operatorRequestService.savePasword(anNewPasswd, anOkPasswd, anPasswd)) {
             return AjaxObject.newOk("密码修改成功").toJson();
-        }
-        else {
+        } else {
             return AjaxObject.newError("密码修改失败").toJson();
         }
     }
@@ -162,8 +163,7 @@ public class OperatorDubboService implements IOperatorService {
     public String webChangeUserPassword(final Long anId, final String anPassword, final String anOkPasswd) {
         if (operatorRequestService.saveChangePassword(anId, anPassword, anOkPasswd)) {
             return AjaxObject.newOk("密码修改成功").toJson();
-        }
-        else {
+        } else {
             return AjaxObject.newError("密码修改失败").toJson();
         }
     }
@@ -190,8 +190,10 @@ public class OperatorDubboService implements IOperatorService {
     }
 
     @Override
-    public String webUpdateOperatorWithImageFile(final Map<String, Object> anMap, final String anCustList, final String anFileList) {
+    public String webUpdateOperatorWithImageFile(final Map<String, Object> anMap, final String anCustList,
+            final String anFileList) {
         final CustOperatorInfoRequest request = (CustOperatorInfoRequest) RuleServiceDubboFilterInvoker.getInputObj();
-        return AjaxObject.newOk("编辑操作员", operatorRequestService.saveCustOperator(request, anCustList, anFileList)).toJson();
+        return AjaxObject.newOk("编辑操作员", operatorRequestService.saveCustOperator(request, anCustList, anFileList))
+                .toJson();
     }
 }

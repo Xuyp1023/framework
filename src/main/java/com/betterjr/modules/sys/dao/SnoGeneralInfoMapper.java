@@ -10,7 +10,7 @@ import com.betterjr.modules.sys.entity.SnoGeneralInfo;
 @BetterjrMapper
 public interface SnoGeneralInfoMapper extends Mapper<SnoGeneralInfo> {
 
-	@Update("update T_CFG_SNOGENERAL a set a.L_LASTNO = #{snoInfo.lastNo} where a.C_OPERTYPE = #{snoInfo.operType} and a.L_LASTNO < #{snoInfo.lastNo} ")
-	int updateSimple(@Param("snoInfo") SnoGeneralInfo snoInfo);
+    @Update("update T_CFG_SNOGENERAL a set a.L_LASTNO = #{snoInfo.lastNo} where a.C_OPERTYPE = #{snoInfo.operType} and a.L_LASTNO < #{snoInfo.lastNo} ")
+    int updateSimple(@Param("snoInfo") SnoGeneralInfo snoInfo);
 
 }

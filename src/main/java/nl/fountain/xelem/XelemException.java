@@ -19,13 +19,12 @@
  */
 package nl.fountain.xelem;
 
-
 /**
  * A wrapper class for several exceptions that may occur while working with the
  * {@link XFactory}, {@link XSerializer} or {@link nl.fountain.xelem.expat.XLDocument}.
  */
 public class XelemException extends Exception {
-    
+
     /**
      * 
      */

@@ -24,6 +24,9 @@
 
 package com.betterjr.mapper.orderbyhelper.sqlsource;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
+
 import org.apache.ibatis.builder.BuilderException;
 import org.apache.ibatis.builder.SqlSourceBuilder;
 import org.apache.ibatis.builder.StaticSqlSource;
@@ -32,9 +35,6 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
-
-import java.lang.reflect.Method;
-import java.util.HashMap;
 
 /**
  * @author liuzh
@@ -55,6 +55,7 @@ public class OrderByProviderSqlSource implements SqlSource, OrderBySqlSource {
         this.original = provider;
     }
 
+    @Override
     public BoundSql getBoundSql(Object parameterObject) {
         SqlSource sqlSource = createSqlSource(parameterObject);
         return sqlSource.getBoundSql(parameterObject);
@@ -69,15 +70,17 @@ public class OrderByProviderSqlSource implements SqlSource, OrderBySqlSource {
                 sql = (String) providerMethod.invoke(providerType.newInstance());
             }
             Class<?> parameterType = parameterObject == null ? Object.class : parameterObject.getClass();
-            StaticSqlSource sqlSource = (StaticSqlSource) sqlSourceParser.parse(sql, parameterType, new HashMap<String, Object>());
+            StaticSqlSource sqlSource = (StaticSqlSource) sqlSourceParser.parse(sql, parameterType,
+                    new HashMap<String, Object>());
             return new OrderByStaticSqlSource(sqlSource);
-        } catch (Exception e) {
-            throw new BuilderException("Error invoking SqlProvider method ("
-                    + providerType.getName() + "." + providerMethod.getName()
-                    + ").  Cause: " + e, e);
+        }
+        catch (Exception e) {
+            throw new BuilderException("Error invoking SqlProvider method (" + providerType.getName() + "."
+                    + providerMethod.getName() + ").  Cause: " + e, e);
         }
     }
 
+    @Override
     public SqlSource getOriginal() {
         return original;
     }

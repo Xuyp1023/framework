@@ -38,8 +38,8 @@ public class BetterX509CertStreamStore extends BetterX509CertStore {
 
     }
 
-    public BetterX509CertStreamStore(final BetterX509CertStore anParent, final byte[] anData, final String anPassword, final String anCertAlias,
-            final BetterX509CertType anCertType) {
+    public BetterX509CertStreamStore(final BetterX509CertStore anParent, final byte[] anData, final String anPassword,
+            final String anCertAlias, final BetterX509CertType anCertType) {
         super(anParent, anPassword, anCertAlias);
 
         this.data = anData;
@@ -61,13 +61,13 @@ public class BetterX509CertStreamStore extends BetterX509CertStore {
             store = KeyStore.getInstance("PKCS12", BetterX509Utils.BC);
             if (anCreate) {
                 store.load(null);
-            }
-            else {
+            } else {
                 fis = new ByteArrayInputStream(data);
                 store.load(fis, this.findPassword());
             }
         }
-        catch (KeyStoreException | NoSuchProviderException | NoSuchAlgorithmException | CertificateException | IOException e) {
+        catch (KeyStoreException | NoSuchProviderException | NoSuchAlgorithmException | CertificateException
+                | IOException e) {
             e.printStackTrace();
         }
         finally {

@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.dozer.DozerBeanMapper;
 
 import com.betterjr.common.utils.BetterStringUtils;
@@ -40,8 +41,8 @@ public class BeanMapper {
      */
     public static <T> T map(Object source, Class<T> destinationClass, String anFieldMap) {
         T obj = dozer.map(source, destinationClass);
-        if (BetterStringUtils.isNotBlank(anFieldMap)) {
-            
+        if (StringUtils.isNotBlank(anFieldMap)) {
+
             BeanMapperHelper.invoke(source, obj, anFieldMap);
 
         }
@@ -74,7 +75,7 @@ public class BeanMapper {
      */
     public static void copy(Object source, Object destinationObject, String anFieldMap) {
         dozer.map(source, destinationObject);
-        if (BetterStringUtils.isNotBlank(anFieldMap)) {
+        if (StringUtils.isNotBlank(anFieldMap)) {
             BeanMapperHelper.invoke(source, destinationObject, anFieldMap);
         }
     }

@@ -24,22 +24,22 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import nl.fountain.xelem.excel.DocumentProperties;
-import nl.fountain.xelem.excel.ExcelWorkbook;
-import nl.fountain.xelem.excel.WorksheetOptions;
-import nl.fountain.xelem.excel.XLElement;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
+import nl.fountain.xelem.excel.DocumentProperties;
+import nl.fountain.xelem.excel.ExcelWorkbook;
+import nl.fountain.xelem.excel.WorksheetOptions;
+import nl.fountain.xelem.excel.XLElement;
+
 /**
  *
  */
 class AnonymousBuilder extends DefaultHandler implements Builder {
-    
+
     private static Map<String, Method> methodMap;
     private boolean occupied;
     protected XMLReader reader;
@@ -47,93 +47,103 @@ class AnonymousBuilder extends DefaultHandler implements Builder {
     protected Director director;
     protected CharArrayWriter contents;
     protected XLElement current;
-    
+
     protected AnonymousBuilder(Director director) {
         this.director = director;
         contents = new CharArrayWriter();
     }
-    
+
+    @Override
     public void build(XMLReader reader, ContentHandler parent, XLElement xle) {
         setUpBuilder(reader, parent);
         current = xle;
     }
-    
+
+    @Override
     public void build(XMLReader reader, ContentHandler parent) {
         setUpBuilder(reader, parent);
     }
-    
+
     protected void setUpBuilder(XMLReader reader, ContentHandler parent) {
         this.reader = reader;
         this.parent = parent;
         reader.setContentHandler(this);
     }
-    
+
     protected void setOccupied(boolean b) {
         occupied = b;
     }
-    
+
     protected boolean isOccupied() {
         return occupied;
     }
-    
+
     private Method getMethod(String tagName) {
         return getMethodMap().get(tagName);
     }
-    
+
     private Map<String, Method> getMethodMap() {
         if (methodMap == null) {
             methodMap = new HashMap<String, Method>();
             Object[][] methods = null;
             try {
-                methods = new Object[][]{
-                   {"DocumentProperties",  ExcelReaderListener.class.getMethod("setDocumentProperties", new Class[]{DocumentProperties.class})},
-                   {"ExcelWorkbook", ExcelReaderListener.class.getMethod("setExcelWorkbook", new Class[]{ExcelWorkbook.class})},
-                   {"WorksheetOptions", ExcelReaderListener.class.getMethod("setWorksheetOptions", new Class[]{int.class, String.class, WorksheetOptions.class})}
-                };
+                methods = new Object[][] {
+                        { "DocumentProperties",
+                                ExcelReaderListener.class.getMethod("setDocumentProperties",
+                                        new Class[] { DocumentProperties.class }) },
+                        { "ExcelWorkbook",
+                                ExcelReaderListener.class.getMethod("setExcelWorkbook",
+                                        new Class[] { ExcelWorkbook.class }) },
+                        { "WorksheetOptions", ExcelReaderListener.class.getMethod("setWorksheetOptions",
+                                new Class[] { int.class, String.class, WorksheetOptions.class }) } };
                 for (int i = 0; i < methods.length; i++) {
-                    methodMap.put((String)methods[i][0], (Method)methods[i][1]);
+                    methodMap.put((String) methods[i][0], (Method) methods[i][1]);
                 }
-            } catch (SecurityException e) {
+            }
+            catch (SecurityException e) {
                 e.printStackTrace();
-            } catch (NoSuchMethodException e) {
+            }
+            catch (NoSuchMethodException e) {
                 e.printStackTrace();
             }
         }
         return methodMap;
     }
-    
+
     private void informListeners() {
         if (director.getListeners().size() > 0) {
             Method m = getMethod(current.getTagName());
             if (m != null) {
-	            try {
-	                for (Iterator<ExcelReaderListener> iter = director.getListeners().iterator(); iter.hasNext();) {
-	                    ExcelReaderListener listener = iter.next();
-	                    if (m.getParameterTypes()[0].equals(int.class)) {
-	                        m.invoke(listener, new Object[] {new Integer(director.getCurrentSheetIndex()), director.getCurrentSheetName(), current});
-	                    } else {
-	                        m.invoke(listener, new Object[] { current });
-	                    }
-	                }
-	            } catch (Exception e) {
-	                e.printStackTrace();
-	            } 
+                try {
+                    for (Iterator<ExcelReaderListener> iter = director.getListeners().iterator(); iter.hasNext();) {
+                        ExcelReaderListener listener = iter.next();
+                        if (m.getParameterTypes()[0].equals(int.class)) {
+                            m.invoke(listener, new Object[] { new Integer(director.getCurrentSheetIndex()),
+                                    director.getCurrentSheetName(), current });
+                        } else {
+                            m.invoke(listener, new Object[] { current });
+                        }
+                    }
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
-    public void startElement(String uri, String localName, String qName,
-            Attributes atts) throws SAXException {
-        //System.out.println(localName);
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+        // System.out.println(localName);
         if (!XLElement.XMLNS_HTML.equals(uri)) {
             contents.reset();
         }
     }
 
-    public void endElement(String uri, String localName, String qName)
-            throws SAXException {
-        //System.out.println(localName);
-        if (current.getNameSpace().equals(uri)) {	        
+    @Override
+    public void endElement(String uri, String localName, String qName) throws SAXException {
+        // System.out.println(localName);
+        if (current.getNameSpace().equals(uri)) {
             if (current.getTagName().equals(localName)) {
                 informListeners();
                 reader.setContentHandler(parent);
@@ -144,9 +154,9 @@ class AnonymousBuilder extends DefaultHandler implements Builder {
         current.setChildElement(localName, contents.toString());
     }
 
-    public void characters(char[] ch, int start, int length)
-		throws SAXException {
+    @Override
+    public void characters(char[] ch, int start, int length) throws SAXException {
         contents.write(ch, start, length);
     }
-    
+
 }

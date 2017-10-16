@@ -8,7 +8,6 @@ import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.scripting.defaults.RawSqlSource;
 
 import com.betterjr.mapper.orderbyhelper.sqlsource.OrderBySqlSource;
-import com.betterjr.mapper.orderbyhelper.sqlsource.OrderByStaticSqlSource;
 import com.betterjr.mapper.pagehelper.parser.Parser;
 
 /**
@@ -42,6 +41,7 @@ public class PageRawSqlSource extends PageSqlSource implements OrderBySqlSource 
         return sqlSource.getPageBoundSql(parameterObject);
     }
 
+    @Override
     public SqlSource getOriginal() {
         return original;
     }

@@ -56,20 +56,22 @@ public class CustTradePassDubboService implements ICustTradePassService {
     @Override
     public String webSendVerifyCode() {
         // 首先判断有没有绑定微信号
-        //BTAssert.isTrue(wechatService.checkBindStatus(), "当前操作员还未绑定微信号，不允许修改交易密码！");
+        // BTAssert.isTrue(wechatService.checkBindStatus(), "当前操作员还未绑定微信号，不允许修改交易密码！");
 
         final CustOperatorInfo operator = UserUtils.getOperatorInfo();
 
-        final CustOperatorInfo  tempOperator = custOperatorService.findCustOperatorInfo(operator.getId());
+        final CustOperatorInfo tempOperator = custOperatorService.findCustOperatorInfo(operator.getId());
 
         final String mobile = tempOperator.getMobileNo();
 
-        BTAssert.isTrue(BetterStringUtils.isNotBlank(mobile), "经办人手机号码不允许为空！");
+        BTAssert.isTrue(StringUtils.isNotBlank(mobile), "经办人手机号码不允许为空！");
 
-        final VerifyCode verifyCode = verificationCodeService.sendVerifyCode(mobile, VerifyCodeType.CHANGE_TRADE_PASSWORD);
+        final VerifyCode verifyCode = verificationCodeService.sendVerifyCode(mobile,
+                VerifyCodeType.CHANGE_TRADE_PASSWORD);
         BTAssert.notNull(verifyCode, "没有生成验证码！");
 
-        JedisUtils.setObject(SmsConstants.smsModifyTradePassVerifyCodePrefix + operator.getId(), verifyCode, SmsConstants.SEC_600);
+        JedisUtils.setObject(SmsConstants.smsModifyTradePassVerifyCodePrefix + operator.getId(), verifyCode,
+                SmsConstants.SEC_600);
         return AjaxObject.newOk("发送验证码成功").toJson();
     }
 
@@ -79,16 +81,18 @@ public class CustTradePassDubboService implements ICustTradePassService {
     @Override
     public String webCheckVerifyCode(final String anVerifyCode) {
         // 首先判断有没有绑定微信号
-        //BTAssert.isTrue(wechatService.checkBindStatus(), "当前操作员还未绑定微信号，不允许修改交易密码！");
+        // BTAssert.isTrue(wechatService.checkBindStatus(), "当前操作员还未绑定微信号，不允许修改交易密码！");
 
         final CustOperatorInfo operator = UserUtils.getOperatorInfo();
 
-        final VerifyCode verifyCode = JedisUtils.getObject(SmsConstants.smsModifyTradePassVerifyCodePrefix + operator.getId());
+        final VerifyCode verifyCode = JedisUtils
+                .getObject(SmsConstants.smsModifyTradePassVerifyCodePrefix + operator.getId());
 
         BTAssert.notNull(verifyCode, "验证码已过期");
 
-        if (BetterStringUtils.equals(verifyCode.getVerifiCode(), anVerifyCode)) {
-            JedisUtils.setObject(SmsConstants.smsModifyTradePassVerifyCodePrefix + operator.getId(), "true", SmsConstants.SEC_300);
+        if (StringUtils.equals(verifyCode.getVerifiCode(), anVerifyCode)) {
+            JedisUtils.setObject(SmsConstants.smsModifyTradePassVerifyCodePrefix + operator.getId(), "true",
+                    SmsConstants.SEC_300);
 
             return AjaxObject.newOk("验证码验证成功").toJson();
         } else {
@@ -100,18 +104,23 @@ public class CustTradePassDubboService implements ICustTradePassService {
      * @see com.betterjr.modules.operator.ITradePassService#saveModifyTradePass(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public String webSaveModifyTradePass(final String anNewPassword, final String anOkPassword, final String anOldPassword) {
+    public String webSaveModifyTradePass(final String anNewPassword, final String anOkPassword,
+            final String anOldPassword) {
         // 首先判断有没有绑定微信号
-        //BTAssert.isTrue(wechatService.checkBindStatus(), "当前操作员还未绑定微信号，不允许修改交易密码！");
+        // BTAssert.isTrue(wechatService.checkBindStatus(), "当前操作员还未绑定微信号，不允许修改交易密码！");
 
         final CustOperatorInfo operator = UserUtils.getOperatorInfo();
-        final Object verifyCode = JedisUtils.getObject(SmsConstants.smsModifyTradePassVerifyCodePrefix + operator.getId());
+        final Object verifyCode = JedisUtils
+                .getObject(SmsConstants.smsModifyTradePassVerifyCodePrefix + operator.getId());
 
         BTAssert.notNull(verifyCode, "验证信息已过期，不允许修改密码！");
 
-        BTAssert.isTrue(verifyCode instanceof String && BetterStringUtils.equals((String)verifyCode, "true"), "错误的提交");
+        BTAssert.isTrue(verifyCode instanceof String && StringUtils.equals((String) verifyCode, "true"), "错误的提交");
 
-        return AjaxObject.newOk("交易密码保存成功", custOperatorService.saveModifyTradePassword(anNewPassword, anOkPassword, anOldPassword)).toJson();
+        return AjaxObject
+                .newOk("交易密码保存成功",
+                        custOperatorService.saveModifyTradePassword(anNewPassword, anOkPassword, anOldPassword))
+                .toJson();
     }
 
     /* (non-Javadoc)
@@ -119,7 +128,8 @@ public class CustTradePassDubboService implements ICustTradePassService {
      */
     @Override
     public boolean checkTradePassword(final CustOperatorInfo anOperator, final String anTradePassword) {
-        final CustPassInfo custPassInfo = custPassService.getOperaterPassByCustNo(anOperator.getId(), CustPasswordType.ORG_TRADE);
+        final CustPassInfo custPassInfo = custPassService.getOperaterPassByCustNo(anOperator.getId(),
+                CustPasswordType.ORG_TRADE);
         BTAssert.notNull(custPassInfo, "没有找到相应的交易密码信息！");
 
         final String tradePassword = SystemAuthorizingRealm.findEncrypt(anTradePassword, custPassInfo.getPassSalt());

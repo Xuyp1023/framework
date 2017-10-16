@@ -30,12 +30,12 @@ import java.net.URI;
  */
 public class IdentityServerDescriptorProvider implements ServerDescriptorProvider {
 
-  /*
-   * (non-Javadoc)
-   * @see net.oauth.jsontoken.discovery.ServerDescriptorProvider#getServerDescriptor(java.lang.String)
-   */
-  @Override
-  public URI getServerDescriptor(String issuer) {
-    return URI.create(issuer);
-  }
+    /*
+     * (non-Javadoc)
+     * @see net.oauth.jsontoken.discovery.ServerDescriptorProvider#getServerDescriptor(java.lang.String)
+     */
+    @Override
+    public URI getServerDescriptor(String issuer) {
+        return URI.create(issuer);
+    }
 }

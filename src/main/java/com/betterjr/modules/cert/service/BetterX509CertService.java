@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
@@ -48,7 +49,8 @@ import com.betterjr.modules.sys.service.SysConfigService;
 @Service
 public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper, BetterX509CertInfo> {
 
-    private final String[] QUERY_TERM = new String[] { "certStatus", "GTEregDate", "LTEregDate", "GTEcreateDate", "LTEvalidDate" };
+    private final String[] QUERY_TERM = new String[] { "certStatus", "GTEregDate", "LTEregDate", "GTEcreateDate",
+            "LTEvalidDate" };
 
     /**
      * 发布数字证书
@@ -63,7 +65,7 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
         }
 
         final BetterX509CertInfo certInfo = this.selectByPrimaryKey(anId);
-        if (certInfo == null || !BetterStringUtils.equals(certInfo.getCertStatus(), "2")) {
+        if (certInfo == null || !StringUtils.equals(certInfo.getCertStatus(), "2")) {
 
             return null;
         }
@@ -84,8 +86,10 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
         final BetterX509MetaData metaData = buildMetaData(certInfo, anPassword);
 
         final PublicKey pubKey = BetterX509Utils.readPublicKeyFromStream(certInfo.getPublicKey());
-        final PrivateKey privKey = BetterX509Utils.readPrivateKeyFromStream(Cryptos.aesDecrypt(certInfo.getPrivateKey()));
-        final BetterX509CertStore certStore = BetterX509Utils.newCertificate(metaData, middleCertStore, privKey, pubKey, "D:\\cert\\certs\\13.p12");
+        final PrivateKey privKey = BetterX509Utils
+                .readPrivateKeyFromStream(Cryptos.aesDecrypt(certInfo.getPrivateKey()));
+        final BetterX509CertStore certStore = BetterX509Utils.newCertificate(metaData, middleCertStore, privKey, pubKey,
+                "D:\\cert\\certs\\13.p12");
         final X509Certificate x509Certinfo = certStore.findCertificate();
 
         /*  certInfo.setValidDate(BetterDateUtils.formatNumberDate(x509Certinfo.getNotAfter()));
@@ -115,11 +119,10 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
      */
     public void saveMakeCertificate(final Long anId, final String anSerialNo) {
         BTAssert.notNull(anId, "数字证书编号不允许为空！");
-        BTAssert.isTrue(BetterStringUtils.isNotBlank(anSerialNo), "数字证书序列号不允许为空！");
+        BTAssert.isTrue(StringUtils.isNotBlank(anSerialNo), "数字证书序列号不允许为空！");
 
         final BetterX509CertInfo certInfo = findX509CertInfo(anId, anSerialNo);
         BTAssert.notNull(certInfo, "没有找到对应的数字证书！");
-
 
     }
 
@@ -131,12 +134,12 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
      */
     public void saveCancelCertificate(final Long anId, final String anSerialNo) {
         BTAssert.notNull(anId, "数字证书编号不允许为空！");
-        BTAssert.isTrue(BetterStringUtils.isNotBlank(anSerialNo), "数字证书序列号不允许为空！");
+        BTAssert.isTrue(StringUtils.isNotBlank(anSerialNo), "数字证书序列号不允许为空！");
 
         final BetterX509CertInfo certInfo = findX509CertInfo(anId, anSerialNo);
         BTAssert.notNull(certInfo, "没有找到对应的数字证书！");
 
-        BTAssert.isTrue(BetterStringUtils.equals("0", certInfo.getCertStatus()), "此证书不允许作废！");
+        BTAssert.isTrue(StringUtils.equals("0", certInfo.getCertStatus()), "此证书不允许作废！");
 
         this.saveCertStatus(anId, anSerialNo, "9");
     }
@@ -149,8 +152,8 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
      */
     public void saveRevokeCert(final Long anId, final String anSerialNo, final String anReason) {
         BTAssert.notNull(anId, "数字证书编号不允许为空！");
-        BTAssert.isTrue(BetterStringUtils.isNotBlank(anSerialNo), "数字证书序列号不允许为空！");
-        BTAssert.isTrue(BetterStringUtils.isNotBlank(anReason), "回收原因不允许为空！");
+        BTAssert.isTrue(StringUtils.isNotBlank(anSerialNo), "数字证书序列号不允许为空！");
+        BTAssert.isTrue(StringUtils.isNotBlank(anReason), "回收原因不允许为空！");
 
         final BetterX509CertInfo certInfo = this.selectByPrimaryKey(anId);
         if (certInfo.getSerialNo().equals(anSerialNo)) {
@@ -160,7 +163,8 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
             final BetterX509CertStore middleCertStore = findMiddleCertStore(certInfo.getSigner());
 
             final BetterX509CertStore certStore = new BetterX509CertStreamStore(middleCertStore, certInfo.getData(),
-                    Cryptos.aesDecrypt(certInfo.getPasswd()), certInfo.getCommName(), BetterX509CertType.checking(certInfo.getCertType()));
+                    Cryptos.aesDecrypt(certInfo.getPasswd()), certInfo.getCommName(),
+                    BetterX509CertType.checking(certInfo.getCertType()));
             final String revokeFile = SysConfigService.getString("CertificateCRLFile");
             // 回收列表
             /*if (BetterX509Utils.revoke(certStore.findCertificate(), tmpReason, middleCertStore, revokeFile)) {
@@ -173,7 +177,7 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
             certInfo.setRevokeReason(anReason);
             certInfo.setCertStatus("9");
             this.updateByPrimaryKey(certInfo);
-            //}
+            // }
         }
     }
 
@@ -188,7 +192,7 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
         final BetterX509CertInfo certInfo = this.selectByPrimaryKey(anId);
         if (certInfo != null) {
             final String subject = exportMetaOids(certInfo).toString();
-            certInfo.setSubject(BetterStringUtils.substring(subject, 1, subject.length() - 1));
+            certInfo.setSubject(StringUtils.substring(subject, 1, subject.length() - 1));
         }
         return certInfo;
     }
@@ -207,8 +211,7 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
         if (certInfo != null && certInfo.getSerialNo().equals(anSerialNo)) {
             certInfo.setSubject(exportMetaOids(certInfo).toString());
             return certInfo;
-        }
-        else {
+        } else {
 
             throw new BytterTradeException("没有找到对应的数字证书！");
         }
@@ -227,11 +230,13 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
      *            是否需要统计
      * @return
      */
-    public Page<BetterX509CertInfo> queryX509CertInfo(final Map<String, Object> anParam, final int anPageNum, final int anPageSize, final int anFlag) {
+    public Page<BetterX509CertInfo> queryX509CertInfo(final Map<String, Object> anParam, final int anPageNum,
+            final int anPageSize, final int anFlag) {
         final Map<String, Object> termMap = Collections3.filterMap(anParam, QUERY_TERM);
         termMap.put("certType", "3");
         return this.selectPropertyByPage(termMap, anPageNum, anPageSize, anFlag == 1);
     }
+
     /**
      * 分页查询数字证书信息
      *
@@ -300,8 +305,8 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
 
     protected BetterX509MetaData buildMetaData(final BetterX509CertInfo anCertInfo, final String anPassword) {
         final BetterX509MetaData metaData = new BetterX509MetaData(anCertInfo.getCommName(), anPassword);
-        metaData.addData(exportMetaOids(anCertInfo), anCertInfo.getEmail(), anCertInfo.getCreateDate(), anCertInfo.getValidDate(),
-                anCertInfo.getSerialNo());
+        metaData.addData(exportMetaOids(anCertInfo), anCertInfo.getEmail(), anCertInfo.getCreateDate(),
+                anCertInfo.getValidDate(), anCertInfo.getSerialNo());
 
         return metaData;
     }
@@ -311,7 +316,7 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
         Field field;
         try {
             for (final Map.Entry<String, String> ent : exportMetaOids(anCertInfo).entrySet()) {
-                if (BetterStringUtils.isNotBlank(ent.getValue())) {
+                if (StringUtils.isNotBlank(ent.getValue())) {
                     field = BCStyle.class.getField(ent.getKey());
                     final ASN1ObjectIdentifier objectId = (ASN1ObjectIdentifier) field.get(null);
                     dnBuilder.addRDN(objectId, ent.getValue());
@@ -369,7 +374,7 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
 
     public BetterX509CertInfo saveX509Cert(final BetterX509CertInfo anCertInfo, final InputStream anData) {
         try {
-            if (BetterStringUtils.isNotBlank(anCertInfo.getPasswd())) {
+            if (StringUtils.isNotBlank(anCertInfo.getPasswd())) {
                 anCertInfo.setPasswd(Cryptos.aesEncrypt(anCertInfo.getPasswd()));
             }
             if (anData != null) {
@@ -379,22 +384,23 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
         catch (final IOException e) {
             throw new BytterTradeException(50009, "保存数字证书出现异常", e);
         }
-        final BetterX509CertInfo certInfo = Collections3.getFirst(selectByProperty("serialNo", anCertInfo.getSerialNo()));
+        final BetterX509CertInfo certInfo = Collections3
+                .getFirst(selectByProperty("serialNo", anCertInfo.getSerialNo()));
         if (certInfo == null) {
             CustOperatorInfo operator = null;
             try {
                 operator = UserUtils.getOperatorInfo();
-            } catch (final Exception e) {
             }
+            catch (final Exception e) {}
             anCertInfo.initDefValue(operator);
             anCertInfo.calcValidDate();
             this.insert(anCertInfo);
-        }
-        else {
+        } else {
             CustOperatorInfo operator = null;
             try {
                 operator = UserUtils.getOperatorInfo();
-            } catch(final Exception e) {
+            }
+            catch (final Exception e) {
 
             }
             anCertInfo.modifyValue(operator, certInfo);
@@ -409,7 +415,7 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
         final Map<String, String> subItemMap = BetterX509Utils.findCertificateSubjectMap(anX509);
         certInfo.setCityName(subItemMap.get("L"));
         certInfo.setProvinceName(subItemMap.get("S"));
-        if (BetterStringUtils.isBlank(certInfo.getProvinceName())) {
+        if (StringUtils.isBlank(certInfo.getProvinceName())) {
             certInfo.setProvinceName(subItemMap.get("ST"));
         }
         certInfo.setCommName(subItemMap.get("CN"));
@@ -455,7 +461,8 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
         BetterX509CertInfo certInfo;
         for (final Map.Entry<String, BetterX509CertInfo> ent : anRootMap.entrySet()) {
             certInfo = ent.getValue();
-            result.put(ent.getKey(), new BetterX509CertStreamStore(null, certInfo.getData(), null, certInfo.getCertAlias(), BetterX509CertType.ROOT_CA));
+            result.put(ent.getKey(), new BetterX509CertStreamStore(null, certInfo.getData(), null,
+                    certInfo.getCertAlias(), BetterX509CertType.ROOT_CA));
         }
         return result;
     }
@@ -482,13 +489,14 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
 
     private List<SimpleDataEntity> findX509CertByType(final String anCertType, final String anStatus) {
         final List<SimpleDataEntity> result = new ArrayList<>();
-        final Map<String, Object> termMap = QueryTermBuilder.newInstance().put("certType", anCertType).put("certStatus", anStatus).build();
+        final Map<String, Object> termMap = QueryTermBuilder.newInstance().put("certType", anCertType)
+                .put("certStatus", anStatus).build();
 
         for (final BetterX509CertInfo certInfo : this.selectByProperty(termMap)) {
             if (anCertType.equals("3")) {
-                result.add(new SimpleDataEntity(certInfo.getCommName(), Long.toString(certInfo.getId()) + ";" + certInfo.getSerialNo()));
-            }
-            else {
+                result.add(new SimpleDataEntity(certInfo.getCommName(),
+                        Long.toString(certInfo.getId()) + ";" + certInfo.getSerialNo()));
+            } else {
                 result.add(new SimpleDataEntity(certInfo.getCertAlias(), certInfo.getCommName()));
             }
         }
@@ -509,8 +517,10 @@ public class BetterX509CertService extends BaseService<BetterX509CertInfoMapper,
         for (final BetterX509CertInfo certInfo : this.selectByProperty("certType", "1")) {
             rootStore = rootMap.get(certInfo.getSigner());
             if (rootStore != null) {
-                result.put(certInfo.getCertAlias(), new BetterX509CertStreamStore(rootStore, certInfo.getData(),
-                        Cryptos.aesDecrypt(certInfo.getPasswd()), certInfo.getCertAlias(), BetterX509CertType.MIDDLE_CA));
+                result.put(certInfo.getCertAlias(),
+                        new BetterX509CertStreamStore(rootStore, certInfo.getData(),
+                                Cryptos.aesDecrypt(certInfo.getPasswd()), certInfo.getCertAlias(),
+                                BetterX509CertType.MIDDLE_CA));
             }
         }
 

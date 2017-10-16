@@ -15,6 +15,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.betterjr.common.exception.BytterException;
 
 /**
@@ -35,7 +37,8 @@ public class Cryptos {
     private static final int DEFAULT_AES_KEYSIZE = 128;
     private static final int DEFAULT_IVSIZE = 16;
 
-    private static final byte[] DEFAULT_KEY = new byte[] { -97, 88, -94, 9, 70, -76, 126, 25, 0, 3, -20, 113, 108, 28, 69, 125 };
+    private static final byte[] DEFAULT_KEY = new byte[] { -97, 88, -94, 9, 70, -76, 126, 25, 0, 3, -20, 113, 108, 28,
+            69, 125 };
 
     private static SecureRandom random = new SecureRandom();
 
@@ -93,7 +96,7 @@ public class Cryptos {
      * @param input 原始输入字符数组
      */
     public static String aesEncrypt(String input) {
-        if (BetterStringUtils.isBlank(input)) {
+        if (StringUtils.isBlank(input)) {
             return "";
         }
         try {
@@ -112,7 +115,7 @@ public class Cryptos {
      */
     public static String aesEncrypt(String input, String key) {
         try {
-            if (BetterStringUtils.isBlank(input) || BetterStringUtils.isBlank(key)) {
+            if (StringUtils.isBlank(input) || StringUtils.isBlank(key)) {
                 return "";
             }
             return Encodes.encodeHex(aesEncrypt(input.getBytes(DEFAULT_URL_ENCODING), Encodes.decodeHex(key)));
@@ -153,7 +156,7 @@ public class Cryptos {
      * @param input Hex编码的加密字符串
      */
     public static String aesDecrypt(String input) {
-        if (BetterStringUtils.isBlank(input)) {
+        if (StringUtils.isBlank(input)) {
 
             return "";
         }
@@ -173,11 +176,11 @@ public class Cryptos {
      */
     public static String aesDecrypt(String input, String key) {
         try {
-            if (BetterStringUtils.isBlank(input) || BetterStringUtils.isBlank(key)) {
-                
+            if (StringUtils.isBlank(input) || StringUtils.isBlank(key)) {
+
                 return "";
             }
-            
+
             return new String(aesDecrypt(Encodes.decodeHex(input), Encodes.decodeHex(key)), DEFAULT_URL_ENCODING);
         }
         catch (UnsupportedEncodingException e) {

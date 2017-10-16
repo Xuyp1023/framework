@@ -23,13 +23,13 @@ public class InstructionSetContext implements IExpressContext<String, Object> {
     private boolean isSupportDynamicFieldName = false;
     private ExpressRunner runner;
 
-    public InstructionSetContext(boolean aIsExpandToParent, ExpressRunner aRunner, IExpressContext<String, Object> aParent,
-            ExpressLoader aExpressLoader, boolean aIsSupportDynamicFieldName) {
+    public InstructionSetContext(boolean aIsExpandToParent, ExpressRunner aRunner,
+            IExpressContext<String, Object> aParent, ExpressLoader aExpressLoader, boolean aIsSupportDynamicFieldName) {
         this.initial(aIsExpandToParent, aRunner, aParent, aExpressLoader, aIsSupportDynamicFieldName);
     }
 
-    public void initial(boolean aIsExpandToParent, ExpressRunner aRunner, IExpressContext<String, Object> aParent, ExpressLoader aExpressLoader,
-            boolean aIsSupportDynamicFieldName) {
+    public void initial(boolean aIsExpandToParent, ExpressRunner aRunner, IExpressContext<String, Object> aParent,
+            ExpressLoader aExpressLoader, boolean aIsSupportDynamicFieldName) {
         this.isExpandToParent = aIsExpandToParent;
         this.runner = aRunner;
         this.parent = aParent;
@@ -50,8 +50,7 @@ public class InstructionSetContext implements IExpressContext<String, Object> {
     public void exportSymbol(String varName, Object aliasNameObject) throws Exception {
         if (this.parent != null && this.parent instanceof InstructionSetContext) {
             ((InstructionSetContext) this.parent).exportSymbol(varName, aliasNameObject);
-        }
-        else {
+        } else {
             this.addSymbol(varName, aliasNameObject);
         }
     }
@@ -86,8 +85,7 @@ public class InstructionSetContext implements IExpressContext<String, Object> {
         if (result == null) {
             if (this.parent != null && this.parent instanceof InstructionSetContext) {
                 result = ((InstructionSetContext) this.parent).findAliasOrDefSymbol(varName);
-            }
-            else {
+            } else {
                 result = null;
             }
         }
@@ -105,8 +103,7 @@ public class InstructionSetContext implements IExpressContext<String, Object> {
         if (result == null) {
             if (this.isExpandToParent == true && this.parent != null && this.parent instanceof InstructionSetContext) {
                 result = ((InstructionSetContext) this.parent).getSymbol(varName);
-            }
-            else {
+            } else {
                 result = OperateDataCacheManager.fetchOperateDataAttr(varName, null);
                 this.addSymbol(varName, result);
             }
@@ -122,30 +119,28 @@ public class InstructionSetContext implements IExpressContext<String, Object> {
         return this.parent;
     }
 
+    @Override
     public Object get(Object key) {
         if (this.content != null && this.content.containsKey(key)) {
             return this.content.get(key);
-        }
-        else if (this.isExpandToParent == true && this.parent != null) {
+        } else if (this.isExpandToParent == true && this.parent != null) {
             return this.parent.get(key);
         }
         return null;
     }
 
+    @Override
     public Object put(String key, Object value) {
         if (this.content != null && this.content.containsKey(key)) {
             return this.content.put(key, value);
-        }
-        else if (this.isExpandToParent == false) {
+        } else if (this.isExpandToParent == false) {
             if (this.content == null) {
                 this.content = new HashMap<String, Object>();
             }
             return this.content.put(key, value);
-        }
-        else if (this.parent != null) {
+        } else if (this.parent != null) {
             return this.parent.put(key, value);
-        }
-        else {
+        } else {
             throw new RuntimeException("没有定义局部变量：" + key + ",而且没有全局上下文");
         }
     }

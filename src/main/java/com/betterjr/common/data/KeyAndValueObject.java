@@ -19,29 +19,28 @@ public class KeyAndValueObject {
     }
 
     public Object getValue() {
-        
+
         return this.value;
     }
 
     public String getStrKey() {
         if (key != null) {
             return key.toString();
-        }
-        else {
+        } else {
             return "";
         }
     }
-    
-    public Map<Object,Object> toMap(){
-        Map<Object,Object> map=Maps.newHashMap();
+
+    public Map<Object, Object> toMap() {
+        Map<Object, Object> map = Maps.newHashMap();
         map.put(key, value);
         return map;
     }
-    
-    public static KeyAndValueObject newInstanceByMap(Map<Object,Object> map){
-        if(!Collections3.isEmpty(map)){
-            Object anKey=Collections3.getFirst(map.keySet());
-            return new KeyAndValueObject(anKey,map.get(anKey));
+
+    public static KeyAndValueObject newInstanceByMap(Map<Object, Object> map) {
+        if (!Collections3.isEmpty(map)) {
+            Object anKey = Collections3.getFirst(map.keySet());
+            return new KeyAndValueObject(anKey, map.get(anKey));
         }
         return null;
     }

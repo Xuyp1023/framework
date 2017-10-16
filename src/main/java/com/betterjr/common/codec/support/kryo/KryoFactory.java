@@ -1,24 +1,44 @@
 package com.betterjr.common.codec.support.kryo;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
- 
-import com.betterjr.common.codec.support.SerializableClassRegistry;
-import com.esotericsoftware.kryo.Kryo;
-
 import java.lang.reflect.InvocationHandler;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.UUID;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
-import com.esotericsoftware.kryo.serializers.*;
-import de.javakaffee.kryoserializers.*;
- 
+
+import com.betterjr.common.codec.support.SerializableClassRegistry;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.serializers.DefaultSerializers;
+
+import de.javakaffee.kryoserializers.ArraysAsListSerializer;
+import de.javakaffee.kryoserializers.BitSetSerializer;
+import de.javakaffee.kryoserializers.GregorianCalendarSerializer;
+import de.javakaffee.kryoserializers.JdkProxySerializer;
+import de.javakaffee.kryoserializers.RegexSerializer;
+import de.javakaffee.kryoserializers.SynchronizedCollectionsSerializer;
+import de.javakaffee.kryoserializers.URISerializer;
+import de.javakaffee.kryoserializers.UUIDSerializer;
+import de.javakaffee.kryoserializers.UnmodifiableCollectionsSerializer;
+
 public abstract class KryoFactory {
- 
+
     private static final KryoFactory factory = new PooledKryoFactory();
 
     private final Set<Class> registrations = new LinkedHashSet<Class>();
@@ -27,8 +47,7 @@ public abstract class KryoFactory {
 
     private volatile boolean kryoCreated;
 
-    protected KryoFactory() { 
-    }
+    protected KryoFactory() {}
 
     public static KryoFactory getDefaultFactory() {
         return factory;
@@ -53,7 +72,7 @@ public abstract class KryoFactory {
         }
 
         Kryo kryo = new CompatibleKryo();
- 
+
         kryo.setRegistrationRequired(registrationRequired);
 
         kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
@@ -67,7 +86,7 @@ public abstract class KryoFactory {
         kryo.register(UUID.class, new UUIDSerializer());
         UnmodifiableCollectionsSerializer.registerSerializers(kryo);
         SynchronizedCollectionsSerializer.registerSerializers(kryo);
- 
+
         kryo.register(HashMap.class);
         kryo.register(ArrayList.class);
         kryo.register(LinkedList.class);
@@ -103,15 +122,13 @@ public abstract class KryoFactory {
         return kryo;
     }
 
-    public void returnKryo(Kryo kryo) {
-    }
+    public void returnKryo(Kryo kryo) {}
 
     public void setRegistrationRequired(boolean registrationRequired) {
         this.registrationRequired = registrationRequired;
     }
 
-    public void close() {
-    }
+    public void close() {}
 
     public abstract Kryo getKryo();
 }

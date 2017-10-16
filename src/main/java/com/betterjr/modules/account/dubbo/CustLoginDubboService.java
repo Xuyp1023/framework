@@ -9,7 +9,7 @@ import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.account.service.CustLoginService;
 import com.betterjr.modules.cert.entity.CustCertInfo;
 
-@Service(interfaceClass=ICustLoginService.class)
+@Service(interfaceClass = ICustLoginService.class)
 public class CustLoginDubboService implements ICustLoginService {
 
     @Autowired

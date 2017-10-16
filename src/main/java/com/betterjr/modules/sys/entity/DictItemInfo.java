@@ -1,10 +1,16 @@
 package com.betterjr.modules.sys.entity;
 
-import com.betterjr.common.annotation.*;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+
+import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.common.selectkey.SerialGenerator;
-
-import javax.persistence.*;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -214,15 +220,23 @@ public class DictItemInfo implements BetterjrEntity {
         DictItemInfo other = (DictItemInfo) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
                 && (this.getItemNo() == null ? other.getItemNo() == null : this.getItemNo().equals(other.getItemNo()))
-                && (this.getItemValue() == null ? other.getItemValue() == null : this.getItemValue().equals(other.getItemValue()))
-                && (this.getItemCode() == null ? other.getItemCode() == null : this.getItemCode().equals(other.getItemCode()))
-                && (this.getItemName() == null ? other.getItemName() == null : this.getItemName().equals(other.getItemName()))
-                && (this.getSubject() == null ? other.getSubject() == null : this.getSubject().equals(other.getSubject()))
-                && (this.getItemOrder() == null ? other.getItemOrder() == null : this.getItemOrder().equals(other.getItemOrder()))
+                && (this.getItemValue() == null ? other.getItemValue() == null
+                        : this.getItemValue().equals(other.getItemValue()))
+                && (this.getItemCode() == null ? other.getItemCode() == null
+                        : this.getItemCode().equals(other.getItemCode()))
+                && (this.getItemName() == null ? other.getItemName() == null
+                        : this.getItemName().equals(other.getItemName()))
+                && (this.getSubject() == null ? other.getSubject() == null
+                        : this.getSubject().equals(other.getSubject()))
+                && (this.getItemOrder() == null ? other.getItemOrder() == null
+                        : this.getItemOrder().equals(other.getItemOrder()))
                 && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
-                && (this.getDefItem() == null ? other.getDefItem() == null : this.getDefItem().equals(other.getDefItem()))
-                && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
-                && (this.getExportOut() == null ? other.getExportOut() == null : this.getExportOut().equals(other.getExportOut()));
+                && (this.getDefItem() == null ? other.getDefItem() == null
+                        : this.getDefItem().equals(other.getDefItem()))
+                && (this.getDescription() == null ? other.getDescription() == null
+                        : this.getDescription().equals(other.getDescription()))
+                && (this.getExportOut() == null ? other.getExportOut() == null
+                        : this.getExportOut().equals(other.getExportOut()));
     }
 
     @Override

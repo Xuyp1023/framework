@@ -67,7 +67,6 @@ public class RedisManager {
         return value;
     }
 
-
     /**
      * set
      * 

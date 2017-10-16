@@ -7,33 +7,21 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.betterjr.common.config.ParamNames;
 import com.betterjr.common.data.KeyAndValueObject;
-import com.betterjr.common.exception.BettjerIOException;
-import com.betterjr.common.selectkey.SerialGenerator;
 import com.betterjr.modules.sys.service.SysConfigService;
 
 /**
@@ -46,11 +34,11 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
     public static long ONE_KB = 1024;
     public static long ONE_MB = ONE_KB * 1024;
     public static long ONE_GB = ONE_MB * 1024;
-    public static long ONE_TB = ONE_GB * (long) 1024;
-    public static long ONE_PB = ONE_TB * (long) 1024;
-    
-    public static Set<String> SupportedUploadFileType=new HashSet<String>();
-    static{
+    public static long ONE_TB = ONE_GB * 1024;
+    public static long ONE_PB = ONE_TB * 1024;
+
+    public static Set<String> SupportedUploadFileType = new HashSet<String>();
+    static {
         SupportedUploadFileType.add("jpg");
         SupportedUploadFileType.add("jpeg");
         SupportedUploadFileType.add("png");
@@ -64,14 +52,14 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         SupportedUploadFileType.add("rar");
         SupportedUploadFileType.add("ftl");
     }
-    
-    public static boolean isSupportedUploadFileType(String type){
-        if(BetterStringUtils.isBlank(type)){
+
+    public static boolean isSupportedUploadFileType(String type) {
+        if (StringUtils.isBlank(type)) {
             return false;
         }
         return SupportedUploadFileType.contains(type.trim().toLowerCase());
     }
-    
+
     public static String getHumanReadableFileSize(Long fileSize) {
         if (fileSize == null) return null;
         return getHumanReadableFileSize(fileSize.longValue());
@@ -115,12 +103,11 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         }
         return null;
     }
-    
-    
+
     public static File getRealFile(String anPath) {
         String tmpStr = null;
-        if (BetterStringUtils.isNotBlank(anPath)) {
-            tmpStr= anPath.replaceAll("\\.\\.", "");
+        if (StringUtils.isNotBlank(anPath)) {
+            tmpStr = anPath.replaceAll("\\.\\.", "");
         }
         if (tmpStr != null) {
             File ff = new File(tmpStr);
@@ -131,7 +118,6 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         }
         return null;
     }
-
 
     /**
      * 根据指定的父文件路径，创建文件路径
@@ -144,9 +130,9 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         // 得到上传服务器的路径
         String basePath = (String) SysConfigService.getObject(ParamNames.OPENACCO_FILE_DOWNLOAD_PATH);
 
-        return findFilePathWithParent(anParentPath,basePath);
+        return findFilePathWithParent(anParentPath, basePath);
     }
-    
+
     /**
      * 根据指定的父文件路径，创建文件路径
      * 
@@ -154,59 +140,56 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
      *            指定的父文件路径
      * @return
      */
-    public static KeyAndValueObject findFilePathWithParent(String anParentPath,String basePath) {
+    public static KeyAndValueObject findFilePathWithParent(String anParentPath, String basePath) {
         // 得到上传服务器的路径
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         String format = formatter.format(new Date());
         String workPath = null;
-        if (BetterStringUtils.isBlank(anParentPath)) {
+        if (StringUtils.isBlank(anParentPath)) {
             workPath = basePath + "/" + format;
-        }
-        else {
+        } else {
             workPath = basePath + "/" + anParentPath + "/" + format;
         }
         File file = new File(workPath);
 
         // 如果文件夹不存在则创建
-        if (file.exists() ) {
-            
-            //如果是文件，则将文件做重命名
-            if ( file.isFile()){
-                file.renameTo(new File(workPath+".rename"));
+        if (file.exists()) {
+
+            // 如果是文件，则将文件做重命名
+            if (file.isFile()) {
+                file.renameTo(new File(workPath + ".rename"));
                 file.mkdirs();
             }
-        }
-        else{
-            //不存在，就创将目录
-            file.mkdirs(); 
+        } else {
+            // 不存在，就创将目录
+            file.mkdirs();
         }
         // 得到上传的文件的文件名
         String fileName = UUIDUtils.uuid();
-        String fileAbsoPath  = workPath + "/" + fileName;
-        
-        //保存在系统中的相对路径
+        String fileAbsoPath = workPath + "/" + fileName;
+
+        // 保存在系统中的相对路径
         String saveUrl = null;
-        if (BetterStringUtils.isNotBlank(anParentPath)){
-            saveUrl ="/" + anParentPath; 
-        }
-        else{
-            saveUrl ="";
+        if (StringUtils.isNotBlank(anParentPath)) {
+            saveUrl = "/" + anParentPath;
+        } else {
+            saveUrl = "";
         }
         saveUrl = saveUrl + "/" + format + "/" + fileName;
 
         return new KeyAndValueObject(saveUrl, new File(fileAbsoPath));
     }
-    
+
     /**
      * 获得文件的扩展名
      * @param anFileName
      * @return
      */
-    public static String extractFileExt(String anFileName){
-        if (BetterStringUtils.isNotBlank(anFileName)){
-           if (anFileName.contains(".")){
-               return anFileName.substring(anFileName.lastIndexOf(".") + 1);
-           }
+    public static String extractFileExt(String anFileName) {
+        if (StringUtils.isNotBlank(anFileName)) {
+            if (anFileName.contains(".")) {
+                return anFileName.substring(anFileName.lastIndexOf(".") + 1);
+            }
         }
         return "bin";
     }
@@ -217,20 +200,23 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
      * @param file
      * @return the byte content of the file
      */
-    public static byte [] readContent(File file) {
-        byte [] buffer = new byte[(int) file.length()];
+    public static byte[] readContent(File file) {
+        byte[] buffer = new byte[(int) file.length()];
         BufferedInputStream is = null;
         try {
             is = new BufferedInputStream(new FileInputStream(file));
-            is.read(buffer,  0,  buffer.length);
-        } catch (Throwable t) {
+            is.read(buffer, 0, buffer.length);
+        }
+        catch (Throwable t) {
             System.err.println("Failed to read byte content of " + file.getAbsolutePath());
             t.printStackTrace();
-        } finally {
+        }
+        finally {
             if (is != null) {
                 try {
                     is.close();
-                } catch (IOException ioe) {
+                }
+                catch (IOException ioe) {
                     System.err.println("Failed to close file " + file.getAbsolutePath());
                     ioe.printStackTrace();
                 }
@@ -238,6 +224,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         }
         return buffer;
     }
+
     /**
      * Returns the string content of the specified file.
      *
@@ -259,14 +246,17 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
                     sb.append(lineEnding);
                 }
             }
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             System.err.println("Failed to read content of " + file.getAbsolutePath());
             t.printStackTrace();
-        } finally {
-            if (reader != null){
+        }
+        finally {
+            if (reader != null) {
                 try {
                     reader.close();
-                } catch (IOException ioe) {
+                }
+                catch (IOException ioe) {
                     System.err.println("Failed to close file " + file.getAbsolutePath());
                     ioe.printStackTrace();
                 }
@@ -274,7 +264,8 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
             if (is != null) {
                 try {
                     is.close();
-                } catch (IOException ioe) {
+                }
+                catch (IOException ioe) {
                     System.err.println("Failed to close file " + file.getAbsolutePath());
                     ioe.printStackTrace();
                 }

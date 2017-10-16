@@ -47,6 +47,6 @@ public @interface MetaData {
      * 一般用于业务对象如订单直接用ID作为订单号，希望编号能对齐，则直接把自增初始化值为较长位数数字，如1000000000
      */
     long autoIncrementInitValue() default 0;
-    
+
     WebAccessType[] acccessType() default { WebAccessType.ALL };
 }

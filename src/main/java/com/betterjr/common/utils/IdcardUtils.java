@@ -23,8 +23,9 @@ public class IdcardUtils extends StringUtils {
     public static final int CHINA_ID_MAX_LENGTH = 18;
 
     /** 省、直辖市代码表 */
-    public static final String cityCode[] = { "11", "12", "13", "14", "15", "21", "22", "23", "31", "32", "33", "34", "35", "36", "37", "41", "42",
-            "43", "44", "45", "46", "50", "51", "52", "53", "54", "61", "62", "63", "64", "65", "71", "81", "82", "91" };
+    public static final String cityCode[] = { "11", "12", "13", "14", "15", "21", "22", "23", "31", "32", "33", "34",
+            "35", "36", "37", "41", "42", "43", "44", "45", "46", "50", "51", "52", "53", "54", "61", "62", "63", "64",
+            "65", "71", "81", "82", "91" };
 
     /** 每位加权因子 */
     public static final int power[] = { 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 };
@@ -149,13 +150,11 @@ public class IdcardUtils extends StringUtils {
                 String sVal = getCheckCode18(iSum17);
                 if (sVal.length() > 0) {
                     idCard18 += sVal;
-                }
-                else {
+                } else {
                     return null;
                 }
             }
-        }
-        else {
+        } else {
             return null;
         }
         return idCard18;
@@ -239,11 +238,11 @@ public class IdcardUtils extends StringUtils {
             }
             Calendar cal = Calendar.getInstance();
             if (birthDate != null) cal.setTime(birthDate);
-            if (!valiDate(cal.get(Calendar.YEAR), Integer.valueOf(birthCode.substring(2, 4)), Integer.valueOf(birthCode.substring(4, 6)))) {
+            if (!valiDate(cal.get(Calendar.YEAR), Integer.valueOf(birthCode.substring(2, 4)),
+                    Integer.valueOf(birthCode.substring(4, 6)))) {
                 return false;
             }
-        }
-        else {
+        } else {
             return false;
         }
         return true;
@@ -272,29 +271,24 @@ public class IdcardUtils extends StringUtils {
             if (char2.equals("1")) {
                 info[1] = "M";
                 System.out.println("MMMMMMM");
-            }
-            else if (char2.equals("2")) {
+            } else if (char2.equals("2")) {
                 info[1] = "F";
                 System.out.println("FFFFFFF");
-            }
-            else {
+            } else {
                 info[1] = "N";
                 info[2] = "false";
                 System.out.println("NNNN");
                 return info;
             }
             info[2] = validateTWCard(idCard) ? "true" : "false";
-        }
-        else if (idCard.matches("^[1|5|7][0-9]{6}\\(?[0-9A-Z]\\)?$")) { // 澳门
+        } else if (idCard.matches("^[1|5|7][0-9]{6}\\(?[0-9A-Z]\\)?$")) { // 澳门
             info[0] = "澳门";
             info[1] = "N";
-        }
-        else if (idCard.matches("^[A-Z]{1,2}[0-9]{6}\\(?[0-9A]\\)?$")) { // 香港
+        } else if (idCard.matches("^[A-Z]{1,2}[0-9]{6}\\(?[0-9A]\\)?$")) { // 香港
             info[0] = "香港";
             info[1] = "N";
             info[2] = validateHKCard(idCard) ? "true" : "false";
-        }
-        else {
+        } else {
             return null;
         }
         return info;
@@ -342,8 +336,7 @@ public class IdcardUtils extends StringUtils {
             sum = (Integer.valueOf(card.substring(0, 1).toUpperCase().toCharArray()[0]) - 55) * 9
                     + (Integer.valueOf(card.substring(1, 2).toUpperCase().toCharArray()[0]) - 55) * 8;
             card = card.substring(1, 9);
-        }
-        else {
+        } else {
             sum = 522 + (Integer.valueOf(card.substring(0, 1).toUpperCase().toCharArray()[0]) - 55) * 8;
         }
         String mid = card.substring(1, 7);
@@ -356,8 +349,7 @@ public class IdcardUtils extends StringUtils {
         }
         if (end.toUpperCase().equals("A")) {
             sum = sum + 10;
-        }
-        else {
+        } else {
             sum = sum + Integer.valueOf(end);
         }
         return (sum % 11 == 0) ? true : false;
@@ -480,8 +472,7 @@ public class IdcardUtils extends StringUtils {
         Integer len = idCard.length();
         if (len < CHINA_ID_MIN_LENGTH) {
             return null;
-        }
-        else if (len == CHINA_ID_MIN_LENGTH) {
+        } else if (len == CHINA_ID_MIN_LENGTH) {
             idCard = conver15CardTo18(idCard);
         }
         return idCard.substring(6, 14);
@@ -498,8 +489,7 @@ public class IdcardUtils extends StringUtils {
         Integer len = idCard.length();
         if (len < CHINA_ID_MIN_LENGTH) {
             return null;
-        }
-        else if (len == CHINA_ID_MIN_LENGTH) {
+        } else if (len == CHINA_ID_MIN_LENGTH) {
             idCard = conver15CardTo18(idCard);
         }
         return Short.valueOf(idCard.substring(6, 10));
@@ -516,8 +506,7 @@ public class IdcardUtils extends StringUtils {
         Integer len = idCard.length();
         if (len < CHINA_ID_MIN_LENGTH) {
             return null;
-        }
-        else if (len == CHINA_ID_MIN_LENGTH) {
+        } else if (len == CHINA_ID_MIN_LENGTH) {
             idCard = conver15CardTo18(idCard);
         }
         return Short.valueOf(idCard.substring(10, 12));
@@ -534,8 +523,7 @@ public class IdcardUtils extends StringUtils {
         Integer len = idCard.length();
         if (len < CHINA_ID_MIN_LENGTH) {
             return null;
-        }
-        else if (len == CHINA_ID_MIN_LENGTH) {
+        } else if (len == CHINA_ID_MIN_LENGTH) {
             idCard = conver15CardTo18(idCard);
         }
         return Short.valueOf(idCard.substring(12, 14));
@@ -556,15 +544,14 @@ public class IdcardUtils extends StringUtils {
         String sCardNum = idCard.substring(16, 17);
         if (Integer.parseInt(sCardNum) % 2 != 0) {
             sGender = "1";
-        }
-        else {
+        } else {
             sGender = "2";
         }
         return sGender;
     }
 
     public static boolean validByIdCard(String anIdCard, String anIdType) {
-        if (BetterStringUtils.isNotBlank(anIdCard) && BetterStringUtils.isNotBlank(anIdType)) {
+        if (StringUtils.isNotBlank(anIdCard) && StringUtils.isNotBlank(anIdType)) {
             if ("0".equals(anIdType)) {
 
                 return validateCard(anIdCard);
@@ -574,7 +561,7 @@ public class IdcardUtils extends StringUtils {
     }
 
     public static String getGenderByIdCard(String anIdCard, String anIdType) {
-        if (BetterStringUtils.isNotBlank(anIdCard) && BetterStringUtils.isNotBlank(anIdType)) {
+        if (StringUtils.isNotBlank(anIdCard) && StringUtils.isNotBlank(anIdType)) {
             if ("0".equals(anIdType)) {
 
                 return getGenderByIdCard(anIdCard);

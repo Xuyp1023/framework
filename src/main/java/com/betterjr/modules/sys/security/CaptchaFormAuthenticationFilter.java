@@ -43,8 +43,7 @@ public class CaptchaFormAuthenticationFilter extends BaseFormAuthenticationFilte
         if (request instanceof HttpServletRequest) {
             final HttpServletRequest workRequest = (HttpServletRequest) request;
             tmpIp = Servlets.getRemoteAddr(workRequest);
-        }
-        else {
+        } else {
             tmpIp = "";
         }
 
@@ -54,8 +53,9 @@ public class CaptchaFormAuthenticationFilter extends BaseFormAuthenticationFilte
         final String captcha = getCaptcha(request);
         final String identType = WebUtils.getCleanParam(request, "indetType");
 
-        final CaptchaUsernamePasswordToken token = new CaptchaUsernamePasswordToken(identType, username, password, tmpIp, captcha, custRole, isMobileLogin(request),
-                (HttpServletRequest) request, (HttpServletResponse) response);
+        final CaptchaUsernamePasswordToken token = new CaptchaUsernamePasswordToken(identType, username, password,
+                tmpIp, captcha, custRole, isMobileLogin(request), (HttpServletRequest) request,
+                (HttpServletResponse) response);
 
         return token;
     }
@@ -83,24 +83,22 @@ public class CaptchaFormAuthenticationFilter extends BaseFormAuthenticationFilte
         // }
     }
 
-
     /**
      * 登录失败调用事件
      */
     @Override
-    protected boolean onLoginFailure(final AuthenticationToken token, final AuthenticationException e, final ServletRequest request, final ServletResponse response) {
+    protected boolean onLoginFailure(final AuthenticationToken token, final AuthenticationException e,
+            final ServletRequest request, final ServletResponse response) {
         final String className = e.getClass().getName();
         String message = "";
-        if (IncorrectCredentialsException.class.getName().equals(className) || UnknownAccountException.class.getName().equals(className)) {
+        if (IncorrectCredentialsException.class.getName().equals(className)
+                || UnknownAccountException.class.getName().equals(className)) {
             message = "用户或密码错误, 请重试.";
-        }
-        else if (e.getMessage() != null && StringUtils.startsWith(e.getMessage(), "msg:")) {
+        } else if (e.getMessage() != null && StringUtils.startsWith(e.getMessage(), "msg:")) {
             message = StringUtils.replace(e.getMessage(), "msg:", "");
-        }
-        else if (e.getMessage() != null) {
+        } else if (e.getMessage() != null) {
             message = e.getMessage();
-        }
-        else {
+        } else {
             message = "系统出现点问题，请稍后再试！";
             log.error("系统异常：", e);
         }
@@ -111,13 +109,13 @@ public class CaptchaFormAuthenticationFilter extends BaseFormAuthenticationFilte
         final HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         if (!"XMLHttpRequest".equalsIgnoreCase(httpServletRequest.getHeader("X-Requested-With"))) {// 不是ajax请求
             try {
-                httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/p/pages/login.html?success=0&message=" + message);
+                httpServletResponse.sendRedirect(
+                        httpServletRequest.getContextPath() + "/p/pages/login.html?success=0&message=" + message);
             }
             catch (final IOException e1) {
                 log.error("系统异常：", e1);
             }
-        }
-        else {
+        } else {
             // httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/login/timeout/success");
             final Map<String, Object> reslut = new HashMap<>();
             reslut.put("code", 4001);

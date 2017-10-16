@@ -1,11 +1,17 @@
 package com.betterjr.modules.sys.entity;
 
-import com.betterjr.common.annotation.*;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.config.ConfigFace;
 import com.betterjr.common.config.ConfigItemOperatorImpl;
 import com.betterjr.common.data.DataTypeInfo;
 import com.betterjr.common.entity.BetterjrEntity;
-import javax.persistence.*;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -43,8 +49,8 @@ public class SysConfigInfo extends ConfigItemOperatorImpl implements BetterjrEnt
     /**
      * 数据项类型； C 字符型(String) A 数字字符型(Integer)，T时间日期型，D日期型， 限于0—9 N 数值型(Double)，其长度不包含小数点，B逻辑型(Boolean), LONG长整型(Long) 可参与数值计算 TEXT 不定长文本 BINARY 二进制数据
      */
-    @Column(name = "C_DATA_TYPE",  columnDefinition="VARCHAR" )
-    @MetaData( value="数据项类型", comments = "数据项类型； C 字符型(String) A 数字字符型(Integer)，T时间日期型，D日期型， 限于0—9 N 数值型(Double)，其长度不包含小数点，B逻辑型(Boolean), LONG长整型(Long) 可参与数值计算 TEXT 不定长文本 BINARY 二进制数据")
+    @Column(name = "C_DATA_TYPE", columnDefinition = "VARCHAR")
+    @MetaData(value = "数据项类型", comments = "数据项类型； C 字符型(String) A 数字字符型(Integer)，T时间日期型，D日期型， 限于0—9 N 数值型(Double)，其长度不包含小数点，B逻辑型(Boolean), LONG长整型(Long) 可参与数值计算 TEXT 不定长文本 BINARY 二进制数据")
     private String dataType;
 
     /**
@@ -155,12 +161,13 @@ public class SysConfigInfo extends ConfigItemOperatorImpl implements BetterjrEnt
     /**
      * 是否分割为,0不分割，1分割为数组，2分割为有序的MAP
      */
-    @Column(name = "C_SPLIT",  columnDefinition="VARCHAR" )
-    @MetaData( value="是否分割为,0不分割", comments = "是否分割为,0不分割，1分割为数组，2分割为有序的MAP，3处理为JSON")
+    @Column(name = "C_SPLIT", columnDefinition = "VARCHAR")
+    @MetaData(value = "是否分割为,0不分割", comments = "是否分割为,0不分割，1分割为数组，2分割为有序的MAP，3处理为JSON")
     private String split;
 
     private static final long serialVersionUID = 1442539923537L;
 
+    @Override
     public Integer getId() {
         return id;
     }
@@ -190,6 +197,7 @@ public class SysConfigInfo extends ConfigItemOperatorImpl implements BetterjrEnt
         this.groupNo = groupNo;
     }
 
+    @Override
     public String getItemName() {
         return itemName;
     }
@@ -198,6 +206,7 @@ public class SysConfigInfo extends ConfigItemOperatorImpl implements BetterjrEnt
         this.itemName = itemName;
     }
 
+    @Override
     public String getDataType() {
         return dataType;
     }
@@ -238,6 +247,7 @@ public class SysConfigInfo extends ConfigItemOperatorImpl implements BetterjrEnt
         this.workMode = workMode;
     }
 
+    @Override
     public String getItemType() {
         return itemType;
     }
@@ -254,6 +264,7 @@ public class SysConfigInfo extends ConfigItemOperatorImpl implements BetterjrEnt
         this.disWidth = disWidth;
     }
 
+    @Override
     public String getDictItem() {
         return dictItem;
     }
@@ -270,6 +281,7 @@ public class SysConfigInfo extends ConfigItemOperatorImpl implements BetterjrEnt
         this.valuesList = valuesList;
     }
 
+    @Override
     public String getItemValue() {
         return itemValue;
     }
@@ -278,6 +290,7 @@ public class SysConfigInfo extends ConfigItemOperatorImpl implements BetterjrEnt
         this.itemValue = itemValue;
     }
 
+    @Override
     public Integer getConfigOrder() {
         return configOrder;
     }
@@ -310,6 +323,7 @@ public class SysConfigInfo extends ConfigItemOperatorImpl implements BetterjrEnt
         this.modiDate = modiDate;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
@@ -326,6 +340,7 @@ public class SysConfigInfo extends ConfigItemOperatorImpl implements BetterjrEnt
         this.dataModify = dataModify;
     }
 
+    @Override
     public String getSplit() {
         return split;
     }
@@ -379,25 +394,43 @@ public class SysConfigInfo extends ConfigItemOperatorImpl implements BetterjrEnt
         }
         SysConfigInfo other = (SysConfigInfo) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-                && (this.getSysName() == null ? other.getSysName() == null : this.getSysName().equals(other.getSysName()))
-                && (this.getGroupNo() == null ? other.getGroupNo() == null : this.getGroupNo().equals(other.getGroupNo()))
-                && (this.getItemName() == null ? other.getItemName() == null : this.getItemName().equals(other.getItemName()))
-                && (this.getDataType() == null ? other.getDataType() == null : this.getDataType().equals(other.getDataType()))
-                && (this.getDataLen() == null ? other.getDataLen() == null : this.getDataLen().equals(other.getDataLen()))
-                && (this.getDataScale() == null ? other.getDataScale() == null : this.getDataScale().equals(other.getDataScale()))
-                && (this.getDataScope() == null ? other.getDataScope() == null : this.getDataScope().equals(other.getDataScope()))
-                && (this.getWorkMode() == null ? other.getWorkMode() == null : this.getWorkMode().equals(other.getWorkMode()))
-                && (this.getItemType() == null ? other.getItemType() == null : this.getItemType().equals(other.getItemType()))
-                && (this.getDisWidth() == null ? other.getDisWidth() == null : this.getDisWidth().equals(other.getDisWidth()))
-                && (this.getDictItem() == null ? other.getDictItem() == null : this.getDictItem().equals(other.getDictItem()))
-                && (this.getValuesList() == null ? other.getValuesList() == null : this.getValuesList().equals(other.getValuesList()))
-                && (this.getItemValue() == null ? other.getItemValue() == null : this.getItemValue().equals(other.getItemValue()))
-                && (this.getConfigOrder() == null ? other.getConfigOrder() == null : this.getConfigOrder().equals(other.getConfigOrder()))
+                && (this.getSysName() == null ? other.getSysName() == null
+                        : this.getSysName().equals(other.getSysName()))
+                && (this.getGroupNo() == null ? other.getGroupNo() == null
+                        : this.getGroupNo().equals(other.getGroupNo()))
+                && (this.getItemName() == null ? other.getItemName() == null
+                        : this.getItemName().equals(other.getItemName()))
+                && (this.getDataType() == null ? other.getDataType() == null
+                        : this.getDataType().equals(other.getDataType()))
+                && (this.getDataLen() == null ? other.getDataLen() == null
+                        : this.getDataLen().equals(other.getDataLen()))
+                && (this.getDataScale() == null ? other.getDataScale() == null
+                        : this.getDataScale().equals(other.getDataScale()))
+                && (this.getDataScope() == null ? other.getDataScope() == null
+                        : this.getDataScope().equals(other.getDataScope()))
+                && (this.getWorkMode() == null ? other.getWorkMode() == null
+                        : this.getWorkMode().equals(other.getWorkMode()))
+                && (this.getItemType() == null ? other.getItemType() == null
+                        : this.getItemType().equals(other.getItemType()))
+                && (this.getDisWidth() == null ? other.getDisWidth() == null
+                        : this.getDisWidth().equals(other.getDisWidth()))
+                && (this.getDictItem() == null ? other.getDictItem() == null
+                        : this.getDictItem().equals(other.getDictItem()))
+                && (this.getValuesList() == null ? other.getValuesList() == null
+                        : this.getValuesList().equals(other.getValuesList()))
+                && (this.getItemValue() == null ? other.getItemValue() == null
+                        : this.getItemValue().equals(other.getItemValue()))
+                && (this.getConfigOrder() == null ? other.getConfigOrder() == null
+                        : this.getConfigOrder().equals(other.getConfigOrder()))
                 && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
-                && (this.getRegDate() == null ? other.getRegDate() == null : this.getRegDate().equals(other.getRegDate()))
-                && (this.getModiDate() == null ? other.getModiDate() == null : this.getModiDate().equals(other.getModiDate()))
-                && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
-                && (this.getDataModify() == null ? other.getDataModify() == null : this.getDataModify().equals(other.getDataModify()))
+                && (this.getRegDate() == null ? other.getRegDate() == null
+                        : this.getRegDate().equals(other.getRegDate()))
+                && (this.getModiDate() == null ? other.getModiDate() == null
+                        : this.getModiDate().equals(other.getModiDate()))
+                && (this.getDescription() == null ? other.getDescription() == null
+                        : this.getDescription().equals(other.getDescription()))
+                && (this.getDataModify() == null ? other.getDataModify() == null
+                        : this.getDataModify().equals(other.getDataModify()))
                 && (this.getSplit() == null ? other.getSplit() == null : this.getSplit().equals(other.getSplit()));
     }
 

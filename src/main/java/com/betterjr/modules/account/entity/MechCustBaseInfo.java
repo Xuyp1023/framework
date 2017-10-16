@@ -2,13 +2,17 @@ package com.betterjr.modules.account.entity;
 
 import java.math.BigDecimal;
 
-import com.betterjr.common.annotation.*;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.common.mapper.BeanMapper;
 import com.betterjr.common.utils.BetterDateUtils;
-import com.betterjr.common.utils.MathExtend;
- 
-import javax.persistence.*;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -147,71 +151,71 @@ public class MechCustBaseInfo implements BetterjrEntity {
     /**
      * 组织机构代码证
      */
-    @Column(name = "C_BUSI_LICENCE",  columnDefinition="VARCHAR" )
-    @MetaData( value="组织机构代码证", comments = "组织机构代码证")
+    @Column(name = "C_BUSI_LICENCE", columnDefinition = "VARCHAR")
+    @MetaData(value = "组织机构代码证", comments = "组织机构代码证")
     private String busiLicence;
 
     /**
      * 营业执照登记日期
      */
-    @Column(name = "D_BUSI_LICENCE_REG",  columnDefinition="VARCHAR" )
-    @MetaData( value="营业执照登记日期", comments = "营业执照登记日期")
+    @Column(name = "D_BUSI_LICENCE_REG", columnDefinition = "VARCHAR")
+    @MetaData(value = "营业执照登记日期", comments = "营业执照登记日期")
     private String businLicRegDate;
 
     /**
      * 注册资本金额
      */
-    @Column(name = "F_REG_BALANCE",  columnDefinition="BigDecimal" )
-    @MetaData( value="注册资本金额", comments = "注册资本金额")
+    @Column(name = "F_REG_BALANCE", columnDefinition = "BigDecimal")
+    @MetaData(value = "注册资本金额", comments = "注册资本金额")
     private BigDecimal regBalance;
 
     /**
      * 实收资本
      */
-    @Column(name = "F_PAID_CAPITAL",  columnDefinition="BigDecimal" )
-    @MetaData( value="实收资本", comments = "实收资本")
+    @Column(name = "F_PAID_CAPITAL", columnDefinition = "BigDecimal")
+    @MetaData(value = "实收资本", comments = "实收资本")
     private BigDecimal paidCapital;
 
     /**
      * 人数
      */
-    @Column(name = "N_PERSON",  columnDefinition="Integer" )
-    @MetaData( value="人数", comments = "人数")
+    @Column(name = "N_PERSON", columnDefinition = "Integer")
+    @MetaData(value = "人数", comments = "人数")
     private Integer personCount;
 
     /**
      * 经营面积（平方米）
      */
-    @Column(name = "F_OPERAT_AREA",  columnDefinition="BigDecimal" )
-    @MetaData( value="经营面积（平方米）", comments = "经营面积（平方米）")
+    @Column(name = "F_OPERAT_AREA", columnDefinition = "BigDecimal")
+    @MetaData(value = "经营面积（平方米）", comments = "经营面积（平方米）")
     private BigDecimal operateArea;
 
     /**
      * 经营场地所有权年限(年)
      */
-    @Column(name = "F_OWNERSHIP_YEAR",  columnDefinition="Integer" )
-    @MetaData( value="经营场地所有权年限(年)", comments = "经营场地所有权年限(年)")
+    @Column(name = "F_OWNERSHIP_YEAR", columnDefinition = "Integer")
+    @MetaData(value = "经营场地所有权年限(年)", comments = "经营场地所有权年限(年)")
     private Integer ownerShipYear;
 
     /**
      * 经营范围
      */
-    @Column(name = "C_BUSI_SCOPE",  columnDefinition="VARCHAR" )
-    @MetaData( value="经营范围", comments = "经营范围")
+    @Column(name = "C_BUSI_SCOPE", columnDefinition = "VARCHAR")
+    @MetaData(value = "经营范围", comments = "经营范围")
     private String busiScope;
 
     /**
      * 成立日期
      */
-    @Column(name = "D_SETUPDATE",  columnDefinition="VARCHAR" )
-    @MetaData( value="成立日期", comments = "成立日期")
+    @Column(name = "D_SETUPDATE", columnDefinition = "VARCHAR")
+    @MetaData(value = "成立日期", comments = "成立日期")
     private String setupDate;
-    
+
     /**
      * 截止日期
      */
-    @Column(name = "D_VALIDDATE",  columnDefinition="VARCHAR" )
-    @MetaData( value="营业执照截止日期", comments = "营业执照截止日期")
+    @Column(name = "D_VALIDDATE", columnDefinition = "VARCHAR")
+    @MetaData(value = "营业执照截止日期", comments = "营业执照截止日期")
     private String validDate;
 
     private static final long serialVersionUID = 1459952422046L;
@@ -444,7 +448,7 @@ public class MechCustBaseInfo implements BetterjrEntity {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
-        sb.append(" ["); 
+        sb.append(" [");
         sb.append(" custNo=").append(custNo);
         sb.append(", engName=").append(engName);
         sb.append(", category=").append(category);
@@ -472,7 +476,7 @@ public class MechCustBaseInfo implements BetterjrEntity {
         sb.append(", ownerShipYear=").append(ownerShipYear);
         sb.append(", busiScope=").append(busiScope);
         sb.append(", setupDate=").append(setupDate);
-        sb.append(", validDate=").append(validDate); 
+        sb.append(", validDate=").append(validDate);
         sb.append("]");
         return sb.toString();
     }
@@ -490,33 +494,58 @@ public class MechCustBaseInfo implements BetterjrEntity {
         }
         MechCustBaseInfo other = (MechCustBaseInfo) that;
         return (this.getCustNo() == null ? other.getCustNo() == null : this.getCustNo().equals(other.getCustNo()))
-                && (this.getEngName() == null ? other.getEngName() == null : this.getEngName().equals(other.getEngName()))
-                && (this.getCategory() == null ? other.getCategory() == null : this.getCategory().equals(other.getCategory()))
-                && (this.getNationType() == null ? other.getNationType() == null : this.getNationType().equals(other.getNationType()))
-                && (this.getCapital() == null ? other.getCapital() == null : this.getCapital().equals(other.getCapital()))
-                && (this.getLawIdentType() == null ? other.getLawIdentType() == null : this.getLawIdentType().equals(other.getLawIdentType()))
-                && (this.getLawIdentNo() == null ? other.getLawIdentNo() == null : this.getLawIdentNo().equals(other.getLawIdentNo()))
-                && (this.getLawName() == null ? other.getLawName() == null : this.getLawName().equals(other.getLawName()))
+                && (this.getEngName() == null ? other.getEngName() == null
+                        : this.getEngName().equals(other.getEngName()))
+                && (this.getCategory() == null ? other.getCategory() == null
+                        : this.getCategory().equals(other.getCategory()))
+                && (this.getNationType() == null ? other.getNationType() == null
+                        : this.getNationType().equals(other.getNationType()))
+                && (this.getCapital() == null ? other.getCapital() == null
+                        : this.getCapital().equals(other.getCapital()))
+                && (this.getLawIdentType() == null ? other.getLawIdentType() == null
+                        : this.getLawIdentType().equals(other.getLawIdentType()))
+                && (this.getLawIdentNo() == null ? other.getLawIdentNo() == null
+                        : this.getLawIdentNo().equals(other.getLawIdentNo()))
+                && (this.getLawName() == null ? other.getLawName() == null
+                        : this.getLawName().equals(other.getLawName()))
                 && (this.getLawIdentValidDate() == null ? other.getLawIdentValidDate() == null
                         : this.getLawIdentValidDate().equals(other.getLawIdentValidDate()))
-                && (this.getRegAddr() == null ? other.getRegAddr() == null : this.getRegAddr().equals(other.getRegAddr()))
-                && (this.getLawPhone() == null ? other.getLawPhone() == null : this.getLawPhone().equals(other.getLawPhone()))
-                && (this.getCorpVocate() == null ? other.getCorpVocate() == null : this.getCorpVocate().equals(other.getCorpVocate()))
-                && (this.getCorpProperty() == null ? other.getCorpProperty() == null : this.getCorpProperty().equals(other.getCorpProperty()))
-                && (this.getRegCapital() == null ? other.getRegCapital() == null : this.getRegCapital().equals(other.getRegCapital()))
-                && (this.getInvestType() == null ? other.getInvestType() == null : this.getInvestType().equals(other.getInvestType()))
-                && (this.getModiDate() == null ? other.getModiDate() == null : this.getModiDate().equals(other.getModiDate()))
-                && (this.getInstType() == null ? other.getInstType() == null : this.getInstType().equals(other.getInstType()))
-                && (this.getCustClass() == null ? other.getCustClass() == null : this.getCustClass().equals(other.getCustClass()))
-            && (this.getBusiLicence() == null ? other.getBusiLicence() == null : this.getBusiLicence().equals(other.getBusiLicence()))
-            && (this.getBusinLicRegDate() == null ? other.getBusinLicRegDate() == null : this.getBusinLicRegDate().equals(other.getBusinLicRegDate()))
-            && (this.getRegBalance() == null ? other.getRegBalance() == null : this.getRegBalance().equals(other.getRegBalance()))
-            && (this.getPaidCapital() == null ? other.getPaidCapital() == null : this.getPaidCapital().equals(other.getPaidCapital()))
-            && (this.getPersonCount() == null ? other.getPersonCount() == null : this.getPersonCount().equals(other.getPersonCount()))
-            && (this.getOperateArea() == null ? other.getOperateArea() == null : this.getOperateArea().equals(other.getOperateArea()))
-            && (this.getOwnerShipYear() == null ? other.getOwnerShipYear() == null : this.getOwnerShipYear().equals(other.getOwnerShipYear()))
-            && (this.getBusiScope() == null ? other.getBusiScope() == null : this.getBusiScope().equals(other.getBusiScope()))
-            && (this.getSetupDate() == null ? other.getSetupDate() == null : this.getSetupDate().equals(other.getSetupDate()));
+                && (this.getRegAddr() == null ? other.getRegAddr() == null
+                        : this.getRegAddr().equals(other.getRegAddr()))
+                && (this.getLawPhone() == null ? other.getLawPhone() == null
+                        : this.getLawPhone().equals(other.getLawPhone()))
+                && (this.getCorpVocate() == null ? other.getCorpVocate() == null
+                        : this.getCorpVocate().equals(other.getCorpVocate()))
+                && (this.getCorpProperty() == null ? other.getCorpProperty() == null
+                        : this.getCorpProperty().equals(other.getCorpProperty()))
+                && (this.getRegCapital() == null ? other.getRegCapital() == null
+                        : this.getRegCapital().equals(other.getRegCapital()))
+                && (this.getInvestType() == null ? other.getInvestType() == null
+                        : this.getInvestType().equals(other.getInvestType()))
+                && (this.getModiDate() == null ? other.getModiDate() == null
+                        : this.getModiDate().equals(other.getModiDate()))
+                && (this.getInstType() == null ? other.getInstType() == null
+                        : this.getInstType().equals(other.getInstType()))
+                && (this.getCustClass() == null ? other.getCustClass() == null
+                        : this.getCustClass().equals(other.getCustClass()))
+                && (this.getBusiLicence() == null ? other.getBusiLicence() == null
+                        : this.getBusiLicence().equals(other.getBusiLicence()))
+                && (this.getBusinLicRegDate() == null ? other.getBusinLicRegDate() == null
+                        : this.getBusinLicRegDate().equals(other.getBusinLicRegDate()))
+                && (this.getRegBalance() == null ? other.getRegBalance() == null
+                        : this.getRegBalance().equals(other.getRegBalance()))
+                && (this.getPaidCapital() == null ? other.getPaidCapital() == null
+                        : this.getPaidCapital().equals(other.getPaidCapital()))
+                && (this.getPersonCount() == null ? other.getPersonCount() == null
+                        : this.getPersonCount().equals(other.getPersonCount()))
+                && (this.getOperateArea() == null ? other.getOperateArea() == null
+                        : this.getOperateArea().equals(other.getOperateArea()))
+                && (this.getOwnerShipYear() == null ? other.getOwnerShipYear() == null
+                        : this.getOwnerShipYear().equals(other.getOwnerShipYear()))
+                && (this.getBusiScope() == null ? other.getBusiScope() == null
+                        : this.getBusiScope().equals(other.getBusiScope()))
+                && (this.getSetupDate() == null ? other.getSetupDate() == null
+                        : this.getSetupDate().equals(other.getSetupDate()));
     }
 
     @Override
@@ -565,6 +594,6 @@ public class MechCustBaseInfo implements BetterjrEntity {
         this.paidCapital = BigDecimal.ZERO;
         this.operateArea = BigDecimal.ZERO;
         this.personCount = 0;
-        this.ownerShipYear = 0;        
+        this.ownerShipYear = 0;
     }
 }

@@ -92,10 +92,11 @@ public interface BtObjectOutput {
      * @throws IOException
      */
     void flushBuffer() throws IOException;
+
     /**
      * write object.
      * 
      * @param obj object.
      */
-    void writeObject(Object obj) throws IOException;    
+    void writeObject(Object obj) throws IOException;
 }

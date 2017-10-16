@@ -2,6 +2,8 @@ package com.betterjr.modules.rule.validator;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.MathExtend;
 import com.betterjr.modules.rule.RuleCheckResult;
@@ -18,8 +20,8 @@ import com.betterjr.modules.rule.service.QLExpressContext;
 public class BusinNumberMaxDataValidator extends BaseDataValidator implements DataValidatorFace {
 
     @Override
-    public boolean evaluate(WorkRuleValidator anValidator, QLExpressContext anContext, RuleCheckResult anResult, RuleBusiness anRuleBusin,
-            Object anValue, Object anBusinValue, String anMessage) {
+    public boolean evaluate(WorkRuleValidator anValidator, QLExpressContext anContext, RuleCheckResult anResult,
+            RuleBusiness anRuleBusin, Object anValue, Object anBusinValue, String anMessage) {
         if (anValue == null || anBusinValue == null) {
 
             return true;
@@ -38,7 +40,7 @@ public class BusinNumberMaxDataValidator extends BaseDataValidator implements Da
         if (anValue instanceof Number && anBusinValue instanceof Number) {
 
             bb = MathExtend.compareTo(anValue, anBusinValue, anValidator.getDataScale().intValue()) <= 0;
-            if (BetterStringUtils.isBlank(msg)) {
+            if (StringUtils.isBlank(msg)) {
                 msg = anValidator.dateMaxMessage();
             }
         }
@@ -46,6 +48,7 @@ public class BusinNumberMaxDataValidator extends BaseDataValidator implements Da
         return returnValue(bb, anResult, msg);
     }
 
+    @Override
     public String getValidatorName() {
 
         return "businMaxNumberValid";

@@ -24,15 +24,15 @@
 
 package com.betterjr.mapper.pagehelper;
 
-import org.apache.ibatis.session.RowBounds;
-
-import com.betterjr.common.mapper.BeanMapper;
-import com.betterjr.common.utils.Collections3;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.ibatis.session.RowBounds;
+
+import com.betterjr.common.mapper.BeanMapper;
+import com.betterjr.common.utils.Collections3;
 
 /**
  * Mybatis - 分页对象
@@ -97,8 +97,7 @@ public class Page<E> extends ArrayList<E> {
         if (Collections3.isEmpty(anPage)) {
 
             return emptyPage();
-        }
-        else {
+        } else {
             Page pp = new Page(anPage.pageNum, anPage.pageSize, anPage.total, true);
             pp.addAll(anPage);
             return pp;
@@ -116,22 +115,19 @@ public class Page<E> extends ArrayList<E> {
             if (Collections3.isEmpty(myPage)) {
 
                 return emptyPage();
-            }
-            else {
+            } else {
                 Page pp = new Page(myPage.pageNum, myPage.pageSize, myPage.total, true);
                 for (Object obj : myPage) {
-                    if (obj instanceof Map){
+                    if (obj instanceof Map) {
                         pp.add(obj);
-                    }
-                    else {
+                    } else {
                         pp.add(BeanMapper.map(obj, Map.class));
                     }
                 }
 
                 return pp;
             }
-        }
-        else {
+        } else {
             return anObj;
         }
     }
@@ -166,13 +162,11 @@ public class Page<E> extends ArrayList<E> {
     public static Page listToPage(Collection anList, Class anClass) {
         if (Collections3.isEmpty(anList)) {
             return emptyPage();
-        }
-        else {
+        } else {
             Page pp = new Page(1, anList.size(), anList.size(), true);
             if (anClass == null) {
                 pp.addAll(anList);
-            }
-            else {
+            } else {
                 for (Object obj : anList) {
                     pp.add(BeanMapper.map(obj, anClass));
                 }
@@ -181,19 +175,19 @@ public class Page<E> extends ArrayList<E> {
             return pp;
         }
     }
-    public static Page listToPage(Collection anList,int pageNum,int pageSize,int pages,int startRow,long total) {
+
+    public static Page listToPage(Collection anList, int pageNum, int pageSize, int pages, int startRow, long total) {
         Page pp = new Page();
         pp.pages = pages;
         pp.startRow = startRow;
         pp.addAll(anList);
         pp.pageNum = pageNum;
-        pp.pageSize=pageSize;
-        pp.total=total;
-        
+        pp.pageSize = pageSize;
+        pp.total = total;
+
         return pp;
     }
-     
-    
+
     public Page(int pageNum, int pageSize) {
         this(pageNum, pageSize, SQL_COUNT, null);
     }
@@ -224,8 +218,7 @@ public class Page<E> extends ArrayList<E> {
         if (rowBounds.getOffset() == 0 && rowBounds.getLimit() == Integer.MAX_VALUE) {
             pageSizeZero = true;
             this.pageSize = 0;
-        }
-        else {
+        } else {
             this.pageSize = rowBounds.getLimit();
         }
         this.startRow = rowBounds.getOffset();
@@ -275,8 +268,7 @@ public class Page<E> extends ArrayList<E> {
         this.total = total;
         if (pageSize > 0) {
             pages = (int) (total / pageSize + ((total % pageSize == 0) ? 0 : 1));
-        }
-        else {
+        } else {
             pages = 0;
         }
         // 分页合理化，针对不合理的页码自动处理

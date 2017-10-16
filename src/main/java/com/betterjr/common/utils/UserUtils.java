@@ -104,8 +104,7 @@ public class UserUtils {
                 }
             }
         }
-        catch (final Exception ex) {
-        }
+        catch (final Exception ex) {}
 
         return null;
     }
@@ -173,7 +172,7 @@ public class UserUtils {
         if (certInfo != null) {
             return certInfo.getOperOrg();
         }
-        if(getOperatorInfo() != null){
+        if (getOperatorInfo() != null) {
             return getOperatorInfo().getOperOrg();
         }
         return null;
@@ -210,8 +209,7 @@ public class UserUtils {
         final CustContextInfo contextInfo = getOperatorContextInfo();
         if (contextInfo != null) {
             return contextInfo.isBytterUser();
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -224,8 +222,7 @@ public class UserUtils {
         final Object obj = principal.getData();
         if (obj instanceof CustContextInfo) {
             return (CustContextInfo) obj;
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -234,8 +231,7 @@ public class UserUtils {
         final CustContextInfo custContext = getOperatorContextInfo();
         if (custContext != null) {
             return custContext.findCustList();
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -244,8 +240,7 @@ public class UserUtils {
         final CustOperatorInfo cop = getOperatorInfo();
         if (cop != null) {
             return cop.getOperOrg();
-        }
-        else {
+        } else {
             return "";
         }
     }
@@ -254,8 +249,7 @@ public class UserUtils {
         final CustContextInfo custContext = getOperatorContextInfo();
         if (custContext != null) {
             return custContext.findCust(anCustNo);
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -264,8 +258,7 @@ public class UserUtils {
         final CustContextInfo custContext = getOperatorContextInfo();
         if (custContext != null) {
             return custContext.findCustInfoList();
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -274,8 +267,7 @@ public class UserUtils {
         final CustContextInfo custContext = getOperatorContextInfo();
         if (custContext != null) {
             return custContext.getOperatorInfo();
-        }
-        else {
+        } else {
             final CustOperatorInfo operator = new CustOperatorInfo();
             operator.setId(-1L);
             operator.setName("system");
@@ -290,7 +282,8 @@ public class UserUtils {
     public static ShiroUser getPrincipal() {
         final Session session = UserUtils.getSession();
         if (session != null) {
-            final SimplePrincipalCollection col = (SimplePrincipalCollection) session.getAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY);
+            final SimplePrincipalCollection col = (SimplePrincipalCollection) session
+                    .getAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY);
             if (col != null) {
                 return (ShiroUser) col.getPrimaryPrincipal();
             }
@@ -459,7 +452,8 @@ public class UserUtils {
         getSession().removeAttribute(key);
     }
 
-    private static boolean checkWebAccessList(final WebAccessType[] anArray, final String[] anReturn, final WebAccessType... anWatArr) {
+    private static boolean checkWebAccessList(final WebAccessType[] anArray, final String[] anReturn,
+            final WebAccessType... anWatArr) {
         for (final WebAccessType outWt : anWatArr) {
             for (final WebAccessType tmpWt : anArray) {
                 if (tmpWt == outWt) {
@@ -476,8 +470,7 @@ public class UserUtils {
         if (su == null) {
 
             return false;
-        }
-        else {
+        } else {
             return su.isMobileLogin();
         }
     }
@@ -499,23 +492,23 @@ public class UserUtils {
         if (checkWebAccessList(watArray, valueReturn, WebAccessType.ALL)) {
 
             return true;
-        }
-        else {
+        } else {
             final ShiroUser su = getPrincipal();
             if (su == null) {
 
                 return true;
             }
             if (su.isMobileLogin()) {
-                if (checkWebAccessList(watArray, valueReturn, WebAccessType.ORG_MOBILE_PASS, WebAccessType.PERSON_MOBILE_PASS)) {
+                if (checkWebAccessList(watArray, valueReturn, WebAccessType.ORG_MOBILE_PASS,
+                        WebAccessType.PERSON_MOBILE_PASS)) {
                     anResultMsg[0] = "交易密码错误！";
                     return su.checkPass(valueReturn[0], anPass);
                 }
 
                 return checkWebAccessList(watArray, valueReturn, WebAccessType.ORG_MOBILE, WebAccessType.PERSON_MOBILE);
-            }
-            else {
-                if (checkWebAccessList(watArray, valueReturn, WebAccessType.ORG_PC_PASS, WebAccessType.PERSON_PC_PASS)) {
+            } else {
+                if (checkWebAccessList(watArray, valueReturn, WebAccessType.ORG_PC_PASS,
+                        WebAccessType.PERSON_PC_PASS)) {
 
                     anResultMsg[0] = "交易密码错误！";
                     return su.checkPass(valueReturn[0], anPass);

@@ -105,14 +105,12 @@ public class BetterX509Utils {
         try {
             maxKeyLen = Cipher.getMaxAllowedKeyLength("AES");
         }
-        catch (final NoSuchAlgorithmException e) {
-        }
+        catch (final NoSuchAlgorithmException e) {}
 
         unlimitedStrength = maxKeyLen > 128;
         if (unlimitedStrength) {
             logger.info("已经使用无限制的JCE的安全强度策略");
-        }
-        else {
+        } else {
             logger.info("使用默认安装的JCE安全强度策略, 加密秘钥的长度受到限制");
         }
     }
@@ -177,8 +175,7 @@ public class BetterX509Utils {
                 finally {
                     IOUtils.closeQuietly(pemWriter);
                 }
-            }
-            else {
+            } else {
                 // DER encoded X509
                 FileOutputStream fos = null;
                 try {
@@ -216,37 +213,41 @@ public class BetterX509Utils {
      *            文件保存目标目录
      * @return
      */
-    public static BetterX509CertStore newCertificate(final BetterX509MetaData anMetadata, final BetterX509CertStore anCaCertStore,
-            final String anTargetFile) {
+    public static BetterX509CertStore newCertificate(final BetterX509MetaData anMetadata,
+            final BetterX509CertStore anCaCertStore, final String anTargetFile) {
         final KeyPair pair = anMetadata.newKeyPair();
         return newCertificate(anMetadata, anCaCertStore, pair.getPrivate(), pair.getPublic(), anTargetFile);
     }
 
-    public static BetterX509CertStore newCertificate(final BetterX509MetaData anMetadata, final BetterX509CertStore anCaCertStore,
-            final PrivateKey anPrivKey, final PublicKey anPubKey, final String anTargetFile) {
+    public static BetterX509CertStore newCertificate(final BetterX509MetaData anMetadata,
+            final BetterX509CertStore anCaCertStore, final PrivateKey anPrivKey, final PublicKey anPubKey,
+            final String anTargetFile) {
         try {
             final X500Name userDN = anMetadata.buildDistinguishedName();
             final X509Certificate caCert = anCaCertStore.findCertificate();
 
             // 创建新的数字证书
-            final X509v3CertificateBuilder certBuilder = new JcaX509v3CertificateBuilder(caCert, new BigInteger(anMetadata.findSerialNumber()),
-                    anMetadata.getNotBefore(), anMetadata.getNotAfter(), userDN, anPubKey);
+            final X509v3CertificateBuilder certBuilder = new JcaX509v3CertificateBuilder(caCert,
+                    new BigInteger(anMetadata.findSerialNumber()), anMetadata.getNotBefore(), anMetadata.getNotAfter(),
+                    userDN, anPubKey);
             final JcaX509ExtensionUtils extUtils = new JcaX509ExtensionUtils();
 
             // 赋予数字证书扩展属性
             anMetadata.saveX509Extent(certBuilder, caCert, anPubKey, extUtils);
-            final ContentSigner signer = new JcaContentSignerBuilder(SIGNING_ALGORITHM).setProvider(BC).build(anCaCertStore.findPrivateKey());
+            final ContentSigner signer = new JcaContentSignerBuilder(SIGNING_ALGORITHM).setProvider(BC)
+                    .build(anCaCertStore.findPrivateKey());
 
-            final X509Certificate userCert = new JcaX509CertificateConverter().setProvider(BC).getCertificate(certBuilder.build(signer));
+            final X509Certificate userCert = new JcaX509CertificateConverter().setProvider(BC)
+                    .getCertificate(certBuilder.build(signer));
             if (userCert instanceof PKCS12BagAttributeCarrier) {
                 final PKCS12BagAttributeCarrier bagAttr = (PKCS12BagAttributeCarrier) userCert;
-                bagAttr.setBagAttribute(PKCSObjectIdentifiers.pkcs_9_at_localKeyId, extUtils.createSubjectKeyIdentifier(anPubKey));
-            }
-            else if (userCert instanceof X509CertificateObject) {
+                bagAttr.setBagAttribute(PKCSObjectIdentifiers.pkcs_9_at_localKeyId,
+                        extUtils.createSubjectKeyIdentifier(anPubKey));
+            } else if (userCert instanceof X509CertificateObject) {
                 final X509CertificateObject bagAttr = (X509CertificateObject) userCert;
-                bagAttr.setBagAttribute(PKCSObjectIdentifiers.pkcs_9_at_localKeyId, extUtils.createSubjectKeyIdentifier(anPubKey));
-            }
-            else {
+                bagAttr.setBagAttribute(PKCSObjectIdentifiers.pkcs_9_at_localKeyId,
+                        extUtils.createSubjectKeyIdentifier(anPubKey));
+            } else {
                 logger.warn("not find work X509Certificate class");
             }
 
@@ -377,7 +378,8 @@ public class BetterX509Utils {
      *            证书链列表
      * @return PKIXCertPathBuilderResult 数字证书验证结果
      */
-    public static PKIXCertPathBuilderResult verifyChain(final X509Certificate anTestCert, final X509Certificate... anAdditionalCerts) {
+    public static PKIXCertPathBuilderResult verifyChain(final X509Certificate anTestCert,
+            final X509Certificate... anAdditionalCerts) {
         try {
             // 检查是否是自签证书，自签的数字证书；不需要验证
             if (isSelfSigned(anTestCert)) {
@@ -437,8 +439,7 @@ public class BetterX509Utils {
                 return true;
             }
         }
-        catch (final Exception e) {
-        }
+        catch (final Exception e) {}
 
         return false;
     }
@@ -457,8 +458,8 @@ public class BetterX509Utils {
      * @param x509log
      * @return true 表示回收成功
      */
-    public static boolean revoke(final X509Certificate anCert, final CRLReason anReason, final BetterX509CertStore anCaStoreInfo,
-            final String anCaRevocationList) {
+    public static boolean revoke(final X509Certificate anCert, final CRLReason anReason,
+            final BetterX509CertStore anCaStoreInfo, final String anCaRevocationList) {
         final KeyStore store = anCaStoreInfo.openKeyStore(false);
         PrivateKey caPrivateKey;
         try {
@@ -484,8 +485,8 @@ public class BetterX509Utils {
      * @param x509log
      * @return true 表示回收成功
      */
-    public static boolean revoke(final X509Certificate anCert, final CRLReason anReason, final String anCaRevocationList,
-            final PrivateKey anCaPrivateKey) {
+    public static boolean revoke(final X509Certificate anCert, final CRLReason anReason,
+            final String anCaRevocationList, final PrivateKey anCaPrivateKey) {
         try {
             final X500Name issuerDN = new X500Name(anCert.getIssuerX500Principal().getName());
             final X509v2CRLBuilder crlBuilder = new X509v2CRLBuilder(issuerDN, new Date());
@@ -498,7 +499,8 @@ public class BetterX509Utils {
             crlBuilder.addCRLEntry(anCert.getSerialNumber(), new Date(), anReason.ordinal());
 
             // build and sign CRL with CA private key
-            final ContentSigner signer = new JcaContentSignerBuilder("SHA1WithRSA").setProvider(BC).build(anCaPrivateKey);
+            final ContentSigner signer = new JcaContentSignerBuilder("SHA1WithRSA").setProvider(BC)
+                    .build(anCaPrivateKey);
             final X509CRLHolder crl = crlBuilder.build(signer);
 
             final File tmpPath = caRevocationList.getParentFile();
@@ -527,14 +529,14 @@ public class BetterX509Utils {
             pemWriter.flush();
             pemWriter.close();
 
-            logger.warn(MessageFormat.format("回收数字证书 {0,number,0} 原因: {1} [{2}]", anCert.getSerialNumber(), anReason.toString(),
-                    anCert.getSubjectDN().getName()));
+            logger.warn(MessageFormat.format("回收数字证书 {0,number,0} 原因: {1} [{2}]", anCert.getSerialNumber(),
+                    anReason.toString(), anCert.getSubjectDN().getName()));
 
             return true;
         }
         catch (IOException | OperatorCreationException e) {
-            logger.error(MessageFormat.format("回收数字证书失败 {0,number,0} [{1}] in {2}", anCert.getSerialNumber(), anCert.getSubjectDN().getName(),
-                    anCaRevocationList), e);
+            logger.error(MessageFormat.format("回收数字证书失败 {0,number,0} [{1}] in {2}", anCert.getSerialNumber(),
+                    anCert.getSubjectDN().getName(), anCaRevocationList), e);
         }
 
         return false;
@@ -553,8 +555,7 @@ public class BetterX509Utils {
         try {
             if (storeFile.exists() && storeFile.isFile()) {
                 return new FileInputStream(storeFile);
-            }
-            else {
+            } else {
                 final ClassPathResource cc = new ClassPathResource(anStoreFile);
                 return cc.getInputStream();
             }
@@ -620,8 +621,8 @@ public class BetterX509Utils {
             return crl.isRevoked(anCert);
         }
         catch (final Exception e) {
-            logger.error(MessageFormat.format("无法检查证书的撤销状态 {0,number,0} [{1}] in {2}", anCert.getSerialNumber(), anCert.getSubjectDN().getName(),
-                    anCaRevocationList));
+            logger.error(MessageFormat.format("无法检查证书的撤销状态 {0,number,0} [{1}] in {2}", anCert.getSerialNumber(),
+                    anCert.getSubjectDN().getName(), anCaRevocationList));
         }
         finally {
             IOUtils.closeQuietly(inStream);

@@ -1,13 +1,19 @@
 package com.betterjr.modules.rule.entity;
 
-import com.betterjr.common.annotation.*;
+import java.util.List;
+
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.modules.rule.annotation.AnnotRuleProcess;
 import com.betterjr.modules.rule.service.BusinRuleService;
-
-import java.util.List;
-
-import javax.persistence.*;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -90,19 +96,19 @@ public class RuleBusiness implements BetterjrEntity {
     @Column(name = "D_MODIDATE", columnDefinition = "VARCHAR")
     @MetaData(value = "修改日期", comments = "修改日期")
     private String modiDate;
- 
+
     /**
      * 版本号，同一个业务只能有一个版本号激活
      */
     @Column(name = "C_VERSION", columnDefinition = "VARCHAR")
     @MetaData(value = "版本号", comments = "版本号，同一个业务只能有一个版本号激活")
     private String businVersion;
-    
+
     /**
      * 输入参数转换为该实体对象
      */
-    @Column(name="C_ENTITY", columnDefinition = "VARCHAR")
-    @MetaData(value="实体对象的类名",comments="输入参数转换为该实体对象")
+    @Column(name = "C_ENTITY", columnDefinition = "VARCHAR")
+    @MetaData(value = "实体对象的类名", comments = "输入参数转换为该实体对象")
     private String entity;
 
     private static final long serialVersionUID = 1442218275374L;
@@ -112,7 +118,7 @@ public class RuleBusiness implements BetterjrEntity {
 
     @Transient
     private List<WorkRuleValidator> validators;
-    
+
     public List<WorkRuleValidator> getValidators() {
         return this.validators;
     }
@@ -125,8 +131,7 @@ public class RuleBusiness implements BetterjrEntity {
         return enterFunc;
     }
 
-    public RuleBusiness() {
-    }
+    public RuleBusiness() {}
 
     public RuleBusiness(AnnotRuleProcess anRuleProc, String anEnterName) {
         this.businName = anRuleProc.name();
@@ -231,7 +236,7 @@ public class RuleBusiness implements BetterjrEntity {
     public void setModiDate(String modiDate) {
         this.modiDate = modiDate == null ? null : modiDate.trim();
     }
- 
+
     public String getBusinVersion() {
         return businVersion;
     }
@@ -241,14 +246,14 @@ public class RuleBusiness implements BetterjrEntity {
     }
 
     public String getEntity() {
-		return entity;
-	}
+        return entity;
+    }
 
-	public void setEntity(String entity) {
-		this.entity = entity;
-	}
+    public void setEntity(String entity) {
+        this.entity = entity;
+    }
 
-	@Override
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
@@ -284,17 +289,27 @@ public class RuleBusiness implements BetterjrEntity {
         }
         RuleBusiness other = (RuleBusiness) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-                && (this.getBusinName() == null ? other.getBusinName() == null : this.getBusinName().equals(other.getBusinName()))
-                && (this.getEnterFunc() == null ? other.getEnterFunc() == null : this.getEnterFunc().equals(other.getEnterFunc()))
-                && (this.getBusinType() == null ? other.getBusinType() == null : this.getBusinType().equals(other.getBusinType()))
-                && (this.getExecContent() == null ? other.getExecContent() == null : this.getExecContent().equals(other.getExecContent()))
-                && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
-                && (this.getBusinGroup() == null ? other.getBusinGroup() == null : this.getBusinGroup().equals(other.getBusinGroup()))
-                && (this.getErrorInfo() == null ? other.getErrorInfo() == null : this.getErrorInfo().equals(other.getErrorInfo()))
+                && (this.getBusinName() == null ? other.getBusinName() == null
+                        : this.getBusinName().equals(other.getBusinName()))
+                && (this.getEnterFunc() == null ? other.getEnterFunc() == null
+                        : this.getEnterFunc().equals(other.getEnterFunc()))
+                && (this.getBusinType() == null ? other.getBusinType() == null
+                        : this.getBusinType().equals(other.getBusinType()))
+                && (this.getExecContent() == null ? other.getExecContent() == null
+                        : this.getExecContent().equals(other.getExecContent()))
+                && (this.getDescription() == null ? other.getDescription() == null
+                        : this.getDescription().equals(other.getDescription()))
+                && (this.getBusinGroup() == null ? other.getBusinGroup() == null
+                        : this.getBusinGroup().equals(other.getBusinGroup()))
+                && (this.getErrorInfo() == null ? other.getErrorInfo() == null
+                        : this.getErrorInfo().equals(other.getErrorInfo()))
                 && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
-                && (this.getRegDate() == null ? other.getRegDate() == null : this.getRegDate().equals(other.getRegDate()))
-                && (this.getModiDate() == null ? other.getModiDate() == null : this.getModiDate().equals(other.getModiDate()))
-                && (this.getBusinVersion() == null ? other.getBusinVersion() == null : this.getBusinVersion().equals(other.getBusinVersion()));
+                && (this.getRegDate() == null ? other.getRegDate() == null
+                        : this.getRegDate().equals(other.getRegDate()))
+                && (this.getModiDate() == null ? other.getModiDate() == null
+                        : this.getModiDate().equals(other.getModiDate()))
+                && (this.getBusinVersion() == null ? other.getBusinVersion() == null
+                        : this.getBusinVersion().equals(other.getBusinVersion()));
     }
 
     @Override

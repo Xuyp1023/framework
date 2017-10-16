@@ -1,5 +1,7 @@
 package com.betterjr.modules.rule.validator;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.modules.rule.RuleCheckResult;
 import com.betterjr.modules.rule.entity.RuleBusiness;
@@ -15,8 +17,8 @@ public class DataNotContainValidator extends BaseDataValidator {
     }
 
     @Override
-    public boolean evaluate(WorkRuleValidator anValidator, QLExpressContext anContext, RuleCheckResult anResult, RuleBusiness anRuleBusin,
-            Object anValue, Object anBusinValue, String anMessage) {
+    public boolean evaluate(WorkRuleValidator anValidator, QLExpressContext anContext, RuleCheckResult anResult,
+            RuleBusiness anRuleBusin, Object anValue, Object anBusinValue, String anMessage) {
 
         if (anValue == null || anBusinValue == null) {
 
@@ -24,7 +26,7 @@ public class DataNotContainValidator extends BaseDataValidator {
         }
         boolean bb = (anBusinValue.toString().contains(anValue.toString()) == false);
 
-        if (bb == false && BetterStringUtils.isBlank(anMessage)) {
+        if (bb == false && StringUtils.isBlank(anMessage)) {
             anMessage = "在业务限制范围内！";
         }
 

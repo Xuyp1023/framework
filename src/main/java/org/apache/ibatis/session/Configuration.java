@@ -108,7 +108,8 @@ public class Configuration {
     protected Class<? extends Log> logImpl;
     protected LocalCacheScope localCacheScope = LocalCacheScope.SESSION;
     protected JdbcType jdbcTypeForNull = JdbcType.OTHER;
-    protected Set<String> lazyLoadTriggerMethods = new HashSet<String>(Arrays.asList(new String[] { "equals", "clone", "hashCode", "toString" }));
+    protected Set<String> lazyLoadTriggerMethods = new HashSet<String>(
+            Arrays.asList(new String[] { "equals", "clone", "hashCode", "toString" }));
     protected Integer defaultStatementTimeout;
     protected Integer defaultFetchSize;
     protected ExecutorType defaultExecutorType = ExecutorType.SIMPLE;
@@ -138,14 +139,16 @@ public class Configuration {
     protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();
     protected final LanguageDriverRegistry languageRegistry = new LanguageDriverRegistry();
 
-    protected final Map<String, MappedStatement> mappedStatements = new StrictMap<MappedStatement>("Mapped Statements collection");
+    protected final Map<String, MappedStatement> mappedStatements = new StrictMap<MappedStatement>(
+            "Mapped Statements collection");
     protected final Map<String, Cache> caches = new StrictMap<Cache>("Caches collection");
     protected final Map<String, ResultMap> resultMaps = new StrictMap<ResultMap>("Result Maps collection");
     protected final Map<String, ParameterMap> parameterMaps = new StrictMap<ParameterMap>("Parameter Maps collection");
     protected final Map<String, KeyGenerator> keyGenerators = new StrictMap<KeyGenerator>("Key Generators collection");
 
     protected final Set<String> loadedResources = new HashSet<String>();
-    protected final Map<String, XNode> sqlFragments = new StrictMap<XNode>("XML fragments parsed from previous mappers");
+    protected final Map<String, XNode> sqlFragments = new StrictMap<XNode>(
+            "XML fragments parsed from previous mappers");
 
     protected final Collection<XMLStatementBuilder> incompleteStatements = new LinkedList<XMLStatementBuilder>();
     protected final Collection<CacheRefResolver> incompleteCacheRefs = new LinkedList<CacheRefResolver>();
@@ -463,24 +466,26 @@ public class Configuration {
         return MetaObject.forObject(object, objectFactory, objectWrapperFactory);
     }
 
-    public ParameterHandler newParameterHandler(MappedStatement mappedStatement, Object parameterObject, BoundSql boundSql) {
-        ParameterHandler parameterHandler = mappedStatement.getLang().createParameterHandler(mappedStatement, parameterObject, boundSql);
+    public ParameterHandler newParameterHandler(MappedStatement mappedStatement, Object parameterObject,
+            BoundSql boundSql) {
+        ParameterHandler parameterHandler = mappedStatement.getLang().createParameterHandler(mappedStatement,
+                parameterObject, boundSql);
         parameterHandler = (ParameterHandler) interceptorChain.pluginAll(parameterHandler);
         return parameterHandler;
     }
 
     public ResultSetHandler newResultSetHandler(Executor executor, MappedStatement mappedStatement, RowBounds rowBounds,
             ParameterHandler parameterHandler, ResultHandler resultHandler, BoundSql boundSql) {
-        ResultSetHandler resultSetHandler = new DefaultResultSetHandler(executor, mappedStatement, parameterHandler, resultHandler, boundSql,
-                rowBounds);
+        ResultSetHandler resultSetHandler = new DefaultResultSetHandler(executor, mappedStatement, parameterHandler,
+                resultHandler, boundSql, rowBounds);
         resultSetHandler = (ResultSetHandler) interceptorChain.pluginAll(resultSetHandler);
         return resultSetHandler;
     }
 
-    public StatementHandler newStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameterObject, RowBounds rowBounds,
-            ResultHandler resultHandler, BoundSql boundSql) {
-        StatementHandler statementHandler = new RoutingStatementHandler(executor, mappedStatement, parameterObject, rowBounds, resultHandler,
-                boundSql);
+    public StatementHandler newStatementHandler(Executor executor, MappedStatement mappedStatement,
+            Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
+        StatementHandler statementHandler = new RoutingStatementHandler(executor, mappedStatement, parameterObject,
+                rowBounds, resultHandler, boundSql);
         statementHandler = (StatementHandler) interceptorChain.pluginAll(statementHandler);
         return statementHandler;
     }
@@ -495,11 +500,9 @@ public class Configuration {
         Executor executor;
         if (ExecutorType.BATCH == executorType) {
             executor = new BatchExecutor(this, transaction);
-        }
-        else if (ExecutorType.REUSE == executorType) {
+        } else if (ExecutorType.REUSE == executorType) {
             executor = new ReuseExecutor(this, transaction);
-        }
-        else {
+        } else {
             executor = new SimpleExecutor(this, transaction);
         }
         if (cacheEnabled) {
@@ -743,7 +746,8 @@ public class Configuration {
                 if (value instanceof ResultMap) {
                     ResultMap entryResultMap = (ResultMap) value;
                     if (!entryResultMap.hasNestedResultMaps() && entryResultMap.getDiscriminator() != null) {
-                        Collection<String> discriminatedResultMapNames = entryResultMap.getDiscriminator().getDiscriminatorMap().values();
+                        Collection<String> discriminatedResultMapNames = entryResultMap.getDiscriminator()
+                                .getDiscriminatorMap().values();
                         if (discriminatedResultMapNames.contains(rm.getId())) {
                             entryResultMap.forceNestedResultMaps();
                         }
@@ -795,6 +799,7 @@ public class Configuration {
         }
 
         // TODO 如果现在状态为刷新，则刷新(先删除后添加)
+        @Override
         @SuppressWarnings("unchecked")
         public V put(String key, V value) {
             if (org.apache.ibatis.thread.Runnable.isRefresh()) {
@@ -806,14 +811,14 @@ public class Configuration {
                 final String shortKey = getShortName(key);
                 if (super.get(shortKey) == null) {
                     super.put(shortKey, value);
-                }
-                else {
+                } else {
                     super.put(shortKey, (V) new Ambiguity(shortKey));
                 }
             }
             return super.put(key, value);
         }
 
+        @Override
         public V get(Object key) {
             V value = super.get(key);
             if (value == null) {

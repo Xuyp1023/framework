@@ -1,10 +1,15 @@
 package com.betterjr.modules.rule.entity;
 
-import com.betterjr.common.annotation.*;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import com.betterjr.common.annotation.MetaData;
 import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.modules.rule.annotation.AnnotRuleFunc;
-
-import javax.persistence.*;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -80,7 +85,7 @@ public class RuleFunction implements BetterjrEntity {
     @Column(name = "D_MODIDATE", columnDefinition = "VARCHAR")
     @MetaData(value = "修改日期", comments = "修改日期")
     private String modiDate;
- 
+
     /**
      * 业务描述
      */
@@ -89,7 +94,7 @@ public class RuleFunction implements BetterjrEntity {
     private String description;
 
     public String getDescription() {
-        return description; 
+        return description;
     }
 
     public void setDescription(String anDescription) {
@@ -108,8 +113,7 @@ public class RuleFunction implements BetterjrEntity {
         this.featureName = anRuleFunc.name();
         if (anRuleFunc.fundType() == RuleFuncType.MACRO) {
             this.funcName = anName;
-        }
-        else {
+        } else {
             this.funcName = anName;
             this.fundType = anRuleFunc.fundType().name();
         }
@@ -203,7 +207,7 @@ public class RuleFunction implements BetterjrEntity {
     public void setModiDate(String modiDate) {
         this.modiDate = modiDate == null ? null : modiDate.trim();
     }
- 
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -238,17 +242,27 @@ public class RuleFunction implements BetterjrEntity {
             return false;
         }
         RuleFunction other = (RuleFunction) that;
-        return (this.getFeatureName() == null ? other.getFeatureName() == null : this.getFeatureName().equals(other.getFeatureName()))
-            && (this.getFundType() == null ? other.getFundType() == null : this.getFundType().equals(other.getFundType()))
-            && (this.getClassName() == null ? other.getClassName() == null : this.getClassName().equals(other.getClassName()))
-            && (this.getFuncName() == null ? other.getFuncName() == null : this.getFuncName().equals(other.getFuncName()))
-            && (this.getParamList() == null ? other.getParamList() == null : this.getParamList().equals(other.getParamList()))
-            && (this.getGroupName() == null ? other.getGroupName() == null : this.getGroupName().equals(other.getGroupName()))
-            && (this.getErrorInfo() == null ? other.getErrorInfo() == null : this.getErrorInfo().equals(other.getErrorInfo()))
-            && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
-            && (this.getRegDate() == null ? other.getRegDate() == null : this.getRegDate().equals(other.getRegDate()))
-            && (this.getModiDate() == null ? other.getModiDate() == null : this.getModiDate().equals(other.getModiDate()))
-            && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()));
+        return (this.getFeatureName() == null ? other.getFeatureName() == null
+                : this.getFeatureName().equals(other.getFeatureName()))
+                && (this.getFundType() == null ? other.getFundType() == null
+                        : this.getFundType().equals(other.getFundType()))
+                && (this.getClassName() == null ? other.getClassName() == null
+                        : this.getClassName().equals(other.getClassName()))
+                && (this.getFuncName() == null ? other.getFuncName() == null
+                        : this.getFuncName().equals(other.getFuncName()))
+                && (this.getParamList() == null ? other.getParamList() == null
+                        : this.getParamList().equals(other.getParamList()))
+                && (this.getGroupName() == null ? other.getGroupName() == null
+                        : this.getGroupName().equals(other.getGroupName()))
+                && (this.getErrorInfo() == null ? other.getErrorInfo() == null
+                        : this.getErrorInfo().equals(other.getErrorInfo()))
+                && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
+                && (this.getRegDate() == null ? other.getRegDate() == null
+                        : this.getRegDate().equals(other.getRegDate()))
+                && (this.getModiDate() == null ? other.getModiDate() == null
+                        : this.getModiDate().equals(other.getModiDate()))
+                && (this.getDescription() == null ? other.getDescription() == null
+                        : this.getDescription().equals(other.getDescription()));
     }
 
     @Override

@@ -16,12 +16,12 @@
  */
 package net.oauth.jsontoken.discovery;
 
-import net.oauth.jsontoken.crypto.RsaSHA256Verifier;
-import net.oauth.jsontoken.crypto.Verifier;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+
+import net.oauth.jsontoken.crypto.RsaSHA256Verifier;
+import net.oauth.jsontoken.crypto.Verifier;
 
 /**
  * Default strategy for locating public verification keys. Unlike secret (symmetric)
@@ -35,34 +35,33 @@ import java.util.List;
  */
 public class DefaultPublicKeyLocator implements VerifierProvider {
 
-  private final ServerDescriptorProvider descriptorProvider;
-  private final ServerInfoResolver descriptorResolver;
+    private final ServerDescriptorProvider descriptorProvider;
+    private final ServerInfoResolver descriptorResolver;
 
-  /**
-   * Public constructor.
-   *
-   * @param descriptorProvider A {@link ServerDescriptorProvider} that maps
-   *   issuer ids to server descriptors (URLs).
-   * @param resolver A {@link ServerInfoResolver}, i.e., an object that can fetch
-   *   and parse a server info document, given a server descriptor.
-   */
-  public DefaultPublicKeyLocator(ServerDescriptorProvider descriptorProvider,
-      ServerInfoResolver resolver) {
-    this.descriptorProvider = descriptorProvider;
-    this.descriptorResolver = resolver;
-  }
+    /**
+     * Public constructor.
+     *
+     * @param descriptorProvider A {@link ServerDescriptorProvider} that maps
+     *   issuer ids to server descriptors (URLs).
+     * @param resolver A {@link ServerInfoResolver}, i.e., an object that can fetch
+     *   and parse a server info document, given a server descriptor.
+     */
+    public DefaultPublicKeyLocator(ServerDescriptorProvider descriptorProvider, ServerInfoResolver resolver) {
+        this.descriptorProvider = descriptorProvider;
+        this.descriptorResolver = resolver;
+    }
 
-  /*
-   * (non-Javadoc)
-   * @see net.oauth.jsontoken.discovery.VerifierProvider#findVerifier(java.lang.String, java.lang.String)
-   */
-  @Override
-  public List<Verifier> findVerifier(String issuer, String keyId) {
-    URI serverDescriptor = descriptorProvider.getServerDescriptor(issuer);
-    Verifier rsaVerifier = 
-      new RsaSHA256Verifier(descriptorResolver.resolve(serverDescriptor).getVerificationKey(keyId));
-    List<Verifier> list = new ArrayList<Verifier>();
-    list.add(rsaVerifier);
-    return list;
-  }
+    /*
+     * (non-Javadoc)
+     * @see net.oauth.jsontoken.discovery.VerifierProvider#findVerifier(java.lang.String, java.lang.String)
+     */
+    @Override
+    public List<Verifier> findVerifier(String issuer, String keyId) {
+        URI serverDescriptor = descriptorProvider.getServerDescriptor(issuer);
+        Verifier rsaVerifier = new RsaSHA256Verifier(
+                descriptorResolver.resolve(serverDescriptor).getVerificationKey(keyId));
+        List<Verifier> list = new ArrayList<Verifier>();
+        list.add(rsaVerifier);
+        return list;
+    }
 }

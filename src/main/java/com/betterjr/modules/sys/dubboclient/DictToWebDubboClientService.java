@@ -7,8 +7,8 @@ import com.betterjr.modules.sys.dubbo.interfaces.IDictToWebService;
 
 @Service
 public class DictToWebDubboClientService implements IDictToWebService {
-    
-    @Reference(interfaceClass=IDictToWebService.class)
+
+    @Reference(interfaceClass = IDictToWebService.class)
     private IDictToWebService dubboService;
 
     @Override

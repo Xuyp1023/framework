@@ -9,7 +9,7 @@ import com.betterjr.modules.account.entity.CustOperatorInfo;
  *
  */
 public abstract class BetterBaseEntity {
-    
+
     /**
      * 初始化实体信息
      * @param anOperInfo
@@ -21,26 +21,25 @@ public abstract class BetterBaseEntity {
         if (anOperInfo != null) {
             this.setRegOperId(anOperInfo.getId());
             this.setRegOperName(anOperInfo.getName());
-        }
-        else{
+        } else {
             this.setRegOperId(-1L);
             this.setRegOperName("匿名");
         }
     }
-    
-    public void modifyValue(CustOperatorInfo anOperInfo, BetterBaseEntity anEntity){
+
+    public void modifyValue(CustOperatorInfo anOperInfo, BetterBaseEntity anEntity) {
         modifyValue(anEntity);
         modifyValue(anOperInfo);
     }
-    
+
     /**
      * 修改实体信息
      * @param anEntity
      */
-    public void modifyValue(BetterBaseEntity anEntity){
-        if (anEntity != null){
-            this.setRegDate( anEntity.getRegDate());
-            this.setRegTime( anEntity.getRegTime());
+    public void modifyValue(BetterBaseEntity anEntity) {
+        if (anEntity != null) {
+            this.setRegDate(anEntity.getRegDate());
+            this.setRegTime(anEntity.getRegTime());
             this.setRegOperId(anEntity.getRegOperId());
             this.setRegOperName(anEntity.getRegOperName());
         }
@@ -56,16 +55,18 @@ public abstract class BetterBaseEntity {
         if (anOperInfo != null) {
             this.setModiOperId(anOperInfo.getId());
             this.setModiOperName(anOperInfo.getName());
-        }
-        else{
+        } else {
             this.setModiOperId(-1L);
             this.setModiOperName("匿名");
         }
     }
-    
+
     public abstract String getRegDate();
+
     public abstract String getRegTime();
+
     public abstract String getRegOperName();
+
     public abstract Long getRegOperId();
 
     public abstract void setRegDate(String anValue);

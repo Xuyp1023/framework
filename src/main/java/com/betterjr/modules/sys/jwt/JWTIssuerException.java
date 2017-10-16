@@ -1,7 +1,7 @@
 package com.betterjr.modules.sys.jwt;
 
 public class JWTIssuerException extends JWTVerifyException {
-  
+
     private static final long serialVersionUID = -148519706263143279L;
     private final String issuer;
 

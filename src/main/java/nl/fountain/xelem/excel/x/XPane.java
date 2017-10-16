@@ -40,12 +40,12 @@ import nl.fountain.xelem.excel.Pane;
  * @see nl.fountain.xelem.excel.WorksheetOptions#setRangeSelection(String)
  */
 public class XPane extends AbstractXLElement implements Pane {
-    
+
     private int number;
     private int activeCol = -1;
     private int activeRow = -1;
     private String rangeSelection;
-    
+
     /**
      * Constructs a new XPane with the given pane number.
      * 
@@ -54,73 +54,82 @@ public class XPane extends AbstractXLElement implements Pane {
      */
     public XPane(int paneNumber) {
         if (paneNumber < 0 || paneNumber > 3) {
-            throw new IllegalArgumentException(paneNumber 
-                    + ". Legal arguments are 0, 1, 2 and 3.");
+            throw new IllegalArgumentException(paneNumber + ". Legal arguments are 0, 1, 2 and 3.");
         }
         number = paneNumber;
     }
 
+    @Override
     public int getNumber() {
         return number;
     }
 
+    @Override
     public void setActiveCol(int col) {
         activeCol = col - 1;
     }
 
+    @Override
     public int getActiveCol() {
         return activeCol;
     }
 
+    @Override
     public void setActiveRow(int row) {
         activeRow = row - 1;
     }
 
+    @Override
     public int getActiveRow() {
         return activeRow;
     }
-    
+
+    @Override
     public void setActiveCell(int row, int col) {
         setActiveRow(row);
         setActiveCol(col);
     }
 
+    @Override
     public void setRangeSelection(String rc) {
         rangeSelection = rc;
     }
-    
+
+    @Override
     public void setRangeSelection(Area area) {
         rangeSelection = area.getAbsoluteRange();
     }
 
+    @Override
     public String getRangeSelection() {
         return rangeSelection;
     }
 
+    @Override
     public String getTagName() {
         return "Pane";
     }
 
+    @Override
     public String getNameSpace() {
         return XMLNS_X;
     }
 
+    @Override
     public String getPrefix() {
         return PREFIX_X;
     }
 
+    @Override
     public Element assemble(Element parent, GIO gio) {
         Document doc = parent.getOwnerDocument();
         Element pe = assemble(doc, gio);
-        
+
         pe.appendChild(createElementNS(doc, "Number", number));
-        if (activeCol > -1) pe.appendChild(
-                createElementNS(doc, "ActiveCol", activeCol));
-        if (activeRow > -1) pe.appendChild(
-                createElementNS(doc, "ActiveRow", activeRow));
-        if (rangeSelection != null) pe.appendChild(
-                createElementNS(doc, "RangeSelection", rangeSelection));
-        
+        if (activeCol > -1) pe.appendChild(createElementNS(doc, "ActiveCol", activeCol));
+        if (activeRow > -1) pe.appendChild(createElementNS(doc, "ActiveRow", activeRow));
+        if (rangeSelection != null) pe.appendChild(createElementNS(doc, "RangeSelection", rangeSelection));
+
         parent.appendChild(pe);
         return pe;
     }

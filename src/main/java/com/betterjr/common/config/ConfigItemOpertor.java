@@ -12,4 +12,4 @@ public interface ConfigItemOpertor {
 
     Map<String, String> getMapValue();
 
- }
+}

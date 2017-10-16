@@ -1,4 +1,11 @@
- package com.betterjr.common.utils;
+package com.betterjr.common.utils;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -12,13 +19,6 @@ import org.springframework.asm.Opcodes;
 import org.springframework.asm.Type;
 
 import com.betterjr.common.exception.BytterException;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.net.URL;
 
 /**
  * 打为jar包后也能找到配置文件，并以流的方式读取。 InputStream is = ClassLoaderUtil.getResourceAsStream("config/others/config.properties", MainTest.class); if (null != is)
@@ -88,7 +88,8 @@ public class ClassLoaderUtil {
         cr = new ClassReader(class2Byte(anClass));
         cr.accept(new ClassVisitor(Opcodes.ASM4, cw) {
             @Override
-            public MethodVisitor visitMethod(final int access, final String name, final String desc, final String signature, final String[] exceptions) {
+            public MethodVisitor visitMethod(final int access, final String name, final String desc,
+                    final String signature, final String[] exceptions) {
                 final Type[] args = Type.getArgumentTypes(desc);
                 // 方法名相同并且参数个数相同
                 if (!name.equals(m.getName()) || !sameType(args, m.getParameterTypes())) {
@@ -97,7 +98,8 @@ public class ClassLoaderUtil {
                 MethodVisitor v = cv.visitMethod(access, name, desc, signature, exceptions);
                 return new MethodVisitor(Opcodes.ASM4, v) {
                     @Override
-                    public void visitLocalVariable(String name, String desc, String signature, Label start, Label end, int index) {
+                    public void visitLocalVariable(String name, String desc, String signature, Label start, Label end,
+                            int index) {
                         int i = index - 1;
                         // 如果是静态方法，则第一就是参数
                         // 如果不是静态方法，则第一个是"this"，然后才是方法的参数
@@ -161,7 +163,8 @@ public class ClassLoaderUtil {
         if (pack != null) {
             String packName = pack.getName();
             // 此处简单判定是否是Java基础类库，防止用户传入JDK内置的类库
-            if (packName.startsWith("java.") || packName.startsWith("javax.")) throw new java.lang.IllegalArgumentException("不要传送系统类！");
+            if (packName.startsWith("java.") || packName.startsWith("javax."))
+                throw new java.lang.IllegalArgumentException("不要传送系统类！");
             // 在类的名称中，去掉包名的部分，获得类的文件名
             clsName = clsName.substring(packName.length() + 1);
             // 判定包名是否是简单包名，如果是，则直接将包名转换为路径，
@@ -193,7 +196,6 @@ public class ClassLoaderUtil {
             throw BytterException.unchecked(e);
         }
     }
- 
 
     public static URL getResource(String resourceName, Class<?> callingClass) {
         URL url = Thread.currentThread().getContextClassLoader().getResource(resourceName);
@@ -206,7 +208,8 @@ public class ClassLoaderUtil {
                 url = cl.getResource(resourceName);
             }
         }
-        if ((url == null) && (resourceName != null) && ((resourceName.length() == 0) || (resourceName.charAt(0) != '/'))) {
+        if ((url == null) && (resourceName != null)
+                && ((resourceName.length() == 0) || (resourceName.charAt(0) != '/'))) {
             return getResource('/' + resourceName, callingClass);
         }
         if (url != null) {

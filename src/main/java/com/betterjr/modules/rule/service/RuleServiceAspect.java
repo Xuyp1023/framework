@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -55,8 +56,7 @@ public class RuleServiceAspect {
         if (obj instanceof RuleCheckResult) {
 
             return (RuleCheckResult) obj;
-        }
-        else {
+        } else {
 
             return new RuleCheckResult();
         }
@@ -66,8 +66,7 @@ public class RuleServiceAspect {
         this.qlExpress = qlExpress;
     }
 
-    public void before(JoinPoint call) {
-    }
+    public void before(JoinPoint call) {}
 
     public void afterReturn() {
 
@@ -89,8 +88,7 @@ public class RuleServiceAspect {
             if (RuleContext.class.isAssignableFrom(cc)) {
 
                 return (RuleContext) anObjects[i];
-            }
-            else if (Map.class.isAssignableFrom(cc)) {
+            } else if (Map.class.isAssignableFrom(cc)) {
 
                 return new RuleContext((Map) anObjects[i]);
             }
@@ -134,10 +132,9 @@ public class RuleServiceAspect {
     public RuleBusiness checkProcess(String anClass, String anMethod) {
 
         String name = BusinRuleService.getProcessName(anClass, anMethod);
-        if (BetterStringUtils.isNotBlank(name) && this.qlExpress != null) {
-        return this.qlExpress.findRuleBusin(name);
-        }
-        else{
+        if (StringUtils.isNotBlank(name) && this.qlExpress != null) {
+            return this.qlExpress.findRuleBusin(name);
+        } else {
             return null;
         }
     }
@@ -151,8 +148,7 @@ public class RuleServiceAspect {
         if (market.get() != null || AopUtils.isAopProxy(call.getTarget())) {
 
             return call.proceed(call.getArgs());
-        }
-        else {
+        } else {
             market.set(new Object());
         }
 

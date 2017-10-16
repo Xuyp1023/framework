@@ -23,15 +23,16 @@ public class RolesOrAuthorizationFilter extends AuthorizationFilter {
      * @see org.apache.shiro.web.filter.AccessControlFilter#isAccessAllowed(javax.servlet.ServletRequest, javax.servlet.ServletResponse, java.lang.Object)
      */
     @Override
-    protected boolean isAccessAllowed(final ServletRequest anRequest, final ServletResponse anResponse, final Object anMappedValue) throws Exception {
+    protected boolean isAccessAllowed(final ServletRequest anRequest, final ServletResponse anResponse,
+            final Object anMappedValue) throws Exception {
         final Subject subject = getSubject(anRequest, anResponse);
         final String[] rolesArray = (String[]) anMappedValue;
 
-        if (rolesArray == null || rolesArray.length == 0) { //没有角色限制，有权限访问
+        if (rolesArray == null || rolesArray.length == 0) { // 没有角色限制，有权限访问
             return true;
         }
         for (final String element : rolesArray) {
-            if (subject.hasRole(element)) { //若当前用户是rolesArray中的任何一个，则有权限访问
+            if (subject.hasRole(element)) { // 若当前用户是rolesArray中的任何一个，则有权限访问
                 return true;
             }
         }

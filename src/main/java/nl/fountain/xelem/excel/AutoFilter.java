@@ -31,9 +31,9 @@ package nl.fountain.xelem.excel;
  * {@link nl.fountain.xelem.excel.Worksheet#setAutoFilter(String)}.
  */
 public interface AutoFilter extends XLElement {
-    
-    
+
     void setRange(String rcString);
+
     String getRange();
 
 }
