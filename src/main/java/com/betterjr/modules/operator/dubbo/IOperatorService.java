@@ -19,7 +19,7 @@ public interface IOperatorService {
      * @param anMap
      * @return
      */
-    public String webAddCustOperator(Map<String, Object> anMap, String anCustList);
+    public String webAddCustOperator(Map<String, Object> anMap, String anCustList, final String fileList);
 
     /****
      * 编辑操作员

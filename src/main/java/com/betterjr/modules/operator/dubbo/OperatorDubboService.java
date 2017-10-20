@@ -33,9 +33,10 @@ public class OperatorDubboService implements IOperatorService {
      * 新增操作员
      */
     @Override
-    public String webAddCustOperator(final Map<String, Object> anMap, final String anCustList) {
+    public String webAddCustOperator(final Map<String, Object> anMap, final String anCustList, final String fileList) {
         final CustOperatorInfoRequest request = (CustOperatorInfoRequest) RuleServiceDubboFilterInvoker.getInputObj();
-        return AjaxObject.newOk("新增操作员", operatorRequestService.addCustOperator(request, anCustList)).toJson();
+        return AjaxObject.newOk("新增操作员", operatorRequestService.addCustOperator(request, anCustList, fileList))
+                .toJson();
     }
 
     /****

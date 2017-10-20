@@ -15,8 +15,8 @@ public class OperatorDubboClientService implements IOperatorService {
     private IOperatorService operatorService;
 
     @Override
-    public String webAddCustOperator(final Map<String, Object> anMap, final String anCustList) {
-        return operatorService.webAddCustOperator(anMap, anCustList);
+    public String webAddCustOperator(final Map<String, Object> anMap, final String anCustList, final String fileList) {
+        return operatorService.webAddCustOperator(anMap, anCustList, fileList);
     }
 
     @Override

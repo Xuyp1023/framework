@@ -141,6 +141,11 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
      */
     private String clerkMan;
 
+    /***
+     * 附件信息
+     */
+    private Long batchNo;
+
     public CustOperatorInfoRequest() {
 
     }
@@ -349,7 +354,7 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return this.custList;
     }
 
-    public void setCustList(String anCustList) {
+    public void setCustList(final String anCustList) {
         this.custList = anCustList;
     }
 
@@ -357,30 +362,39 @@ public class CustOperatorInfoRequest implements java.io.Serializable {
         return this.clerkMan;
     }
 
-    public void setClerkMan(String anClerkMan) {
+    public void setClerkMan(final String anClerkMan) {
         this.clerkMan = anClerkMan;
     }
 
     @Override
     public String toString() {
-        return "CustOperatorInfoRequest [id=" + id + ", contIdentType=" + contIdentType + ", name=" + name
-                + ", contIdentNo=" + contIdentNo + ", contCertValidDate=" + contCertValidDate + ", sex=" + sex
-                + ", zipCode=" + zipCode + ", address=" + address + ", phone=" + phone + ", faxNo=" + faxNo
-                + ", mobileNo=" + mobileNo + ", email=" + email + ", identClass=" + identClass + ", transBusin="
-                + transBusin + ", revokeBusin=" + revokeBusin + ", status=" + status + ", lastStatus=" + lastStatus
-                + ", regDate=" + regDate + ", modiDate=" + modiDate + ", operCode=" + operCode + ", operOrg=" + operOrg
-                + ", contactorSerial=" + contactorSerial + ", ruleList=" + ruleList + ", custList=" + custList
-                + ",clerkMan=" + clerkMan + "]";
+        return "CustOperatorInfoRequest [id=" + this.id + ", contIdentType=" + this.contIdentType + ", name="
+                + this.name + ", contIdentNo=" + this.contIdentNo + ", contCertValidDate=" + this.contCertValidDate
+                + ", sex=" + this.sex + ", zipCode=" + this.zipCode + ", address=" + this.address + ", phone="
+                + this.phone + ", faxNo=" + this.faxNo + ", mobileNo=" + this.mobileNo + ", email=" + this.email
+                + ", identClass=" + this.identClass + ", transBusin=" + this.transBusin + ", revokeBusin="
+                + this.revokeBusin + ", status=" + this.status + ", lastStatus=" + this.lastStatus + ", regDate="
+                + this.regDate + ", modiDate=" + this.modiDate + ", operCode=" + this.operCode + ", operOrg="
+                + this.operOrg + ", contactorSerial=" + this.contactorSerial + ", ruleList=" + this.ruleList
+                + ", password=" + this.password + ", defOper=" + this.defOper + ", custList=" + this.custList
+                + ", clerkMan=" + this.clerkMan + ", batchNo=" + this.batchNo + "]";
     }
 
     public void initAdminOperator(final String anOperOrg, final String anName, final String anPassword) {
         this.operOrg = anOperOrg;
-        // this.ruleList = "SUPPLIER_USER,SELLER_USER,CORE_USER,FACTOR_USER,PLATFORM_USER";
         this.ruleList = "OPERATOR_ADMIN";
         this.operCode = "admin";
         this.password = anPassword;
         this.name = anName;
         this.defOper = "1";
+    }
+
+    public Long getBatchNo() {
+        return this.batchNo;
+    }
+
+    public void setBatchNo(final Long anBatchNo) {
+        this.batchNo = anBatchNo;
     }
 
 }
