@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.betterjr.common.data.CustPasswordType;
 import com.betterjr.common.service.BaseService;
-import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.Collections3;
 import com.betterjr.common.utils.QueryTermBuilder;
 import com.betterjr.common.utils.UserUtils;
@@ -21,6 +20,14 @@ import com.betterjr.modules.account.entity.CustOperatorInfo;
 import com.betterjr.modules.account.entity.CustOperatorInfoRequest;
 import com.betterjr.modules.account.entity.CustPassInfo;
 
+/**
+ * 
+ * @ClassName: CustOperatorService 
+ * @Description: 用户操作信息类 
+ * @author zhoucy
+ * @date 2017年10月17日 下午2:04:48 
+ *
+ */
 @Service
 public class CustOperatorService extends BaseService<CustOperatorInfoMapper, CustOperatorInfo> {
 
@@ -33,14 +40,34 @@ public class CustOperatorService extends BaseService<CustOperatorInfoMapper, Cus
     @Autowired
     private CustAndOperatorRelaService operatorRelaService;
 
-    public CustOperatorService() {}
+    public CustOperatorService() {
 
+    }
+
+    /**
+     * 
+     * @Title: isFirstOperator 
+     * @Description: 查询是否第一个注册的人员 
+     * @param  anOperOrg  组织机构
+     * @return boolean 返回类型 
+     * @author zhoucy
+     * @date 2017年10月17日 下午2:05:09
+     */
     public boolean isFirstOperator(final String anOperOrg) {
 
         final int kk = this.selectCountByProperty("operOrg", anOperOrg);
         return kk == 0;
     }
 
+    /**
+     * 
+     * @Title: isManager 
+     * @Description: 判断是否是管理员
+     * @param  anOperID 
+     * @return boolean 返回类型 
+     * @author zhoucy
+     * @date 2017年10月17日 下午2:07:21
+     */
     public boolean isManager(final Long anOperID) {
         final CustOperatorInfo custOper = this.selectByPrimaryKey(anOperID);
         if (custOper != null && custOper.getDefOper() != null) {
@@ -50,6 +77,16 @@ public class CustOperatorService extends BaseService<CustOperatorInfoMapper, Cus
         }
     }
 
+    /**
+     *     
+     * @Title: workForCustNo 
+     * @Description: 描述信息 
+     * @param anValue
+     * @return Object 返回类型 
+     * @throws 
+     * @author zhoucy
+     * @date 2017年10月17日 下午2:09:02
+     */
     public static Object workForCustNo(final String anValue) {
         if (StringUtils.isNotBlank(anValue)) {
             return new Long(anValue);
@@ -94,7 +131,7 @@ public class CustOperatorService extends BaseService<CustOperatorInfoMapper, Cus
         // return operatorMapper.findCustOperatorByOperCode(anOperOrg, anOperCode);
         final List<CustOperatorInfo> list = this.selectByProperty(map);
         // 验证用户名大小写
-        for (CustOperatorInfo anInfo : list) {
+        for (final CustOperatorInfo anInfo : list) {
             if (StringUtils.equals(anInfo.getOperCode(), anOperCode)) {
                 return anInfo;
             }
@@ -166,11 +203,11 @@ public class CustOperatorService extends BaseService<CustOperatorInfoMapper, Cus
      * @param operOrg
      * @return
      */
-    public CustOperatorInfo findDefaultOperator(String operOrg) {
+    public CustOperatorInfo findDefaultOperator(final String operOrg) {
 
-        Map build = QueryTermBuilder.newInstance().put("status", "1").put("clerkMan", "1").put("operOrg", operOrg)
+        final Map build = QueryTermBuilder.newInstance().put("status", "1").put("clerkMan", "1").put("operOrg", operOrg)
                 .build();
-        List<CustOperatorInfo> opers = this.selectByProperty(build);
+        final List<CustOperatorInfo> opers = this.selectByProperty(build);
         if (Collections3.isEmpty(opers)) {
             return null;
         }

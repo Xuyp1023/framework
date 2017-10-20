@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.betterjr.common.service.BaseService;
-import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.UserUtils;
 import com.betterjr.modules.account.dao.CustOperatorInfoMapper;
 import com.betterjr.modules.account.data.CustContextInfo;
@@ -33,14 +32,14 @@ public class OperatorService extends BaseService<CustOperatorInfoMapper, CustOpe
     @Autowired
     private CustAndOperatorRelaService custAndOpService;
 
-    public boolean isFirstOperator(String anOperOrg) {
+    public boolean isFirstOperator(final String anOperOrg) {
 
-        int kk = this.selectCountByProperty("operOrg", anOperOrg);
+        final int kk = this.selectCountByProperty("operOrg", anOperOrg);
         return kk == 0;
     }
 
-    public boolean isManager(Long anOperID) {
-        CustOperatorInfo custOper = this.selectByPrimaryKey(anOperID);
+    public boolean isManager(final Long anOperID) {
+        final CustOperatorInfo custOper = this.selectByPrimaryKey(anOperID);
         if (custOper != null && custOper.getDefOper() != null) {
             return custOper.getDefOper();
         } else {
@@ -48,7 +47,7 @@ public class OperatorService extends BaseService<CustOperatorInfoMapper, CustOpe
         }
     }
 
-    public static Object workForCustNo(String anValue) {
+    public static Object workForCustNo(final String anValue) {
         if (StringUtils.isNotBlank(anValue)) {
             return new Long(anValue);
         } else {
@@ -57,7 +56,7 @@ public class OperatorService extends BaseService<CustOperatorInfoMapper, CustOpe
     }
 
     public static List findCustNoList() {
-        CustContextInfo contextInfo = UserUtils.getOperatorContextInfo();
+        final CustContextInfo contextInfo = UserUtils.getOperatorContextInfo();
         List custList;
         if (contextInfo == null) {
             custList = new ArrayList(1);
@@ -70,12 +69,12 @@ public class OperatorService extends BaseService<CustOperatorInfoMapper, CustOpe
         return custList;
     }
 
-    public CustOperatorInfo findCustOperatorByIndentInfo(String anIndentType, String anUserIdentNo) {
-        Map<String, Object> map = new HashMap();
+    public CustOperatorInfo findCustOperatorByIndentInfo(final String anIndentType, final String anUserIdentNo) {
+        final Map<String, Object> map = new HashMap();
         map.put("identNo", anUserIdentNo);
         map.put("identType", anIndentType);
         map.put("status", "1");
-        List<CustOperatorInfo> list = this.selectByProperty(map);
+        final List<CustOperatorInfo> list = this.selectByProperty(map);
         if (list.size() > 0) {
 
             return list.get(0);
@@ -84,12 +83,12 @@ public class OperatorService extends BaseService<CustOperatorInfoMapper, CustOpe
         return null;
     }
 
-    public CustOperatorInfo findCustOperatorByOperCode(String anOperOrg, String anOperCode) {
-        Map<String, Object> map = new HashMap();
+    public CustOperatorInfo findCustOperatorByOperCode(final String anOperOrg, final String anOperCode) {
+        final Map<String, Object> map = new HashMap();
         map.put("operOrg", anOperOrg);
         map.put("operCode", anOperCode);
         // return operatorMapper.findCustOperatorByOperCode(anOperOrg, anOperCode);
-        List<CustOperatorInfo> list = this.selectByProperty(map);
+        final List<CustOperatorInfo> list = this.selectByProperty(map);
         if (list.size() > 0) {
 
             return list.get(0);
@@ -97,9 +96,9 @@ public class OperatorService extends BaseService<CustOperatorInfoMapper, CustOpe
         return null;
     }
 
-    public int addCustOperator(CustOperatorInfoRequest request) {
-        CustOperatorInfo operator = new CustOperatorInfo(request);
-        CustPassInfo custPassInfo = new CustPassInfo(operator, request.getPassword());
+    public int addCustOperator(final CustOperatorInfoRequest request) {
+        final CustOperatorInfo operator = new CustOperatorInfo(request);
+        final CustPassInfo custPassInfo = new CustPassInfo(operator, request.getPassword());
         // 操作员角色信息绑定修改
         operatorRoleRelationService.saveSysOperatorRoleRelation(operator.getId(), operator.getRuleList());
         this.custPassService.insert(custPassInfo);
@@ -110,23 +109,23 @@ public class OperatorService extends BaseService<CustOperatorInfoMapper, CustOpe
         return this.insert(operator);
     }
 
-    public int addSysCustOperator(CustOperatorInfoRequest request) {
-        CustOperatorInfo operator = new CustOperatorInfo(request);
-        CustPassInfo custPassInfo = new CustPassInfo(operator, request.getPassword());
+    public int addSysCustOperator(final CustOperatorInfoRequest request) {
+        final CustOperatorInfo operator = new CustOperatorInfo(request);
+        final CustPassInfo custPassInfo = new CustPassInfo(operator, request.getPassword());
         this.custPassService.insert(custPassInfo);
         return this.insert(operator);
     }
 
-    public void insertCustPass(CustPassInfo custPssInfo) {
+    public void insertCustPass(final CustPassInfo custPssInfo) {
         this.custPassService.insert(custPssInfo);
     }
 
-    public boolean checkOperatorExists(String identType, String identNo) {
+    public boolean checkOperatorExists(final String identType, final String identNo) {
         if (StringUtils.isNotBlank(identType) && StringUtils.isNotBlank(identType)) {
-            Map<String, Object> map = new HashMap();
+            final Map<String, Object> map = new HashMap();
             map.put("identType", identType);
             map.put("identNo", identNo);
-            List list = this.selectByProperty(map);
+            final List list = this.selectByProperty(map);
 
             return list.size() > 0;
         }
@@ -134,12 +133,12 @@ public class OperatorService extends BaseService<CustOperatorInfoMapper, CustOpe
         return false;
     }
 
-    public boolean checkExistsByOperCodeAndOperOrg(String operCode, String operOrg) {
+    public boolean checkExistsByOperCodeAndOperOrg(final String operCode, final String operOrg) {
         if (StringUtils.isNotBlank(operCode) && StringUtils.isNotBlank(operOrg)) {
-            Map<String, Object> map = new HashMap();
+            final Map<String, Object> map = new HashMap();
             map.put("operCode", operCode);
             map.put("operOrg", operOrg);
-            List list = this.selectByProperty(map);
+            final List list = this.selectByProperty(map);
 
             return list.size() > 0;
         }
@@ -147,12 +146,12 @@ public class OperatorService extends BaseService<CustOperatorInfoMapper, CustOpe
         return false;
     }
 
-    public boolean checkExistsByMap(Map<String, Object> anMap) {
-        List list = this.selectByProperty(anMap);
+    public boolean checkExistsByMap(final Map<String, Object> anMap) {
+        final List list = this.selectByProperty(anMap);
         return list.size() > 0;
     }
 
-    public CustOperatorInfo queryCustOperatorInfo(Long operId) {
+    public CustOperatorInfo queryCustOperatorInfo(final Long operId) {
         return this.selectByPrimaryKey(operId);
     }
 }

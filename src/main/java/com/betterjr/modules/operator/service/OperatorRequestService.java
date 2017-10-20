@@ -16,7 +16,6 @@ import com.betterjr.common.data.CustPasswordType;
 import com.betterjr.common.exception.BytterTradeException;
 import com.betterjr.common.mapper.BeanMapper;
 import com.betterjr.common.service.BaseService;
-import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.Collections3;
 import com.betterjr.common.utils.QueryTermBuilder;
 import com.betterjr.common.utils.UserUtils;
@@ -64,12 +63,17 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
      * @param anMap
      * @return
      */
-    public CustOptData addCustOperator(final CustOperatorInfoRequest request, final String anCustList) {
+    public CustOptData addCustOperator(final CustOperatorInfoRequest request, final String anCustList,
+            final String anFileList) {
         final CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();
         final String operOrg = custOperator.getOperOrg();
         checkParam(request, anCustList, operOrg); // 参数检查
         request.setOperOrg(operOrg);
         request.setCustList(anCustList);
+
+        if (StringUtils.isNotBlank(anFileList) && "1".equals(request.getClerkMan())) {
+            request.setBatchNo(fileItemService.updateCustFileItemInfo(anFileList, request.getBatchNo()));
+        }
         final int res = custOptService.addCustOperator(request);
         if (res == 0) {
             throw new BytterTradeException(40001, "新增操作员失败");
@@ -99,16 +103,15 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
         checkSaveParam(operator);
         operator.setIdentNo(operator.getContIdentNo());
         operator.setIdentType(operator.getContIdentType());
-        // if (BetterStringUtils.isBlank(anCustList)) {
-        // logger.error("机构信息不能为空");
-        // throw new BytterTradeException(40001, "抱歉，机构信息为空");
-        // }
+
         // 操作员角色信息绑定修改
         operatorRoleRelationService.saveSysOperatorRoleRelation(operator.getId(), operator.getRuleList());
-        if (StringUtils.isNotBlank(anFileList)) {
+
+        if (StringUtils.isNotBlank(anFileList) && "1".equals(operator.getClerkMan())) {
             operator.setBatchNo(fileItemService.updateCustFileItemInfo(anFileList, operator.getBatchNo()));
         }
         this.updateByPrimaryKeySelective(operator);
+
         // 操作员绑定机构信息，先清除之前的关系，再加入新的关系
         if (StringUtils.isBlank(operator.getOperOrg())) {
             final CustOperatorInfo custOperator = (CustOperatorInfo) UserUtils.getPrincipal().getUser();// 获取当前登录机构

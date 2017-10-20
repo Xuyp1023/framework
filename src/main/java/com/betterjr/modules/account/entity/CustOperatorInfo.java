@@ -654,6 +654,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         this.setLastStatus("1");
         this.setRegDate(BetterDateUtils.getNumDate());
         this.setModiDate(BetterDateUtils.getNumDateTime());
+        this.batchNo = request.getBatchNo();
         if (this.getDefOper() == null) {
             this.setDefOper(false);
         }
