@@ -13,10 +13,12 @@ import com.betterjr.common.data.BaseRemoteEntity;
 import com.betterjr.common.data.WorkUserInfo;
 import com.betterjr.common.entity.BetterjrEntity;
 import com.betterjr.common.mapper.BeanMapper;
+import com.betterjr.common.mapper.CustDateJsonSerializer;
 import com.betterjr.common.selectkey.SerialGenerator;
 import com.betterjr.common.utils.BetterDateUtils;
 import com.betterjr.common.utils.IdcardUtils;
-import com.betterjr.modules.account.data.CustContactInfo;;
+import com.betterjr.modules.account.data.CustContactInfo;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Access(AccessType.FIELD)
 @Entity
@@ -56,6 +58,7 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
      */
     @Column(name = "D_VAILDDATE", columnDefinition = "VARCHAR")
     @MetaData(value = "证件有效期", comments = "证件有效期")
+    @JsonSerialize(using = CustDateJsonSerializer.class)
     private String validDate;
 
     /**
@@ -550,78 +553,78 @@ public class CustOperatorInfo implements BetterjrEntity, WorkUserInfo, BaseRemot
         final CustOperatorInfo other = (CustOperatorInfo) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
                 && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
-                && (this.getIdentType() == null ? other.getIdentType() == null
-                        : this.getIdentType().equals(other.getIdentType()))
-                && (this.getIdentNo() == null ? other.getIdentNo() == null
-                        : this.getIdentNo().equals(other.getIdentNo()))
-                && (this.getValidDate() == null ? other.getValidDate() == null
-                        : this.getValidDate().equals(other.getValidDate()))
+                && (this.getIdentType() == null ? other.getIdentType() == null : this.getIdentType().equals(
+                        other.getIdentType()))
+                && (this.getIdentNo() == null ? other.getIdentNo() == null : this.getIdentNo().equals(
+                        other.getIdentNo()))
+                && (this.getValidDate() == null ? other.getValidDate() == null : this.getValidDate().equals(
+                        other.getValidDate()))
                 && (this.getSex() == null ? other.getSex() == null : this.getSex().equals(other.getSex()))
-                && (this.getZipCode() == null ? other.getZipCode() == null
-                        : this.getZipCode().equals(other.getZipCode()))
-                && (this.getAddress() == null ? other.getAddress() == null
-                        : this.getAddress().equals(other.getAddress()))
+                && (this.getZipCode() == null ? other.getZipCode() == null : this.getZipCode().equals(
+                        other.getZipCode()))
+                && (this.getAddress() == null ? other.getAddress() == null : this.getAddress().equals(
+                        other.getAddress()))
                 && (this.getPhone() == null ? other.getPhone() == null : this.getPhone().equals(other.getPhone()))
                 && (this.getFaxNo() == null ? other.getFaxNo() == null : this.getFaxNo().equals(other.getFaxNo()))
-                && (this.getMobileNo() == null ? other.getMobileNo() == null
-                        : this.getMobileNo().equals(other.getMobileNo()))
+                && (this.getMobileNo() == null ? other.getMobileNo() == null : this.getMobileNo().equals(
+                        other.getMobileNo()))
                 && (this.getEmail() == null ? other.getEmail() == null : this.getEmail().equals(other.getEmail()))
-                && (this.getIdentClass() == null ? other.getIdentClass() == null
-                        : this.getIdentClass().equals(other.getIdentClass()))
-                && (this.getTransBusin() == null ? other.getTransBusin() == null
-                        : this.getTransBusin().equals(other.getTransBusin()))
-                && (this.getRevokeBusin() == null ? other.getRevokeBusin() == null
-                        : this.getRevokeBusin().equals(other.getRevokeBusin()))
-                && (this.getDefOper() == null ? other.getDefOper() == null
-                        : this.getDefOper().equals(other.getDefOper()))
+                && (this.getIdentClass() == null ? other.getIdentClass() == null : this.getIdentClass().equals(
+                        other.getIdentClass()))
+                && (this.getTransBusin() == null ? other.getTransBusin() == null : this.getTransBusin().equals(
+                        other.getTransBusin()))
+                && (this.getRevokeBusin() == null ? other.getRevokeBusin() == null : this.getRevokeBusin().equals(
+                        other.getRevokeBusin()))
+                && (this.getDefOper() == null ? other.getDefOper() == null : this.getDefOper().equals(
+                        other.getDefOper()))
                 && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
-                && (this.getLastStatus() == null ? other.getLastStatus() == null
-                        : this.getLastStatus().equals(other.getLastStatus()))
-                && (this.getRegDate() == null ? other.getRegDate() == null
-                        : this.getRegDate().equals(other.getRegDate()))
-                && (this.getModiDate() == null ? other.getModiDate() == null
-                        : this.getModiDate().equals(other.getModiDate()))
-                && (this.getOperCode() == null ? other.getOperCode() == null
-                        : this.getOperCode().equals(other.getOperCode()))
-                && (this.getOperOrg() == null ? other.getOperOrg() == null
-                        : this.getOperOrg().equals(other.getOperOrg()))
-                && (this.getContactorSerial() == null ? other.getContactorSerial() == null
-                        : this.getContactorSerial().equals(other.getContactorSerial()))
-                && (this.getRuleList() == null ? other.getRuleList() == null
-                        : this.getRuleList().equals(other.getRuleList()))
-                && (this.getBatchNo() == null ? other.getBatchNo() == null
-                        : this.getBatchNo().equals(other.getBatchNo()));
+                && (this.getLastStatus() == null ? other.getLastStatus() == null : this.getLastStatus().equals(
+                        other.getLastStatus()))
+                && (this.getRegDate() == null ? other.getRegDate() == null : this.getRegDate().equals(
+                        other.getRegDate()))
+                && (this.getModiDate() == null ? other.getModiDate() == null : this.getModiDate().equals(
+                        other.getModiDate()))
+                && (this.getOperCode() == null ? other.getOperCode() == null : this.getOperCode().equals(
+                        other.getOperCode()))
+                && (this.getOperOrg() == null ? other.getOperOrg() == null : this.getOperOrg().equals(
+                        other.getOperOrg()))
+                && (this.getContactorSerial() == null ? other.getContactorSerial() == null : this.getContactorSerial()
+                        .equals(other.getContactorSerial()))
+                && (this.getRuleList() == null ? other.getRuleList() == null : this.getRuleList().equals(
+                        other.getRuleList()))
+                && (this.getBatchNo() == null ? other.getBatchNo() == null : this.getBatchNo().equals(
+                        other.getBatchNo()));
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
-        result = prime * result + ((getIdentType() == null) ? 0 : getIdentType().hashCode());
-        result = prime * result + ((getIdentNo() == null) ? 0 : getIdentNo().hashCode());
-        result = prime * result + ((getValidDate() == null) ? 0 : getValidDate().hashCode());
-        result = prime * result + ((getSex() == null) ? 0 : getSex().hashCode());
-        result = prime * result + ((getZipCode() == null) ? 0 : getZipCode().hashCode());
-        result = prime * result + ((getAddress() == null) ? 0 : getAddress().hashCode());
-        result = prime * result + ((getPhone() == null) ? 0 : getPhone().hashCode());
-        result = prime * result + ((getFaxNo() == null) ? 0 : getFaxNo().hashCode());
-        result = prime * result + ((getMobileNo() == null) ? 0 : getMobileNo().hashCode());
-        result = prime * result + ((getEmail() == null) ? 0 : getEmail().hashCode());
-        result = prime * result + ((getIdentClass() == null) ? 0 : getIdentClass().hashCode());
-        result = prime * result + ((getTransBusin() == null) ? 0 : getTransBusin().hashCode());
-        result = prime * result + ((getRevokeBusin() == null) ? 0 : getRevokeBusin().hashCode());
-        result = prime * result + ((getDefOper() == null) ? 0 : getDefOper().hashCode());
-        result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
-        result = prime * result + ((getLastStatus() == null) ? 0 : getLastStatus().hashCode());
-        result = prime * result + ((getRegDate() == null) ? 0 : getRegDate().hashCode());
-        result = prime * result + ((getModiDate() == null) ? 0 : getModiDate().hashCode());
-        result = prime * result + ((getOperCode() == null) ? 0 : getOperCode().hashCode());
-        result = prime * result + ((getOperOrg() == null) ? 0 : getOperOrg().hashCode());
-        result = prime * result + ((getContactorSerial() == null) ? 0 : getContactorSerial().hashCode());
-        result = prime * result + ((getRuleList() == null) ? 0 : getRuleList().hashCode());
-        result = prime * result + ((getBatchNo() == null) ? 0 : getBatchNo().hashCode());
+        result = prime * result + (getId() == null ? 0 : getId().hashCode());
+        result = prime * result + (getName() == null ? 0 : getName().hashCode());
+        result = prime * result + (getIdentType() == null ? 0 : getIdentType().hashCode());
+        result = prime * result + (getIdentNo() == null ? 0 : getIdentNo().hashCode());
+        result = prime * result + (getValidDate() == null ? 0 : getValidDate().hashCode());
+        result = prime * result + (getSex() == null ? 0 : getSex().hashCode());
+        result = prime * result + (getZipCode() == null ? 0 : getZipCode().hashCode());
+        result = prime * result + (getAddress() == null ? 0 : getAddress().hashCode());
+        result = prime * result + (getPhone() == null ? 0 : getPhone().hashCode());
+        result = prime * result + (getFaxNo() == null ? 0 : getFaxNo().hashCode());
+        result = prime * result + (getMobileNo() == null ? 0 : getMobileNo().hashCode());
+        result = prime * result + (getEmail() == null ? 0 : getEmail().hashCode());
+        result = prime * result + (getIdentClass() == null ? 0 : getIdentClass().hashCode());
+        result = prime * result + (getTransBusin() == null ? 0 : getTransBusin().hashCode());
+        result = prime * result + (getRevokeBusin() == null ? 0 : getRevokeBusin().hashCode());
+        result = prime * result + (getDefOper() == null ? 0 : getDefOper().hashCode());
+        result = prime * result + (getStatus() == null ? 0 : getStatus().hashCode());
+        result = prime * result + (getLastStatus() == null ? 0 : getLastStatus().hashCode());
+        result = prime * result + (getRegDate() == null ? 0 : getRegDate().hashCode());
+        result = prime * result + (getModiDate() == null ? 0 : getModiDate().hashCode());
+        result = prime * result + (getOperCode() == null ? 0 : getOperCode().hashCode());
+        result = prime * result + (getOperOrg() == null ? 0 : getOperOrg().hashCode());
+        result = prime * result + (getContactorSerial() == null ? 0 : getContactorSerial().hashCode());
+        result = prime * result + (getRuleList() == null ? 0 : getRuleList().hashCode());
+        result = prime * result + (getBatchNo() == null ? 0 : getBatchNo().hashCode());
         return result;
     }
 

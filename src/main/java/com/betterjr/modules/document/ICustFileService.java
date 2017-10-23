@@ -25,7 +25,7 @@ public interface ICustFileService {
      * 
      * @return
      */
-    public String webFindCustFileAuditInfo(Long anCustNo);
+    public String webFindCustFileAuditInfo(Long anCustNo, String anAgencyNo);
 
     /**
      * 根据客户号和文件业务类型查找文件的批次号
