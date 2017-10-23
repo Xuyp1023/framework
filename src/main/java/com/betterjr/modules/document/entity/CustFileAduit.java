@@ -297,49 +297,49 @@ public class CustFileAduit implements BetterjrEntity {
         final CustFileAduit other = (CustFileAduit) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
                 && (this.getCustNo() == null ? other.getCustNo() == null : this.getCustNo().equals(other.getCustNo()))
-                && (this.getFileCount() == null ? other.getFileCount() == null
-                        : this.getFileCount().equals(other.getFileCount()))
-                && (this.getAuditStatus() == null ? other.getAuditStatus() == null
-                        : this.getAuditStatus().equals(other.getAuditStatus()))
-                && (this.getWorkType() == null ? other.getWorkType() == null
-                        : this.getWorkType().equals(other.getWorkType()))
-                && (this.getDescription() == null ? other.getDescription() == null
-                        : this.getDescription().equals(other.getDescription()))
-                && (this.getRegDate() == null ? other.getRegDate() == null
-                        : this.getRegDate().equals(other.getRegDate()))
-                && (this.getRegTime() == null ? other.getRegTime() == null
-                        : this.getRegTime().equals(other.getRegTime()))
-                && (this.getModiDate() == null ? other.getModiDate() == null
-                        : this.getModiDate().equals(other.getModiDate()))
+                && (this.getFileCount() == null ? other.getFileCount() == null : this.getFileCount().equals(
+                        other.getFileCount()))
+                && (this.getAuditStatus() == null ? other.getAuditStatus() == null : this.getAuditStatus().equals(
+                        other.getAuditStatus()))
+                && (this.getWorkType() == null ? other.getWorkType() == null : this.getWorkType().equals(
+                        other.getWorkType()))
+                && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(
+                        other.getDescription()))
+                && (this.getRegDate() == null ? other.getRegDate() == null : this.getRegDate().equals(
+                        other.getRegDate()))
+                && (this.getRegTime() == null ? other.getRegTime() == null : this.getRegTime().equals(
+                        other.getRegTime()))
+                && (this.getModiDate() == null ? other.getModiDate() == null : this.getModiDate().equals(
+                        other.getModiDate()))
                 && (this.getOperNo() == null ? other.getOperNo() == null : this.getOperNo().equals(other.getOperNo()))
-                && (this.getAduitCustNo() == null ? other.getAduitCustNo() == null
-                        : this.getAduitCustNo().equals(other.getAduitCustNo()))
-                && (this.getAuthorTime() == null ? other.getAuthorTime() == null
-                        : this.getAuthorTime().equals(other.getAuthorTime()))
-                && (this.getAduitorNo() == null ? other.getAduitorNo() == null
-                        : this.getAduitorNo().equals(other.getAduitorNo()))
-                && (this.getBatchNo() == null ? other.getBatchNo() == null
-                        : this.getBatchNo().equals(other.getBatchNo()));
+                && (this.getAduitCustNo() == null ? other.getAduitCustNo() == null : this.getAduitCustNo().equals(
+                        other.getAduitCustNo()))
+                && (this.getAuthorTime() == null ? other.getAuthorTime() == null : this.getAuthorTime().equals(
+                        other.getAuthorTime()))
+                && (this.getAduitorNo() == null ? other.getAduitorNo() == null : this.getAduitorNo().equals(
+                        other.getAduitorNo()))
+                && (this.getBatchNo() == null ? other.getBatchNo() == null : this.getBatchNo().equals(
+                        other.getBatchNo()));
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getCustNo() == null) ? 0 : getCustNo().hashCode());
-        result = prime * result + ((getFileCount() == null) ? 0 : getFileCount().hashCode());
-        result = prime * result + ((getAuditStatus() == null) ? 0 : getAuditStatus().hashCode());
-        result = prime * result + ((getWorkType() == null) ? 0 : getWorkType().hashCode());
-        result = prime * result + ((getDescription() == null) ? 0 : getDescription().hashCode());
-        result = prime * result + ((getRegDate() == null) ? 0 : getRegDate().hashCode());
-        result = prime * result + ((getRegTime() == null) ? 0 : getRegTime().hashCode());
-        result = prime * result + ((getModiDate() == null) ? 0 : getModiDate().hashCode());
-        result = prime * result + ((getOperNo() == null) ? 0 : getOperNo().hashCode());
-        result = prime * result + ((getAduitCustNo() == null) ? 0 : getAduitCustNo().hashCode());
-        result = prime * result + ((getAduitorNo() == null) ? 0 : getAduitorNo().hashCode());
-        result = prime * result + ((getAuthorTime() == null) ? 0 : getAuthorTime().hashCode());
-        result = prime * result + ((getBatchNo() == null) ? 0 : getBatchNo().hashCode());
+        result = prime * result + (getId() == null ? 0 : getId().hashCode());
+        result = prime * result + (getCustNo() == null ? 0 : getCustNo().hashCode());
+        result = prime * result + (getFileCount() == null ? 0 : getFileCount().hashCode());
+        result = prime * result + (getAuditStatus() == null ? 0 : getAuditStatus().hashCode());
+        result = prime * result + (getWorkType() == null ? 0 : getWorkType().hashCode());
+        result = prime * result + (getDescription() == null ? 0 : getDescription().hashCode());
+        result = prime * result + (getRegDate() == null ? 0 : getRegDate().hashCode());
+        result = prime * result + (getRegTime() == null ? 0 : getRegTime().hashCode());
+        result = prime * result + (getModiDate() == null ? 0 : getModiDate().hashCode());
+        result = prime * result + (getOperNo() == null ? 0 : getOperNo().hashCode());
+        result = prime * result + (getAduitCustNo() == null ? 0 : getAduitCustNo().hashCode());
+        result = prime * result + (getAduitorNo() == null ? 0 : getAduitorNo().hashCode());
+        result = prime * result + (getAuthorTime() == null ? 0 : getAuthorTime().hashCode());
+        result = prime * result + (getBatchNo() == null ? 0 : getBatchNo().hashCode());
         return result;
     }
 
@@ -363,6 +363,7 @@ public class CustFileAduit implements BetterjrEntity {
             anAuditInfo.setBatchNo(-Math.abs(anAuditInfo.getBatchNo()));
             anAuditInfo.setAduitorNo(UserUtils.getUserName());
             anAuditInfo.setAuthorTime(BetterDateUtils.getNumDate());
+            anAuditInfo.setWorkType("-" + anAuditInfo.getWorkType());
             anAuditInfo.auditStatus = "5";
         }
 

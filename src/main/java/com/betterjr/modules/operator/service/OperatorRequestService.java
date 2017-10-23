@@ -11,12 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.dubbo.config.annotation.Reference;
 import com.betterjr.common.data.CustPasswordType;
 import com.betterjr.common.exception.BytterTradeException;
 import com.betterjr.common.mapper.BeanMapper;
 import com.betterjr.common.service.BaseService;
-import com.betterjr.common.utils.BetterStringUtils;
 import com.betterjr.common.utils.Collections3;
 import com.betterjr.common.utils.QueryTermBuilder;
 import com.betterjr.common.utils.UserUtils;
@@ -54,8 +52,7 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
     private CustAndOperatorRelaService custAndOpService;
     @Autowired
     private RoleService roleService;
-
-    @Reference(interfaceClass = ICustFileService.class)
+    @Autowired
     private ICustFileService fileItemService;
 
     /**
@@ -129,8 +126,7 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
      * @param pageSize
      * @return
      */
-    public Page<CustOptData> queryCustOperator(final Map<String, String> anParam, final int pageNum,
-            final int pageSize) {
+    public Page<CustOptData> queryCustOperator(final Map<String, String> anParam, final int pageNum, final int pageSize) {
         final Map<String, Object> map = new HashMap<String, Object>();
         String tmpValue;
         for (final String tmpKey : queryConds) {
@@ -171,10 +167,10 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
      * @return
      */
     public Page<CustOptData> queryCustOperatorByPage(final Map<String, String> anMap) {
-        final int pageNum = anMap.get("pageNum") == null || "".equals(anMap.get("pageNum")) ? 1
-                : Integer.valueOf(anMap.get("pageNum"));
-        final int pageSize = anMap.get("pageSize") == null || "".equals(anMap.get("pageSize")) ? 20
-                : Integer.valueOf(anMap.get("pageSize"));
+        final int pageNum = anMap.get("pageNum") == null || "".equals(anMap.get("pageNum")) ? 1 : Integer.valueOf(anMap
+                .get("pageNum"));
+        final int pageSize = anMap.get("pageSize") == null || "".equals(anMap.get("pageSize")) ? 20 : Integer
+                .valueOf(anMap.get("pageSize"));
         return this.findRequest(anMap, pageNum, pageSize);
     }
 
@@ -436,8 +432,8 @@ public class OperatorRequestService extends BaseService<CustOperatorInfoMapper, 
             final CustOperatorInfo custOperator = findCustClerkMan(operator.getOperOrg(), "1");
             if (custOperator != null) {
                 if (!StringUtils.equalsIgnoreCase(operator.getId().toString(), custOperator.getId().toString())) {
-                    throw new BytterTradeException(40001,
-                            "对外经办人已存在，如需设置当前操作员为对外经办人，请先解除已有的对外经办人-" + custOperator.getName());
+                    throw new BytterTradeException(40001, "对外经办人已存在，如需设置当前操作员为对外经办人，请先解除已有的对外经办人-"
+                            + custOperator.getName());
                 }
             }
         }
